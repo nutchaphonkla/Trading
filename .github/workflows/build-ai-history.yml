@@ -19,6 +19,7 @@ jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 6
 
     steps:
       - name: Checkout latest repository
@@ -31,13 +32,13 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Rebuild historical brain
+      - name: Rebuild full-history brain
         run: node build-ai-history.mjs
 
-      - name: Train outcome calibration
+      - name: Train adaptive outcome model
         run: node build-ai-learning.mjs
 
-      - name: Commit learned model
+      - name: Commit learned brain
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -50,6 +51,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Update AI background learning"
+          git commit -m "ai: refresh background learning brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
