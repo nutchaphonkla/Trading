@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OneMonth">
-<title>OneMonth OS V15</title>
+<title>OneMonth OS V16</title>
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2367e7c2'/%3E%3Cstop offset='1' stop-color='%2367c9f3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='118' fill='%23071018'/%3E%3Cpath d='M118 330V218m74 112V156m74 174V236m74 94V124' stroke='url(%23g)' stroke-width='26' stroke-linecap='round'/%3E%3Cpath d='M115 373h282' stroke='%23f1c76c' stroke-width='14' stroke-linecap='round' opacity='.9'/%3E%3C/svg%3E">
 
@@ -373,6 +373,84 @@ body{background:#04070a}
   .news-row{grid-template-columns:48px 1fr auto}
 }
 
+
+/* ===== V16 DAILY EXECUTION PLAN / ROADMAP POLISH ===== */
+.daily-guide{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px
+}
+.daily-guide-card{
+  border:1px solid var(--stroke);border-radius:18px;background:#080d12;padding:14px;
+  min-height:86px;position:relative;overflow:hidden
+}
+.daily-guide-card span{
+  display:block;color:var(--muted);font-size:7px;font-weight:900;letter-spacing:.08em
+}
+.daily-guide-card b{
+  display:block;font-size:18px;margin-top:7px;letter-spacing:-.02em
+}
+.daily-guide-card small{
+  display:block;color:#6f7d8b;font-size:7px;margin-top:5px;line-height:1.4
+}
+.daily-guide-card.time b{color:#dce5eb}
+.daily-guide-card.lot b{color:var(--mint)}
+.roadmap-shell{padding:12px}
+.roadmap-days{display:flex;flex-direction:column;gap:7px}
+.roadmap-row{
+  border:1px solid var(--stroke);border-radius:18px;background:#080d12;padding:12px;
+  transition:.15s
+}
+.roadmap-row.current{
+  border-color:rgba(105,200,239,.22);
+  background:linear-gradient(90deg,rgba(105,200,239,.055),rgba(8,13,18,.98) 58%)
+}
+.roadmap-row.hit{border-color:rgba(110,231,195,.10)}
+.roadmap-row.miss{border-color:rgba(255,115,133,.12)}
+.roadmap-top{
+  display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center
+}
+.roadmap-day{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
+  border:1px solid var(--stroke2);background:#0a1118;font-size:13px;font-weight:950
+}
+.roadmap-row.current .roadmap-day{
+  color:#071018;background:linear-gradient(135deg,var(--mint),var(--cyan));border-color:transparent
+}
+.roadmap-main{min-width:0}
+.roadmap-main b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.roadmap-main small{display:block;color:var(--muted);font-size:7px;margin-top:4px}
+.roadmap-pnl{text-align:right;font-size:10px;font-weight:950}
+.roadmap-pnl.positive{color:var(--mint)}
+.roadmap-pnl.negative{color:var(--red)}
+.roadmap-pnl.wait{color:#7f8c99}
+.roadmap-bottom{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px
+}
+.roadmap-info{
+  border-radius:12px;background:#0a1016;padding:8px 9px;border:1px solid rgba(255,255,255,.035)
+}
+.roadmap-info span{display:block;color:#697787;font-size:6px;font-weight:850;letter-spacing:.06em}
+.roadmap-info b{display:block;font-size:8px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status-mini{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;border:1px solid var(--stroke);
+  padding:5px 7px;font-size:6px;font-weight:900;color:#84919e
+}
+.status-mini.hit{color:var(--mint);border-color:rgba(110,231,195,.13)}
+.status-mini.miss{color:var(--red);border-color:rgba(255,115,133,.14)}
+.status-mini.current{color:var(--cyan);border-color:rgba(105,200,239,.15)}
+.status-mini.wait{color:#7f8c99}
+.pnl-positive{color:var(--mint)!important}
+.pnl-negative{color:var(--red)!important}
+.session-card-clean .form-grid{grid-template-columns:1fr}
+.session-card-clean .field input{font-size:22px}
+.plan-explainer{
+  margin:8px 2px 0;color:#657382;font-size:7px;line-height:1.5
+}
+@media(max-width:520px){
+  .roadmap-shell{padding:9px}
+  .roadmap-row{padding:10px}
+  .roadmap-bottom{gap:5px}
+}
+
 </style>
 </head>
 <body>
@@ -389,7 +467,7 @@ body{background:#04070a}
       </div>
       <div class="brandcopy">
         <b>ONEMONTH OS</b>
-        <small>XAUUSD TRADING OPERATING SYSTEM</small>
+        <small>XAUUSD EXECUTION & PLAN OS</small>
       </div>
     </div>
     <div class="topactions">
@@ -440,6 +518,18 @@ body{background:#04070a}
           <div class="card risk-card good"><span>TAKE PROFIT STOP</span><b id="tpStop">+$0.00</b></div>
           <div class="card risk-card bad"><span>MAX LOSS TODAY</span><b id="maxLoss">-$0.00</b></div>
         </div>
+        <div class="daily-guide">
+          <div class="daily-guide-card lot">
+            <span>LOT GUIDE TODAY</span>
+            <b id="homeLotGuide">—</b>
+            <small id="homeLotGuideSub">AI Setup จะคำนวณ Lot จริงจาก Entry → SL</small>
+          </div>
+          <div class="daily-guide-card time">
+            <span>BEST WINDOW TODAY</span>
+            <b id="homeBestWindow">—</b>
+            <small id="homeBestWindowSub">เวลาไทย · เน้นช่วง NY liquidity</small>
+          </div>
+        </div>
         <div class="notice" id="missionNotice">ระบบจะคำนวณเป้าและจุดหยุดของวันให้อัตโนมัติ</div>
       </article>
 
@@ -458,10 +548,9 @@ body{background:#04070a}
       </article>
 
       <div class="section-head"><h3>ปิด Session</h3><span>กรอก Balance จริงเมื่อจบวัน</span></div>
-      <article class="card mission">
+      <article class="card mission session-card-clean">
         <div class="form-grid">
           <div class="field"><label>BALANCE AFTER SESSION</label><input id="endBalanceInput" inputmode="decimal" placeholder="เช่น 11.20"></div>
-          <div class="field"><label>NOTE (OPTIONAL)</label><input id="endNoteInput" placeholder="เช่น TP1 / ข่าวแรง / ไม่เข้าไม้"></div>
         </div>
         <div class="sheet-actions"><button class="primary" id="endSessionBtn">SAVE SESSION</button></div>
       </article>
@@ -618,7 +707,8 @@ body{background:#04070a}
         <div class="mission-head"><div><div class="kicker">PLAN PROGRESS</div><h3 id="planProgressText">0 / 30</h3></div><div class="badge" id="planPace">ON PLAN</div></div>
         <div class="progress"><i id="planProgressBar"></i></div>
       </article>
-      <article class="card plan-list" id="planList"></article>
+      <div class="plan-explainer">LOT GUIDE เป็นงบ Lot เชิงแผนตาม Risk Budget ของวัน · Lot ตอนเข้าเงินจริงให้ใช้ค่าจาก AI Setup เพราะต้องรู้ระยะ SL ก่อน</div>
+      <article class="card roadmap-shell"><div class="roadmap-days" id="planList"></div></article>
     </section>
 
     <section class="view" id="statsView">
@@ -1027,6 +1117,58 @@ function renderLifecycle(){
   if(s.status==='SL'||s.status==='EXPIRED')steps[0]?.classList.add('current');
 }
 
+
+function planDateForDay(dayNumber){
+  const base=new Date(plan?.createdAt||Date.now());
+  base.setHours(12,0,0,0);
+  let count=0,d=new Date(base);
+  while(count<dayNumber){
+    const wd=d.getDay();
+    if(wd!==0&&wd!==6)count++;
+    if(count<dayNumber)d.setDate(d.getDate()+1);
+  }
+  return d;
+}
+function zoneOffsetHours(timeZone,date){
+  try{
+    const parts=new Intl.DateTimeFormat('en-US',{
+      timeZone,year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+    }).formatToParts(date);
+    const p={};parts.forEach(x=>p[x.type]=x.value);
+    const asUtc=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second);
+    return (asUtc-date.getTime())/3600000;
+  }catch(_){return -4}
+}
+function hourLabel(h){
+  h=(h+24)%24;
+  const hh=Math.floor(h),mm=Math.round((h-hh)*60);
+  return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+}
+function bestWindowForDay(dayNumber){
+  const d=planDateForDay(dayNumber);
+  const wd=d.getDay();
+  if(wd===0||wd===6)return{label:'ตลาดปิด',sub:'Weekend · ไม่เปิด Session'};
+  const ny=zoneOffsetHours('America/New_York',d);
+  // NY 08:20–11:00 converted to Bangkok (UTC+7)
+  const start=8+20/60+(7-ny),end=(wd===5?10.5:11)+(7-ny);
+  return{
+    label:hourLabel(start)+'–'+hourLabel(end),
+    sub:(wd===5?'Friday · ลดเวลาถือ':'NY Open · Liquidity สูง')+' · เวลาไทย'
+  };
+}
+function planningLotForDay(d){
+  const min=Math.max(.01,num(settings.minLot)||.01);
+  const contract=Math.max(1,num(settings.contractSize)||100);
+  // Planning only: assume a $5 reference XAU stop. Exact execution lot comes from actual AI SL.
+  const refSl=5;
+  const riskBudget=Math.max(0,Math.min(num(d.maxLoss)*.50,num(d.start)*.005));
+  const raw=riskBudget/(refSl*contract);
+  if(raw<min)return{label:'< '+min.toFixed(2),sub:'Risk budget ต่ำกว่า minimum lot'};
+  const floored=Math.floor((raw+1e-12)/min)*min;
+  return{label:Math.max(min,floored).toFixed(2)+' lot',sub:'Plan guide · SL reference $5'};
+}
+
 function renderHome(){
   if(!validPlan(plan))return;
   const bal=currentBalance(),done=completed(),idx=todayIndex(),d=plan.days[idx],monthProgress=clamp((bal-plan.start)/(plan.target-plan.start),0,1),m=marketStatus();
@@ -1037,18 +1179,61 @@ function renderHome(){
   $('#monthPct').textContent=Math.round(monthProgress*100)+'%';$('#monthRing').style.setProperty('--p',(monthProgress*100).toFixed(1)+'%');
   $('#missionNotice').textContent=`วันนี้: ถึง ${money(d.expected)} = Target Complete · ต่ำกว่า ${money(Math.max(0,d.start-d.maxLoss))} = Max Loss Zone`;
   $('#planHealth').textContent='PLAN HEALTH '+Math.max(0,Math.round(100-maxDrawdown()*300));
+  const lotGuide=planningLotForDay(d),windowGuide=bestWindowForDay(d.day);
+  $('#homeLotGuide').textContent=lotGuide.label;
+  $('#homeLotGuideSub').textContent=lotGuide.sub+' · Lot จริงใช้ AI Setup';
+  $('#homeBestWindow').textContent=windowGuide.label;
+  $('#homeBestWindowSub').textContent=windowGuide.sub;
   $('#homeAiDesk').textContent=aiOn?(analysis?(analysis.side==='WAIT'?'WAIT':analysis.side+' '+analysis.tf):'READY TO SCAN'):'OFF';
   const chip=$('#homeSystemChip');chip.textContent=!m.open?'MARKET CLOSED':newsContext().lock?'NEWS LOCK':analysis?.side!=='WAIT'&&analysis?'SETUP READY':'SYSTEM READY';chip.className='status-chip '+(!m.open?'warn':newsContext().lock?'bad':analysis?.side!=='WAIT'&&analysis?'good':'');
 }
 function renderPlan(){
-  if(!validPlan(plan))return;const done=completed(),idx=todayIndex();$('#planProgressText').textContent=done+' / 30';$('#planProgressBar').style.width=(done/30*100)+'%';
-  const bal=currentBalance(),expected=done?plan.days[done-1].expected:plan.start;$('#planPace').textContent=bal>=expected?'ON PLAN':'BEHIND';
-  $('#planList').innerHTML=plan.days.map((d,i)=>`<div class="plan-row ${i===idx&&done<30?'current':''}"><div class="plan-row-head"><div class="daybox">${String(d.day).padStart(2,'0')}</div><div><b>${money(d.start)} → ${money(d.expected)}</b><br><small>${d.actual==null?'ยังไม่จบ Session':'Actual '+money(d.actual)+' · '+d.status.toUpperCase()}</small></div><div class="plan-profit">+${money(d.profit)}</div></div></div>`).join('');
+  if(!validPlan(plan))return;
+  const done=completed(),idx=todayIndex();
+  $('#planProgressText').textContent=done+' / 30';
+  $('#planProgressBar').style.width=(done/30*100)+'%';
+  const bal=currentBalance(),expected=done?plan.days[done-1].expected:plan.start;
+  $('#planPace').textContent=bal>=expected?'ON PLAN':'BEHIND';
+
+  $('#planList').innerHTML=plan.days.map((d,i)=>{
+    const windowGuide=bestWindowForDay(d.day),lotGuide=planningLotForDay(d);
+    const delta=d.actual==null?null:d.actual-d.start;
+    const pnlClass=delta==null?'wait':delta>=0?'positive':'negative';
+    const pnlText=delta==null?('+'+money(d.profit)):(delta>=0?'+':'')+money(delta);
+    const status=d.actual==null?(i===idx&&done<30?'current':'wait'):d.status;
+    const statusText=status==='hit'?'HIT':status==='miss'?'MISS':status==='current'?'TODAY':'WAIT';
+    return `<div class="roadmap-row ${status}">
+      <div class="roadmap-top">
+        <div class="roadmap-day">${String(d.day).padStart(2,'0')}</div>
+        <div class="roadmap-main">
+          <b>${money(d.start)} → ${money(d.expected)}</b>
+          <small>${d.actual==null?'Target +'+money(d.profit):'Actual '+money(d.actual)}</small>
+        </div>
+        <div>
+          <div class="roadmap-pnl ${pnlClass}">${pnlText}</div>
+          <div style="margin-top:5px;text-align:right"><span class="status-mini ${status}">${statusText}</span></div>
+        </div>
+      </div>
+      <div class="roadmap-bottom">
+        <div class="roadmap-info"><span>LOT GUIDE</span><b>${lotGuide.label}</b></div>
+        <div class="roadmap-info"><span>BEST WINDOW · TH</span><b>${windowGuide.label}</b></div>
+      </div>
+    </div>`;
+  }).join('');
 }
 function renderStats(){
   if(!validPlan(plan))return;const rows=plan.days.filter(d=>d.actual!=null),hits=rows.filter(d=>d.status==='hit').length;$('#statCompleted').textContent=rows.length;$('#statHitRate').textContent=rows.length?Math.round(hits/rows.length*100)+'%':'—';
   const best=rows.length?rows.reduce((a,b)=>(b.actual-b.start)>(a.actual-a.start)?b:a):null;$('#statBestDay').textContent=best?'D'+best.day+' '+money(best.actual-best.start):'—';$('#statDd').textContent=(maxDrawdown()*100).toFixed(2)+'%';
-  $('#recentList').innerHTML=rows.length?rows.slice(-10).reverse().map(d=>`<div class="plan-row"><div class="plan-row-head"><div class="daybox">${String(d.day).padStart(2,'0')}</div><div><b>${d.status.toUpperCase()} · ${money(d.actual)}</b><br><small>${d.note||'No note'}</small></div><div class="plan-profit">${d.actual-d.start>=0?'+':''}${money(d.actual-d.start)}</div></div></div>`).join(''):'<div class="plan-row"><small>ยังไม่มี Session ที่บันทึก</small></div>';
+  $('#recentList').innerHTML=rows.length?rows.slice(-10).reverse().map(d=>{
+    const delta=d.actual-d.start,neg=delta<0;
+    return `<div class="plan-row">
+      <div class="plan-row-head">
+        <div class="daybox">${String(d.day).padStart(2,'0')}</div>
+        <div><b class="${d.status==='miss'?'danger-text':'good-text'}">${d.status.toUpperCase()} · ${money(d.actual)}</b><br><small>${d.status==='hit'?'Target achieved':'Below day target'}</small></div>
+        <div class="plan-profit ${neg?'pnl-negative':'pnl-positive'}">${delta>=0?'+':''}${money(delta)}</div>
+      </div>
+    </div>`;
+  }).join(''):'<div class="plan-row"><small>ยังไม่มี Session ที่บันทึก</small></div>';
   $('#scanMemoryList').innerHTML=scanMemory.length?scanMemory.slice(-12).reverse().map(s=>`<div class="memory-row"><div class="memory-row-head"><div><b>${s.side} · ${s.tf} · ${s.setup}</b><small>${dtBangkok(s.at,true)} · ${s.regime} · Score ${s.score}</small></div><span class="scan-pill">${s.market}</span></div></div>`).join(''):'<div class="memory-row"><small>ยังไม่มี Scan Memory</small></div>';
   if(backtestResult){$('#btSamples').textContent=backtestResult.samples;$('#btWinRate').textContent=backtestResult.winRate.toFixed(1)+'%';$('#btPf').textContent=Number.isFinite(backtestResult.pf)?backtestResult.pf.toFixed(2):'∞';$('#btDd').textContent=backtestResult.maxDd.toFixed(2)+'%'}
   requestAnimationFrame(drawEquity);
@@ -1165,7 +1350,7 @@ $('#analyzeBtn').addEventListener('click',analyze);
 $('#editPlanBtn').addEventListener('click',()=>{if(!validPlan(plan))return;$('#planModalTitle').textContent='แก้ไขแผน';$('#planStartInput').value=plan.start;$('#planTargetInput').value=plan.target;$('#savePlanBtn').textContent='SAVE CHANGES';$('#cancelPlanBtn').classList.remove('hidden');openModal('#planModal')});
 $('#cancelPlanBtn').addEventListener('click',()=>closeModal('#planModal'));
 $('#savePlanBtn').addEventListener('click',()=>{const start=num($('#planStartInput').value),target=num($('#planTargetInput').value);if(start<=0||target<=start){toast('Target ต้องมากกว่าทุนเริ่มต้น');return}const actuals=validPlan(plan)?plan.days.map(d=>({actual:d.actual,note:d.note})):new Array(30).fill(null);plan=buildPlan(start,target,actuals);saveJson(PLAN_KEY,plan);closeModal('#planModal');renderAll();toast('บันทึกแผนแล้ว')});
-$('#endSessionBtn').addEventListener('click',()=>{if(!validPlan(plan))return;const bal=num($('#endBalanceInput').value);if(bal<=0){toast('กรอก Balance หลังจบ Session');return}const idx=todayIndex();plan.days[idx].actual=bal;plan.days[idx].note=$('#endNoteInput').value.trim();const actuals=plan.days.map(d=>({actual:d.actual,note:d.note}));plan=buildPlan(plan.start,plan.target,actuals);saveJson(PLAN_KEY,plan);$('#endBalanceInput').value='';$('#endNoteInput').value='';renderAll();toast('บันทึก Session แล้ว')});
+$('#endSessionBtn').addEventListener('click',()=>{if(!validPlan(plan))return;const bal=num($('#endBalanceInput').value);if(bal<=0){toast('กรอก Balance หลังจบ Session');return}const idx=todayIndex();plan.days[idx].actual=bal;plan.days[idx].note='';const actuals=plan.days.map(d=>({actual:d.actual,note:d.note}));plan=buildPlan(plan.start,plan.target,actuals);saveJson(PLAN_KEY,plan);$('#endBalanceInput').value='';renderAll();toast('บันทึก Session แล้ว')});
 $('#jumpTodayBtn').addEventListener('click',()=>{($('#planList .current')||$('#planList .plan-row'))?.scrollIntoView({behavior:'smooth',block:'center'})});
 
 $('#settingsBtn').addEventListener('click',()=>{$('#minLotInput').value=settings.minLot;$('#contractInput').value=settings.contractSize;$('#newsBeforeInput').value=settings.newsBefore??20;$('#newsAfterInput').value=settings.newsAfter??15;openModal('#settingsModal')});
