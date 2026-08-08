@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V31.2 Learning Status UI</title>
+<title>OneMonth OS V31.3 Version Tracker</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -4192,6 +4192,16 @@ body{font-variant-numeric:tabular-nums!important}
   .learning-sub{max-width:none}
 }
 
+
+/* === V31.3 App Version Tracker === */
+.brand-version-row{display:flex;align-items:center;gap:7px;margin-top:4px;min-width:0}
+.brand-version-row small{margin:0!important;min-width:0}
+.app-version-badge{display:inline-flex;align-items:center;justify-content:center;min-height:20px;padding:3px 7px;border-radius:999px;border:1px solid rgba(105,200,239,.17);background:rgba(105,200,239,.045);color:#91ddf7;font-size:5.6px;font-weight:950;letter-spacing:.08em;white-space:nowrap;line-height:1}
+.app-version-badge:before{content:"";width:5px;height:5px;border-radius:50%;margin-right:5px;background:var(--cyan);box-shadow:0 0 10px rgba(105,200,239,.65)}
+.learning-build-line{margin-top:8px;color:#62717f;font-size:5.8px;font-weight:850;letter-spacing:.07em}
+.learning-build-line b{color:#8ddcf5;font-weight:950}
+@media(max-width:390px){.app-version-badge{font-size:5px;padding:3px 6px}.brand-version-row{gap:5px}}
+
 </style>
 </head>
 <body>
@@ -4248,7 +4258,10 @@ body{font-variant-numeric:tabular-nums!important}
       </div>
       <div class="brandcopy">
         <b>ONEMONTH OS</b>
-        <small>XAUUSD · SESSION INTELLIGENCE</small>
+        <div class="brand-version-row">
+          <small>XAUUSD · SESSION INTELLIGENCE</small>
+          <span class="app-version-badge" id="headerAppVersion">—</span>
+        </div>
       </div>
     </div>
     <div class="topactions">
@@ -4483,6 +4496,7 @@ body{font-variant-numeric:tabular-nums!important}
             <div><span>LAST MEMORY UPDATE</span><b id="learningUpdated">—</b></div>
           </div>
           <div class="learning-note" id="learningNote"><strong>พร้อมเรียนรู้</strong> · เปิด Auto Learn ทิ้งไว้ได้ ระบบจะเรียนรู้จากข้อมูลที่โหลดแล้วในเครื่อง โดยไม่เรียก Twelve Data เพิ่ม</div>
+          <div class="learning-build-line">APP BUILD · <b id="learningBuildVersion">—</b></div>
         </article>
 
 
@@ -5038,7 +5052,7 @@ const NEWS_CACHE_KEY='onemonth_os_news_cache_v21';
 const FRESH_OPEN_MS=60*60*1000;     // 60 min when market is open
 const FRESH_CLOSED_MS=72*60*60*1000;
 
-const APP_VERSION='V31.2 LEARNING STATUS UI';
+const APP_VERSION='V31.3 VERSION TRACKER';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -7212,8 +7226,13 @@ async function boot(){
   }
 }
 function renderVersionManager(){
-  if(!$('#appVersionText'))return;
-  $('#appVersionText').textContent=APP_VERSION;
+  const appVersionEl=$('#appVersionText');
+  const headerVersionEl=$('#headerAppVersion');
+  const learningVersionEl=$('#learningBuildVersion');
+  if(appVersionEl)appVersionEl.textContent=APP_VERSION;
+  if(headerVersionEl)headerVersionEl.textContent=APP_VERSION;
+  if(learningVersionEl)learningVersionEl.textContent=APP_VERSION;
+  if(!$('#dataVersionText'))return;
   $('#dataVersionText').textContent=packMeta.generatedAt?dtBangkok(packMeta.generatedAt,true):'—';
   $('#lastSyncText').textContent=packMeta.generatedAt?fmtAge(Date.now()-packMeta.generatedAt)+' ago':'—';
   $('#cacheModeText').textContent=navigator.onLine?(packMeta.source==='Offline Cache'?'CACHE FALLBACK':'ONLINE'):'OFFLINE CACHE';
