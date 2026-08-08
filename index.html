@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="One Month">
-<title>ONE MONTH — Trading OS</title>
+<title>ONE MONTH — AI Trading OS</title>
 <style>
 :root{
   --bg:#07090d;
@@ -238,6 +238,74 @@ summary::-webkit-details-marker{display:none}
   .mini{padding:10px 7px}
   .chartWrap{height:185px}
 }
+
+/* ===== LIVE AI MARKET ENGINE ===== */
+.aiCard{margin-top:9px;padding:15px;overflow:hidden;position:relative}
+.aiCard:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(125deg,rgba(117,216,255,.035),transparent 38%,rgba(112,242,180,.025))}
+.aiTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:relative}
+.aiTitle{display:flex;align-items:center;gap:9px}
+.aiPulse{width:9px;height:9px;border-radius:50%;background:#647181;box-shadow:0 0 0 5px rgba(100,113,129,.08)}
+.aiPulse.live{background:var(--green);box-shadow:0 0 0 5px rgba(112,242,180,.07),0 0 18px rgba(112,242,180,.32)}
+.aiTop h3{font-size:14px;margin:0}
+.aiTop p{font-size:8px;color:var(--muted);margin:4px 0 0}
+.aiRefresh{height:34px;border-radius:11px;border:1px solid var(--line);background:#0a1017;color:#c4ced9;padding:0 10px;font-size:9px;font-weight:900}
+.aiRefresh.loading{opacity:.55;pointer-events:none}
+.livePriceRow{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-top:15px;position:relative}
+.livePrice{font-size:30px;font-weight:950;letter-spacing:-.055em}
+.livePrice small{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.03em;margin-left:4px}
+.feedStatus{text-align:right}
+.feedStatus b{display:block;font-size:10px}
+.feedStatus span{display:block;font-size:8px;color:var(--muted);margin-top:3px}
+.tfGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:13px;position:relative}
+.tfCell{border:1px solid var(--line);background:#090f15;border-radius:13px;padding:9px 7px;text-align:center}
+.tfCell.best{border-color:rgba(112,242,180,.19);background:rgba(112,242,180,.045)}
+.tfCell b{display:block;font-size:10px}
+.tfCell span{display:block;font-size:15px;font-weight:950;margin-top:4px}
+.tfCell small{display:block;color:var(--muted);font-size:7px;margin-top:3px}
+.bestTfLine{margin-top:9px;border-radius:14px;border:1px solid rgba(117,216,255,.11);background:rgba(117,216,255,.035);padding:10px 11px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}
+.bestTfLine span{font-size:9px;color:#a5b3c3}
+.bestTfLine b{font-size:11px;color:var(--cyan)}
+.signalPanel{margin-top:9px;border-radius:19px;border:1px solid var(--line);background:#090f15;padding:13px;position:relative}
+.signalHead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.signalSide{font-size:21px;font-weight:950;letter-spacing:-.035em}
+.signalSide.buy{color:var(--green)}
+.signalSide.sell{color:var(--red)}
+.signalSide.wait{color:var(--amber)}
+.confBadge{border-radius:999px;padding:7px 9px;border:1px solid var(--line);font-size:8px;font-weight:900;color:#b9c4d0;background:rgba(255,255,255,.025)}
+.signalReason{font-size:9px;line-height:1.45;color:var(--muted);margin-top:5px}
+.levelGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:11px}
+.level{border-radius:14px;border:1px solid var(--line);padding:10px;background:rgba(255,255,255,.018)}
+.level span{display:block;font-size:7px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:850}
+.level b{display:block;font-size:13px;margin-top:5px}
+.level.entry b{color:var(--cyan)}
+.level.sl b{color:var(--red)}
+.level.tp b{color:var(--green)}
+.aiLotStrip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:8px}
+.aiLotStrip .level{text-align:center}
+.chartSection{margin-top:9px;overflow:hidden}
+.tvHead{display:flex;align-items:center;justify-content:space-between;padding:12px 13px 9px}
+.tvHead b{font-size:11px}
+.tvHead span{font-size:8px;color:var(--muted)}
+.tvChart{height:390px;width:100%;background:#090e14;border-top:1px solid var(--line);overflow:hidden}
+.tfSwitch{display:flex;gap:5px;padding:9px 10px;border-top:1px solid var(--line);overflow:auto;scrollbar-width:none}
+.tfSwitch::-webkit-scrollbar{display:none}
+.tfSwitch button{min-width:45px;border:1px solid var(--line);background:#090e14;color:#7e8998;height:30px;border-radius:10px;font-size:8px;font-weight:900}
+.tfSwitch button.active{color:#f5f7fb;background:rgba(117,216,255,.07);border-color:rgba(117,216,255,.17)}
+.apiHint{margin-top:9px;border-radius:15px;border:1px dashed rgba(117,216,255,.18);background:rgba(117,216,255,.025);padding:10px 11px;font-size:9px;color:#94a8b9;line-height:1.5}
+.apiHint b{color:#c6e8f5}
+.apiKeyWrap{margin:10px 0 13px}
+.apiKeyRow{display:flex;gap:7px}
+.apiKeyRow input{flex:1;min-width:0;height:45px;border-radius:13px;border:1px solid var(--line);background:#090e14;color:#fff;padding:0 11px;outline:none;font-size:11px}
+.apiKeyRow button{height:45px;border:0;border-radius:13px;background:#eef5f7;color:#071013;font-size:9px;font-weight:950;padding:0 13px}
+.apiStatus{font-size:8px;color:var(--muted);line-height:1.45;margin-top:7px}
+.scanError{display:none;margin-top:9px;padding:10px 11px;border-radius:14px;background:rgba(255,115,129,.055);border:1px solid rgba(255,115,129,.13);color:#ffc0c7;font-size:9px;line-height:1.45}
+.scanError.show{display:block}
+@media(max-width:380px){
+  .tvChart{height:350px}
+  .livePrice{font-size:27px}
+  .tfCell span{font-size:13px}
+}
+
 </style>
 </head>
 <body>
@@ -246,7 +314,7 @@ summary::-webkit-details-marker{display:none}
   <header class="topbar">
     <div class="brand">
       <div class="logo"><i></i></div>
-      <div><b>ONE MONTH</b><small>TRADING OS</small></div>
+      <div><b>ONE MONTH</b><small>AI TRADING OS</small></div>
     </div>
     <button class="iconbtn" id="settingsBtn" aria-label="settings">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -353,6 +421,91 @@ summary::-webkit-details-marker{display:none}
         <div class="lotNote" id="lotNote">คำนวณจาก Max Loss วันนี้และระยะ SL</div>
       </div>
       <div class="riskBadge" id="riskBadge">AUTO RISK</div>
+    </section>
+
+    <div class="sectionHead">
+      <h3>AI Market Scan</h3>
+      <span id="aiUpdated">ยังไม่ได้สแกน</span>
+    </div>
+
+    <section class="aiCard card">
+      <div class="aiTop">
+        <div class="aiTitle">
+          <i class="aiPulse" id="aiPulse"></i>
+          <div>
+            <h3>XAU/USD Live Intelligence</h3>
+            <p>Multi-timeframe · EMA · RSI · ATR · Structure</p>
+          </div>
+        </div>
+        <button class="aiRefresh" id="analyzeBtn">ANALYZE</button>
+      </div>
+
+      <div class="livePriceRow">
+        <div>
+          <div class="smallLabel">Live Gold</div>
+          <div class="livePrice" id="liveGold">— <small>XAUUSD</small></div>
+        </div>
+        <div class="feedStatus">
+          <b id="marketState">WAITING DATA</b>
+          <span id="dataSource">Twelve Data API</span>
+        </div>
+      </div>
+
+      <div class="tfGrid">
+        <div class="tfCell" data-score-tf="M1"><b>M1</b><span id="scoreM1">—</span><small id="biasM1">WAIT</small></div>
+        <div class="tfCell" data-score-tf="M5"><b>M5</b><span id="scoreM5">—</span><small id="biasM5">WAIT</small></div>
+        <div class="tfCell" data-score-tf="M15"><b>M15</b><span id="scoreM15">—</span><small id="biasM15">WAIT</small></div>
+        <div class="tfCell" data-score-tf="H1"><b>H1</b><span id="scoreH1">—</span><small id="biasH1">WAIT</small></div>
+      </div>
+
+      <div class="bestTfLine">
+        <span>Time frame ที่ระบบมองว่าน่าเล่นสุดตอนนี้</span>
+        <b id="bestTf">—</b>
+      </div>
+
+      <div class="signalPanel">
+        <div class="signalHead">
+          <div>
+            <div class="smallLabel">AI SETUP</div>
+            <div class="signalSide wait" id="signalSide">WAIT</div>
+          </div>
+          <div class="confBadge" id="confidence">CONFIDENCE —</div>
+        </div>
+        <div class="signalReason" id="signalReason">เชื่อม API Key แล้วกด ANALYZE เพื่อให้ระบบอ่านกราฟจริง</div>
+
+        <div class="levelGrid">
+          <div class="level entry"><span>Entry Zone</span><b id="entryZone">—</b></div>
+          <div class="level sl"><span>Stop Loss</span><b id="signalSL">—</b></div>
+          <div class="level tp"><span>Take Profit 1</span><b id="signalTP1">—</b></div>
+          <div class="level tp"><span>Take Profit 2</span><b id="signalTP2">—</b></div>
+        </div>
+
+        <div class="aiLotStrip">
+          <div class="level"><span>R : R</span><b id="signalRR">—</b></div>
+          <div class="level"><span>LOT วันนี้</span><b id="signalLot">—</b></div>
+          <div class="level"><span>Max Lot</span><b id="signalMaxLot">—</b></div>
+        </div>
+      </div>
+
+      <div class="apiHint" id="apiHint">
+        <b>Realtime AI ต้องใช้ market-data feed:</b> ใส่ Twelve Data API Key ใน Settings ครั้งเดียว แล้วระบบจะดึง XAU/USD OHLC จริงมาวิเคราะห์ M1 / M5 / M15 / H1
+      </div>
+      <div class="scanError" id="scanError"></div>
+    </section>
+
+    <section class="chartSection card">
+      <div class="tvHead">
+        <b>XAUUSD LIVE CHART</b>
+        <span id="chartTfLabel">TradingView · M15</span>
+      </div>
+      <div class="tvChart" id="tvChart"></div>
+      <div class="tfSwitch" id="tfSwitch">
+        <button data-tv="1" data-label="M1">M1</button>
+        <button data-tv="5" data-label="M5">M5</button>
+        <button class="active" data-tv="15" data-label="M15">M15</button>
+        <button data-tv="60" data-label="H1">H1</button>
+        <button data-tv="240" data-label="H4">H4</button>
+      </div>
     </section>
 
     <div class="sectionHead">
@@ -483,7 +636,15 @@ summary::-webkit-details-marker{display:none}
     <p>ค่าหลักถูกคำนวณอัตโนมัติ คุณสามารถเริ่มแผนใหม่ได้จากตรงนี้</p>
     <div class="sheetGrid">
       <div class="sheetBox"><span>Sessions</span><b>30 Days</b></div>
-      <div class="sheetBox"><span>Plan Mode</span><b>Adaptive</b></div>
+      <div class="sheetBox"><span>Plan Mode</span><b>Adaptive + AI</b></div>
+    </div>
+    <div class="apiKeyWrap">
+      <div class="fieldLabel">Twelve Data API Key</div>
+      <div class="apiKeyRow">
+        <input id="marketApiKey" type="password" autocomplete="off" placeholder="วาง API Key ที่นี่">
+        <button id="saveApiKeyBtn">SAVE</button>
+      </div>
+      <div class="apiStatus" id="apiStatus">Key จะถูกเก็บใน localStorage ของเครื่องนี้เท่านั้น และไม่ถูกฝังลงในไฟล์ GitHub</div>
     </div>
     <button class="sheetBtn" id="closeSettingsBtn">เสร็จสิ้น</button>
     <button class="dangerBtn" id="sheetResetBtn">ลบข้อมูลและเริ่มแผนใหม่</button>
@@ -984,6 +1145,350 @@ $$('.nav button').forEach(b=>b.onclick=()=>{
   if(go==='plan')$('.calendarCard')?.scrollIntoView({behavior:'smooth',block:'start'});
   if(go==='analytics')$('.chartCard')?.scrollIntoView({behavior:'smooth',block:'start'});
 });
+
+
+/* ===== LIVE AI MARKET ENGINE ===== */
+const MARKET_INTERVALS = {
+  M1:{api:'1min', tv:'1', pref:-4},
+  M5:{api:'5min', tv:'5', pref:3},
+  M15:{api:'15min', tv:'15', pref:6},
+  H1:{api:'1h', tv:'60', pref:2}
+};
+let marketScan = {results:{},best:null,last:null,busy:false};
+
+function getApiKey(){
+  return localStorage.getItem('one_month_twelve_data_key') || '';
+}
+function setApiKey(v){
+  if(v) localStorage.setItem('one_month_twelve_data_key',v.trim());
+  else localStorage.removeItem('one_month_twelve_data_key');
+}
+function ema(values,period){
+  if(!values.length)return [];
+  const k=2/(period+1), out=[];
+  let prev=values[0];
+  for(let i=0;i<values.length;i++){
+    prev=i===0?values[i]:(values[i]*k+prev*(1-k));
+    out.push(prev);
+  }
+  return out;
+}
+function rsi(values,period=14){
+  if(values.length<period+2)return 50;
+  let gains=0,losses=0;
+  for(let i=1;i<=period;i++){
+    const d=values[i]-values[i-1];
+    if(d>=0)gains+=d; else losses-=d;
+  }
+  let ag=gains/period, al=losses/period;
+  for(let i=period+1;i<values.length;i++){
+    const d=values[i]-values[i-1];
+    const g=Math.max(d,0),l=Math.max(-d,0);
+    ag=(ag*(period-1)+g)/period;
+    al=(al*(period-1)+l)/period;
+  }
+  if(al===0)return 100;
+  const rs=ag/al;
+  return 100-(100/(1+rs));
+}
+function atr(candles,period=14){
+  if(candles.length<2)return 0;
+  const trs=[];
+  for(let i=1;i<candles.length;i++){
+    const h=candles[i].high,l=candles[i].low,pc=candles[i-1].close;
+    trs.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));
+  }
+  if(!trs.length)return 0;
+  const slice=trs.slice(-period);
+  return slice.reduce((a,b)=>a+b,0)/slice.length;
+}
+function median(arr){
+  if(!arr.length)return 0;
+  const s=[...arr].sort((a,b)=>a-b),m=Math.floor(s.length/2);
+  return s.length%2?s[m]:(s[m-1]+s[m])/2;
+}
+function atrSeries(candles,period=14){
+  const out=[];
+  for(let i=Math.max(2,period);i<=candles.length;i++) out.push(atr(candles.slice(0,i),period));
+  return out.filter(v=>Number.isFinite(v)&&v>0);
+}
+function tfAnalysis(candles,tf){
+  const closes=candles.map(c=>c.close);
+  if(closes.length<60) throw new Error(tf+' data ไม่พอสำหรับวิเคราะห์');
+  const e9=ema(closes,9),e21=ema(closes,21),e50=ema(closes,50);
+  const i=closes.length-1;
+  const close=closes[i], E9=e9[i],E21=e21[i],E50=e50[i];
+  const R=rsi(closes,14);
+  const A=atr(candles,14);
+  const aSeries=atrSeries(candles.slice(-70),14);
+  const medA=median(aSeries.slice(-35))||A;
+  const volRatio=medA?A/medA:1;
+  const slope=(e21[i]-e21[Math.max(0,i-5)])/(A||1);
+  const recent=candles.slice(-18);
+  const swingLow=Math.min(...recent.map(c=>c.low));
+  const swingHigh=Math.max(...recent.map(c=>c.high));
+  const dist9=Math.abs(close-E9)/(A||1);
+
+  let bull=0,bear=0;
+  if(close>E9)bull+=10; else bear+=10;
+  if(E9>E21)bull+=12; else bear+=12;
+  if(E21>E50)bull+=18; else bear+=18;
+  bull+=clamp(slope*11,0,18);
+  bear+=clamp(-slope*11,0,18);
+  if(R>=52&&R<=70)bull+=14;
+  else if(R>70)bull+=5;
+  else if(R<=48&&R>=30)bear+=14;
+  else if(R<30)bear+=5;
+  if(dist9<=.45){bull+=8;bear+=8}
+  if(volRatio>=.65&&volRatio<=1.9){bull+=7;bear+=7}
+  if(close>Math.max(...candles.slice(-8,-1).map(c=>c.high)))bull+=7;
+  if(close<Math.min(...candles.slice(-8,-1).map(c=>c.low)))bear+=7;
+
+  bull+=MARKET_INTERVALS[tf].pref;
+  bear+=MARKET_INTERVALS[tf].pref;
+  const raw=Math.max(bull,bear);
+  const direction=bull>bear?'BUY':'SELL';
+  const delta=Math.abs(bull-bear);
+  const score=Math.round(clamp(raw,0,100));
+  let side=(score>=62&&delta>=8)?direction:'WAIT';
+
+  // Avoid chasing if price is far from the fast EMA.
+  if(dist9>1.05 && side!=='WAIT') side='WAIT';
+
+  let entryCenter=close, entryLow=close,entryHigh=close,SL=null,TP1=null,TP2=null,rr=0;
+  if(side!=='WAIT'){
+    if(side==='BUY'){
+      entryCenter=Math.min(close,Math.max(E21,E9));
+      entryLow=entryCenter-A*.10;
+      entryHigh=entryCenter+A*.10;
+      const structureSL=swingLow-A*.18;
+      SL=Math.min(structureSL,entryCenter-A*.85);
+      let risk=entryCenter-SL;
+      if(risk>A*2.2){SL=entryCenter-A*2.2;risk=entryCenter-SL}
+      TP1=entryCenter+risk*1.5;
+      TP2=entryCenter+risk*2.2;
+      rr=(TP1-entryCenter)/(entryCenter-SL);
+    }else{
+      entryCenter=Math.max(close,Math.min(E21,E9));
+      entryLow=entryCenter-A*.10;
+      entryHigh=entryCenter+A*.10;
+      const structureSL=swingHigh+A*.18;
+      SL=Math.max(structureSL,entryCenter+A*.85);
+      let risk=SL-entryCenter;
+      if(risk>A*2.2){SL=entryCenter+A*2.2;risk=SL-entryCenter}
+      TP1=entryCenter-risk*1.5;
+      TP2=entryCenter-risk*2.2;
+      rr=(entryCenter-TP1)/(SL-entryCenter);
+    }
+  }
+
+  const reasons=[];
+  if(E9>E21&&E21>E50) reasons.push('EMA เรียงตัวขึ้น');
+  if(E9<E21&&E21<E50) reasons.push('EMA เรียงตัวลง');
+  if(Math.abs(slope)>.2) reasons.push('trend slope ชัด');
+  if(R>=52&&R<=70) reasons.push('RSI หนุนฝั่งซื้อ');
+  if(R<=48&&R>=30) reasons.push('RSI หนุนฝั่งขาย');
+  if(dist9>.85) reasons.push('ราคาห่าง EMA มาก');
+  if(volRatio>1.7) reasons.push('volatility สูง');
+  if(volRatio<.65) reasons.push('volatility ต่ำ');
+
+  return {tf,score,side,direction,bull,bear,delta,close,ema9:E9,ema21:E21,ema50:E50,rsi:R,atr:A,volRatio,slope,swingLow,swingHigh,entryCenter,entryLow,entryHigh,sl:SL,tp1:TP1,tp2:TP2,rr,reasons};
+}
+
+async function fetchCandles(tf){
+  const key=getApiKey();
+  if(!key) throw new Error('ยังไม่ได้ใส่ Twelve Data API Key');
+  const interval=MARKET_INTERVALS[tf].api;
+  const url='https://api.twelvedata.com/time_series?symbol='+encodeURIComponent('XAU/USD')+
+    '&interval='+encodeURIComponent(interval)+'&outputsize=180&apikey='+encodeURIComponent(key);
+  const res=await fetch(url,{cache:'no-store'});
+  const json=await res.json();
+  if(!res.ok || json.status==='error' || !Array.isArray(json.values)){
+    throw new Error(json.message || ('โหลด '+tf+' ไม่สำเร็จ'));
+  }
+  return json.values.slice().reverse().map(v=>({
+    datetime:v.datetime,
+    open:Number(v.open),high:Number(v.high),low:Number(v.low),close:Number(v.close)
+  })).filter(c=>[c.open,c.high,c.low,c.close].every(Number.isFinite));
+}
+
+function fmtPrice(v){
+  if(v==null||!Number.isFinite(v))return '—';
+  return Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function lotFromSignal(sig){
+  if(!sig || sig.side==='WAIT' || sig.sl==null) return {suggested:'—',max:'—',riskMoney:0};
+  const day=state.days[todayIndex()] || {maxLoss:0};
+  const balance=currentBalance();
+  // Keep one trade inside half of the daily loss stop, capped around 0.5% balance.
+  const riskMoney=Math.min(Number(day.maxLoss||0)/2,balance*.005);
+  const dist=Math.abs(sig.entryCenter-sig.sl);
+  const contract=Number(state.settings.contractSize||100);
+  const min=Number(state.settings.minLot||.01);
+  if(dist<=0||contract<=0||riskMoney<=0)return {suggested:'—',max:'—',riskMoney};
+  const rawMax=riskMoney/(dist*contract);
+  const factor=clamp(Number(state.settings.lotFactor||.7),.1,1);
+  const floorLot=v=>Math.floor((v+1e-10)/min)*min;
+  if(rawMax<min)return {suggested:'< '+min.toFixed(2),max:'< '+min.toFixed(2),riskMoney};
+  const maxLot=Math.max(min,floorLot(rawMax));
+  const sug=Math.max(min,floorLot(rawMax*factor));
+  return {suggested:sug.toFixed(2),max:maxLot.toFixed(2),riskMoney};
+}
+
+function renderMarketScan(){
+  const results=marketScan.results||{};
+  Object.keys(MARKET_INTERVALS).forEach(tf=>{
+    const r=results[tf];
+    $('#score'+tf).textContent=r?r.score:'—';
+    $('#bias'+tf).textContent=r?(r.side==='WAIT'?r.direction+'?':r.side):'WAIT';
+    const el=document.querySelector('[data-score-tf="'+tf+'"]');
+    if(el)el.classList.toggle('best',!!marketScan.best&&marketScan.best.tf===tf);
+  });
+  const best=marketScan.best;
+  if(!best){
+    $('#bestTf').textContent='—';
+    $('#signalSide').textContent='WAIT';
+    $('#signalSide').className='signalSide wait';
+    return;
+  }
+  $('#liveGold').innerHTML=fmtPrice(best.close)+' <small>XAUUSD</small>';
+  $('#bestTf').textContent=best.tf+' · SCORE '+best.score;
+  $('#marketState').textContent=best.side==='WAIT'?'NO CLEAN SETUP':best.side+' BIAS';
+  $('#aiPulse').classList.add('live');
+  $('#signalSide').textContent=best.side;
+  $('#signalSide').className='signalSide '+(best.side==='BUY'?'buy':best.side==='SELL'?'sell':'wait');
+  $('#confidence').textContent='CONFIDENCE '+best.score+'%';
+  $('#signalReason').textContent=best.side==='WAIT'
+    ? 'ยังไม่มี setup ที่คมพอ · '+(best.reasons.join(' · ')||'รอ structure ชัดขึ้น')
+    : (best.reasons.join(' · ')||'multi-timeframe alignment');
+
+  if(best.side==='WAIT'){
+    ['entryZone','signalSL','signalTP1','signalTP2','signalRR','signalLot','signalMaxLot'].forEach(id=>$('#'+id).textContent='—');
+  }else{
+    $('#entryZone').textContent=fmtPrice(best.entryLow)+' – '+fmtPrice(best.entryHigh);
+    $('#signalSL').textContent=fmtPrice(best.sl);
+    $('#signalTP1').textContent=fmtPrice(best.tp1);
+    $('#signalTP2').textContent=fmtPrice(best.tp2);
+    $('#signalRR').textContent='1 : '+best.rr.toFixed(2);
+    const lm=lotFromSignal(best);
+    $('#signalLot').textContent=lm.suggested==='—'?'—':lm.suggested+' lot';
+    $('#signalMaxLot').textContent=lm.max==='—'?'—':lm.max+' lot';
+  }
+  if(marketScan.last){
+    $('#aiUpdated').textContent='อัปเดต '+marketScan.last.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  }
+}
+
+async function analyzeMarket(){
+  if(marketScan.busy)return;
+  const key=getApiKey();
+  if(!key){
+    openOverlay('settingsOverlay');
+    $('#apiStatus').textContent='ใส่ API Key ก่อน แล้วกด SAVE จากนั้นกลับมากด ANALYZE';
+    return;
+  }
+  marketScan.busy=true;
+  $('#analyzeBtn').classList.add('loading');
+  $('#analyzeBtn').textContent='SCANNING…';
+  $('#scanError').classList.remove('show');
+  try{
+    const entries=await Promise.all(Object.keys(MARKET_INTERVALS).map(async tf=>{
+      const candles=await fetchCandles(tf);
+      return [tf,tfAnalysis(candles,tf)];
+    }));
+    marketScan.results=Object.fromEntries(entries);
+    const ranked=Object.values(marketScan.results).sort((a,b)=>{
+      const aWait=a.side==='WAIT'?10:0,bWait=b.side==='WAIT'?10:0;
+      return (b.score-bWait)-(a.score-aWait);
+    });
+    marketScan.best=ranked[0]||null;
+    marketScan.last=new Date();
+    renderMarketScan();
+    if(marketScan.best){
+      setTradingViewTf(MARKET_INTERVALS[marketScan.best.tf].tv,marketScan.best.tf);
+    }
+  }catch(err){
+    $('#scanError').textContent='โหลดข้อมูลไม่สำเร็จ: '+err.message;
+    $('#scanError').classList.add('show');
+    $('#marketState').textContent='DATA ERROR';
+    $('#aiPulse').classList.remove('live');
+  }finally{
+    marketScan.busy=false;
+    $('#analyzeBtn').classList.remove('loading');
+    $('#analyzeBtn').textContent='ANALYZE';
+  }
+}
+
+function renderTradingView(interval='15',label='M15'){
+  const host=$('#tvChart');
+  if(!host)return;
+  host.innerHTML='<div class="tradingview-widget-container" style="height:100%;width:100%">'+
+    '<div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div></div>';
+  const wrap=host.firstElementChild;
+  const script=document.createElement('script');
+  script.type='text/javascript';
+  script.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  script.async=true;
+  script.text=JSON.stringify({
+    autosize:true,
+    symbol:'OANDA:XAUUSD',
+    interval:String(interval),
+    timezone:'Asia/Bangkok',
+    theme:'dark',
+    style:'1',
+    locale:'en',
+    backgroundColor:'rgba(9,14,20,1)',
+    gridColor:'rgba(255,255,255,0.05)',
+    hide_side_toolbar:true,
+    allow_symbol_change:false,
+    save_image:false,
+    calendar:false,
+    details:false,
+    hotlist:false,
+    hide_volume:true,
+    withdateranges:true,
+    support_host:'https://www.tradingview.com'
+  });
+  wrap.appendChild(script);
+  $('#chartTfLabel').textContent='TradingView · '+label;
+}
+function setTradingViewTf(interval,label){
+  $$('#tfSwitch button').forEach(b=>b.classList.toggle('active',b.dataset.tv===String(interval)));
+  renderTradingView(interval,label);
+}
+$$('#tfSwitch button').forEach(b=>b.addEventListener('click',()=>setTradingViewTf(b.dataset.tv,b.dataset.label)));
+$('#analyzeBtn').addEventListener('click',analyzeMarket);
+
+$('#saveApiKeyBtn').addEventListener('click',()=>{
+  const v=$('#marketApiKey').value.trim();
+  setApiKey(v);
+  $('#apiStatus').textContent=v
+    ? 'บันทึกแล้ว · Key อยู่เฉพาะใน localStorage ของเครื่องนี้'
+    : 'ลบ API Key แล้ว';
+  if(v) $('#apiHint').style.display='none';
+});
+$('#settingsBtn').addEventListener('click',()=>{
+  $('#marketApiKey').value=getApiKey();
+  $('#apiStatus').textContent=getApiKey()
+    ? 'มี API Key ในเครื่องนี้แล้ว · กด SAVE เพื่อเปลี่ยน Key'
+    : 'ยังไม่มี API Key · ต้องใส่ก่อนใช้ AI Market Scan';
+});
+
+const _renderBase = render;
+render = function(){
+  _renderBase();
+  if(marketScan.best) renderMarketScan();
+};
+
+setTimeout(()=>{
+  renderTradingView('15','M15');
+  const hasKey=!!getApiKey();
+  if(hasKey){
+    $('#apiHint').style.display='none';
+    $('#apiStatus').textContent='มี API Key ในเครื่องนี้แล้ว';
+  }
+},120);
+
 
 refreshSetup();
 load();
