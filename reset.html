@@ -10,7 +10,7 @@ body{display:grid;place-items:center;padding:24px;box-sizing:border-box}
 .wrap{text-align:center;width:min(390px,100%)}.logo{width:92px;height:92px;border-radius:26px;overflow:hidden;margin:0 auto 20px}.logo img{width:100%;height:100%;object-fit:cover}
 h2{margin:0}p{color:#71808d;font-size:11px;line-height:1.65}.bar{height:4px;background:#09131a;border-radius:99px;overflow:hidden;margin:22px auto 10px;width:min(320px,84vw)}.bar i{display:block;height:100%;width:8%;background:linear-gradient(90deg,#e4b94f,#67e8c5,#63c7f0);transition:.2s}
 </style></head>
-<body><div class="wrap"><div class="logo"><img src="./icon-512.png?v=270"></div><h2>OneMonth OS</h2><p id="txt">กำลังล้าง Service Worker / Cache เก่า…<br>Balance, Plan, Session และ AI Memory จะไม่ถูกลบ</p><div class="bar"><i id="bar"></i></div></div>
+<body><div class="wrap"><div class="logo"><img src="./icon-512.png?v=280"></div><h2>OneMonth OS</h2><p id="txt">กำลังล้าง Service Worker / Cache เก่า…<br>Balance, Plan, Session และ AI Memory จะไม่ถูกลบ</p><div class="bar"><i id="bar"></i></div></div>
 <script>
 (async()=>{
  const b=document.getElementById('bar'),t=document.getElementById('txt');
@@ -19,8 +19,8 @@ h2{margin:0}p{color:#71808d;font-size:11px;line-height:1.65}.bar{height:4px;back
    if('serviceWorker'in navigator){const r=await navigator.serviceWorker.getRegistrations();await Promise.all(r.map(x=>x.unregister().catch(()=>false)))}
    b.style.width='70%';
    if('caches'in window){const k=await caches.keys();await Promise.all(k.map(x=>caches.delete(x)))}
-   b.style.width='100%';t.textContent='พร้อมแล้ว · กำลังเปิด V27';
-   setTimeout(()=>location.replace('./app-v270.html?fresh='+Date.now()),250);
- }catch(e){location.replace('./app-v270.html?fresh='+Date.now())}
+   b.style.width='100%';t.textContent='พร้อมแล้ว · กำลังเปิด V28';
+   setTimeout(()=>location.replace('./app-v280.html?fresh='+Date.now()),250);
+ }catch(e){location.replace('./app-v280.html?fresh='+Date.now())}
 })();
 </script></body></html>
