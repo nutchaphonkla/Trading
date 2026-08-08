@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V24</title>
+<title>OneMonth OS V25 Final Intelligence</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -1256,6 +1256,55 @@ canvas{display:block}
 .chart-health-badge.good{color:#51e894;border-color:rgba(81,232,148,.14)}
 .chart-health-badge.warn{color:#f0c86c;border-color:rgba(240,200,108,.14)}
 
+
+/* ==========================================================
+   V25 FINAL INTELLIGENCE
+   ========================================================== */
+.final-ai-card{padding:14px;margin-top:8px}
+.final-ai-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.final-ai-head h3{font-size:15px;margin:4px 0 0}
+.final-ai-badge{
+  padding:6px 8px;border-radius:9px;border:1px solid #1d3340;background:#071018;
+  color:#91a0ad;font-size:6.5px;font-weight:900
+}
+.final-ai-badge.good{color:#51e894;border-color:rgba(81,232,148,.16);background:rgba(81,232,148,.03)}
+.final-ai-badge.warn{color:#f0c86c;border-color:rgba(240,200,108,.16);background:rgba(240,200,108,.03)}
+.final-ai-badge.bad{color:#ff596e;border-color:rgba(255,89,110,.16);background:rgba(255,89,110,.03)}
+.final-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}
+.final-grid>div{padding:9px;border-radius:11px;background:#050b10;border:1px solid rgba(255,255,255,.04)}
+.final-grid span{display:block;color:#687684;font-size:5.5px;font-weight:900;letter-spacing:.07em}
+.final-grid b{display:block;font-size:8px;margin-top:4px;overflow-wrap:anywhere}
+.edge-table{display:grid;gap:5px;margin-top:10px}
+.edge-row{
+  display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;
+  padding:9px;border-radius:11px;background:#050b10;border:1px solid rgba(255,255,255,.04)
+}
+.edge-row b{font-size:7.5px}.edge-row small{font-size:6px;color:#6f7d89}
+.edge-score{font-size:9px;font-weight:950;color:#8d9ba8}
+.edge-row.best{border-color:rgba(81,232,148,.15);background:linear-gradient(90deg,rgba(81,232,148,.04),#050b10)}
+.edge-row.best .edge-score{color:#51e894}
+.no-trade-list{display:grid;gap:5px;margin-top:10px}
+.no-trade-row{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px 9px;border-radius:10px;background:#050b10;border:1px solid rgba(255,255,255,.04)
+}
+.no-trade-row span{font-size:6.5px;color:#81909d}.no-trade-row b{font-size:6px}
+.no-trade-row.clear b{color:#51e894}.no-trade-row.warn b{color:#f0c86c}.no-trade-row.block b{color:#ff596e}
+.lifecycle-v25{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:10px}
+.lifecycle-v25 div{
+  min-height:42px;border-radius:10px;border:1px solid #172733;background:#050b10;
+  display:grid;place-items:center;text-align:center;padding:5px;color:#687684;font-size:5.5px;font-weight:900
+}
+.lifecycle-v25 div.active{color:#51e894;border-color:rgba(81,232,148,.18);background:rgba(81,232,148,.035)}
+.lifecycle-v25 div.done{color:#63c7f0;border-color:rgba(99,199,240,.14)}
+.calibration-bar{height:5px;border-radius:99px;background:#071017;overflow:hidden;margin-top:8px}
+.calibration-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#63c7f0,#67e8c5);transition:width .2s ease}
+.final-note{margin-top:9px;padding:9px 10px;border-radius:11px;background:#050b10;border:1px solid rgba(99,199,240,.08);color:#81909d;font-size:7px;line-height:1.55}
+@media(max-width:390px){
+  .lifecycle-v25{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .edge-row{grid-template-columns:minmax(0,1fr) auto auto}
+}
+
 </style>
 </head>
 <body class="app-booting">
@@ -1522,6 +1571,57 @@ canvas{display:block}
         </article>
       </div>
 
+
+      <article class="card final-ai-card">
+        <div class="final-ai-head">
+          <div><div class="kicker">FINAL DECISION ENGINE</div><h3>AI Execution Intelligence</h3></div>
+          <span class="final-ai-badge" id="finalDecisionBadge">WAIT</span>
+        </div>
+        <div class="final-grid">
+          <div><span>SETUP EDGE</span><b id="finalSetupEdge">—</b></div>
+          <div><span>SESSION FIT</span><b id="finalSessionFit">—</b></div>
+          <div><span>CALIBRATED WIN PROB.</span><b id="finalWinProb">—</b></div>
+          <div><span>EXPECTED VALUE</span><b id="finalEv">—</b></div>
+          <div><span>NO-TRADE SCORE</span><b id="finalNoTrade">—</b></div>
+          <div><span>EXECUTION STATE</span><b id="finalExecState">—</b></div>
+        </div>
+        <div class="calibration-bar"><i id="finalConfidenceBar"></i></div>
+        <div class="final-note" id="finalDecisionExplain">รอข้อมูลตลาด</div>
+      </article>
+
+      <article class="card final-ai-card">
+        <div class="final-ai-head">
+          <div><div class="kicker">SETUP-SPECIFIC MEMORY</div><h3>Edge by Setup × Session × Regime</h3></div>
+          <span class="final-ai-badge" id="edgeMemoryBadge">LEARNING</span>
+        </div>
+        <div class="edge-table" id="edgeMemoryList"></div>
+      </article>
+
+      <article class="card final-ai-card">
+        <div class="final-ai-head">
+          <div><div class="kicker">DYNAMIC NO-TRADE ENGINE</div><h3>Capital Protection Filters</h3></div>
+          <span class="final-ai-badge" id="noTradeBadge">CLEAR</span>
+        </div>
+        <div class="no-trade-list" id="noTradeList"></div>
+      </article>
+
+      <article class="card final-ai-card">
+        <div class="final-ai-head">
+          <div><div class="kicker">SIGNAL LIFECYCLE V25</div><h3>Setup State Machine</h3></div>
+          <span class="final-ai-badge" id="lifecycleBadgeV25">IDLE</span>
+        </div>
+        <div class="lifecycle-v25" id="lifecycleV25">
+          <div data-life="WATCH">WATCH</div>
+          <div data-life="ARMING">ARMING</div>
+          <div data-life="CONFIRMING">CONFIRM</div>
+          <div data-life="READY">READY</div>
+          <div data-life="ACTIVE">ACTIVE</div>
+          <div data-life="TP1">TP1</div>
+          <div data-life="TP2">TP2</div>
+          <div data-life="INVALIDATED">INVALID</div>
+        </div>
+      </article>
+
       <article class="card signal-card">
         <div class="signal-top">
           <div><div class="kicker">AI SIGNAL</div><h3 id="signalSide">WAIT</h3><p id="signalReason">ยังไม่ได้วิเคราะห์</p></div>
@@ -1647,7 +1747,7 @@ canvas{display:block}
       
       <article class="card chart-card">
         <div class="chart-head">
-          <div class="chart-title"><small>XAUUSD · NATIVE MARKET VIEW</small><b><span id="chartTf">M15</span> · <span id="chartPrice">—</span></b></div>
+          <div class="chart-title"><small>XAUUSD · NATIVE MARKET VIEW</small><b><span id="chartTf">M15</span><span class="chart-health-badge" id="chartHealthBadge">PIPELINE —</span> · <span id="chartPrice">—</span></b></div>
           <div class="chart-tools">
             <button class="chart-tool" id="zoomOutBtn">−</button>
             <button class="chart-tool" id="zoomInBtn">+</button>
@@ -1792,7 +1892,23 @@ canvas{display:block}
       <div id="doctorRows"></div>
       <button class="doctor-action" id="runDoctorBtn">RUN APP SELF‑TEST</button>
     </article>
-    <div class="sheet-actions"><button class="danger" id="resetAllBtn">RESET APP DATA</button></div>
+    <div class="sheet-actions">
+    <article class="card version-card">
+      <div class="kicker">VERSION & CACHE MANAGER</div>
+      <div class="version-grid">
+        <div><span>APP VERSION</span><b id="appVersionText">V25 FINAL</b></div>
+        <div><span>DATA VERSION</span><b id="dataVersionText">—</b></div>
+        <div><span>LAST SYNC</span><b id="lastSyncText">—</b></div>
+        <div><span>CACHE MODE</span><b id="cacheModeText">—</b></div>
+      </div>
+      <div class="precision-note"><b>FINAL AI POLICY</b> · READY ต้องผ่าน Data → Quality → Regime → Setup Edge → Session Fit → Walk‑Forward Calibration → EV → No‑Trade → Confirmation → News → Risk → Chase<br><br><b>FETCH ONCE POLICY</b> · Learning/AI วิเคราะห์จาก Data Pack ที่โหลดแล้ว ไม่ยิง Twelve Data ทุกครั้ง</div>
+      <div class="cache-actions">
+        <button id="checkUpdateBtn">CHECK FOR UPDATE</button>
+        <button class="dangerish" id="clearCacheReloadBtn">CLEAR CACHE & RELOAD</button>
+      </div>
+    </article>
+
+    <button class="danger" id="resetAllBtn">RESET APP DATA</button></div>
   </div>
 </div>
 
@@ -1868,10 +1984,20 @@ const NEWS_CACHE_KEY='onemonth_os_news_cache_v21';
 const FRESH_OPEN_MS=60*60*1000;     // 60 min when market is open
 const FRESH_CLOSED_MS=72*60*60*1000;
 
-const APP_VERSION='V24';
+const APP_VERSION='V25 FINAL';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
+
+const V25_EDGE_MIN_SAMPLES=4;
+const V25_READY_PROB_MIN=58;
+const V25_READY_EV_MIN=.18;
+const V25_NO_TRADE_MAX=34;
+let v25={
+  edges:[],sessionFit:0,setupEdge:0,winProb:0,ev:0,noTradeScore:100,noTradeReasons:[],
+  lifecycle:'WATCH',decision:'WAIT',explain:'',bestEdge:null
+};
+
 const SHADOW_KEY='onemonth_os_shadow_mode_v23';
 let shadowMode=localStorage.getItem(SHADOW_KEY)==='1';
 let outcomeMemory=loadJson(OUTCOME_KEY,[]);
@@ -1979,6 +2105,19 @@ function createAnalyticsWorker(){
   try{return new Worker(URL.createObjectURL(new Blob([code],{type:'text/javascript'})))}catch(_){return null}
 }
 const analyticsWorker=createAnalyticsWorker();
+
+let workerStatsCache=null;
+if(analyticsWorker){
+  analyticsWorker.onmessage=e=>{
+    if(e.data?.type==='statsResult')workerStatsCache=e.data.result;
+  };
+}
+function pushOutcomeStatsToWorker(){
+  if(!analyticsWorker)return;
+  const vals=outcomeMemory.filter(r=>['WIN','LOSS'].includes(r.outcome)).map(r=>r.outcome==='WIN'?1:-1);
+  analyticsWorker.postMessage({type:'stats',data:vals});
+}
+
 
 async function fetchFast(url,opts={},timeout=6500){
   const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),timeout);
@@ -2244,7 +2383,7 @@ async function loadPack(){
     packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):Date.now();packMeta.source=j.source||'GitHub Data Pack';
     rebuildMarketData(j);
     saveCache(MARKET_CACHE_KEY,j);
-    renderFreshness();renderDataQuality();renderConfirmation();renderVersionManager();renderIntelligence();renderPipeline();renderLearningEngine();
+    renderFreshness();renderDataQuality();renderConfirmation();renderVersionManager();renderIntelligence();renderPipeline();renderLearningEngine();if(analysis){buildIntelligence(analysis);runFinalDecisionEngine(analysis)}renderV25();
     return Object.values(marketData).some(a=>a.length>20);
   }catch(e){
     console.warn('market pack network',e);
@@ -2455,9 +2594,10 @@ function chooseAnalysis(){
   }
   const result={...X,side,direction:dominant,score,align,core,entryLow,entryHigh,entryCenter,sl,tp1,tp2,rr,setupType,blockers,market:mkt,news,guardian:g};
   buildIntelligence(result);
-  if(result.side!=='WAIT'&&!intelligenceAllowsReady()){
+  runFinalDecisionEngine(result);
+  if(result.side!=='WAIT'&&(!intelligenceAllowsReady()||!finalDecisionAllowsReady())){
     result.side='WAIT';
-    result.blockers=[...new Set([...(result.blockers||[]),'EXECUTION GATE'])];
+    result.blockers=[...new Set([...(result.blockers||[]),v25.decision==='NO TRADE'?'NO-TRADE ENGINE':'FINAL EXECUTION GATE'])];
   }
   if(shadowMode&&result.side!=='WAIT'){
     result.shadowCandidate=true;
@@ -2613,7 +2753,7 @@ function buildShortExplain(a){
     `RR ${Number(a.rr||0).toFixed(2)}`,
     `EV ${intelligence.ev.toFixed(2)}`
   ];
-  return parts.join(' · ');
+  parts.push(`Final ${v25.decision||'WAIT'}`);return parts.join(' · ');
 }
 function buildIntelligence(a){
   if(!a){
@@ -2702,7 +2842,7 @@ function runLocalLearning(){
     outcomeMemory=outcomeMemory.slice(-180);
     saveJson(OUTCOME_KEY,outcomeMemory);
   }
-  renderLearningEngine();
+  renderLearningEngine();pushOutcomeStatsToWorker();
   return{updated,replayed}
 }
 function renderLearningEngine(){
@@ -2745,9 +2885,173 @@ function maybeRememberSignal(a){
   outcomeMemory.push({
     sig,createdAt:Date.now(),side:a.side,tf:a.tf,entry:a.entryCenter,sl:a.sl,tp1:a.tp1,tp2:a.tp2,
     rawScore:intelligence.rawConfidence,calibrated:intelligence.calibrated,setup:intelligence.best?.name||a.setupType,
-    regime:a.regime,shadow:shadowMode,outcome:null,mfe:null,mae:null
+    regime:a.regime,session:sessionBucket(),shadow:shadowMode,outcome:null,mfe:null,mae:null
   });
   outcomeMemory=outcomeMemory.slice(-180);saveJson(OUTCOME_KEY,outcomeMemory)
+}
+
+
+function sessionBucket(){
+  const s=marketStatus().session||'CLOSED';
+  if(s==='NEW YORK')return 'NY';
+  if(s==='LONDON')return 'LONDON';
+  if(s==='ASIA')return 'ASIA';
+  return 'CLOSED';
+}
+function memoryGroupKey(rec){
+  return `${rec.setup||'UNKNOWN'}|${rec.regime||'UNKNOWN'}|${rec.session||'ANY'}|${rec.tf||'ANY'}`
+}
+function buildSetupEdgeMemory(){
+  const groups=new Map();
+  for(const r of outcomeMemory){
+    if(!r||!['WIN','LOSS'].includes(r.outcome))continue;
+    const key=memoryGroupKey(r);
+    if(!groups.has(key))groups.set(key,{key,setup:r.setup||'UNKNOWN',regime:r.regime||'UNKNOWN',session:r.session||'ANY',tf:r.tf||'ANY',wins:0,losses:0,mfe:0,mae:0,n:0});
+    const g=groups.get(key);g.n++;if(r.outcome==='WIN')g.wins++;else g.losses++;
+    g.mfe+=Number(r.mfe)||0;g.mae+=Number(r.mae)||0;
+  }
+  const rows=[...groups.values()].map(g=>{
+    const wr=g.n?g.wins/g.n:0;
+    const avgMfe=g.n?g.mfe/g.n:0,avgMae=g.n?g.mae/g.n:0;
+    const bayes=(g.wins+2)/(g.n+4); // regularize small samples
+    const edge=clamp((bayes*.72 + clamp(avgMfe/(avgMfe+avgMae+1),0,1)*.28)*100,0,99);
+    return{...g,wr,avgMfe,avgMae,edge}
+  }).sort((a,b)=>b.edge-a.edge);
+  v25.edges=rows;return rows;
+}
+function lookupSpecificEdge(a,setup){
+  const rows=buildSetupEdgeMemory(),session=sessionBucket();
+  const exact=rows.filter(r=>r.setup===setup&&r.regime===a.regime&&r.session===session&&r.tf===a.tf);
+  if(exact.length&&exact[0].n>=V25_EDGE_MIN_SAMPLES)return exact[0];
+  const partial=rows.filter(r=>r.setup===setup&&r.regime===a.regime&&r.tf===a.tf);
+  if(partial.length&&partial[0].n>=V25_EDGE_MIN_SAMPLES)return partial[0];
+  return null;
+}
+function trueSessionFit(a,setup){
+  if(!a)return 0;
+  const s=sessionBucket(),reg=a.regime;
+  let score=50;
+  if(s==='NY')score+=18;
+  else if(s==='LONDON')score+=13;
+  else if(s==='ASIA')score-=6;
+  else score-=28;
+  if(setup==='BOS Retest'&&['NY','LONDON'].includes(s))score+=10;
+  if(setup==='Breakout Retest'&&s==='NY')score+=9;
+  if(setup==='EMA Pullback'&&reg==='TREND')score+=8;
+  if(setup==='Mean Reversion'&&s==='ASIA'&&reg==='RANGE')score+=8;
+  if(reg==='VOLATILE'&&s==='ASIA')score-=8;
+  return clamp(score,0,100);
+}
+function walkForwardCalibration(raw,a,setup){
+  // Uses only completed outcome memory. Recent 30% acts as pseudo out-of-sample.
+  const rows=outcomeMemory.filter(r=>r&&['WIN','LOSS'].includes(r.outcome)&&r.setup===setup&&r.tf===a.tf);
+  if(rows.length<10)return clamp(raw*.90,5,93);
+  const ordered=rows.slice().sort((x,y)=>(x.createdAt||0)-(y.createdAt||0));
+  const split=Math.max(6,Math.floor(ordered.length*.7));
+  const test=ordered.slice(split);
+  if(test.length<3)return clamp(raw*.91,5,93);
+  const actual=test.filter(r=>r.outcome==='WIN').length/test.length;
+  const predicted=test.reduce((s,r)=>s+(Number(r.rawScore)||50)/100,0)/test.length;
+  const bias=actual-predicted;
+  const calibrated=(raw/100 + bias*.62)*100;
+  return clamp(calibrated,5,94);
+}
+function noTradeEngine(a){
+  const reasons=[];let score=0;
+  const add=(name,pts,blocked=false)=>{score+=pts;reasons.push({name,pts,blocked})};
+  if(!a)return{score:100,reasons:[{name:'NO ANALYSIS',pts:100,blocked:true}]};
+  if(marketFreshness().stale)add('Stale market data',32,true);
+  if(dataQuality.score<DATA_QUALITY_READY_MIN)add('Low data quality',28,true);
+  if(newsContext().lock)add('High-impact news lock',32,true);
+  else if(newsContext().warn)add('Near macro event',12,false);
+  if(a.regime==='RANGE')add('Compression / range',20,false);
+  if(a.stretched)add('Overextended move',16,false);
+  if(confirmation.state!=='READY')add('Confirmation incomplete',22,false);
+  if(Number(a.rr||0)<1.45)add('R:R below execution floor',18,false);
+  if(intelligence.ev<=0.12)add('Low expected value',18,false);
+  if(guardian().locked)add('Risk Guardian lock',35,true);
+  if(sessionBucket()==='CLOSED')add('Market closed',100,true);
+  if(sessionBucket()==='ASIA'&&a.regime==='VOLATILE')add('Poor session/regime fit',10,false);
+  const chase=Number.isFinite(intelligence.chaseLimit)&&Number.isFinite(a.last)&&Number.isFinite(a.entryCenter)&&Math.abs(a.last-a.entryCenter)>intelligence.chaseLimit;
+  if(chase)add('Late entry / chase',20,false);
+  return{score:clamp(score,0,100),reasons}
+}
+function lifecycleStateV25(a){
+  if(!a)return'WATCH';
+  if(activeSignal?.status==='TP2')return'TP2';
+  if(activeSignal?.status==='TP1')return'TP1';
+  if(activeSignal&&['ACTIVE','READY'].includes(activeSignal.status))return'ACTIVE';
+  if(a.side!=='WAIT'&&v25.decision==='READY')return'READY';
+  if(confirmation.state==='CONFIRMING')return'CONFIRMING';
+  if(a.blockers?.includes('WAIT CONFIRM'))return'ARMING';
+  if(v25.noTradeScore>=60)return'INVALIDATED';
+  return'WATCH';
+}
+function runFinalDecisionEngine(a){
+  if(!a){
+    v25={...v25,sessionFit:0,setupEdge:0,winProb:0,ev:0,noTradeScore:100,noTradeReasons:[],lifecycle:'WATCH',decision:'WAIT',explain:'รอข้อมูล',bestEdge:null};
+    return v25;
+  }
+  const setup=intelligence.best?.name||a.setupType||'UNKNOWN';
+  const edgeRow=lookupSpecificEdge(a,setup);
+  const setupEdge=edgeRow?edgeRow.edge:clamp((intelligence.best?.score||a.score||0)*.86,0,92);
+  const sessionFit=trueSessionFit(a,setup);
+  const raw=clamp(intelligence.rawConfidence*.50+setupEdge*.28+sessionFit*.22,0,96);
+  const winProb=walkForwardCalibration(raw,a,setup);
+  const ev=expectedValue(winProb,Number(a.rr||0));
+  const nt=noTradeEngine(a);
+  const hardBlock=nt.reasons.some(r=>r.blocked);
+  const ready=!hardBlock
+    && nt.score<=V25_NO_TRADE_MAX
+    && winProb>=V25_READY_PROB_MIN
+    && ev>=V25_READY_EV_MIN
+    && dataQuality.score>=DATA_QUALITY_READY_MIN
+    && confirmation.state==='READY'
+    && !newsContext().lock
+    && !guardian().locked
+    && a.regime!=='RANGE'
+    && Number(a.rr||0)>=1.45;
+  const decision=ready?'READY':nt.score>=60?'NO TRADE':'WAIT';
+  v25={...v25,sessionFit,setupEdge,winProb,ev,noTradeScore:nt.score,noTradeReasons:nt.reasons,decision,bestEdge:edgeRow};
+  v25.lifecycle=lifecycleStateV25(a);
+  const memoryText=edgeRow?`${edgeRow.n} samples · ${(edgeRow.wr*100).toFixed(0)}% WR`:'learning';
+  v25.explain=`${setup} · ${a.regime} · ${sessionBucket()} · Edge ${setupEdge.toFixed(0)} · P(win) ${winProb.toFixed(0)}% · EV ${ev.toFixed(2)}R · NoTrade ${nt.score} · ${memoryText}`;
+  return v25;
+}
+function finalDecisionAllowsReady(){return v25.decision==='READY'}
+function renderV25(){
+  const badge=$('#finalDecisionBadge');if(!badge)return;
+  badge.textContent=v25.decision;
+  badge.className='final-ai-badge '+(v25.decision==='READY'?'good':v25.decision==='WAIT'?'warn':'bad');
+  $('#finalSetupEdge').textContent=v25.setupEdge?v25.setupEdge.toFixed(0)+'/100':'—';
+  $('#finalSessionFit').textContent=v25.sessionFit?v25.sessionFit.toFixed(0)+'/100':'—';
+  $('#finalWinProb').textContent=v25.winProb?v25.winProb.toFixed(0)+'%':'—';
+  $('#finalEv').textContent=Number.isFinite(v25.ev)?v25.ev.toFixed(2)+'R':'—';
+  $('#finalNoTrade').textContent=Number.isFinite(v25.noTradeScore)?v25.noTradeScore+'/100':'—';
+  $('#finalExecState').textContent=v25.lifecycle||'WATCH';
+  $('#finalConfidenceBar').style.width=clamp(v25.winProb,0,100)+'%';
+  $('#finalDecisionExplain').textContent=v25.explain||'รอข้อมูลตลาด';
+
+  const edges=buildSetupEdgeMemory().slice(0,6),list=$('#edgeMemoryList');
+  if(list){
+    list.innerHTML=edges.length?edges.map((r,i)=>`<div class="edge-row ${i===0?'best':''}"><div><b>${r.setup}</b><small>${r.regime} · ${r.session} · ${r.tf}</small></div><small>${r.n} samples</small><div class="edge-score">${r.edge.toFixed(0)}</div></div>`).join('')
+      :'<div class="edge-row"><div><small>ยังไม่มี Outcome เพียงพอ · ระบบกำลังเรียนรู้</small></div><small>0</small><div class="edge-score">—</div></div>';
+  }
+  const eb=$('#edgeMemoryBadge');if(eb){eb.textContent=edges.length?'MEMORY READY':'LEARNING';eb.className='final-ai-badge '+(edges.length?'good':'warn')}
+
+  const nt=$('#noTradeList');if(nt){
+    const rows=v25.noTradeReasons.length?v25.noTradeReasons:[{name:'No major blocker',pts:0,blocked:false}];
+    nt.innerHTML=rows.map(r=>`<div class="no-trade-row ${r.blocked?'block':r.pts>=15?'warn':'clear'}"><span>${r.name}</span><b>${r.pts?('+'+r.pts):'CLEAR'}</b></div>`).join('')
+  }
+  const nb=$('#noTradeBadge');if(nb){nb.textContent=v25.noTradeScore<=V25_NO_TRADE_MAX?'CLEAR':v25.noTradeScore<60?'CAUTION':'BLOCK';nb.className='final-ai-badge '+(v25.noTradeScore<=V25_NO_TRADE_MAX?'good':v25.noTradeScore<60?'warn':'bad')}
+
+  const order=['WATCH','ARMING','CONFIRMING','READY','ACTIVE','TP1','TP2','INVALIDATED'];
+  const cur=order.indexOf(v25.lifecycle);
+  $$('#lifecycleV25 [data-life]').forEach((el,i)=>{
+    el.classList.toggle('active',el.dataset.life===v25.lifecycle);
+    el.classList.toggle('done',cur>i&&v25.lifecycle!=='INVALIDATED')
+  });
+  const lb=$('#lifecycleBadgeV25');if(lb){lb.textContent=v25.lifecycle;lb.className='final-ai-badge '+(['READY','ACTIVE','TP1','TP2'].includes(v25.lifecycle)?'good':v25.lifecycle==='INVALIDATED'?'bad':'warn')}
 }
 
 function lotFor(a){
