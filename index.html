@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V25 Final Intelligence</title>
+<title>OneMonth OS V25.1 App Mode</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -1305,9 +1305,161 @@ canvas{display:block}
   .edge-row{grid-template-columns:minmax(0,1fr) auto auto}
 }
 
+
+/* ==========================================================
+   V25.1 APP GATE + CINEMATIC INTRO
+   ========================================================== */
+#installGate,#appIntro{
+  position:fixed;inset:0;z-index:12000;
+  background:
+    radial-gradient(500px 330px at 50% 20%,rgba(228,185,79,.09),transparent 62%),
+    radial-gradient(420px 300px at 50% 80%,rgba(99,199,240,.055),transparent 68%),
+    #02060a;
+  display:none;align-items:center;justify-content:center;
+  padding:max(20px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right))
+          max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));
+  box-sizing:border-box;overflow:hidden
+}
+#installGate.show,#appIntro.show{display:flex}
+.install-shell,.intro-shell{width:min(440px,100%);text-align:center}
+.gate-logo,.intro-logo{
+  width:92px;height:92px;margin:0 auto 22px;border-radius:27px;
+  display:grid;place-items:center;position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 25%,rgba(103,232,197,.12),transparent 58%),
+    linear-gradient(145deg,#0c1821,#050b10);
+  border:1px solid rgba(228,185,79,.38);
+  box-shadow:0 25px 70px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.04)
+}
+.gate-logo:after,.intro-logo:after{
+  content:"";position:absolute;left:15%;right:15%;bottom:11px;height:1px;
+  background:linear-gradient(90deg,transparent,#e4b94f,transparent);
+  box-shadow:0 0 14px rgba(228,185,79,.45)
+}
+.gate-logo svg,.intro-logo svg{width:55px;height:55px}
+.install-kicker,.intro-kicker{
+  color:#7a8996;font-size:7px;font-weight:900;letter-spacing:.22em
+}
+.install-title,.intro-title{
+  margin:8px 0 0;color:#f4f7f9;font-size:28px;font-weight:950;letter-spacing:-.045em
+}
+.install-copy{
+  margin:11px auto 0;max-width:340px;color:#7b8995;font-size:9px;line-height:1.65
+}
+.install-device{
+  display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:7px 9px;border-radius:10px;
+  border:1px solid #1a303d;background:#071018;color:#9aa8b4;font-size:6.5px;font-weight:900
+}
+.install-steps{display:grid;gap:7px;margin-top:22px;text-align:left}
+.install-step{
+  display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:center;
+  padding:11px;border-radius:14px;background:#071018;border:1px solid #182a35
+}
+.install-step i{
+  width:32px;height:32px;border-radius:10px;display:grid;place-items:center;
+  background:rgba(228,185,79,.055);border:1px solid rgba(228,185,79,.12);
+  color:#e4b94f;font-style:normal;font-size:10px;font-weight:950
+}
+.install-step b{display:block;font-size:8px}
+.install-step span{display:block;color:#71808d;font-size:7px;margin-top:3px;line-height:1.45}
+.install-action{
+  width:100%;height:50px;margin-top:14px;border-radius:14px;
+  border:1px solid rgba(228,185,79,.43);
+  background:linear-gradient(180deg,#e7bd56,#ba8730);color:#150f04;
+  font-size:8px;font-weight:950;letter-spacing:.06em
+}
+.install-action.secondary{
+  background:#071018;color:#a2b0bb;border-color:#1b3340
+}
+.install-hint{margin-top:12px;color:#556572;font-size:6.5px;line-height:1.55}
+.intro-orbit{
+  width:170px;height:170px;margin:0 auto 22px;position:relative;
+  display:grid;place-items:center
+}
+.intro-ring{
+  position:absolute;inset:0;border-radius:50%;border:1px solid rgba(228,185,79,.10);
+  animation:introOrbit 7s linear infinite
+}
+.intro-ring:before{
+  content:"";position:absolute;width:7px;height:7px;border-radius:50%;
+  background:#e4b94f;left:50%;top:-4px;box-shadow:0 0 18px rgba(228,185,79,.55)
+}
+.intro-ring.r2{inset:19px;border-color:rgba(99,199,240,.09);animation-direction:reverse;animation-duration:5s}
+.intro-ring.r2:before{background:#63c7f0;box-shadow:0 0 16px rgba(99,199,240,.45)}
+@keyframes introOrbit{to{transform:rotate(360deg)}}
+.intro-logo{margin:0;width:92px;height:92px;z-index:2}
+.intro-title{font-size:24px;letter-spacing:.15em}
+.intro-sub{
+  margin-top:7px;color:#70808e;font-size:7px;letter-spacing:.18em
+}
+.intro-status{
+  margin-top:23px;color:#b9c5ce;font-size:8px;min-height:15px
+}
+.intro-bar{
+  height:3px;background:#071017;border-radius:99px;overflow:hidden;margin:12px auto 0;width:min(310px,82%)
+}
+.intro-bar i{
+  display:block;height:100%;width:4%;
+  background:linear-gradient(90deg,#e4b94f,#67e8c5,#63c7f0);
+  transition:width .22s ease
+}
+.intro-meta{
+  display:flex;justify-content:space-between;width:min(310px,82%);margin:7px auto 0;
+  color:#536370;font-size:6px
+}
+body.web-gated > :not(#installGate){visibility:hidden!important}
+body.intro-active > .app,
+body.intro-active > .bottom-nav,
+body.intro-active > #bootLoader,
+body.intro-active > #actionLoader,
+body.intro-active > .modal,
+body.intro-active > .toast{visibility:hidden!important}
+
 </style>
 </head>
 <body class="app-booting">
+
+<div id="installGate" aria-live="polite">
+  <div class="install-shell">
+    <div class="gate-logo">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <defs><linearGradient id="gateG" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#67e8c5"/><stop offset="1" stop-color="#63c7f0"/></linearGradient></defs>
+        <path d="M14 43V25M24 43V16M34 43V31M44 43V11" stroke="url(#gateG)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M11 50h42" stroke="#e4b94f" stroke-width="2.7" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="install-kicker">ONEMONTH OS · PRIVATE TERMINAL</div>
+    <h1 class="install-title">ติดตั้งเป็นแอปก่อนใช้งาน</h1>
+    <p class="install-copy">เวอร์ชันมือถือถูกออกแบบให้ทำงานในโหมด Standalone เพื่อให้ Fullscreen, Offline Cache, Local AI Memory และระบบโหลดทำงานเสถียรกว่าเปิดผ่าน Browser</p>
+    <div class="install-device" id="installDevice">DETECTING DEVICE…</div>
+    <div class="install-steps" id="installSteps"></div>
+    <button class="install-action" id="nativeInstallBtn" style="display:none">INSTALL ONEMONTH OS</button>
+    <button class="install-action secondary" id="recheckInstallBtn">ตรวจอีกครั้ง</button>
+    <div class="install-hint">iPhone ไม่อนุญาตให้เว็บไซต์กด Add to Home Screen แทนผู้ใช้โดยอัตโนมัติ · หลังติดตั้งแล้วให้เปิด OneMonth OS จากไอคอนบนหน้าจอหลัก</div>
+  </div>
+</div>
+
+<div id="appIntro" aria-live="polite">
+  <div class="intro-shell">
+    <div class="intro-orbit">
+      <div class="intro-ring"></div><div class="intro-ring r2"></div>
+      <div class="intro-logo">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="introG" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#67e8c5"/><stop offset="1" stop-color="#63c7f0"/></linearGradient></defs>
+          <path d="M14 43V25M24 43V16M34 43V31M44 43V11" stroke="url(#introG)" stroke-width="4" stroke-linecap="round"/>
+          <path d="M11 50h42" stroke="#e4b94f" stroke-width="2.7" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="intro-kicker">XAUUSD · FINAL INTELLIGENCE</div>
+    <div class="intro-title">ONEMONTH OS</div>
+    <div class="intro-sub">PRECISION EXECUTION TERMINAL</div>
+    <div class="intro-status" id="introStatus">INITIALIZING SECURE WORKSPACE</div>
+    <div class="intro-bar"><i id="introBar"></i></div>
+    <div class="intro-meta"><span id="introPhase">LOCAL CORE</span><span id="introPercent">4%</span></div>
+  </div>
+</div>
+
 
 <div id="bootLoader" aria-live="polite">
   <div class="boot-card">
@@ -1918,6 +2070,74 @@ canvas{display:block}
 (()=>{
 'use strict';
 
+
+const appLaunch={
+  deferredInstallPrompt:null,
+  isIos:/iphone|ipad|ipod/i.test(navigator.userAgent),
+  isAndroid:/android/i.test(navigator.userAgent),
+  isStandalone(){
+    return window.matchMedia('(display-mode: standalone)').matches
+      || window.matchMedia('(display-mode: fullscreen)').matches
+      || window.navigator.standalone===true;
+  },
+  setIntro(pct,status,phase='SYSTEM CORE'){
+    const p=clamp(Number(pct)||0,0,100);
+    const bar=document.getElementById('introBar'),per=document.getElementById('introPercent'),
+          st=document.getElementById('introStatus'),ph=document.getElementById('introPhase');
+    if(bar)bar.style.width=Math.max(4,p)+'%';if(per)per.textContent=Math.round(p)+'%';
+    if(st)st.textContent=status;if(ph)ph.textContent=phase;
+  },
+  renderInstallGate(){
+    const steps=$('#installSteps'),device=$('#installDevice'),native=$('#nativeInstallBtn');
+    if(this.isIos){
+      device.textContent='IPHONE / IPAD · SAFARI';
+      steps.innerHTML=`
+        <div class="install-step"><i>1</i><div><b>เปิดด้วย Safari</b><span>ถ้าอยู่ใน Browser อื่น ให้เปิดหน้านี้ด้วย Safari ก่อน</span></div></div>
+        <div class="install-step"><i>2</i><div><b>กดปุ่ม Share</b><span>ไอคอนสี่เหลี่ยมมีลูกศรชี้ขึ้นใน Safari</span></div></div>
+        <div class="install-step"><i>3</i><div><b>Add to Home Screen</b><span>เลือก “เพิ่มไปยังหน้าจอโฮม” แล้วกด Add</span></div></div>
+        <div class="install-step"><i>4</i><div><b>เปิดจากไอคอน OneMonth OS</b><span>ระบบจะเข้า Standalone Mode และเริ่ม Intro อัตโนมัติ</span></div></div>`;
+      native.style.display='none';
+    }else if(this.isAndroid){
+      device.textContent='ANDROID · PWA SUPPORTED';
+      steps.innerHTML=`
+        <div class="install-step"><i>1</i><div><b>ติดตั้ง OneMonth OS</b><span>กดปุ่ม Install ด้านล่าง</span></div></div>
+        <div class="install-step"><i>2</i><div><b>เปิดจากไอคอน</b><span>หลังติดตั้งให้เปิดแอปจาก Home Screen</span></div></div>`;
+      native.style.display=this.deferredInstallPrompt?'block':'none';
+    }else{
+      device.textContent='DESKTOP BROWSER';
+      steps.innerHTML=`
+        <div class="install-step"><i>1</i><div><b>Install App / Create Shortcut</b><span>ใช้เมนู Browser เพื่อติดตั้ง PWA</span></div></div>
+        <div class="install-step"><i>2</i><div><b>เปิดแบบ Standalone</b><span>จากนั้นเปิด OneMonth OS จากไอคอนที่ติดตั้ง</span></div></div>`;
+      native.style.display=this.deferredInstallPrompt?'block':'none';
+    }
+  },
+  gateBrowser(){
+    document.body.classList.add('web-gated');
+    const gate=$('#installGate');gate?.classList.add('show');
+    this.renderInstallGate();
+  },
+  startIntro(){
+    document.body.classList.add('intro-active');
+    $('#appIntro')?.classList.add('show');
+    this.setIntro(4,'INITIALIZING SECURE WORKSPACE','LOCAL CORE');
+  },
+  finishIntro(){
+    this.setIntro(100,'TERMINAL READY','READY');
+    setTimeout(()=>{
+      $('#appIntro')?.classList.remove('show');
+      document.body.classList.remove('intro-active');
+    },260);
+  }
+};
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();appLaunch.deferredInstallPrompt=e;
+  if(!appLaunch.isStandalone())appLaunch.renderInstallGate();
+});
+window.addEventListener('appinstalled',()=>{
+  appLaunch.deferredInstallPrompt=null;
+  $('#nativeInstallBtn')?.style.setProperty('display','none');
+});
+
 const bootUI = {
   set(pct,status,note=''){
     const bar=document.getElementById('bootBar');
@@ -1928,6 +2148,9 @@ const bootUI = {
     if(per) per.textContent=Math.round(pct)+'%';
     if(st) st.textContent=status;
     if(nt && note) nt.textContent=note;
+    if(document.body.classList.contains('intro-active')){
+      appLaunch.setIntro(pct,status,(note||'SYSTEM CORE').toUpperCase().slice(0,32));
+    }
   },
   error(status,note=''){
     const st=document.getElementById('bootStatus');
@@ -1938,6 +2161,7 @@ const bootUI = {
   hide(){
     const el=document.getElementById('bootLoader');
     this.set(100,'พร้อมใช้งาน','OneMonth OS พร้อมแล้ว');
+    appLaunch.finishIntro();
     document.body.classList.remove('app-booting');
     document.body.classList.add('app-ready');
     requestAnimationFrame(()=>{
@@ -1984,7 +2208,7 @@ const NEWS_CACHE_KEY='onemonth_os_news_cache_v21';
 const FRESH_OPEN_MS=60*60*1000;     // 60 min when market is open
 const FRESH_CLOSED_MS=72*60*60*1000;
 
-const APP_VERSION='V25 FINAL';
+const APP_VERSION='V25.1 APP MODE';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -3938,7 +4162,7 @@ async function boot(){
 
     // Loader must feel intentional, but should not artificially slow fast launches.
     const elapsed=Date.now()-bootStart;
-    if(elapsed<420)await new Promise(r=>setTimeout(r,420-elapsed));
+    if(elapsed<900)await new Promise(r=>setTimeout(r,900-elapsed));
 
     bootUI.hide();
 
@@ -4033,7 +4257,24 @@ $('#shadowToggle')?.addEventListener('click',()=>{
   toast(shadowMode?'Shadow Mode ON · เก็บผลแต่ไม่ปล่อย READY':'Shadow Mode OFF')
 });
 
-boot().finally(()=>clearTimeout(bootSafetyTimer));
+
+$('#nativeInstallBtn')?.addEventListener('click',async()=>{
+  const p=appLaunch.deferredInstallPrompt;if(!p)return;
+  p.prompt();try{await p.userChoice}catch(_){}
+  appLaunch.deferredInstallPrompt=null;appLaunch.renderInstallGate();
+});
+$('#recheckInstallBtn')?.addEventListener('click',()=>{
+  if(appLaunch.isStandalone())location.reload();
+  else{appLaunch.renderInstallGate();toast('ยังเปิดผ่าน Browser อยู่ · เปิดจากไอคอนบน Home Screen')}
+});
+
+if(appLaunch.isStandalone()){
+  appLaunch.startIntro();
+  boot().finally(()=>clearTimeout(bootSafetyTimer));
+}else{
+  clearTimeout(bootSafetyTimer);
+  appLaunch.gateBrowser();
+}
 })();
 </script>
 </body>
