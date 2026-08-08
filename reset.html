@@ -1,56 +1,6 @@
-<!doctype html>
-<html lang="th">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#02060a">
-<title>OneMonth OS Reset</title>
-<style>
-html,body{margin:0;min-height:100%;background:#02060a;color:#f2f6f8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{min-height:100dvh;display:grid;place-items:center;padding:24px;box-sizing:border-box}
-.box{width:min(390px,100%);text-align:center}
-.logo{width:88px;height:88px;border-radius:25px;margin:0 auto 20px;overflow:hidden;box-shadow:0 22px 65px rgba(0,0,0,.48)}
-.logo img{width:100%;height:100%;display:block;object-fit:cover}
-h1{font-size:22px;margin:0}p{font-size:11px;line-height:1.6;color:#71808d}
-.bar{height:4px;background:#09131a;border-radius:9px;overflow:hidden;margin:24px 0 10px}.bar i{display:block;height:100%;width:8%;background:linear-gradient(90deg,#e4b94f,#67e8c5,#63c7f0);transition:.25s}
-.row{display:flex;justify-content:space-between;color:#84929e;font-size:10px}
-small{display:block;margin-top:22px;color:#50606c;line-height:1.6}
-</style>
-</head>
-<body>
-<div class="box">
-  <div class="logo"><img src="./icon-512.png?v=254" alt="OneMonth OS"></div>
-  <h1>OneMonth OS Cache Reset</h1>
-  <p>ล้างเฉพาะ Service Worker และ Browser Cache เก่า<br>Plan, Session และ AI Memory จะยังอยู่</p>
-  <div class="bar"><i id="bar"></i></div>
-  <div class="row"><span id="status">STARTING…</span><span id="pct">8%</span></div>
-  <small>เสร็จแล้วจะเปิด V25.4 อัตโนมัติ</small>
-</div>
-<script>
-(async()=>{
-  const bar=document.getElementById('bar'),pct=document.getElementById('pct'),st=document.getElementById('status');
-  const set=(p,t)=>{bar.style.width=p+'%';pct.textContent=p+'%';st.textContent=t};
-  try{
-    set(25,'UNREGISTER SERVICE WORKER');
-    if('serviceWorker' in navigator){
-      const regs=await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(r=>r.unregister().catch(()=>false)));
-    }
-    set(60,'DELETE OLD CACHES');
-    if('caches' in window){
-      const keys=await caches.keys();
-      await Promise.all(keys.map(k=>caches.delete(k)));
-    }
-    set(90,'LOAD PREMIUM APP');
-    await new Promise(r=>setTimeout(r,250));
-    set(100,'OPEN V25.4');
-    location.replace('./app-v254.html?fresh='+Date.now());
-  }catch(e){
-    console.error(e);
-    set(100,'OPEN SAFE MODE');
-    setTimeout(()=>location.replace('./app-v254.html?fresh='+Date.now()),400);
-  }
-})();
-</script>
-</body>
-</html>
+<!doctype html><html lang="th"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#02060a"><title>OneMonth OS Recovery</title>
+<style>html,body{margin:0;height:100%;background:#02060a;color:#eef3f6;font-family:-apple-system,sans-serif}body{display:grid;place-items:center}.x{text-align:center;padding:24px}.logo{width:90px;height:90px;border-radius:25px;overflow:hidden;margin:0 auto 18px}.logo img{width:100%;height:100%;object-fit:cover}p{color:#71808d;font-size:12px;line-height:1.7}</style></head>
+<body><div class="x"><div class="logo"><img src="./icon-512.png?v=257"></div><h2>OneMonth OS Recovery</h2><p id="s">กำลังเอา Service Worker / Cache เก่าออก…<br><b>Plan / Session / AI Memory ไม่ถูกลบ</b></p></div>
+<script>(async()=>{try{if('serviceWorker'in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister().catch(()=>false)))}if('caches'in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}document.getElementById('s').innerHTML='Core พร้อมแล้ว<br>กำลังเปิด V25.7…';setTimeout(()=>location.replace('./index.html?recovery='+Date.now()),300)}catch(e){location.replace('./index.html?recovery='+Date.now())}})();</script></body></html>
