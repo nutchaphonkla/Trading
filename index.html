@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#07090c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="One Month">
+<title>ONE MONTH — Trading System</title>
+<style>
+:root{
+  --bg:#07090c;--panel:#0d1117;--panel2:#111721;--line:rgba(255,255,255,.075);
+  --text:#f7f9fc;--muted:#7f8998;--green:#69f0ae;--red:#ff6b7a;--cyan:#69d7ff;
+  --gold:#ffd76a;--radius:24px;--shadow:0 24px 80px rgba(0,0,0,.45)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",sans-serif}
+body{min-height:100dvh;background:
+ radial-gradient(900px 420px at 50% -120px,rgba(105,215,255,.12),transparent 65%),
+ radial-gradient(760px 520px at 110% 20%,rgba(105,240,174,.07),transparent 60%),var(--bg)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:520px;margin:auto;min-height:100dvh;padding:0 16px 104px}
+.safe{height:max(14px,env(safe-area-inset-top))}
+.topbar{height:64px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;gap:11px;align-items:center}
+.mark{width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#121923,#090c11);box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
+.mark:before{content:"";width:15px;height:15px;border-radius:5px;background:linear-gradient(135deg,var(--green),var(--cyan));box-shadow:0 0 24px rgba(105,240,174,.35)}
+.brand h1{font-size:14px;letter-spacing:.12em;margin:0;font-weight:850}
+.brand p{font-size:10px;color:var(--muted);margin:3px 0 0;letter-spacing:.08em}
+.iconbtn{width:38px;height:38px;border-radius:13px;border:1px solid var(--line);background:#0c1118;color:#cbd4df;display:grid;place-items:center}
+.hero{padding:18px 0 6px}
+.eyebrow{font-size:11px;letter-spacing:.16em;color:var(--muted);font-weight:800;text-transform:uppercase}
+.hero h2{font-size:32px;line-height:1.07;letter-spacing:-.055em;margin:8px 0 8px;max-width:420px}
+.hero h2 span{background:linear-gradient(100deg,#fff 10%,#b9f8d8 55%,#aeeaff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:13px;line-height:1.6;margin:0;max-width:420px}
+.card{background:linear-gradient(180deg,rgba(18,24,33,.92),rgba(11,15,21,.94));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.setup{margin-top:20px;padding:18px}
+.setup-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.setup-title h3{margin:0;font-size:15px}
+.pill{font-size:10px;font-weight:850;letter-spacing:.08em;padding:7px 9px;border-radius:999px;background:rgba(105,240,174,.09);color:var(--green);border:1px solid rgba(105,240,174,.16)}
+.money-input{position:relative}
+.money-input .symbol{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-weight:850;font-size:22px;color:#93a0b1}
+.money-input input{width:100%;height:66px;border:1px solid var(--line);border-radius:19px;background:#090d13;color:#fff;padding:0 18px 0 42px;font-size:26px;font-weight:850;outline:none;letter-spacing:-.03em}
+.money-input input:focus{border-color:rgba(105,215,255,.34);box-shadow:0 0 0 4px rgba(105,215,255,.06)}
+.setup small{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin:10px 3px 14px}
+.primary{width:100%;border:0;border-radius:18px;height:54px;font-weight:900;color:#06100d;background:linear-gradient(110deg,var(--green),#91f8d0 54%,var(--cyan));box-shadow:0 14px 34px rgba(105,240,174,.12)}
+.hidden{display:none!important}
+.dashboard{display:none}
+.dashboard.show{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 10px}
+.metric{padding:16px;min-height:110px;position:relative;overflow:hidden}
+.metric:after{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-45px;top:-45px;background:radial-gradient(circle,rgba(105,215,255,.08),transparent 70%)}
+.label{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.value{font-size:23px;font-weight:900;letter-spacing:-.04em;margin-top:9px}
+.sub{font-size:10px;color:var(--muted);margin-top:5px}
+.mission{padding:18px;margin-top:10px;position:relative;overflow:hidden}
+.mission:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(105,240,174,.035),transparent 38%,rgba(105,215,255,.035));pointer-events:none}
+.mission-head{display:flex;align-items:start;justify-content:space-between;gap:14px}
+.mission h3{font-size:18px;margin:4px 0 0;letter-spacing:-.02em}
+.daybadge{white-space:nowrap;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:11px;font-weight:850;color:#c9d2dd;background:rgba(255,255,255,.025)}
+.focus{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-top:18px}
+.bigtarget .amount{font-size:37px;font-weight:950;letter-spacing:-.065em;margin-top:5px}
+.bigtarget .amount.positive{color:var(--green)}
+.bigtarget .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.ring{--p:0;width:90px;height:90px;border-radius:50%;background:conic-gradient(var(--green) calc(var(--p)*1%),rgba(255,255,255,.06) 0);display:grid;place-items:center;position:relative}
+.ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0e131b}
+.ring .inside{z-index:1;text-align:center}
+.ring b{display:block;font-size:18px}
+.ring span{font-size:9px;color:var(--muted);font-weight:750}
+.triplet{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.mini{background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:16px;padding:12px 10px}
+.mini b{display:block;font-size:13px;margin-top:5px}
+.mini span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:800}
+.lotbox{margin-top:12px;padding:15px;border-radius:18px;border:1px solid rgba(105,215,255,.12);background:rgba(105,215,255,.035);display:flex;align-items:center;justify-content:space-between;gap:14px}
+.lotbox .lot{font-size:22px;font-weight:950}
+.lotbox p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.4}
+.lotflag{font-size:10px;font-weight:900;padding:7px 9px;border-radius:999px;background:rgba(255,215,106,.09);color:var(--gold);border:1px solid rgba(255,215,106,.16)}
+.section-head{display:flex;align-items:end;justify-content:space-between;margin:24px 2px 10px}
+.section-head h3{font-size:15px;margin:0}
+.section-head span{font-size:10px;color:var(--muted)}
+.close-card{padding:16px}
+.close-card .row{display:flex;gap:10px}
+.close-card input{flex:1;min-width:0;height:52px;border-radius:16px;border:1px solid var(--line);background:#090d13;color:#fff;font-weight:850;font-size:18px;padding:0 14px;outline:none}
+.close-card button{height:52px;border-radius:16px;border:0;background:#eef4f7;color:#071013;font-weight:900;padding:0 16px}
+.close-card p{font-size:10px;color:var(--muted);line-height:1.5;margin:10px 2px 0}
+.notice{margin-top:10px;border-radius:16px;padding:12px 13px;font-size:11px;line-height:1.5;border:1px solid var(--line);display:none}
+.notice.show{display:block}
+.notice.good{background:rgba(105,240,174,.055);color:#b8f8d9;border-color:rgba(105,240,174,.14)}
+.notice.bad{background:rgba(255,107,122,.055);color:#ffc0c7;border-color:rgba(255,107,122,.14)}
+.plan-card{overflow:hidden}
+.plan-toolbar{padding:14px 15px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.plan-toolbar b{font-size:13px}
+.reset{border:0;background:transparent;color:#8793a2;font-size:10px}
+.table-wrap{overflow:auto;max-height:440px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th{position:sticky;top:0;background:#0e131b;color:#768292;font-size:9px;text-transform:uppercase;letter-spacing:.08em;text-align:right;padding:11px 12px;z-index:1}
+th:first-child,td:first-child{text-align:left}
+td{padding:12px;border-top:1px solid rgba(255,255,255,.055);font-size:11px;text-align:right;color:#cdd5df}
+tr.current{background:rgba(105,215,255,.035)}
+td strong{font-size:12px;color:#fff}
+.status{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 7px;font-size:9px;font-weight:850}
+.status.wait{color:#8e99a7;background:rgba(255,255,255,.045)}
+.status.hit{color:var(--green);background:rgba(105,240,174,.08)}
+.status.miss{color:var(--red);background:rgba(255,107,122,.08)}
+.dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.advanced{margin-top:10px}
+details{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.018);overflow:hidden}
+summary{padding:14px 15px;font-size:11px;font-weight:850;color:#aab5c3;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+.advanced-body{padding:0 15px 15px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field label{display:block;font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:0 0 6px 2px}
+.field input{width:100%;height:44px;border-radius:13px;border:1px solid var(--line);background:#090d13;color:#fff;padding:0 11px;outline:none;font-size:12px}
+.warning{margin:18px 2px;color:#5f6875;font-size:9px;line-height:1.55}
+.bottom{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,9,12,0),rgba(7,9,12,.94) 22%,rgba(7,9,12,.98));z-index:20}
+.nav{height:62px;border:1px solid var(--line);background:rgba(13,17,23,.92);backdrop-filter:blur(22px);border-radius:21px;display:grid;grid-template-columns:repeat(3,1fr);padding:5px}
+.nav button{border:0;background:transparent;color:#687383;border-radius:16px;font-size:9px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.nav button.active{background:rgba(255,255,255,.055);color:#f7f9fc}
+.nav svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
+.sheet{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);display:none;align-items:flex-end}
+.sheet.show{display:flex}
+.sheet-inner{width:min(520px,100%);margin:auto;background:#0c1118;border:1px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;padding:9px 18px calc(22px + env(safe-area-inset-bottom));animation:up .24s ease}
+@keyframes up{from{transform:translateY(40px);opacity:.3}to{transform:none;opacity:1}}
+.handle{width:44px;height:5px;border-radius:99px;background:#28303a;margin:0 auto 18px}
+.sheet h3{margin:0 0 6px;font-size:20px}
+.sheet p{font-size:11px;color:var(--muted);line-height:1.5;margin:0 0 16px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.result-grid div{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.025)}
+.result-grid span{font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:800}
+.result-grid b{display:block;font-size:16px;margin-top:5px}
+.sheet .done{width:100%;height:52px;border:0;border-radius:17px;font-weight:900;background:#eef4f7;color:#071013}
+.empty{padding:22px;text-align:center;color:var(--muted);font-size:11px}
+@media(max-width:370px){.hero h2{font-size:28px}.bigtarget .amount{font-size:32px}.triplet{gap:6px}.mini{padding:10px 8px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="safe"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark"></div>
+      <div><h1>ONE MONTH</h1><p>TRADING SYSTEM</p></div>
+    </div>
+    <button class="iconbtn" id="topSettings" aria-label="settings">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.2 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H2.4V9.6h.09A1.7 1.7 0 0 0 4.2 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.6 4.2a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V2.4h4v.09A1.7 1.7 0 0 0 15 4.2a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 8.6a1.7 1.7 0 0 0 .6 1 1.7 1.7 0 0 0 1.1.4h.09v4h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg>
+    </button>
+  </header>
+
+  <section class="hero" id="intro">
+    <div class="eyebrow">Adaptive 30-day plan</div>
+    <h2>ใส่ทุนครั้งเดียว<br><span>ที่เหลือให้ระบบจัดการ</span></h2>
+    <p>ระบบสร้างเป้ารายเดือน แตกเป็นเป้ารายวัน และปรับแผนใหม่จากผลจริงทุกวันโดยอัตโนมัติ</p>
+  </section>
+
+  <section class="setup card" id="setup">
+    <div class="setup-title"><h3>ทุนเริ่มต้น</h3><span class="pill">AUTO PLAN</span></div>
+    <div class="money-input"><span class="symbol">$</span><input id="capital" inputmode="decimal" placeholder="100.00" value="100"></div>
+    <small>ค่าเริ่มต้นของระบบตั้งเป้ารวมประมาณ +10% ภายใน 30 session แล้วคำนวณแบบทบต้นให้ทั้งหมด</small>
+    <button class="primary" id="buildPlan">สร้างแผนของฉัน</button>
+  </section>
+
+  <main class="dashboard" id="dashboard">
+    <div class="grid2">
+      <div class="metric card"><div class="label">Current Balance</div><div class="value" id="currentBal">$0.00</div><div class="sub" id="pnlText">เริ่มต้นแผน</div></div>
+      <div class="metric card"><div class="label">Month Target</div><div class="value" id="monthTarget">$0.00</div><div class="sub" id="monthGrowth">Auto-generated</div></div>
+    </div>
+
+    <section class="mission card">
+      <div class="mission-head">
+        <div><div class="eyebrow">Today's mission</div><h3 id="todayTitle">DAY 1</h3></div>
+        <div class="daybadge" id="planHealth">PLAN HEALTH 100</div>
+      </div>
+
+      <div class="focus">
+        <div class="bigtarget">
+          <div class="label">กำไรเป้าวันนี้</div>
+          <div class="amount positive" id="todayProfit">+$0.00</div>
+          <div class="hint" id="todayRate">เป้ารายวัน 0.00%</div>
+        </div>
+        <div class="ring" id="ring" style="--p:0">
+          <div class="inside"><b id="ringPct">0%</b><span>MONTH</span></div>
+        </div>
+      </div>
+
+      <div class="triplet">
+        <div class="mini"><span>เริ่มวันนี้</span><b id="todayStart">$0.00</b></div>
+        <div class="mini"><span>ปิดขั้นต่ำ</span><b id="todayClose">$0.00</b></div>
+        <div class="mini"><span>เหลือ</span><b id="daysLeft">30 วัน</b></div>
+      </div>
+
+      <div class="lotbox">
+        <div>
+          <div class="label">XAUUSD LOT GUIDE</div>
+          <div class="lot" id="lotGuide">&lt; 0.01 lot</div>
+          <p id="lotNote">คำนวณจาก risk model ของระบบ</p>
+        </div>
+        <div class="lotflag" id="lotFlag">AUTO</div>
+      </div>
+    </section>
+
+    <div class="section-head"><h3>จบวัน</h3><span>กรอก Balance จริงหลังหยุดเทรด</span></div>
+    <section class="close-card card">
+      <div class="row">
+        <input id="actualClose" inputmode="decimal" placeholder="เช่น 105.40">
+        <button id="saveDay">บันทึก</button>
+      </div>
+      <p>ระบบจะเทียบกับเป้าวันนี้ → ติ๊ก HIT/MISS → แล้ว Rebalance วันถัดไปให้อัตโนมัติ</p>
+      <div class="notice" id="notice"></div>
+    </section>
+
+    <div class="section-head"><h3>30-Day Roadmap</h3><span id="completedText">0 / 30 completed</span></div>
+    <section class="plan-card card">
+      <div class="plan-toolbar"><b>Adaptive Plan</b><button class="reset" id="resetBtn">เริ่มแผนใหม่</button></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Day</th><th>Balance</th><th>Target</th><th>Expected</th><th>Actual</th><th>Status</th></tr></thead>
+          <tbody id="planBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="section-head"><h3>ระบบเบื้องหลัง</h3><span>ไม่จำเป็นต้องตั้งค่า</span></div>
+    <section class="advanced">
+      <details id="advanced">
+        <summary>Advanced · Lot & Risk Engine</summary>
+        <div class="advanced-body">
+          <div class="field"><label>Risk / trade (%)</label><input id="riskPct" inputmode="decimal" value="0.5"></div>
+          <div class="field"><label>XAU SL move ($)</label><input id="slMove" inputmode="decimal" value="5"></div>
+          <div class="field"><label>Contract size</label><input id="contractSize" inputmode="decimal" value="100"></div>
+          <div class="field"><label>Min lot</label><input id="minLot" inputmode="decimal" value="0.01"></div>
+        </div>
+      </details>
+    </section>
+
+    <p class="warning">Trading targets เป็นเพียงแผนทางคณิตศาสตร์ ไม่ใช่การรับประกันผลตอบแทน และ Lot Guide เป็นค่าประมาณจากสมมติฐาน XAUUSD ที่ตั้งไว้ในระบบ ควรตรวจสอบ contract specification ของโบรกเกอร์ก่อนใช้งานจริง</p>
+  </main>
+</div>
+
+<div class="bottom">
+  <nav class="nav">
+    <button class="active" data-go="dashboard">
+      <svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>OVERVIEW
+    </button>
+    <button data-go="plan">
+      <svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg>PLAN
+    </button>
+    <button data-go="settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>ENGINE
+    </button>
+  </nav>
+</div>
+
+<div class="sheet" id="resultSheet">
+  <div class="sheet-inner">
+    <div class="handle"></div>
+    <h3 id="resultTitle">Target Hit</h3>
+    <p id="resultDesc">บันทึกผลวันนี้เรียบร้อยแล้ว ระบบคำนวณวันถัดไปให้แล้ว</p>
+    <div class="result-grid">
+      <div><span>Actual close</span><b id="resultActual">$0.00</b></div>
+      <div><span>Day P/L</span><b id="resultPnl">$0.00</b></div>
+      <div><span>Next target</span><b id="resultNext">$0.00</b></div>
+      <div><span>Plan health</span><b id="resultHealth">100</b></div>
+    </div>
+    <button class="done" id="closeSheet">ไปวันถัดไป</button>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const fmt = n => '$' + Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct = n => (n*100).toFixed(2)+'%';
+const KEY='one_month_trading_system_v3';
+
+let state = {
+  start:0,
+  originalGoal:0,
+  activeGoal:0,
+  totalDays:30,
+  dailyRate:0,
+  days:[],
+  settings:{riskPct:.5,slMove:5,contractSize:100,minLot:.01}
+};
+
+function load(){
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY));
+    if(s && s.start>0){state=s; showDashboard(); render(); return}
+  }catch(e){}
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+
+function buildInitial(capital){
+  const totalDays=30;
+  const monthlyGrowth=.10; // system baseline: +10% per 30 sessions
+  const goal=capital*(1+monthlyGrowth);
+  const rate=Math.pow(goal/capital,1/totalDays)-1;
+  state={
+    start:capital,
+    originalGoal:goal,
+    activeGoal:goal,
+    totalDays,
+    dailyRate:rate,
+    days:[],
+    settings:{riskPct:.5,slMove:5,contractSize:100,minLot:.01}
+  };
+  recalcFuture();
+  save();
+}
+
+function completedCount(){return state.days.filter(d=>d.actual!=null).length}
+function currentIndex(){return Math.min(completedCount(),state.totalDays-1)}
+function latestBalance(){
+  const done=state.days.filter(d=>d.actual!=null);
+  return done.length ? done[done.length-1].actual : state.start;
+}
+
+function recalcFuture(){
+  const completed=completedCount();
+  const current=latestBalance();
+  const remaining=state.totalDays-completed;
+
+  // Smart rebalance: keep original goal if required rate is sane.
+  // If catching up would demand >0.8% every remaining session, cap the pace
+  // and lower the active target instead of forcing an unrealistic recovery curve.
+  let targetGoal=state.originalGoal;
+  let required=remaining>0 ? Math.pow(targetGoal/current,1/remaining)-1 : 0;
+
+  if(current>=state.originalGoal){
+    required=0;
+    targetGoal=current;
+  }else if(required>.008){
+    required=.008;
+    targetGoal=current*Math.pow(1+required,remaining);
+  }else if(required<0){
+    required=0;
+  }
+  state.activeGoal=targetGoal;
+  state.dailyRate=required;
+
+  const oldActual = state.days.map(d=>d.actual);
+  const oldStatus = state.days.map(d=>d.status);
+  const rebuilt=[];
+  let bal=state.start;
+
+  for(let i=0;i<state.totalDays;i++){
+    if(i<completed){
+      const startBal = i===0 ? state.start : Number(oldActual[i-1]);
+      const actual=Number(oldActual[i]);
+      // preserve the target snapshot if possible; if not, estimate from old row
+      const previous=state.days[i]||{};
+      rebuilt.push({
+        day:i+1,
+        start:startBal,
+        profit:Number(previous.profit ?? Math.max(0,(previous.expected??startBal)-startBal)),
+        expected:Number(previous.expected ?? startBal),
+        actual,
+        status:oldStatus[i] || (actual>=Number(previous.expected??startBal)?'hit':'miss'),
+        rate:Number(previous.rate ?? 0)
+      });
+      bal=actual;
+    }else{
+      const p=bal*required;
+      const exp=bal+p;
+      rebuilt.push({day:i+1,start:bal,profit:p,expected:exp,actual:null,status:'wait',rate:required});
+      bal=exp;
+    }
+  }
+  state.days=rebuilt;
+}
+
+function showDashboard(){
+  $('#intro').classList.add('hidden');
+  $('#setup').classList.add('hidden');
+  $('#dashboard').classList.add('show');
+}
+
+function calcHealth(){
+  const done=state.days.filter(d=>d.actual!=null);
+  if(!done.length) return 100;
+  const hits=done.filter(d=>d.status==='hit').length;
+  const current=latestBalance();
+  const progress=Math.max(0,Math.min(1,(current-state.start)/(state.originalGoal-state.start||1)));
+  const timeProgress=done.length/state.totalDays;
+  const pace = timeProgress ? Math.min(1.1, progress/timeProgress) : 1;
+  return Math.max(0,Math.min(100,Math.round((hits/done.length)*55 + Math.min(1,pace)*45)));
+}
+
+function lotGuide(balance){
+  const s=state.settings;
+  const riskMoney=balance*(Number(s.riskPct||0)/100);
+  const denom=Number(s.slMove||0)*Number(s.contractSize||0);
+  if(!denom || riskMoney<=0) return {text:'—',note:'ตรวจค่าระบบ Lot',flag:'CHECK'};
+  const raw=riskMoney/denom;
+  const min=Number(s.minLot||.01);
+  if(raw<min){
+    return {
+      text:'< '+min.toFixed(2)+' lot',
+      note:`Risk ${fmt(riskMoney)} ต่ำกว่า lot ขั้นต่ำของโมเดล`,
+      flag:'LOW SIZE'
+    };
+  }
+  const rounded=Math.floor(raw/min)*min;
+  return {
+    text:rounded.toFixed(2)+' lot',
+    note:`Risk budget ${fmt(riskMoney)} · SL ${s.slMove}$`,
+    flag:'AUTO'
+  };
+}
+
+function render(){
+  if(!state.start)return;
+  const done=completedCount();
+  const idx=currentIndex();
+  const d=state.days[idx];
+  const current=latestBalance();
+  const net=current-state.start;
+  const progress=Math.max(0,Math.min(100,((current-state.start)/(state.originalGoal-state.start||1))*100));
+  const health=calcHealth();
+
+  $('#currentBal').textContent=fmt(current);
+  $('#pnlText').textContent=(net>=0?'+':'')+fmt(net)+' since start';
+  $('#monthTarget').textContent=fmt(state.activeGoal);
+  const activeGrowth=(state.activeGoal/state.start-1);
+  $('#monthGrowth').textContent=(state.activeGoal<state.originalGoal-.001?'Rebalanced · ':'System goal · ')+pct(activeGrowth);
+
+  if(done>=state.totalDays){
+    $('#todayTitle').textContent='MONTH COMPLETE';
+    $('#todayProfit').textContent='DONE';
+    $('#todayRate').textContent='ครบ 30 session แล้ว';
+    $('#todayStart').textContent=fmt(current);
+    $('#todayClose').textContent=fmt(current);
+    $('#daysLeft').textContent='0 วัน';
+    $('#saveDay').disabled=true;
+    $('#actualClose').disabled=true;
+  }else{
+    $('#todayTitle').textContent='DAY '+(idx+1);
+    $('#todayProfit').textContent='+'+fmt(d.profit);
+    $('#todayRate').textContent='เป้ารายวัน '+pct(d.rate);
+    $('#todayStart').textContent=fmt(d.start);
+    $('#todayClose').textContent=fmt(d.expected);
+    $('#daysLeft').textContent=(state.totalDays-done)+' วัน';
+    $('#actualClose').placeholder='เป้าปิด '+fmt(d.expected);
+  }
+
+  $('#ring').style.setProperty('--p',progress);
+  $('#ringPct').textContent=Math.round(progress)+'%';
+  $('#planHealth').textContent='PLAN HEALTH '+health;
+  $('#completedText').textContent=done+' / '+state.totalDays+' completed';
+
+  const lg=lotGuide(current);
+  $('#lotGuide').textContent=lg.text;
+  $('#lotNote').textContent=lg.note;
+  $('#lotFlag').textContent=lg.flag;
+
+  renderTable();
+  syncSettings();
+  save();
+}
+
+function renderTable(){
+  const done=completedCount(), idx=currentIndex();
+  $('#planBody').innerHTML=state.days.map((d,i)=>{
+    let st=d.status, label=st==='hit'?'HIT':st==='miss'?'MISS':'WAIT';
+    return `<tr class="${i===idx && done<state.totalDays?'current':''}">
+      <td><strong>${String(d.day).padStart(2,'0')}</strong></td>
+      <td>${fmt(d.start)}</td>
+      <td>+${fmt(d.profit)}</td>
+      <td>${fmt(d.expected)}</td>
+      <td>${d.actual==null?'—':fmt(d.actual)}</td>
+      <td><span class="status ${st}"><i class="dot"></i>${label}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function syncSettings(){
+  $('#riskPct').value=state.settings.riskPct;
+  $('#slMove').value=state.settings.slMove;
+  $('#contractSize').value=state.settings.contractSize;
+  $('#minLot').value=state.settings.minLot;
+}
+
+$('#buildPlan').addEventListener('click',()=>{
+  const cap=Number($('#capital').value);
+  if(!cap || cap<=0){$('#capital').focus();return}
+  buildInitial(cap);showDashboard();render();
+});
+
+$('#saveDay').addEventListener('click',()=>{
+  const actual=Number($('#actualClose').value);
+  const done=completedCount();
+  if(!actual || actual<=0 || done>=state.totalDays){$('#actualClose').focus();return}
+  const i=done;
+  const row=state.days[i];
+  const pnl=actual-row.start;
+  const hit=actual>=row.expected;
+  row.actual=actual;
+  row.status=hit?'hit':'miss';
+
+  // Preserve completed row then adapt remaining plan
+  state.days[i]=row;
+  recalcFuture();
+  save();render();
+
+  const health=calcHealth();
+  $('#resultTitle').textContent=hit?'✓ Target Hit':'Target Miss';
+  $('#resultTitle').style.color=hit?'var(--green)':'var(--red)';
+  $('#resultDesc').textContent=hit
+    ?'วันนี้ทำถึงเป้าแล้ว ระบบอัปเดต Balance และคำนวณเป้าวันถัดไปให้เรียบร้อย'
+    :'วันนี้ต่ำกว่าเป้า ระบบ Rebalance แผนที่เหลือให้ใหม่ โดยไม่บังคับอัตราไล่ทุนที่สูงเกินโมเดล';
+  $('#resultActual').textContent=fmt(actual);
+  $('#resultPnl').textContent=(pnl>=0?'+':'')+fmt(pnl);
+  const n=completedCount()<state.totalDays?state.days[currentIndex()].profit:0;
+  $('#resultNext').textContent=completedCount()<state.totalDays?'+'+fmt(n):'DONE';
+  $('#resultHealth').textContent=health+'/100';
+  $('#resultSheet').classList.add('show');
+  $('#actualClose').value='';
+});
+
+$('#closeSheet').addEventListener('click',()=>$('#resultSheet').classList.remove('show'));
+$('#resultSheet').addEventListener('click',e=>{if(e.target.id==='resultSheet')e.currentTarget.classList.remove('show')});
+
+$('#resetBtn').addEventListener('click',()=>{
+  if(confirm('เริ่มแผนใหม่และลบผล 30 วันเดิม?')){
+    localStorage.removeItem(KEY);location.reload();
+  }
+});
+
+['riskPct','slMove','contractSize','minLot'].forEach(id=>{
+  $('#'+id).addEventListener('change',()=>{
+    state.settings[id]=Number($('#'+id).value);
+    render();
+  });
+});
+
+function go(where){
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.go===where));
+  if(where==='dashboard') window.scrollTo({top:0,behavior:'smooth'});
+  if(where==='plan') document.querySelector('.plan-card')?.scrollIntoView({behavior:'smooth',block:'start'});
+  if(where==='settings'){
+    $('#advanced').open=true;
+    document.querySelector('.advanced')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+$('#topSettings').addEventListener('click',()=>go('settings'));
+
+load();
+</script>
+</body>
+</html>
