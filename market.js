@@ -1,247 +1,64 @@
-<!doctype html>
-<html lang="th">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <meta name="theme-color" content="#0b0e12">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="One Month">
-  <title>One Month — Trading Journal</title>
-  <link rel="stylesheet" href="./app.css">
-</head>
-<body>
-  <div class="app-shell">
-    <header class="topbar">
-      <button class="brand" type="button" data-nav="home" aria-label="One Month Home">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-copy"><b>ONE MONTH</b><small>TRADING JOURNAL</small></span>
-      </button>
-      <div class="top-actions">
-        <span class="market-pill" id="marketModePill"><i></i><b id="marketModeText">OFFLINE</b></span>
-        <button class="icon-button" id="openSettings" type="button" aria-label="Settings">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
-        </button>
-      </div>
-    </header>
+import {addApiUsage,loadMarketCache,saveMarketCache} from './storage.js';
 
-    <main>
-      <section class="view active" id="homeView" data-view="home">
-        <section class="hero-panel">
-          <div class="hero-kicker">30-DAY PLAN</div>
-          <div class="hero-line">
-            <div>
-              <h1 id="heroBalance">$0.00</h1>
-              <p id="heroBalanceMeta">เริ่มต้นแผนของคุณ</p>
-            </div>
-            <button class="soft-button" id="editTarget" type="button">แก้เป้า</button>
-          </div>
-          <div class="hero-progress"><i id="monthProgressBar"></i></div>
-          <div class="hero-stats">
-            <div><span>MONTH TARGET</span><b id="homeTarget">$0.00</b></div>
-            <div><span>DAY</span><b id="homeDay">01 / 30</b></div>
-            <div><span>PACE</span><b id="homePace">ON PLAN</b></div>
-          </div>
-        </section>
+export const TF={M1:{api:'1min',ttl:55_000},M5:{api:'5min',ttl:270_000},M15:{api:'15min',ttl:840_000},H1:{api:'1h',ttl:3_300_000}};
 
-        <section class="section-block">
-          <div class="section-title"><div><span>TODAY</span><h2>แผนของวันนี้</h2></div><span class="status-dot neutral" id="todayStatus">WAIT</span></div>
-          <article class="today-card">
-            <div class="today-target">
-              <span>PROFIT TARGET</span>
-              <strong id="todayProfit">+$0.00</strong>
-              <small id="todayRate">0.00% / session</small>
-            </div>
-            <div class="today-levels">
-              <div><span>START</span><b id="todayStart">$0.00</b></div>
-              <div><span>CLOSE GOAL</span><b id="todayClose">$0.00</b></div>
-              <div><span>MAX LOSS</span><b id="todayMaxLoss">-$0.00</b></div>
-            </div>
-            <div class="day-rule" id="todayRule">ระบบจะคำนวณจุดหยุดของวันให้อัตโนมัติ</div>
-          </article>
-        </section>
+export function marketStatus(now=new Date()){
+  const day=now.getDay(),h=now.getUTCHours(),m=now.getUTCMinutes(),mins=h*60+m;
+  if(day===6)return{open:false,label:'MARKET CLOSED'};
+  if(day===0&&mins<22*60)return{open:false,label:'MARKET CLOSED'};
+  if(day===5&&mins>=22*60)return{open:false,label:'MARKET CLOSED'};
+  return{open:true,label:'MARKET OPEN'};
+}
 
-        <section class="section-block">
-          <div class="section-title"><div><span>END SESSION</span><h2>ปิดวัน</h2></div><small>Balance จริง</small></div>
-          <div class="end-session-card">
-            <label class="input-label" for="actualBalance">ยอด Balance หลังหยุดเทรด</label>
-            <div class="input-action-row">
-              <div class="money-input"><span>$</span><input id="actualBalance" inputmode="decimal" placeholder="0.00"></div>
-              <button class="primary-button compact" id="saveDay" type="button">บันทึก</button>
-            </div>
-            <p id="endSessionHint">ระบบจะเทียบกับเป้า แล้วปรับ Roadmap วันที่เหลือให้ใหม่</p>
-          </div>
-        </section>
-      </section>
+export async function loadStaticPack(){
+  const res=await fetch('./xauusd.json',{cache:'no-store'});
+  if(!res.ok)throw new Error('โหลด Historical Pack ไม่สำเร็จ');
+  const json=await res.json();
+  return json.timeframes||{};
+}
 
-      <section class="view" id="aiView" data-view="ai">
-        <section class="desk-header">
-          <div>
-            <span class="eyebrow">MARKET DESK</span>
-            <h1>อ่านตลาดก่อนเข้าไม้</h1>
-            <p>ใช้ข้อมูล XAUUSD จริง + ข่าว + โครงสร้างหลาย Timeframe + Memory ของสัญญาณเราเอง</p>
-          </div>
-          <button class="ai-switch" id="aiSwitch" type="button" aria-pressed="false"><i></i><span><b>AI OFF</b><small>0 credit</small></span></button>
-        </section>
+export async function loadNewsPack(){
+  const res=await fetch('./news.json',{cache:'no-store'});
+  if(!res.ok)throw new Error('โหลด News Pack ไม่สำเร็จ');
+  return await res.json();
+}
 
-        <section class="desk-metrics">
-          <article><span>BEST TF</span><b id="bestTf">—</b><small id="bestTfMeta">รอสแกน</small></article>
-          <article><span>DIRECTION</span><b id="direction">WAIT</b><small id="confidence">Confidence —</small></article>
-          <article><span>LOT TODAY</span><b id="lotToday">—</b><small id="maxLotToday">Max —</small></article>
-          <article><span>API TODAY</span><b id="apiToday">0</b><small id="apiLast">Last scan 0</small></article>
-        </section>
+function normalize(values){return (values||[]).slice().reverse().map(v=>({ts:Date.parse(String(v.datetime).replace(' ','T')+'Z'),datetime:v.datetime,open:+v.open,high:+v.high,low:+v.low,close:+v.close})).filter(c=>[c.open,c.high,c.low,c.close].every(Number.isFinite))}
 
-        <section class="command-card">
-          <div class="command-head">
-            <div><span class="eyebrow">COMMAND</span><h2 id="commandTitle">AI ยังปิดอยู่</h2></div>
-            <span class="command-state wait" id="commandState">WAIT</span>
-          </div>
-          <p id="commandReason">เปิด AI เมื่อพร้อมให้ระบบวิเคราะห์ตลาด</p>
-          <div class="command-grid">
-            <div><span>REGIME</span><b id="regime">—</b></div>
-            <div><span>SESSION</span><b id="session">—</b></div>
-            <div><span>MEMORY EDGE</span><b id="memoryEdge">NEW</b></div>
-            <div><span>NEXT NEWS</span><b id="nextNews">—</b></div>
-          </div>
-          <div class="command-action" id="commandAction">ยังไม่มีคำสั่ง</div>
-        </section>
+export async function fetchTf(tf,apiKey,force=false){
+  if(!TF[tf])throw new Error('Timeframe ไม่รองรับ');
+  if(!apiKey)throw new Error('ยังไม่มี Twelve Data API Key');
+  const cache=loadMarketCache(),hit=cache[tf],now=Date.now();
+  if(!force&&hit&&now-hit.at<TF[tf].ttl&&Array.isArray(hit.data)&&hit.data.length>20)return{data:hit.data,credit:0,cached:true};
+  const url='https://api.twelvedata.com/time_series?symbol='+encodeURIComponent('XAU/USD')+'&interval='+encodeURIComponent(TF[tf].api)+'&outputsize=240&timezone=UTC&apikey='+encodeURIComponent(apiKey);
+  const res=await fetch(url,{cache:'no-store'}),json=await res.json();
+  if(!res.ok||json.status==='error'||!Array.isArray(json.values))throw new Error(json.message||'Market API error');
+  const data=normalize(json.values);cache[tf]={at:now,data};saveMarketCache(cache);addApiUsage(1);return{data,credit:1,cached:false};
+}
 
-        <section class="chart-card">
-          <div class="chart-head">
-            <div>
-              <span class="eyebrow">XAUUSD</span>
-              <h2><span id="chartTf">M15</span> <span class="chart-dot">·</span> <span id="chartPrice">—</span></h2>
-            </div>
-            <div class="chart-head-actions">
-              <span class="feed-pill" id="feedPill"><i></i><b>STATIC DATA</b></span>
-              <button class="chart-latest" id="chartLatest" type="button">LATEST</button>
-            </div>
-          </div>
-          <div class="chart-ohlc" id="chartOhlc">
-            <span id="chartCandleTime">—</span>
-            <span>O <b id="ohlcO">—</b></span>
-            <span>H <b id="ohlcH">—</b></span>
-            <span>L <b id="ohlcL">—</b></span>
-            <span>C <b id="ohlcC">—</b></span>
-          </div>
-          <div class="chart-wrap" id="chartWrap">
-            <canvas id="marketChart" aria-label="XAUUSD interactive candlestick chart"></canvas>
-            <div class="chart-empty" id="chartEmpty">
-              <div class="chart-empty-mark"><svg viewBox="0 0 24 24"><path d="M4 18V9m5 9V5m5 13v-7m5 7V3"/></svg></div>
-              <b id="chartEmptyTitle">กำลังโหลด Historical Pack</b>
-              <p id="chartEmptyText">กราฟจะใช้ข้อมูลจาก GitHub ก่อนโดยไม่เสีย API credit</p>
-              <button id="chartEmptyAction" class="secondary-button" type="button">โหลดข้อมูล</button>
-            </div>
-          </div>
-          <div class="chart-legend">
-            <span><i class="line fast"></i>EMA 9</span>
-            <span><i class="line slow"></i>EMA 21</span>
-            <span><i class="structure-stroke"></i>SWING</span>
-            <small>ลากเพื่อย้อน · pinch เพื่อ zoom · แตะแท่งเพื่อดู OHLC</small>
-          </div>
-          <div class="tf-tabs" id="tfTabs"><button data-tf="M1">M1</button><button data-tf="M5">M5</button><button class="active" data-tf="M15">M15</button><button data-tf="H1">H1</button></div>
-        </section>
+export async function refreshNews(teKey=''){
+  if(!teKey)return loadNewsPack();
+  const auth=encodeURIComponent(teKey),url='https://api.tradingeconomics.com/calendar/country/united%20states?c='+auth+'&importance=2';
+  const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error('News API error');const raw=await res.json();
+  return {generatedAt:new Date().toISOString(),events:filterGoldNews(raw)};
+}
 
-        <section class="setup-card">
-          <div class="setup-head"><div><span class="eyebrow">SETUP</span><h2 id="setupTitle">WAIT</h2></div><span class="score-ring" id="setupScore">—</span></div>
-          <p id="setupReason">ระบบยังไม่อนุญาต Entry</p>
-          <div class="setup-levels">
-            <div><span>ENTRY</span><b id="entry">—</b></div>
-            <div><span>STOP LOSS</span><b id="sl">—</b></div>
-            <div><span>TP1</span><b id="tp1">—</b></div>
-            <div><span>TP2</span><b id="tp2">—</b></div>
-          </div>
-          <div class="setup-foot"><span>R:R <b id="rr">—</b></span><span id="setupExpiry">No active signal</span></div>
-        </section>
+export function filterGoldNews(events=[]){
+  const keys=['non farm','nonfarm','payroll','cpi','consumer price','pce','fed','fomc','powell','gdp','jobless','jolts','ppi','producer price','retail sales','ism','adp','employment','unemployment','interest rate'];
+  return events.filter(e=>{
+    const s=((e.Event||e.event||'')+' '+(e.Category||'')).toLowerCase();
+    return keys.some(k=>s.includes(k));
+  }).map(e=>({date:e.Date||e.date,event:e.Event||e.event||'US Event',importance:Number(e.Importance??e.importance??2),actual:e.Actual??e.actual??null,forecast:e.Forecast??e.forecast??null,previous:e.Previous??e.previous??null}));
+}
 
-        <section class="section-block">
-          <div class="section-title"><div><span>NEWS RADAR</span><h2>ข่าวกระทบทอง</h2></div><button class="text-button" id="refreshNews" type="button">รีเฟรช</button></div>
-          <div class="news-list" id="newsList"><div class="empty-row">กำลังโหลดข่าวจาก GitHub data pack</div></div>
-        </section>
-      </section>
+export function nextNews(events=[],now=new Date()){
+  const list=events.map(e=>({...e,ts:Date.parse(e.date)})).filter(e=>Number.isFinite(e.ts)&&e.ts>=now.getTime()-15*60_000).sort((a,b)=>a.ts-b.ts);
+  return list[0]||null;
+}
 
-      <section class="view" id="planView" data-view="plan">
-        <section class="page-title"><span class="eyebrow">ROADMAP</span><h1>แผน 30 วัน</h1><p>อ่านง่ายในจอเดียว ไม่มีตารางแนวนอน</p></section>
-        <section class="roadmap-summary">
-          <div><span>PROGRESS</span><b id="roadmapProgress">0%</b></div>
-          <div><span>REMAINING</span><b id="roadmapRemaining">30 days</b></div>
-          <div><span>TARGET</span><b id="roadmapTarget">$0.00</b></div>
-        </section>
-        <div class="roadmap-track"><i id="roadmapTrack"></i></div>
-        <section class="plan-list" id="planList"></section>
-      </section>
-
-      <section class="view" id="statsView" data-view="stats">
-        <section class="page-title"><span class="eyebrow">PERFORMANCE</span><h1>สถิติของระบบ</h1><p>แยกผลแผนกับผลสัญญาณ AI เพื่อดูว่าอะไรทำงานจริง</p></section>
-        <section class="stats-grid">
-          <article><span>PLAN HIT RATE</span><b id="planHitRate">—</b></article>
-          <article><span>MAX DRAWDOWN</span><b id="drawdown">0.00%</b></article>
-          <article><span>AI SIGNALS</span><b id="signalCount">0</b></article>
-          <article><span>TP HIT RATE</span><b id="signalWinRate">—</b></article>
-        </section>
-        <section class="equity-card">
-          <div class="section-title"><div><span>EQUITY</span><h2>Expected vs Actual</h2></div><small id="equityMeta">On plan</small></div>
-          <canvas id="equityChart"></canvas>
-        </section>
-        <section class="section-block">
-          <div class="section-title"><div><span>AI MEMORY</span><h2>ประวัติสัญญาณ</h2></div><button class="text-button" id="exportDataset" type="button">Export JSON</button></div>
-          <div class="memory-summary" id="memorySummary"></div>
-          <div class="replay-list" id="replayList"><div class="empty-row">ยังไม่มีสัญญาณที่จบผล</div></div>
-        </section>
-      </section>
-    </main>
-  </div>
-
-  <nav class="bottom-nav" aria-label="Primary">
-    <button class="active" data-nav="home"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>HOME</span></button>
-    <button data-nav="ai"><svg viewBox="0 0 24 24"><path d="M8 9V7a4 4 0 0 1 8 0v2M6 9h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2ZM9 13h.01M15 13h.01M9 16h6"/></svg><span>AI</span></button>
-    <button data-nav="plan"><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg><span>PLAN</span></button>
-    <button data-nav="stats"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>STATS</span></button>
-  </nav>
-
-  <div class="modal" id="settingsModal" aria-hidden="true">
-    <div class="modal-backdrop" data-close-modal></div>
-    <section class="sheet">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><span class="eyebrow">SETTINGS</span><h2>Plan & Market Data</h2></div><button class="icon-button" data-close-modal type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
-      <div class="form-section">
-        <label class="input-label" for="apiKey">Twelve Data API Key</label>
-        <div class="input-action-row"><input class="text-input" id="apiKey" type="password" placeholder="ใส่ key ของคุณ"><button class="secondary-button" id="saveApiKey" type="button">SAVE</button></div>
-        <p>Key เก็บเฉพาะเครื่องนี้ ไม่ถูกเขียนลง GitHub</p>
-      </div>
-      <div class="form-section">
-        <label class="input-label" for="teKey">Trading Economics Key · Optional</label>
-        <div class="input-action-row"><input class="text-input" id="teKey" type="password" placeholder="ปล่อยว่างเพื่อใช้ GitHub news pack"><button class="secondary-button" id="saveTeKey" type="button">SAVE</button></div>
-        <p>ถ้าไม่ใส่ ระบบใช้ข่าวจาก news.json ที่ GitHub Action อัปเดตให้</p>
-      </div>
-      <div class="form-section split">
-        <div><label class="input-label" for="riskPct">Risk / trade</label><input class="text-input" id="riskPct" inputmode="decimal" value="0.5"></div>
-        <div><label class="input-label" for="minLot">Min lot</label><input class="text-input" id="minLot" inputmode="decimal" value="0.01"></div>
-      </div>
-      <button class="primary-button" id="closeSettings" type="button">เสร็จสิ้น</button>
-      <button class="danger-button" id="resetPlan" type="button">ลบข้อมูลแผนและเริ่มใหม่</button>
-    </section>
-  </div>
-
-  <div class="modal" id="onboardingModal" aria-hidden="true">
-    <div class="modal-backdrop"></div>
-    <section class="sheet setup-sheet">
-      <div class="sheet-handle"></div>
-      <span class="eyebrow">NEW PLAN</span>
-      <h2>กำหนดทุนและเป้าของคุณ</h2>
-      <p>ระบบแนะนำเป้าจากทุนให้ก่อน แต่คุณแก้ตัวเลขได้เอง</p>
-      <label class="input-label" for="startCapital">Starting balance</label>
-      <div class="money-input large"><span>$</span><input id="startCapital" inputmode="decimal" value="100"></div>
-      <div class="target-box">
-        <div class="target-box-head"><label class="input-label" for="targetBalance">Month target</label><button class="text-button" id="useRecommended" type="button">ใช้ค่าแนะนำ</button></div>
-        <div class="money-input large"><span>$</span><input id="targetBalance" inputmode="decimal" value="107"></div>
-        <div class="target-preview"><span id="targetGrowth">+7.00% / month</span><b id="targetDaily">+0.23% / day</b></div>
-      </div>
-      <button class="primary-button" id="createPlan" type="button">สร้างแผน 30 วัน</button>
-    </section>
-  </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="./app.js"></script>
-</body>
-</html>
+export function newsLock(events=[],now=new Date()){
+  const nearest=nextNews(events,now);if(!nearest)return{lock:false,nearest:null,mins:Infinity};
+  const mins=(nearest.ts-now.getTime())/60_000;
+  const lock=nearest.importance>=3&&mins>=-10&&mins<=20;
+  return{lock,nearest,mins};
+}
