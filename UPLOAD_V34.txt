@@ -1,0 +1,24 @@
+ONEMONTH OS V34.0 PRECISION GUARD
+
+OVERWRITE IN GITHUB ROOT:
+index.html
+build-ai-history.mjs
+build-ai-learning.mjs
+reset.html
+app-v290.html
+sw.js
+version.json
+
+WORKFLOW:
+build-ai-history.yml -> .github/workflows/build-ai-history.yml
+
+DO NOT OVERWRITE/DELETE LIVE DATA:
+xauusd.json
+news.json
+ai-history.json
+ai-learning.json
+
+AFTER UPLOAD:
+Actions -> AI Background Learning -> Run workflow
+Wait for green PASS
+Then open /Trading/reset.html once.

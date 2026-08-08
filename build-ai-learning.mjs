@@ -2,7 +2,9 @@ import fs from 'node:fs';
 
 const INPUT='xauusd.json';
 const OUTPUT='ai-learning.json';
-const HALF_LIFE_DAYS=45;
+const VERSION='3.0';
+const ENGINE='ONEMONTH-PRECISION-GUARD-V3';
+const HALF_LIFE_DAYS=38;
 const PRIOR_STRENGTH=12;
 const Z90=1.645;
 const DAY=86400000;
@@ -11,6 +13,10 @@ const num=v=>{const n=Number(v);return Number.isFinite(n)?n:NaN};
 const median=a=>{const x=a.filter(Number.isFinite).slice().sort((p,q)=>p-q);if(!x.length)return 0;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2};
 const safeDiv=(a,b,f=0)=>b?a/b:f;
 
+function fingerprintPack(pack){
+  const t=pack.timeframes||pack.data||pack||{},parts=['M1','M5','M15','H1'].map(tf=>{const a=Array.isArray(t[tf])?t[tf]:[];const first=a[0]||{},last=a.at(-1)||{};return`${tf}:${a.length}:${first.ts||first.datetime||''}:${last.ts||last.datetime||''}:${last.close||''}`}).join('|')+'|'+String(pack.generatedAt||'');
+  let h=2166136261;for(let i=0;i<parts.length;i++){h^=parts.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16);
+}
 function normalize(v){
   const open=num(v.open),high=num(v.high),low=num(v.low),close=num(v.close);let ts=num(v.ts);
   if(!Number.isFinite(ts)){const d=String(v.datetime||v.date||'').trim();ts=Date.parse(d.includes('T')?d:d.replace(' ','T')+'Z')}
@@ -73,7 +79,8 @@ function walkForward(samples){
 }
 
 if(!fs.existsSync(INPUT)){console.error('Missing xauusd.json');process.exit(1)}
-const pack=JSON.parse(fs.readFileSync(INPUT,'utf8')),raw=pack.timeframes||pack.data||pack||{};
+const pack=JSON.parse(fs.readFileSync(INPUT,'utf8')),raw=pack.timeframes||pack.data||pack||{},sourceFingerprint=fingerprintPack(pack);
+try{if(fs.existsSync(OUTPUT)){const prev=JSON.parse(fs.readFileSync(OUTPUT,'utf8'));if(prev?.engine===ENGINE&&prev?.sourceFingerprint===sourceFingerprint){console.log(`No new market data: ${OUTPUT} already trained on ${sourceFingerprint}`);process.exit(0)}}}catch(_){}
 const m1=clean(raw.M1||[]),directM5=clean(raw.M5||[]),directM15=clean(raw.M15||[]);
 const derivedM5=m1.length>=300?aggregate(m1,300000):[],derivedM15=m1.length>=900?aggregate(m1,900000):[];
 const m5=directM5.length>=derivedM5.length?directM5:derivedM5,m15=directM15.length>=derivedM15.length?directM15:derivedM15;
@@ -82,7 +89,7 @@ if(m15.length>=260){candles=m15;sourceTimeframe='M15';barMinutes=15;horizonBars=
 else if(m5.length>=280){candles=m5;sourceTimeframe='M5';barMinutes=5;horizonBars={M15:3,M30:6,M60:12}}
 else if(m1.length>=320){candles=m1;sourceTimeframe='M1';barMinutes=1;horizonBars={M15:15,M30:30,M60:60}}
 else{
-  const pending={version:'2.0',engine:'ONEMONTH-PRECISION-LEARNING-V2',status:'WAIT_DATA',generatedAt:new Date().toISOString(),sourceGeneratedAt:pack.generatedAt||null,ready:false,reason:'WAITING_FOR_MORE_MARKET_HISTORY',counts:{M1:m1.length,M5:m5.length,M15:m15.length},minimum:{M1:320,M5:280,M15:260},modelHealth:{score:0,status:'WAIT_DATA',uncertainty:'HIGH',uncertaintyPts:100,driftPts:0},validation:{mode:'WAIT_DATA',samples:0,coverage:0,hitRate:50,brier:.25,calibrationError:0},global:{samples:0,hitRate:50,weightedHitRate:50,avgR:0,brier:.25,calibrationError:0,reliability:0},horizons:{},models:{bestRegime:null,bestSession:null,weights:{regime:0,session:0,structure:0,rsi:0}},current:{key:'WAITING',direction:'WAIT',regime:'UNKNOWN',session:'UNKNOWN',structure:'UNKNOWN',rsi:50,learnedWinProbability:50,samples:0,effectiveSamples:0,reliability:0,lowerBound:5,upperBound:95,uncertaintyPts:90,matchLevel:'NONE'},edges:[]};
+  const pending={version:VERSION,engine:ENGINE,status:'WAIT_DATA',generatedAt:new Date().toISOString(),sourceFingerprint,sourceGeneratedAt:pack.generatedAt||null,ready:false,reason:'WAITING_FOR_MORE_MARKET_HISTORY',counts:{M1:m1.length,M5:m5.length,M15:m15.length},minimum:{M1:320,M5:280,M15:260},modelHealth:{score:0,status:'WAIT_DATA',uncertainty:'HIGH',uncertaintyPts:100,driftPts:0},qualityGuards:{backgroundUse:'WAIT_DATA',calibration:'BLOCK',drift:'BLOCK',sample:'BLOCK',uncertainty:'BLOCK',coverage:'BLOCK',brier:'BLOCK'},validation:{mode:'WAIT_DATA',samples:0,coverage:0,hitRate:50,brier:.25,calibrationError:0},global:{samples:0,hitRate:50,weightedHitRate:50,avgR:0,brier:.25,calibrationError:0,reliability:0},horizons:{},models:{bestRegime:null,bestSession:null,weights:{regime:0,session:0,structure:0,rsi:0}},current:{key:'WAITING',direction:'WAIT',regime:'UNKNOWN',session:'UNKNOWN',structure:'UNKNOWN',rsi:50,learnedWinProbability:50,samples:0,effectiveSamples:0,reliability:0,lowerBound:5,upperBound:95,uncertaintyPts:90,matchLevel:'NONE'},edges:[]};
   fs.writeFileSync(OUTPUT,JSON.stringify(pending,null,2));console.log(`Learning pending, not failed: M1=${m1.length} M5=${m5.length} M15=${m15.length}`);process.exit(0);
 }
 
@@ -106,19 +113,36 @@ const powers={regime:featurePower('regime'),session:featurePower('session'),stru
 
 const i=candles.length-1,atr=A[i]||1,S=structure(candles,i),adxv=D[i]||0;let regime=adxv>=27?'TREND':adxv<17?'RANGE':'TRANSITION';if(atr>(median(A.slice(-80).filter(Number.isFinite))||atr)*1.75)regime='VOLATILE';let bull=0,bear=0;close[i]>E20[i]?bull++:bear++;E20[i]>E50[i]?bull++:bear++;E50[i]>E200[i]?bull++:bear++;if(S==='BULL')bull++;if(S==='BEAR')bear++;const direction=bull>=bear?'BUY':'SELL',sess=session(candles[i].ts),rb=bucketRsi(R[i]??50),currentFeature={direction,regime,sess,rb,S},match=lookupHierarchy(hierarchy,currentFeature);
 const currentUncertainty=match?.uncertaintyPts??90;
-const sampleScore=clamp(Math.log10(total+1)/3*100,0,100),validationScore=clamp(100-validation.brier*120-validation.calibrationError*.9,0,100),uncertaintyScore=clamp(100-currentUncertainty*2.1,0,100),driftScore=clamp(100-driftPts*2.0,0,100),coverageScore=clamp(validation.coverage,0,100),healthScore=clamp(sampleScore*.20+validationScore*.35+uncertaintyScore*.20+driftScore*.15+coverageScore*.10,0,100),healthStatus=healthScore>=75?'STRONG':healthScore>=60?'GOOD':healthScore>=45?'CAUTION':'WEAK',uncertaintyLabel=currentUncertainty<=16?'LOW':currentUncertainty<=28?'MEDIUM':'HIGH';
-const reliability=clamp((healthScore/100)*.68+Math.log10(total+1)/4*.32,0,1);
+const sampleScore=clamp(Math.log10(total+1)/3*100,0,100);
+const brierScore=clamp(100-validation.brier*220,0,100);
+const calibrationScore=clamp(100-validation.calibrationError*3.2,0,100);
+const uncertaintyScore=clamp(100-currentUncertainty*2.1,0,100);
+const driftScore=clamp(100-driftPts*3.1,0,100);
+const coverageScore=clamp(validation.coverage,0,100);
+const validationScore=clamp(brierScore*.42+calibrationScore*.58,0,100);
+const healthScore=clamp(sampleScore*.15+brierScore*.18+calibrationScore*.25+uncertaintyScore*.17+driftScore*.15+coverageScore*.10,0,100);
+const healthStatus=healthScore>=78?'STRONG':healthScore>=62?'GOOD':healthScore>=45?'CAUTION':'WEAK',uncertaintyLabel=currentUncertainty<=16?'LOW':currentUncertainty<=28?'MEDIUM':'HIGH';
+const calibrationState=validation.calibrationError<=12?'PASS':validation.calibrationError<=20?'CAUTION':'BLOCK';
+const driftState=driftPts<=10?'PASS':driftPts<=18?'CAUTION':'BLOCK';
+const sampleState=(match?.effectiveSamples||0)>=20&&total>=150?'PASS':(match?.effectiveSamples||0)>=8&&total>=80?'CAUTION':'BLOCK';
+const uncertaintyState=currentUncertainty<=18?'PASS':currentUncertainty<=30?'CAUTION':'BLOCK';
+const coverageState=validation.coverage>=45?'PASS':validation.coverage>=25?'CAUTION':'BLOCK';
+const brierState=validation.brier<=.22?'PASS':validation.brier<=.28?'CAUTION':'BLOCK';
+const hardQuarantine=validation.calibrationError>30||driftPts>28||validation.coverage<15||validation.brier>.34||total<55||(match?.effectiveSamples||0)<3||currentUncertainty>45;
+const backgroundUse=hardQuarantine?'QUARANTINED':healthScore>=68&&![calibrationState,driftState,sampleState,uncertaintyState,coverageState,brierState].includes('BLOCK')?'TRUSTED':healthScore>=42?'LIMITED':'LIVE_ONLY';
+const reliability=clamp((healthScore/100)*.72+Math.log10(total+1)/4*.28,0,1);
 const out={
-  version:'2.0',engine:'ONEMONTH-PRECISION-LEARNING-V2',status:'READY',generatedAt:new Date().toISOString(),trainedThrough:new Date(latestTs).toISOString(),sourceGeneratedAt:pack.generatedAt||null,ready:true,
+  version:VERSION,engine:ENGINE,status:'READY',generatedAt:new Date().toISOString(),sourceFingerprint,trainedThrough:new Date(latestTs).toISOString(),sourceGeneratedAt:pack.generatedAt||null,ready:true,
   recency:{halfLifeDays:HALF_LIFE_DAYS,minimumWeight:.20,weightedHitRate:Number(weightedHit.toFixed(2)),recentCut:new Date(recentCut).toISOString(),recentHitRate:Number(recentHit.toFixed(2)),olderHitRate:Number(olderHit.toFixed(2))},
-  modelHealth:{score:Number(healthScore.toFixed(1)),status:healthStatus,uncertainty:uncertaintyLabel,uncertaintyPts:Number(currentUncertainty.toFixed(1)),driftPts:Number(driftPts.toFixed(1)),validationScore:Number(validationScore.toFixed(1)),coverage:Number(validation.coverage.toFixed(1))},
+  modelHealth:{score:Number(healthScore.toFixed(1)),status:healthStatus,uncertainty:uncertaintyLabel,uncertaintyPts:Number(currentUncertainty.toFixed(1)),driftPts:Number(driftPts.toFixed(1)),validationScore:Number(validationScore.toFixed(1)),coverage:Number(validation.coverage.toFixed(1)),brierScore:Number(brierScore.toFixed(1)),calibrationScore:Number(calibrationScore.toFixed(1)),sampleScore:Number(sampleScore.toFixed(1))},
+  qualityGuards:{backgroundUse,calibration:calibrationState,drift:driftState,sample:sampleState,uncertainty:uncertaintyState,coverage:coverageState,brier:brierState,hardQuarantine,criteria:{calibrationError:Number(validation.calibrationError.toFixed(2)),driftPts:Number(driftPts.toFixed(2)),effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),totalSamples:total,uncertaintyPts:Number(currentUncertainty.toFixed(2)),coverage:Number(validation.coverage.toFixed(2)),brier:Number(validation.brier.toFixed(4))}},
   validation:{mode:validation.mode,samples:validation.samples,coverage:Number(validation.coverage.toFixed(2)),hitRate:Number(validation.hitRate.toFixed(2)),brier:Number(validation.brier.toFixed(4)),calibrationError:Number(validation.calibrationError.toFixed(2)),logLoss:Number(validation.logLoss.toFixed(4)),folds:validation.folds},
   source:{timeframe:sourceTimeframe,barMinutes,candles:candles.length,counts:{M1:m1.length,M5:m5.length,M15:m15.length}},
   global:{samples:total,hitRate:Number((wins/Math.max(1,total)*100).toFixed(2)),weightedHitRate:Number(weightedHit.toFixed(2)),avgR:Number((samples.reduce((s,x)=>s+x.r,0)/Math.max(1,total)).toFixed(4)),brier:Number(rawMetrics.brier.toFixed(4)),calibrationError:Number(rawMetrics.calibrationError.toFixed(2)),reliability:Number(reliability.toFixed(4))},
   horizons:Object.fromEntries(Object.entries(horizons).map(([k,r])=>[k,{samples:r.n,hitRate:Number((r.w/Math.max(1,r.n)*100).toFixed(2)),avgR:Number((r.r/Math.max(1,r.n)).toFixed(4))}])),
   models:{bestRegime:bestBy('regime'),bestSession:bestBy('session'),weights},
-  current:{key:featureKeys(currentFeature)[0].key,direction,regime,session:sess,structure:S,rsi:Number((R[i]??50).toFixed(2)),learnedWinProbability:Number((match?.posteriorWinRate??50).toFixed(2)),samples:match?.samples||0,effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),reliability:Number(reliability.toFixed(4)),lowerBound:Number((match?.lowerBound??5).toFixed(2)),upperBound:Number((match?.upperBound??95).toFixed(2)),uncertaintyPts:Number((match?.uncertaintyPts??90).toFixed(2)),matchLevel:match?.matchLevel||'NONE',recentWinRate:Number((match?.recentWinRate??50).toFixed(2)),avgR:Number((match?.avgR??0).toFixed(4)),avgMfeR:Number((match?.avgMfeR??0).toFixed(4)),avgMaeR:Number((match?.avgMaeR??0).toFixed(4))},
+  current:{key:featureKeys(currentFeature)[0].key,direction,regime,session:sess,structure:S,rsi:Number((R[i]??50).toFixed(2)),learnedWinProbability:Number((match?.posteriorWinRate??50).toFixed(2)),samples:match?.samples||0,effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),reliability:Number(reliability.toFixed(4)),lowerBound:Number((match?.lowerBound??5).toFixed(2)),upperBound:Number((match?.upperBound??95).toFixed(2)),uncertaintyPts:Number((match?.uncertaintyPts??90).toFixed(2)),matchLevel:match?.matchLevel||'NONE',backgroundUse,guarded:hardQuarantine,recentWinRate:Number((match?.recentWinRate??50).toFixed(2)),avgR:Number((match?.avgR??0).toFixed(4)),avgMfeR:Number((match?.avgMfeR??0).toFixed(4)),avgMaeR:Number((match?.avgMaeR??0).toFixed(4))},
   edges:edges.filter(e=>e.effectiveSamples>=3).slice(0,700)
 };
 fs.writeFileSync(OUTPUT,JSON.stringify(out,null,2));
-console.log(`Built ${OUTPUT}: ${total} samples | weighted hit ${out.global.weightedHitRate}% | WF Brier ${out.validation.brier} | health ${out.modelHealth.score}/${out.modelHealth.status} | current ${out.current.matchLevel} ${out.current.learnedWinProbability}% ±${(out.current.uncertaintyPts/2).toFixed(1)}`);
+console.log(`Built ${OUTPUT}: ${total} samples | weighted hit ${out.global.weightedHitRate}% | WF Brier ${out.validation.brier} | health ${out.modelHealth.score}/${out.modelHealth.status} | guard ${out.qualityGuards.backgroundUse} | current ${out.current.matchLevel} ${out.current.learnedWinProbability}% ±${(out.current.uncertaintyPts/2).toFixed(1)}`);
