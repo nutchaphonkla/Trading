@@ -1,0 +1,51 @@
+name: AI Background Learning
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_run:
+    workflows: ["Update XAUUSD data pack"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: onemonth-ai-learning
+  cancel-in-progress: true
+
+jobs:
+  learn:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Rebuild historical brain
+        run: node build-ai-history.mjs
+
+      - name: Train outcome calibration
+        run: node build-ai-learning.mjs
+
+      - name: Commit learned model
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ai-history.json ai-learning.json
+          if git diff --cached --quiet; then
+            echo "No learned-model changes"
+            exit 0
+          fi
+          git commit -m "Update AI background learning"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
