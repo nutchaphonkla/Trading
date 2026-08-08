@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OneMonth">
-<title>OneMonth OS</title>
+<title>OneMonth OS V15</title>
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2367e7c2'/%3E%3Cstop offset='1' stop-color='%2367c9f3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='118' fill='%23071018'/%3E%3Cpath d='M118 330V218m74 112V156m74 174V236m74 94V124' stroke='url(%23g)' stroke-width='26' stroke-linecap='round'/%3E%3Cpath d='M115 373h282' stroke='%23f1c76c' stroke-width='14' stroke-linecap='round' opacity='.9'/%3E%3C/svg%3E">
 
@@ -214,6 +214,165 @@ button{cursor:pointer}
   .chart-wrap{height:300px}
   .form-grid{grid-template-columns:1fr}
 }
+
+/* ===== ONEMONTH OS V15 · COMPLETE SYSTEM ===== */
+:root{
+  --surface:#0a1016;
+  --surface2:#0d141c;
+  --surface3:#080d12;
+  --stroke:#1b2631;
+  --stroke2:#26333f;
+}
+body{background:#04070a}
+.app{max-width:820px}
+.card{
+  border-radius:22px;
+  background:#0a1118;
+  border-color:#1b2631;
+  box-shadow:0 12px 36px rgba(0,0,0,.22)
+}
+.metric-card{border-radius:22px;background:#0a1118}
+.metric-card:after{display:none}
+.mission{border-radius:24px;background:#0b1219}
+.bottom-nav{
+  height:72px;border-radius:22px;background:rgba(8,13,19,.96);
+  border-color:#25313d;padding:5px
+}
+.bottom-nav button{border-radius:17px}
+.bottom-nav button.active{background:#141d26}
+.metric-edit{
+  z-index:3;border:1px solid rgba(105,200,239,.15)!important;background:rgba(105,200,239,.045)!important;
+  padding:7px 9px!important;border-radius:10px!important
+}
+.metric-edit:active{transform:scale(.96)}
+.section-head{margin-top:22px}
+.system-brief{padding:16px;margin-top:10px}
+.brief-top,.command-head,.data-head,.news-head,.guardian-head,.backtest-head,.life-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px
+}
+.brief-top h3,.command-head h3,.news-head h3,.backtest-head h3{margin:5px 0 0;font-size:17px;letter-spacing:-.025em}
+.status-chip{
+  flex:0 0 auto;border:1px solid var(--stroke2);border-radius:999px;padding:8px 10px;
+  color:#8794a2;font-size:8px;font-weight:900;letter-spacing:.04em;background:#080d12
+}
+.status-chip.good{color:var(--mint);border-color:rgba(110,231,195,.16);background:rgba(110,231,195,.035)}
+.status-chip.warn{color:var(--amber);border-color:rgba(240,200,108,.17);background:rgba(240,200,108,.035)}
+.status-chip.bad{color:var(--red);border-color:rgba(255,115,133,.18);background:rgba(255,115,133,.035)}
+.brief-grid,.data-grid,.guardian-grid,.backtest-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:13px
+}
+.brief-cell,.data-cell,.guardian-cell,.bt-cell{
+  border:1px solid var(--stroke);border-radius:15px;background:#080d12;padding:11px
+}
+.brief-cell span,.data-cell span,.guardian-cell span,.bt-cell span{
+  display:block;color:var(--muted);font-size:7px;font-weight:850;letter-spacing:.07em
+}
+.brief-cell b,.data-cell b,.guardian-cell b,.bt-cell b{
+  display:block;font-size:11px;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.command-card{padding:17px;margin-top:10px}
+.command-copy{font-size:9px;color:var(--muted);line-height:1.5;margin-top:7px}
+.command-action{
+  margin-top:12px;padding:12px 13px;border:1px solid rgba(105,200,239,.10);
+  border-radius:15px;background:rgba(105,200,239,.028);display:flex;gap:8px;align-items:flex-start
+}
+.command-action i{width:7px;height:7px;border-radius:50%;background:var(--cyan);margin-top:4px;flex:0 0 auto}
+.command-action span{font-size:9px;line-height:1.45;color:#a9bac8}
+.command-action.lock{border-color:rgba(255,115,133,.13);background:rgba(255,115,133,.028)}
+.command-action.lock i{background:var(--red)} .command-action.lock span{color:#e2a4ad}
+.command-action.ready{border-color:rgba(110,231,195,.12);background:rgba(110,231,195,.028)}
+.command-action.ready i{background:var(--mint)} .command-action.ready span{color:#b9e7d8}
+.data-health,.news-card,.fusion-card,.life-card,.guardian-card,.backtest-card{padding:16px;margin-top:10px}
+.health-bar{height:5px;border-radius:99px;background:#070b0f;overflow:hidden;margin-top:11px}
+.health-bar i{height:100%;display:block;width:0;background:linear-gradient(90deg,var(--mint),var(--cyan));transition:.2s}
+.news-list{margin-top:10px;overflow:hidden;border:1px solid var(--stroke);border-radius:16px}
+.news-row{display:grid;grid-template-columns:52px 1fr auto;gap:9px;align-items:center;padding:10px;border-top:1px solid rgba(255,255,255,.045);background:#080d12}
+.news-row:first-child{border-top:0}
+.news-time{font-size:9px;font-weight:900}
+.news-main{min-width:0}
+.news-main b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.news-main small{display:block;color:var(--muted);font-size:7px;margin-top:3px}
+.impact{width:8px;height:8px;border-radius:50%;background:#586574}
+.impact.high{background:var(--red)} .impact.med{background:var(--amber)} .impact.low{background:#677684}
+.news-empty{padding:18px;text-align:center;color:var(--muted);font-size:8px}
+.gate-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.gate{
+  display:flex;align-items:center;justify-content:space-between;gap:9px;
+  border:1px solid var(--stroke);border-radius:14px;background:#080d12;padding:10px
+}
+.gate span{font-size:8px;color:#9ba8b6}.gate b{font-size:7px}
+.gate.pass b{color:var(--mint)}.gate.block b{color:var(--red)}.gate.warn b{color:var(--amber)}
+.chart-card{border-radius:22px}
+.chart-head{
+  min-height:58px;padding:12px 13px;gap:8px
+}
+.chart-title small{display:block;color:var(--muted);font-size:7px;margin-bottom:4px;letter-spacing:.06em}
+.chart-title b{font-size:13px}
+.chart-tools{display:flex;align-items:center;gap:5px}
+.chart-tool{
+  height:29px;min-width:31px;border-radius:9px;border:1px solid var(--stroke);background:#080d12;
+  color:#8794a2;font-size:8px;font-weight:850;padding:0 8px
+}
+.chart-tool:active{transform:scale(.96)}
+.chart-ohlc{
+  height:31px;padding:0 12px;display:flex;align-items:center;gap:9px;overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.035);color:#768493;font-size:7px;white-space:nowrap
+}
+.chart-ohlc b{color:#bbc6d0;font-size:8px}
+.chart-wrap{height:365px;background:#060a0e}
+.chart-legend{
+  min-height:35px;padding:0 11px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--stroke);
+  color:#748190;font-size:7px;font-weight:800
+}
+.chart-legend span{display:flex;align-items:center;gap:5px}
+.chart-legend i{width:13px;height:2px;border-radius:99px;background:var(--cyan)}
+.chart-legend i.slow{background:var(--gold)}
+.chart-legend i.zone{height:7px;width:7px;border-radius:2px;background:rgba(105,200,239,.22);border:1px solid rgba(105,200,239,.45)}
+.life-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.life-step{
+  min-height:42px;border-radius:13px;border:1px solid var(--stroke);background:#080d12;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#596675
+}
+.life-step i{width:6px;height:6px;border-radius:50%;background:#3d4854}
+.life-step span{font-size:7px;font-weight:900}
+.life-step.done{color:#a7dccd;border-color:rgba(110,231,195,.12);background:rgba(110,231,195,.025)}
+.life-step.done i{background:var(--mint)}
+.life-step.current{color:#bde8f7;border-color:rgba(105,200,239,.15);background:rgba(105,200,239,.03)}
+.life-step.current i{background:var(--cyan)}
+.life-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.life-meta div{padding:9px;border-radius:12px;background:#080d12}
+.life-meta span{display:block;color:var(--muted);font-size:6px;font-weight:850}
+.life-meta b{display:block;font-size:8px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.guardian-head b{font-size:14px}
+.guardian-head p{margin:5px 0 0;color:var(--muted);font-size:8px;line-height:1.45}
+.risk-score{
+  min-width:56px;height:38px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(110,231,195,.14);
+  background:rgba(110,231,195,.035);color:var(--mint);font-size:10px;font-weight:900
+}
+.risk-score.warn{color:var(--amber);border-color:rgba(240,200,108,.15);background:rgba(240,200,108,.03)}
+.risk-score.bad{color:var(--red);border-color:rgba(255,115,133,.16);background:rgba(255,115,133,.03)}
+.backtest-note{color:var(--muted);font-size:8px;line-height:1.5;margin-top:7px}
+.bt-run{
+  height:32px;border-radius:10px;border:1px solid rgba(105,200,239,.15);background:rgba(105,200,239,.04);
+  color:var(--cyan);font-size:8px;font-weight:900;padding:0 10px
+}
+.equity-card{padding:14px}
+.equity-wrap{height:210px;position:relative}
+#equityChart{width:100%;height:100%;display:block}
+.memory-list{overflow:hidden}
+.memory-row{padding:11px 13px;border-top:1px solid rgba(255,255,255,.045)}
+.memory-row:first-child{border-top:0}
+.memory-row-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.memory-row b{font-size:9px}.memory-row small{display:block;color:var(--muted);font-size:7px;margin-top:3px}
+.scan-pill{font-size:7px;color:#94a1ae;border:1px solid var(--stroke);border-radius:999px;padding:5px 7px}
+.stale{color:var(--amber)!important}.danger-text{color:var(--red)!important}.good-text{color:var(--mint)!important}
+@media(max-width:520px){
+  .chart-wrap{height:340px}
+  .brief-grid,.data-grid,.guardian-grid,.backtest-grid{gap:6px}
+  .gate-grid{gap:6px}
+  .news-row{grid-template-columns:48px 1fr auto}
+}
+
 </style>
 </head>
 <body>
@@ -230,7 +389,7 @@ button{cursor:pointer}
       </div>
       <div class="brandcopy">
         <b>ONEMONTH OS</b>
-        <small>PERSONAL TRADING SYSTEM</small>
+        <small>XAUUSD TRADING OPERATING SYSTEM</small>
       </div>
     </div>
     <div class="topactions">
@@ -284,6 +443,20 @@ button{cursor:pointer}
         <div class="notice" id="missionNotice">ระบบจะคำนวณเป้าและจุดหยุดของวันให้อัตโนมัติ</div>
       </article>
 
+
+      <article class="card system-brief">
+        <div class="brief-top">
+          <div><div class="kicker">SYSTEM BRIEF</div><h3>สถานะก่อนเริ่ม Session</h3></div>
+          <span class="status-chip" id="homeSystemChip">WAIT DATA</span>
+        </div>
+        <div class="brief-grid">
+          <div class="brief-cell"><span>MARKET</span><b id="homeMarket">—</b></div>
+          <div class="brief-cell"><span>DATA PACK</span><b id="homeDataAge">—</b></div>
+          <div class="brief-cell"><span>NEXT NEWS</span><b id="homeNextNews">—</b></div>
+          <div class="brief-cell"><span>AI DESK</span><b id="homeAiDesk">OFF</b></div>
+        </div>
+      </article>
+
       <div class="section-head"><h3>ปิด Session</h3><span>กรอก Balance จริงเมื่อจบวัน</span></div>
       <article class="card mission">
         <div class="form-grid">
@@ -313,13 +486,69 @@ button{cursor:pointer}
         <article class="card ai-quick"><span>MARKET MODE</span><b id="marketMode">—</b><small id="dataSource">Historical Pack</small></article>
       </div>
 
+
+      <article class="card command-card">
+        <div class="command-head">
+          <div>
+            <div class="kicker">DAILY COMMAND CENTER</div>
+            <h3 id="commandTitle">รอข้อมูลตลาด</h3>
+            <div class="command-copy" id="commandCopy">ระบบจะรวม Market Status, News, Multi‑TF, Regime และ Risk ก่อนให้เข้าไม้</div>
+          </div>
+          <span class="status-chip" id="commandChip">WAIT</span>
+        </div>
+        <div class="command-action" id="commandAction"><i></i><span>ยังไม่มีคำสั่ง</span></div>
+      </article>
+
+      <article class="card data-health">
+        <div class="data-head">
+          <div><div class="kicker">DATA HEALTH</div><b id="dataHealthTitle">ยังไม่ได้โหลด Data Pack</b></div>
+          <span class="status-chip" id="dataHealthChip">NO DATA</span>
+        </div>
+        <div class="data-grid">
+          <div class="data-cell"><span>UPDATED</span><b id="dataUpdated">—</b></div>
+          <div class="data-cell"><span>AGE</span><b id="dataAge">—</b></div>
+          <div class="data-cell"><span>TIMEFRAMES</span><b id="dataTfCount">0 / 4</b></div>
+          <div class="data-cell"><span>LAST PRICE</span><b id="dataLastPrice">—</b></div>
+        </div>
+        <div class="health-bar"><i id="dataHealthBar"></i></div>
+      </article>
+
+      <article class="card news-card">
+        <div class="news-head">
+          <div><div class="kicker">GOLD NEWS RADAR</div><h3 id="newsTitle">รอโหลดปฏิทินข่าว</h3></div>
+          <span class="status-chip" id="newsChip">NEWS —</span>
+        </div>
+        <div class="command-copy" id="newsSub">อ่าน news.json จาก GitHub โดยไม่ใช้ Twelve Data credit</div>
+        <div class="news-list" id="newsList"><div class="news-empty">ยังไม่มีข้อมูลข่าว</div></div>
+      </article>
+
+      <article class="card fusion-card">
+        <div class="brief-top">
+          <div><div class="kicker">AI FUSION ENGINE</div><h3>ทุก Gate ต้องผ่านก่อน Entry</h3></div>
+          <span class="status-chip" id="fusionScore">0 / 100</span>
+        </div>
+        <div class="gate-grid" id="gateGrid"></div>
+      </article>
+
       <div class="section-head"><h3>Market Chart</h3><button id="analyzeBtn">ANALYZE</button></div>
       <article class="card chart-card">
-        <div class="chart-head"><b>XAUUSD · <span id="chartTf">M15</span></b><span id="chartPrice">—</span></div>
+        <div class="chart-head">
+          <div class="chart-title"><small>XAUUSD · NATIVE MARKET VIEW</small><b><span id="chartTf">M15</span> · <span id="chartPrice">—</span></b></div>
+          <div class="chart-tools">
+            <button class="chart-tool" id="zoomOutBtn">−</button>
+            <button class="chart-tool" id="zoomInBtn">+</button>
+            <button class="chart-tool" id="latestBtn">LATEST</button>
+          </div>
+        </div>
+        <div class="chart-ohlc">
+          <span id="candleTime">—</span>
+          <span>O <b id="candleO">—</b></span><span>H <b id="candleH">—</b></span><span>L <b id="candleL">—</b></span><span>C <b id="candleC">—</b></span>
+        </div>
         <div class="chart-wrap">
           <canvas id="marketChart"></canvas>
           <div class="chart-empty" id="chartEmpty">เปิด AI หรือกด ANALYZE เพื่อโหลดข้อมูลจาก xauusd.json</div>
         </div>
+        <div class="chart-legend"><span><i></i>EMA 9</span><span><i class="slow"></i>EMA 21</span><span><i class="zone"></i>ENTRY</span><small id="chartHint">ลากกราฟเพื่อย้อน · แตะแท่งเพื่อดู OHLC</small></div>
         <div class="tf-tabs" id="tfTabs">
           <button data-tf="M1">M1</button><button data-tf="M5">M5</button><button class="active" data-tf="M15">M15</button><button data-tf="H1">H1</button>
         </div>
@@ -335,6 +564,50 @@ button{cursor:pointer}
           <div class="level"><span>STOP LOSS</span><b id="signalSl">—</b></div>
           <div class="level"><span>TP1</span><b id="signalTp1">—</b></div>
           <div class="level"><span>TP2</span><b id="signalTp2">—</b></div>
+        </div>
+      </article>
+
+      <article class="card life-card">
+        <div class="life-head">
+          <div><div class="kicker">SIGNAL LIFECYCLE</div><b id="lifeTitle">NO ACTIVE SIGNAL</b></div>
+          <span class="status-chip" id="lifeChip">IDLE</span>
+        </div>
+        <div class="life-steps">
+          <div class="life-step" data-life="watch"><i></i><span>WATCH</span></div>
+          <div class="life-step" data-life="entry"><i></i><span>ENTRY</span></div>
+          <div class="life-step" data-life="tp1"><i></i><span>TP1</span></div>
+          <div class="life-step" data-life="tp2"><i></i><span>TP2</span></div>
+        </div>
+        <div class="life-meta">
+          <div><span>ENTRY</span><b id="lifeEntry">—</b></div>
+          <div><span>EXPIRES</span><b id="lifeExpire">—</b></div>
+          <div><span>STATE</span><b id="lifeState">รอสัญญาณ</b></div>
+        </div>
+      </article>
+
+      <article class="card guardian-card">
+        <div class="guardian-head">
+          <div><div class="kicker">RISK GUARDIAN</div><b id="guardianTitle">NORMAL RISK</b><p id="guardianReason">ยังไม่มีเงื่อนไขลดความเสี่ยง</p></div>
+          <div class="risk-score" id="guardianScore">100%</div>
+        </div>
+        <div class="guardian-grid">
+          <div class="guardian-cell"><span>RISK MULTIPLIER</span><b id="riskMultiplier">1.00×</b></div>
+          <div class="guardian-cell"><span>DAY MISS STREAK</span><b id="dayMissStreak">0</b></div>
+          <div class="guardian-cell"><span>AI WAIT STREAK</span><b id="aiWaitStreak">0</b></div>
+          <div class="guardian-cell"><span>DRAWDOWN</span><b id="guardianDd">0.00%</b></div>
+        </div>
+      </article>
+
+      <article class="card backtest-card">
+        <div class="backtest-head">
+          <div><div class="kicker">WALK‑FORWARD CHECK</div><h3>ทดสอบ Logic กับข้อมูลย้อนหลัง</h3><div class="backtest-note">ใช้ M15 ใน xauusd.json เพื่อวัด Win rate / Profit factor / Drawdown ของกฎปัจจุบัน</div></div>
+          <button class="bt-run" id="runBacktestBtn">RUN</button>
+        </div>
+        <div class="backtest-grid">
+          <div class="bt-cell"><span>SAMPLES</span><b id="btSamples">—</b></div>
+          <div class="bt-cell"><span>WIN RATE</span><b id="btWinRate">—</b></div>
+          <div class="bt-cell"><span>PROFIT FACTOR</span><b id="btPf">—</b></div>
+          <div class="bt-cell"><span>MAX DD</span><b id="btDd">—</b></div>
         </div>
       </article>
     </section>
@@ -356,6 +629,12 @@ button{cursor:pointer}
         <article class="card stat"><span>BEST DAY</span><b id="statBestDay">—</b></article>
         <article class="card stat"><span>MAX DRAWDOWN</span><b id="statDd">0.00%</b></article>
       </div>
+      <div class="section-head"><h3>Equity Curve</h3><span>แผนจริงของคุณ</span></div>
+      <article class="card equity-card"><div class="equity-wrap"><canvas id="equityChart"></canvas></div></article>
+
+      <div class="section-head"><h3>AI Scan Memory</h3><button id="clearScanMemoryBtn">CLEAR</button></div>
+      <article class="card memory-list" id="scanMemoryList"><div class="memory-row"><small>ยังไม่มี Scan Memory</small></div></article>
+
       <div class="section-head"><h3>Recent Sessions</h3><span>ล่าสุด 10 วัน</span></div>
       <article class="card plan-list" id="recentList"></article>
     </section>
@@ -393,6 +672,8 @@ button{cursor:pointer}
     <div class="form-grid">
       <div class="field"><label>MIN LOT</label><input id="minLotInput" inputmode="decimal" value="0.01"></div>
       <div class="field"><label>CONTRACT SIZE</label><input id="contractInput" inputmode="decimal" value="100"></div>
+      <div class="field"><label>NEWS LOCK BEFORE (MIN)</label><input id="newsBeforeInput" inputmode="numeric" value="20"></div>
+      <div class="field"><label>NEWS LOCK AFTER (MIN)</label><input id="newsAfterInput" inputmode="numeric" value="15"></div>
     </div>
     <div class="sheet-actions">
       <button class="secondary" id="closeSettingsBtn">ปิด</button>
@@ -409,307 +690,498 @@ button{cursor:pointer}
 'use strict';
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const PLAN_KEY='onemonth_os_plan_v14';
-const SETTINGS_KEY='onemonth_os_settings_v14';
-const AI_KEY='onemonth_os_ai_v14';
+const PLAN_KEY='onemonth_os_plan_v15';
+const SETTINGS_KEY='onemonth_os_settings_v15';
+const AI_KEY='onemonth_os_ai_v15';
+const SCAN_KEY='onemonth_os_scan_memory_v15';
+const SIGNAL_KEY='onemonth_os_active_signal_v15';
+const BT_KEY='onemonth_os_backtest_v15';
 
 let plan=loadJson(PLAN_KEY,null);
-let settings=loadJson(SETTINGS_KEY,{minLot:.01,contractSize:100});
+let settings=loadJson(SETTINGS_KEY,{minLot:.01,contractSize:100,newsBefore:20,newsAfter:15});
 let aiOn=localStorage.getItem(AI_KEY)==='1';
+let scanMemory=loadJson(SCAN_KEY,[]);
+let activeSignal=loadJson(SIGNAL_KEY,null);
+let backtestResult=loadJson(BT_KEY,null);
 let currentTf='M15';
 let marketData={M1:[],M5:[],M15:[],H1:[]};
+let packMeta={generatedAt:null,source:'GitHub Data Pack'};
+let newsPack={generatedAt:null,events:[]};
 let analysis=null;
+let tfResults={};
+let chartView={bars:30,offset:0,cross:null,drag:false,startX:0,startOffset:0,moved:false};
+let aiWaitStreak=0;
 
 function loadJson(k,f){try{const v=JSON.parse(localStorage.getItem(k));return v??f}catch(_){return f}}
 function saveJson(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function money(v){return '$'+Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function price(v){return Number.isFinite(Number(v))?Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}
 function num(v){const n=Number(v);return Number.isFinite(n)?n:0}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),1600)}
-
-function dailyRate(start,target,days=30){
-  if(start<=0||target<=start)return 0;
-  return Math.pow(target/start,1/days)-1;
+function median(arr){const a=arr.filter(Number.isFinite).slice().sort((x,y)=>x-y);if(!a.length)return 0;const m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),1800)}
+function fmtAge(ms){
+  if(!Number.isFinite(ms)||ms<0)return'—';
+  const m=Math.floor(ms/60000);if(m<1)return'ตอนนี้';if(m<60)return m+' นาที';
+  const h=Math.floor(m/60);if(h<24)return h+' ชม.';return Math.floor(h/24)+' วัน';
 }
+function dtBangkok(ts,withDate=false){
+  const d=new Date(ts);if(!Number.isFinite(d.getTime()))return'—';
+  return new Intl.DateTimeFormat('th-TH',withDate?{timeZone:'Asia/Bangkok',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}:{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit'}).format(d)
+}
+function bangkokParts(){
+  const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Bangkok',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());
+  const o={};parts.forEach(p=>o[p.type]=p.value);return{weekday:o.weekday,hour:+o.hour,minute:+o.minute}
+}
+function marketStatus(){
+  const b=bangkokParts(),wd=b.weekday;
+  const closed=wd==='Sat'||wd==='Sun';
+  if(closed)return{open:false,label:'MARKET CLOSED',session:'WEEKEND'};
+  const h=b.hour;
+  let session=h<12?'ASIA':h<19?'LONDON':h<24?'NEW YORK':'OFF HOURS';
+  return{open:true,label:'MARKET OPEN',session}
+}
+
+function dailyRate(start,target,days=30){return start>0&&target>start?Math.pow(target/start,1/days)-1:0}
 function buildPlan(start,target,actuals=[]){
-  const rate=dailyRate(start,target,30);
-  const days=[];let bal=start;
+  const rate=dailyRate(start,target,30),days=[];let bal=start;
   for(let i=0;i<30;i++){
-    const profit=bal*rate,expected=bal+profit,maxLoss=Math.min(Math.max(bal*.01,.10),Math.max(.10,profit*.85));
+    const profit=bal*rate,expected=bal+profit;
+    const maxLoss=Math.min(Math.max(bal*.01,.10),Math.max(.10,profit*.85));
     const actual=actuals[i]?.actual??null,note=actuals[i]?.note??'';
     const status=actual==null?'wait':actual>=expected?'hit':'miss';
     days.push({day:i+1,start:bal,profit,expected,maxLoss,actual,note,status});
     bal=actual!=null?actual:expected;
   }
-  return{version:14,start,target,totalDays:30,days,createdAt:Date.now()}
+  return{version:15,start,target,totalDays:30,days,createdAt:Date.now()}
 }
 function validPlan(p){return p&&num(p.start)>0&&num(p.target)>num(p.start)&&Array.isArray(p.days)&&p.days.length===30}
 function completed(){return validPlan(plan)?plan.days.filter(d=>d.actual!=null).length:0}
-function currentBalance(){
-  if(!validPlan(plan))return 0;
-  const done=plan.days.filter(d=>d.actual!=null);
-  return done.length?num(done.at(-1).actual):num(plan.start);
-}
+function currentBalance(){if(!validPlan(plan))return 0;const done=plan.days.filter(d=>d.actual!=null);return done.length?num(done.at(-1).actual):num(plan.start)}
 function todayIndex(){return validPlan(plan)?Math.min(completed(),29):0}
 function maxDrawdown(){
   if(!validPlan(plan))return 0;
-  const vals=[plan.start,...plan.days.filter(d=>d.actual!=null).map(d=>d.actual)];
-  let peak=vals[0]||0,dd=0;
-  for(const v of vals){peak=Math.max(peak,v);if(peak>0)dd=Math.max(dd,(peak-v)/peak)}
-  return dd;
+  const vals=[plan.start,...plan.days.filter(d=>d.actual!=null).map(d=>d.actual)];let peak=vals[0]||0,dd=0;
+  for(const v of vals){peak=Math.max(peak,v);if(peak>0)dd=Math.max(dd,(peak-v)/peak)}return dd;
 }
+function dayMissStreak(){
+  if(!validPlan(plan))return 0;const rows=plan.days.filter(d=>d.actual!=null).slice().reverse();let n=0;
+  for(const d of rows){if(d.status==='miss')n++;else break}return n;
+}
+function guardian(){
+  const dd=maxDrawdown(),miss=dayMissStreak();let mult=1,reasons=[];
+  if(miss>=1){mult=Math.min(mult,.85);reasons.push('Day miss')}
+  if(miss>=2){mult=Math.min(mult,.65);reasons.push('2 miss streak')}
+  if(miss>=3){mult=Math.min(mult,.4);reasons.push('3 miss streak')}
+  if(dd>=.04){mult=Math.min(mult,.75);reasons.push('DD ≥ 4%')}
+  if(dd>=.07){mult=Math.min(mult,.5);reasons.push('DD ≥ 7%')}
+  const locked=dd>=.10||miss>=4;
+  if(locked){mult=0;reasons.push('Risk lock')}
+  return{mult,dd,miss,locked,reasons}
+}
+
 function openModal(id){const el=$(id);el.classList.remove('hidden');el.setAttribute('aria-hidden','false')}
 function closeModal(id){const el=$(id);el.classList.add('hidden');el.setAttribute('aria-hidden','true')}
 function showView(id){
   $$('.view').forEach(v=>v.classList.toggle('active',v.id===id));
   $$('[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===id));
   window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='aiView')setTimeout(drawChart,30);
+  if(id==='aiView')setTimeout(drawChart,50);
+  if(id==='statsView')setTimeout(drawEquity,50);
 }
 $$('[data-nav]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.nav)));
 
-function renderHome(){
-  if(!validPlan(plan))return;
-  const bal=currentBalance(),done=completed(),idx=todayIndex(),d=plan.days[idx],monthProgress=clamp((bal-plan.start)/(plan.target-plan.start),0,1);
-  $('#homeBalance').textContent=money(bal);
-  $('#homeDelta').textContent=(bal-plan.start>=0?'+':'')+money(bal-plan.start)+' since start';
-  $('#homeTarget').textContent=money(plan.target);
-  $('#homeTargetPct').textContent=((plan.target/plan.start-1)*100).toFixed(2)+'% month goal';
-  $('#missionDay').textContent='DAY '+String(idx+1).padStart(2,'0');
-  $('#todayProfit').textContent='+'+money(d.profit);
-  $('#todayRate').textContent='Required '+(d.profit/d.start*100).toFixed(2)+'% / session';
-  $('#todayStart').textContent=money(d.start);
-  $('#todayClose').textContent=money(d.expected);
-  $('#daysLeft').textContent=Math.max(0,30-done);
-  $('#tpStop').textContent='+'+money(d.profit);
-  $('#maxLoss').textContent='-'+money(d.maxLoss);
-  $('#monthPct').textContent=Math.round(monthProgress*100)+'%';
-  $('#monthRing').style.setProperty('--p',(monthProgress*100).toFixed(1)+'%');
-  $('#missionNotice').textContent=`วันนี้: ถึง ${money(d.expected)} = Target Complete · ต่ำกว่า ${money(Math.max(0,d.start-d.maxLoss))} = Max Loss Zone`;
-  const health=Math.max(0,Math.round(100-maxDrawdown()*300));
-  $('#planHealth').textContent='PLAN HEALTH '+health;
-}
-function renderPlan(){
-  if(!validPlan(plan))return;
-  const done=completed(),idx=todayIndex();
-  $('#planProgressText').textContent=done+' / 30';
-  $('#planProgressBar').style.width=(done/30*100)+'%';
-  const bal=currentBalance(),expected=done?plan.days[done-1].expected:plan.start;
-  $('#planPace').textContent=bal>=expected?'ON PLAN':'BEHIND';
-  $('#planList').innerHTML=plan.days.map((d,i)=>`
-    <div class="plan-row ${i===idx&&done<30?'current':''}">
-      <div class="plan-row-head">
-        <div class="daybox">${String(d.day).padStart(2,'0')}</div>
-        <div><b>${money(d.start)} → ${money(d.expected)}</b><br><small>${d.actual==null?'ยังไม่จบ Session':'Actual '+money(d.actual)}</small></div>
-        <div class="plan-profit">+${money(d.profit)}</div>
-      </div>
-    </div>`).join('');
-}
-function renderStats(){
-  if(!validPlan(plan))return;
-  const rows=plan.days.filter(d=>d.actual!=null),hits=rows.filter(d=>d.status==='hit').length;
-  $('#statCompleted').textContent=rows.length;
-  $('#statHitRate').textContent=rows.length?Math.round(hits/rows.length*100)+'%':'—';
-  const best=rows.length?rows.reduce((a,b)=>(b.actual-b.start)>(a.actual-a.start)?b:a):null;
-  $('#statBestDay').textContent=best?'D'+best.day+' '+money(best.actual-best.start):'—';
-  $('#statDd').textContent=(maxDrawdown()*100).toFixed(2)+'%';
-  $('#recentList').innerHTML=rows.length?rows.slice(-10).reverse().map(d=>`
-    <div class="plan-row">
-      <div class="plan-row-head">
-        <div class="daybox">${String(d.day).padStart(2,'0')}</div>
-        <div><b>${d.status.toUpperCase()} · ${money(d.actual)}</b><br><small>${d.note||'No note'}</small></div>
-        <div class="plan-profit">${d.actual-d.start>=0?'+':''}${money(d.actual-d.start)}</div>
-      </div>
-    </div>`).join(''):'<div class="plan-row"><small>ยังไม่มี Session ที่บันทึก</small></div>';
-}
-function renderAll(){renderHome();renderPlan();renderStats();renderAiUi()}
-
-$('#editPlanBtn').addEventListener('click',()=>{
-  if(!validPlan(plan))return;
-  $('#planModalTitle').textContent='แก้ไขแผน';
-  $('#planStartInput').value=plan.start;
-  $('#planTargetInput').value=plan.target;
-  $('#savePlanBtn').textContent='SAVE CHANGES';
-  $('#cancelPlanBtn').classList.remove('hidden');
-  openModal('#planModal');
-});
-$('#cancelPlanBtn').addEventListener('click',()=>closeModal('#planModal'));
-$('#savePlanBtn').addEventListener('click',()=>{
-  const start=num($('#planStartInput').value),target=num($('#planTargetInput').value);
-  if(start<=0||target<=start){toast('Target ต้องมากกว่าทุนเริ่มต้น');return}
-  const actuals=validPlan(plan)?plan.days.map(d=>({actual:d.actual,note:d.note})):new Array(30).fill(null);
-  plan=buildPlan(start,target,actuals);
-  saveJson(PLAN_KEY,plan);
-  closeModal('#planModal');renderAll();toast('บันทึกแผนแล้ว');
-});
-$('#endSessionBtn').addEventListener('click',()=>{
-  if(!validPlan(plan))return;
-  const bal=num($('#endBalanceInput').value);
-  if(bal<=0){toast('กรอก Balance หลังจบ Session');return}
-  const idx=todayIndex();
-  plan.days[idx].actual=bal;plan.days[idx].note=$('#endNoteInput').value.trim();
-  const actuals=plan.days.map(d=>({actual:d.actual,note:d.note}));
-  plan=buildPlan(plan.start,plan.target,actuals);
-  saveJson(PLAN_KEY,plan);
-  $('#endBalanceInput').value='';$('#endNoteInput').value='';
-  renderAll();toast('บันทึก Session แล้ว');
-});
-$('#jumpTodayBtn').addEventListener('click',()=>{
-  const row=$('#planList .current')||$('#planList .plan-row');
-  row?.scrollIntoView({behavior:'smooth',block:'center'});
-});
-
-$('#settingsBtn').addEventListener('click',()=>{
-  $('#minLotInput').value=settings.minLot;
-  $('#contractInput').value=settings.contractSize;
-  openModal('#settingsModal');
-});
-$('#closeSettingsBtn').addEventListener('click',()=>closeModal('#settingsModal'));
-$('#saveSettingsBtn').addEventListener('click',()=>{
-  settings={minLot:Math.max(.01,num($('#minLotInput').value)||.01),contractSize:Math.max(1,num($('#contractInput').value)||100)};
-  saveJson(SETTINGS_KEY,settings);closeModal('#settingsModal');renderAiUi();toast('บันทึก Settings แล้ว');
-});
-$('#resetAllBtn').addEventListener('click',()=>{
-  if(!confirm('ล้างข้อมูลแผนทั้งหมดและเริ่มใหม่?'))return;
-  localStorage.removeItem(PLAN_KEY);localStorage.removeItem(AI_KEY);plan=null;aiOn=false;closeModal('#settingsModal');firstRun();
-});
-
 function normalizeCandle(v){
   const o=num(v.open),h=num(v.high),l=num(v.low),c=num(v.close);
-  if(![o,h,l,c].every(Number.isFinite))return null;
+  if(![o,h,l,c].every(Number.isFinite)||o<=0||c<=0)return null;
   return{ts:num(v.ts)||Date.parse(String(v.datetime||'').replace(' ','T')+'Z')||Date.now(),open:o,high:Math.max(h,o,c),low:Math.min(l,o,c),close:c}
 }
 async function loadPack(){
   try{
-    const res=await fetch('./xauusd.json?ts='+Date.now(),{cache:'no-store'});
-    if(!res.ok)throw new Error('xauusd.json not found');
-    const j=await res.json();
-    const tf=j.timeframes||j.data||j;
-    for(const k of ['M1','M5','M15','H1']){
-      marketData[k]=(tf[k]||[]).map(normalizeCandle).filter(Boolean);
-    }
-    return Object.values(marketData).some(a=>a.length>10);
-  }catch(e){
-    console.warn(e);
-    return false;
+    const res=await fetch('./xauusd.json?ts='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('xauusd.json not found');
+    const j=await res.json(),tf=j.timeframes||j.data||j;
+    packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):null;packMeta.source=j.source||'GitHub Data Pack';
+    for(const k of ['M1','M5','M15','H1'])marketData[k]=(tf[k]||[]).map(normalizeCandle).filter(Boolean).sort((a,b)=>a.ts-b.ts);
+    return Object.values(marketData).some(a=>a.length>20);
+  }catch(e){console.warn('market pack',e);return false}
+}
+function normalizeNewsEvent(e){
+  const date=e.date||e.Date||e.datetime||e.time;
+  const ts=Date.parse(date);
+  const title=e.event||e.Event||e.title||e.Category||'US Event';
+  const importance=num(e.importance||e.Importance||2);
+  return{ts:Number.isFinite(ts)?ts:null,title,importance,actual:e.actual??e.Actual??null,forecast:e.forecast??e.Forecast??null,previous:e.previous??e.Previous??null}
+}
+async function loadNews(){
+  try{
+    const r=await fetch('./news.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('news.json not found');
+    const j=await r.json();newsPack.generatedAt=j.generatedAt?Date.parse(j.generatedAt):null;newsPack.events=(j.events||j.data||[]).map(normalizeNewsEvent).filter(e=>e.ts);
+    return true;
+  }catch(e){console.warn('news pack',e);newsPack.events=[];return false}
+}
+function newsContext(){
+  const now=Date.now(),before=Math.max(0,num(settings.newsBefore)||20),after=Math.max(0,num(settings.newsAfter)||15);
+  const relevant=newsPack.events.filter(e=>Math.abs(e.ts-now)<=36*3600000).sort((a,b)=>a.ts-b.ts);
+  let nearest=null;
+  for(const e of relevant){
+    const mins=(e.ts-now)/60000;
+    if(!nearest||Math.abs(mins)<Math.abs(nearest.mins))nearest={event:e,mins};
   }
+  const high=nearest&&nearest.event.importance>=2;
+  const lock=!!(high&&nearest.mins<=before&&nearest.mins>=-after);
+  const warn=!!(high&&nearest.mins>before&&nearest.mins<=90);
+  return{relevant,nearest,lock,warn}
 }
+
 function ema(vals,p){if(!vals.length)return[];const k=2/(p+1);let x=vals[0];return vals.map((v,i)=>(x=i?v*k+x*(1-k):v,x))}
-function rsi(vals,p=14){
-  if(vals.length<=p)return 50;let g=0,l=0;
-  for(let i=1;i<=p;i++){const d=vals[i]-vals[i-1];g+=Math.max(d,0);l+=Math.max(-d,0)}
-  let ag=g/p,al=l/p;
-  for(let i=p+1;i<vals.length;i++){const d=vals[i]-vals[i-1];ag=(ag*(p-1)+Math.max(d,0))/p;al=(al*(p-1)+Math.max(-d,0))/p}
-  return al===0?100:100-100/(1+ag/al);
+function rsiSeries(vals,p=14){
+  const out=new Array(vals.length).fill(null);if(vals.length<=p)return out;
+  let g=0,l=0;for(let i=1;i<=p;i++){const d=vals[i]-vals[i-1];g+=Math.max(d,0);l+=Math.max(-d,0)}
+  let ag=g/p,al=l/p;out[p]=al===0?100:100-100/(1+ag/al);
+  for(let i=p+1;i<vals.length;i++){const d=vals[i]-vals[i-1];ag=(ag*(p-1)+Math.max(d,0))/p;al=(al*(p-1)+Math.max(-d,0))/p;out[i]=al===0?100:100-100/(1+ag/al)}return out;
 }
-function atr(c,p=14){
-  if(c.length<2)return 0;const tr=[];
-  for(let i=1;i<c.length;i++)tr.push(Math.max(c[i].high-c[i].low,Math.abs(c[i].high-c[i-1].close),Math.abs(c[i].low-c[i-1].close)));
-  return tr.slice(-p).reduce((a,b)=>a+b,0)/Math.min(p,tr.length);
+function trueRanges(c){
+  const out=[c[0]?c[0].high-c[0].low:0];for(let i=1;i<c.length;i++)out.push(Math.max(c[i].high-c[i].low,Math.abs(c[i].high-c[i-1].close),Math.abs(c[i].low-c[i-1].close)));return out;
+}
+function wilders(vals,p=14){
+  const out=new Array(vals.length).fill(null);if(vals.length<p)return out;
+  let x=vals.slice(0,p).reduce((a,b)=>a+b,0)/p;out[p-1]=x;
+  for(let i=p;i<vals.length;i++){x=(x*(p-1)+vals[i])/p;out[i]=x}return out;
+}
+function atrSeries(c,p=14){return wilders(trueRanges(c),p)}
+function adxSeries(c,p=14){
+  const tr=trueRanges(c),pd=[0],md=[0];
+  for(let i=1;i<c.length;i++){const up=c[i].high-c[i-1].high,dn=c[i-1].low-c[i].low;pd.push(up>dn&&up>0?up:0);md.push(dn>up&&dn>0?dn:0)}
+  const a=wilders(tr,p),pw=wilders(pd,p),mw=wilders(md,p),dx=new Array(c.length).fill(0);
+  for(let i=0;i<c.length;i++)if(a[i]&&pw[i]!=null&&mw[i]!=null){const plus=100*pw[i]/a[i],minus=100*mw[i]/a[i],s=plus+minus;dx[i]=s?100*Math.abs(plus-minus)/s:0}
+  return wilders(dx,p);
+}
+function pivots(c,left=2,right=2){
+  const highs=[],lows=[];
+  for(let i=left;i<c.length-right;i++){
+    let hi=true,lo=true;
+    for(let j=i-left;j<=i+right;j++)if(j!==i){if(c[j].high>=c[i].high)hi=false;if(c[j].low<=c[i].low)lo=false}
+    if(hi)highs.push({i,price:c[i].high,ts:c[i].ts});if(lo)lows.push({i,price:c[i].low,ts:c[i].ts});
+  }return{highs,lows}
+}
+function structure(c){
+  const p=pivots(c),hs=p.highs.slice(-3),ls=p.lows.slice(-3),last=c.at(-1);let state='RANGE',bos='NONE';
+  if(hs.length>=2&&ls.length>=2){
+    const hh=hs.at(-1).price>hs.at(-2).price,hl=ls.at(-1).price>ls.at(-2).price,lh=hs.at(-1).price<hs.at(-2).price,ll=ls.at(-1).price<ls.at(-2).price;
+    if(hh&&hl)state='BULL';if(lh&&ll)state='BEAR';
+  }
+  const sh=hs.at(-1)?.price,sl=ls.at(-1)?.price;if(sh&&last.close>sh)bos='BULL';if(sl&&last.close<sl)bos='BEAR';
+  return{state,bos,swingHigh:sh,swingLow:sl,pivots:p}
 }
 function analyzeTf(c,tf){
-  if(c.length<40)return null;
-  const closes=c.map(x=>x.close),e9=ema(closes,9),e21=ema(closes,21),e50=ema(closes,50),last=closes.at(-1),A=atr(c),R=rsi(closes);
-  let bull=0,bear=0;
-  if(last>e21.at(-1))bull+=18;else bear+=18;
-  if(e9.at(-1)>e21.at(-1))bull+=18;else bear+=18;
-  if(e21.at(-1)>e50.at(-1))bull+=18;else bear+=18;
-  if(R>52&&R<72)bull+=14;if(R<48&&R>28)bear+=14;
-  const slope=(e21.at(-1)-e21.at(-8))/(A||1);
-  if(slope>.15)bull+=16;if(slope<-.15)bear+=16;
-  const side=bull>=bear?'BUY':'SELL',score=Math.round(clamp(50+Math.abs(bull-bear)*.65,0,94));
-  const recent=c.slice(-20),swingLow=Math.min(...recent.map(x=>x.low)),swingHigh=Math.max(...recent.map(x=>x.high));
-  const center=(e9.at(-1)+e21.at(-1))/2;
-  const sl=side==='BUY'?Math.min(swingLow,center-A*.8):Math.max(swingHigh,center+A*.8);
-  const risk=Math.max(.01,Math.abs(center-sl));
-  return{tf,side,score,last,rsi:R,atr:A,entryLow:center-A*.12,entryHigh:center+A*.12,entryCenter:center,sl,tp1:side==='BUY'?center+risk*1.6:center-risk*1.6,tp2:side==='BUY'?center+risk*2.3:center-risk*2.3}
+  if(!c||c.length<60)return null;
+  const closes=c.map(x=>x.close),n=c.length-1,e9=ema(closes,9),e21=ema(closes,21),e50=ema(closes,50),e200=ema(closes,200);
+  const RS=rsiSeries(closes),AT=atrSeries(c),AD=adxSeries(c),R=RS[n]??50,A=AT[n]||0,ADX=AD[n]??0,last=closes[n],S=structure(c.slice(-90));
+  const slope=(e21[n]-e21[Math.max(0,n-8)])/(A||1);let bull=0,bear=0;
+  if(last>e21[n])bull+=11;else bear+=11;if(e9[n]>e21[n])bull+=11;else bear+=11;if(e21[n]>e50[n])bull+=15;else bear+=15;if(last>e200[n])bull+=5;else bear+=5;
+  if(slope>.15)bull+=14;if(slope<-.15)bear+=14;if(R>=52&&R<=70)bull+=8;if(R<=48&&R>=30)bear+=8;
+  if(S.state==='BULL')bull+=16;if(S.state==='BEAR')bear+=16;if(S.bos==='BULL')bull+=13;if(S.bos==='BEAR')bear+=13;
+  if(ADX>=23){if(bull>bear)bull+=7;else bear+=7}
+  const direction=bull>=bear?'BUY':'SELL',edge=Math.abs(bull-bear);
+  let regime=ADX>=27?'TREND':ADX<17?'RANGE':'TRANSITION';
+  const ranges=trueRanges(c).slice(-80),med=median(ranges);if(med&&A>med*1.9)regime='VOLATILE';
+  const quality=Math.round(clamp(46+edge*.55+(ADX-18)*.7-(regime==='RANGE'?8:0),0,95));
+  const center=(e9[n]+e21[n])/2,dist=Math.abs(last-center)/(A||1),stretched=dist>1.2,pullback=dist<.45;
+  return{tf,direction,quality,last,atr:A,rsi:R,adx:ADX,ema9:e9[n],ema21:e21[n],ema50:e50[n],structure:S.state,bos:S.bos,swingHigh:S.swingHigh,swingLow:S.swingLow,regime,stretched,pullback,edge,bull,bear}
 }
 function chooseAnalysis(){
-  const results=['H1','M15','M5','M1'].map(tf=>analyzeTf(marketData[tf],tf)).filter(Boolean);
-  if(!results.length)return null;
-  const h=results.find(x=>x.tf==='H1'),m15=results.find(x=>x.tf==='M15'),m5=results.find(x=>x.tf==='M5'),m1=results.find(x=>x.tf==='M1');
-  const all=[h,m15,m5,m1].filter(Boolean);
-  const buy=all.filter(x=>x.side==='BUY').length,sell=all.filter(x=>x.side==='SELL').length,dominant=buy>=sell?'BUY':'SELL';
-  const aligned=all.filter(x=>x.side===dominant).length;
-  let candidate=[m5,m15,m1].filter(Boolean).sort((a,b)=>b.score-a.score)[0]||all[0];
-  let wait=aligned<3||candidate.score<72;
-  return{...candidate,side:wait?'WAIT':dominant,rawSide:dominant,aligned,reason:wait?'Multi‑TF ยังไม่ align พอ':'Multi‑TF align '+aligned+'/'+all.length}
+  tfResults={};for(const tf of ['H1','M15','M5','M1']){const r=analyzeTf(marketData[tf],tf);if(r)tfResults[tf]=r}
+  const H=tfResults.H1,A=tfResults.M15,B=tfResults.M5,C=tfResults.M1;if(!H||!A)return null;
+  const list=[H,A,B,C].filter(Boolean),buy=list.filter(x=>x.direction==='BUY').length,sell=list.filter(x=>x.direction==='SELL').length,dominant=buy>=sell?'BUY':'SELL',align=list.filter(x=>x.direction===dominant).length;
+  const core=H.direction===dominant&&A.direction===dominant;
+  let candidates=[B,A,C].filter(Boolean).map(r=>({...r,setup:r.quality+(r.direction===dominant?12:-22)+(r.pullback?7:0)+(r.bos===dominant?9:0)-(r.stretched?12:0)-(r.regime==='RANGE'?12:0)})).sort((a,b)=>b.setup-a.setup);
+  const X=candidates[0]||A,news=newsContext(),mkt=marketStatus(),g=guardian();
+  let score=Math.round(clamp(50+Math.abs((H.edge*.35)+(A.edge*.30)+(B?.edge||0)*.23+(C?.edge||0)*.12)*.35+(align-2)*7+(core?10:-12)+(X.bos===dominant?6:0)+(X.adx>20?5:0)-(X.stretched?10:0),0,94));
+  const blockers=[];
+  if(!mkt.open)blockers.push('MARKET CLOSED');
+  if(news.lock)blockers.push('NEWS LOCK');
+  if(g.locked)blockers.push('RISK GUARDIAN LOCK');
+  if(!core)blockers.push('H1/M15 NOT ALIGNED');
+  if(align<3)blockers.push('MTF ALIGN < 3');
+  if(X.regime==='RANGE')blockers.push('NO‑TRADE RANGE');
+  if(X.stretched)blockers.push('PRICE STRETCHED');
+  if(score<78)blockers.push('CONFIDENCE < 78');
+  let side=blockers.length?'WAIT':dominant,entryLow=null,entryHigh=null,entryCenter=null,sl=null,tp1=null,tp2=null,rr=0,setupType='WAIT';
+  if(side!=='WAIT'){
+    const R=X.atr||Math.abs(X.last)*.001;setupType=X.bos===side?'BOS RETEST':X.pullback?'EMA PULLBACK':'MEAN RETEST';
+    entryCenter=X.pullback?(X.ema9+X.ema21)/2:X.ema21;entryLow=entryCenter-R*.12;entryHigh=entryCenter+R*.12;
+    if(side==='BUY'){
+      sl=Number.isFinite(X.swingLow)?Math.min(X.swingLow-R*.10,entryCenter-R*.72):entryCenter-R*.9;
+      let risk=Math.abs(entryCenter-sl);risk=clamp(risk,R*.7,R*2);sl=entryCenter-risk;tp1=entryCenter+risk*1.55;tp2=entryCenter+risk*2.25;rr=(tp1-entryCenter)/risk;
+    }else{
+      sl=Number.isFinite(X.swingHigh)?Math.max(X.swingHigh+R*.10,entryCenter+R*.72):entryCenter+R*.9;
+      let risk=Math.abs(sl-entryCenter);risk=clamp(risk,R*.7,R*2);sl=entryCenter+risk;tp1=entryCenter-risk*1.55;tp2=entryCenter-risk*2.25;rr=(entryCenter-tp1)/risk;
+    }
+  }
+  return{...X,side,direction:dominant,score,align,core,entryLow,entryHigh,entryCenter,sl,tp1,tp2,rr,setupType,blockers,market:mkt,news,guardian:g}
 }
 function lotFor(a){
-  if(!a||a.side==='WAIT'||!validPlan(plan))return{suggested:'—',max:'—'};
-  const d=plan.days[todayIndex()],riskMoney=Math.min(d.maxLoss/2,currentBalance()*.005),dist=Math.abs(a.entryCenter-a.sl);
-  const raw=dist>0?riskMoney/(dist*settings.contractSize):0,min=settings.minLot;
-  if(raw<min)return{suggested:'< '+min.toFixed(2),max:'< '+min.toFixed(2)};
-  const floor=v=>Math.floor(v/min)*min;
-  return{suggested:Math.max(min,floor(raw*.7)).toFixed(2),max:Math.max(min,floor(raw)).toFixed(2)}
+  const g=guardian();
+  if(!a||a.side==='WAIT'||!validPlan(plan)||g.locked)return{suggested:'—',max:'—',riskMoney:0};
+  const d=plan.days[todayIndex()],riskMoney=Math.min(d.maxLoss/2,currentBalance()*.005)*g.mult,dist=Math.abs(a.entryCenter-a.sl),min=Math.max(.01,num(settings.minLot)||.01),contract=Math.max(1,num(settings.contractSize)||100);
+  const raw=dist>0?riskMoney/(dist*contract):0;if(raw<min)return{suggested:'< '+min.toFixed(2),max:'< '+min.toFixed(2),riskMoney};
+  const floor=v=>Math.floor((v+1e-12)/min)*min;return{suggested:Math.max(min,floor(raw*.72)).toFixed(2),max:Math.max(min,floor(raw)).toFixed(2),riskMoney}
+}
+
+function registerScan(){
+  if(!analysis)return;
+  scanMemory.push({at:Date.now(),tf:analysis.tf,side:analysis.side,direction:analysis.direction,score:analysis.score,regime:analysis.regime,setup:analysis.setupType,market:analysis.market.label});
+  scanMemory=scanMemory.slice(-40);saveJson(SCAN_KEY,scanMemory);
+  if(analysis.side==='WAIT')aiWaitStreak++;else aiWaitStreak=0;
+}
+function registerSignal(){
+  if(!analysis||analysis.side==='WAIT'||!analysis.market.open)return;
+  const mins={M1:20,M5:50,M15:140,H1:360}[analysis.tf]||90;
+  activeSignal={createdAt:Date.now(),expiresAt:Date.now()+mins*60000,status:'WATCH',side:analysis.side,tf:analysis.tf,entryLow:analysis.entryLow,entryHigh:analysis.entryHigh,entryCenter:analysis.entryCenter,sl:analysis.sl,tp1:analysis.tp1,tp2:analysis.tp2,setup:analysis.setupType};
+  saveJson(SIGNAL_KEY,activeSignal);
+}
+function processActiveSignal(){
+  if(!activeSignal)return;
+  if(Date.now()>activeSignal.expiresAt){activeSignal.status='EXPIRED';saveJson(SIGNAL_KEY,activeSignal);return}
+  const d=marketData[activeSignal.tf]||[],last=d.at(-1);if(!last)return;
+  const p=last.close,s=activeSignal;
+  if(s.status==='WATCH'&&p>=Math.min(s.entryLow,s.entryHigh)&&p<=Math.max(s.entryLow,s.entryHigh))s.status='ENTRY';
+  if(['ENTRY','TP1'].includes(s.status)){
+    if(s.side==='BUY'){
+      if(last.low<=s.sl)s.status='SL';else if(last.high>=s.tp2)s.status='TP2';else if(last.high>=s.tp1)s.status='TP1';
+    }else{
+      if(last.high>=s.sl)s.status='SL';else if(last.low<=s.tp2)s.status='TP2';else if(last.low<=s.tp1)s.status='TP1';
+    }
+  }
+  saveJson(SIGNAL_KEY,s);
+}
+
+function renderMarketStatus(){
+  const m=marketStatus(),loaded=Object.values(marketData).some(a=>a.length>20);
+  $('#marketPill').classList.toggle('live',m.open&&loaded);
+  $('#marketText').textContent=m.open?(loaded?'DATA READY':'MARKET OPEN'):'MARKET CLOSED';
+  $('#homeMarket').textContent=m.open?m.session:'CLOSED';
+  $('#marketMode').textContent=m.open?'HISTORICAL':'LAST SESSION';
+}
+function renderDataHealth(){
+  const count=Object.values(marketData).filter(a=>a.length>20).length,last=marketData.M1.at(-1)||marketData.M5.at(-1)||marketData.M15.at(-1),m=marketStatus();
+  const age=packMeta.generatedAt?Date.now()-packMeta.generatedAt:NaN;
+  $('#dataTfCount').textContent=count+' / 4';$('#dataLastPrice').textContent=last?price(last.close):'—';
+  $('#dataUpdated').textContent=packMeta.generatedAt?dtBangkok(packMeta.generatedAt,true):'—';$('#dataAge').textContent=fmtAge(age);$('#homeDataAge').textContent=fmtAge(age);
+  let score=count/4*65;if(Number.isFinite(age)){if(age<3600000)score+=35;else if(age<6*3600000)score+=25;else if(age<24*3600000)score+=12}
+  if(!m.open&&count)score=Math.max(score,82);
+  score=Math.round(clamp(score,0,100));$('#dataHealthBar').style.width=score+'%';
+  const chip=$('#dataHealthChip');chip.className='status-chip '+(score>=80?'good':score>=50?'warn':'bad');chip.textContent=!m.open&&count?'LAST SESSION':score>=80?'HEALTHY':score>=50?'CACHED':'STALE';
+  $('#dataHealthTitle').textContent=count===4?'XAUUSD Data Pack พร้อมใช้งาน':'ข้อมูล Timeframe ยังไม่ครบ';
+}
+function renderNews(){
+  const ctx=newsContext(),list=ctx.relevant.filter(e=>e.ts>Date.now()-2*3600000).slice(0,6),chip=$('#newsChip');
+  if(ctx.lock){chip.className='status-chip bad';chip.textContent='NEWS LOCK';$('#newsTitle').textContent='หยุด Entry ใหม่ช่วงข่าวแรง';$('#newsSub').textContent='Shock window ตาม Settings ก่อน/หลังข่าว'}
+  else if(ctx.warn){chip.className='status-chip warn';chip.textContent='CAUTION';$('#newsTitle').textContent='มีข่าว USD สำคัญใกล้เข้ามา';$('#newsSub').textContent='ลดความมั่นใจและหลีกเลี่ยง M1 ก่อนข่าว'}
+  else{chip.className='status-chip good';chip.textContent=list.length?'CLEAR':'NO EVENT';$('#newsTitle').textContent=list.length?'ไม่มี News Lock ตอนนี้':'ไม่พบข่าวสำคัญใน feed';$('#newsSub').textContent='news.json · ไม่ใช้ market credits'}
+  $('#newsList').innerHTML=list.length?list.map(e=>{
+    const mins=(e.ts-Date.now())/60000,meta=mins>=0?(Math.round(mins)+' นาที'):'ประกาศแล้ว';
+    const impact=e.importance>=3?'high':e.importance>=2?'med':'low';
+    return `<div class="news-row"><div class="news-time">${dtBangkok(e.ts)}</div><div class="news-main"><b>${e.title}</b><small>${meta}${e.forecast!=null?' · F '+e.forecast:''}${e.previous!=null?' · P '+e.previous:''}</small></div><i class="impact ${impact}"></i></div>`;
+  }).join(''):'<div class="news-empty">ยังไม่มี Event ที่เกี่ยวกับทองในช่วง ±36 ชั่วโมง</div>';
+  $('#homeNextNews').textContent=ctx.nearest?(dtBangkok(ctx.nearest.event.ts)+' · '+ctx.nearest.event.title.slice(0,16)):'CLEAR';
+}
+function renderFusion(){
+  const a=analysis,m=marketStatus(),n=newsContext(),g=guardian();
+  const gates=[
+    ['Market Open',m.open,m.open?'PASS':'CLOSED'],
+    ['News Window',!n.lock,n.lock?'LOCK':'PASS'],
+    ['H1 / M15',!!a?.core,a?.core?'PASS':'BLOCK'],
+    ['MTF Align',!!a&&a.align>=3,a?a.align+'/4':'—'],
+    ['Regime',!!a&&a.regime!=='RANGE',a?.regime||'—'],
+    ['Risk Guardian',!g.locked,g.locked?'LOCK':'PASS']
+  ];
+  $('#gateGrid').innerHTML=gates.map(([name,ok,label])=>`<div class="gate ${ok?'pass':label==='CLOSED'||label==='LOCK'?'warn':'block'}"><span>${name}</span><b>${label}</b></div>`).join('');
+  const pass=gates.filter(g=>g[1]).length,score=a?Math.round(a.score*.72+pass/6*28):0;$('#fusionScore').textContent=score+' / 100';
+}
+function renderCommand(){
+  const m=marketStatus(),n=newsContext(),g=guardian(),chip=$('#commandChip'),act=$('#commandAction');
+  let title='รอวิเคราะห์ตลาด',copy='เปิด AI และกด ANALYZE',status='WAIT',cls='',action='ยังไม่มีคำสั่ง';
+  if(!m.open){title=analysis?`LAST SESSION · ${analysis.direction} BIAS`:'MARKET CLOSED';copy=analysis?`Historical score ${analysis.score} · ${analysis.tf} ${analysis.regime}`:'โหลด Session ล่าสุดเพื่อดู Bias ได้';status='CLOSED';cls='';action='ตลาดปิด · ดูกราฟและ Bias ย้อนหลังได้ แต่ Entry ใหม่ถูกปิด'}
+  else if(n.lock){title='NEWS LOCK';copy='อยู่ในช่วงข่าว USD สำคัญ';status='LOCK';cls='lock';action='งด Entry ใหม่จนพ้น shock window'}
+  else if(g.locked){title='RISK GUARDIAN LOCK';copy=g.reasons.join(' · ');status='LOCK';cls='lock';action='หยุดเพิ่มความเสี่ยงจน Drawdown / Streak คลาย'}
+  else if(analysis?.side!=='WAIT'&&analysis){title=`${analysis.side} ${analysis.tf} · ${analysis.setupType}`;copy=`Confidence ${analysis.score}% · ${analysis.regime} · align ${analysis.align}/4`;status='READY';cls='ready';action='Setup ผ่าน Gate แล้ว · รอราคาเข้า Entry Zone · ห้ามไล่ราคา'}
+  else if(analysis){title='WAIT · ไม่มี Setup ที่ผ่านครบ';copy=(analysis.blockers||[]).slice(0,2).join(' · ');status='WAIT';action='ไม่เข้าไม้จนกว่า Gate จะผ่าน'}
+  chip.textContent=status;chip.className='status-chip '+(status==='READY'?'good':status==='LOCK'?'bad':status==='CLOSED'?'warn':'');
+  $('#commandTitle').textContent=title;$('#commandCopy').textContent=copy;act.className='command-action '+cls;act.innerHTML='<i></i><span>'+action+'</span>';
+}
+function renderGuardian(){
+  const g=guardian(),pct=Math.round(g.mult*100),score=$('#guardianScore');
+  $('#guardianTitle').textContent=g.locked?'SESSION LOCKED':g.mult<1?'RISK REDUCED':'NORMAL RISK';
+  $('#guardianReason').textContent=g.reasons.length?g.reasons.join(' · '):'ยังไม่มี Loss streak หรือ Drawdown ที่ต้องลดความเสี่ยง';
+  score.textContent=pct+'%';score.className='risk-score '+(g.locked?'bad':g.mult<1?'warn':'');
+  $('#riskMultiplier').textContent=g.mult.toFixed(2)+'×';$('#dayMissStreak').textContent=g.miss;$('#aiWaitStreak').textContent=aiWaitStreak;$('#guardianDd').textContent=(g.dd*100).toFixed(2)+'%';
+}
+function renderLifecycle(){
+  const s=activeSignal,steps=$$('.life-step');steps.forEach(x=>x.className='life-step');
+  if(!s){$('#lifeTitle').textContent='NO ACTIVE SIGNAL';$('#lifeChip').textContent='IDLE';$('#lifeChip').className='status-chip';$('#lifeEntry').textContent='—';$('#lifeExpire').textContent='—';$('#lifeState').textContent='รอสัญญาณ';return}
+  $('#lifeTitle').textContent=`${s.side} · ${s.tf} · ${s.setup}`;$('#lifeChip').textContent=s.status;$('#lifeChip').className='status-chip '+(['TP1','TP2'].includes(s.status)?'good':s.status==='SL'?'bad':s.status==='EXPIRED'?'warn':'');
+  $('#lifeEntry').textContent=price(s.entryLow)+'–'+price(s.entryHigh);$('#lifeExpire').textContent=dtBangkok(s.expiresAt);$('#lifeState').textContent=s.status;
+  const order=['WATCH','ENTRY','TP1','TP2'],idx=order.indexOf(s.status);
+  if(idx>=0){for(let i=0;i<idx;i++)steps[i]?.classList.add('done');steps[idx]?.classList.add('current')}
+  if(s.status==='SL'||s.status==='EXPIRED')steps[0]?.classList.add('current');
+}
+
+function renderHome(){
+  if(!validPlan(plan))return;
+  const bal=currentBalance(),done=completed(),idx=todayIndex(),d=plan.days[idx],monthProgress=clamp((bal-plan.start)/(plan.target-plan.start),0,1),m=marketStatus();
+  $('#homeBalance').textContent=money(bal);$('#homeDelta').textContent=(bal-plan.start>=0?'+':'')+money(bal-plan.start)+' since start';
+  $('#homeTarget').textContent=money(plan.target);$('#homeTargetPct').textContent=((plan.target/plan.start-1)*100).toFixed(2)+'% month goal';
+  $('#missionDay').textContent='DAY '+String(idx+1).padStart(2,'0');$('#todayProfit').textContent='+'+money(d.profit);$('#todayRate').textContent='Required '+(d.profit/d.start*100).toFixed(2)+'% / session';
+  $('#todayStart').textContent=money(d.start);$('#todayClose').textContent=money(d.expected);$('#daysLeft').textContent=Math.max(0,30-done);$('#tpStop').textContent='+'+money(d.profit);$('#maxLoss').textContent='-'+money(d.maxLoss);
+  $('#monthPct').textContent=Math.round(monthProgress*100)+'%';$('#monthRing').style.setProperty('--p',(monthProgress*100).toFixed(1)+'%');
+  $('#missionNotice').textContent=`วันนี้: ถึง ${money(d.expected)} = Target Complete · ต่ำกว่า ${money(Math.max(0,d.start-d.maxLoss))} = Max Loss Zone`;
+  $('#planHealth').textContent='PLAN HEALTH '+Math.max(0,Math.round(100-maxDrawdown()*300));
+  $('#homeAiDesk').textContent=aiOn?(analysis?(analysis.side==='WAIT'?'WAIT':analysis.side+' '+analysis.tf):'READY TO SCAN'):'OFF';
+  const chip=$('#homeSystemChip');chip.textContent=!m.open?'MARKET CLOSED':newsContext().lock?'NEWS LOCK':analysis?.side!=='WAIT'&&analysis?'SETUP READY':'SYSTEM READY';chip.className='status-chip '+(!m.open?'warn':newsContext().lock?'bad':analysis?.side!=='WAIT'&&analysis?'good':'');
+}
+function renderPlan(){
+  if(!validPlan(plan))return;const done=completed(),idx=todayIndex();$('#planProgressText').textContent=done+' / 30';$('#planProgressBar').style.width=(done/30*100)+'%';
+  const bal=currentBalance(),expected=done?plan.days[done-1].expected:plan.start;$('#planPace').textContent=bal>=expected?'ON PLAN':'BEHIND';
+  $('#planList').innerHTML=plan.days.map((d,i)=>`<div class="plan-row ${i===idx&&done<30?'current':''}"><div class="plan-row-head"><div class="daybox">${String(d.day).padStart(2,'0')}</div><div><b>${money(d.start)} → ${money(d.expected)}</b><br><small>${d.actual==null?'ยังไม่จบ Session':'Actual '+money(d.actual)+' · '+d.status.toUpperCase()}</small></div><div class="plan-profit">+${money(d.profit)}</div></div></div>`).join('');
+}
+function renderStats(){
+  if(!validPlan(plan))return;const rows=plan.days.filter(d=>d.actual!=null),hits=rows.filter(d=>d.status==='hit').length;$('#statCompleted').textContent=rows.length;$('#statHitRate').textContent=rows.length?Math.round(hits/rows.length*100)+'%':'—';
+  const best=rows.length?rows.reduce((a,b)=>(b.actual-b.start)>(a.actual-a.start)?b:a):null;$('#statBestDay').textContent=best?'D'+best.day+' '+money(best.actual-best.start):'—';$('#statDd').textContent=(maxDrawdown()*100).toFixed(2)+'%';
+  $('#recentList').innerHTML=rows.length?rows.slice(-10).reverse().map(d=>`<div class="plan-row"><div class="plan-row-head"><div class="daybox">${String(d.day).padStart(2,'0')}</div><div><b>${d.status.toUpperCase()} · ${money(d.actual)}</b><br><small>${d.note||'No note'}</small></div><div class="plan-profit">${d.actual-d.start>=0?'+':''}${money(d.actual-d.start)}</div></div></div>`).join(''):'<div class="plan-row"><small>ยังไม่มี Session ที่บันทึก</small></div>';
+  $('#scanMemoryList').innerHTML=scanMemory.length?scanMemory.slice(-12).reverse().map(s=>`<div class="memory-row"><div class="memory-row-head"><div><b>${s.side} · ${s.tf} · ${s.setup}</b><small>${dtBangkok(s.at,true)} · ${s.regime} · Score ${s.score}</small></div><span class="scan-pill">${s.market}</span></div></div>`).join(''):'<div class="memory-row"><small>ยังไม่มี Scan Memory</small></div>';
+  if(backtestResult){$('#btSamples').textContent=backtestResult.samples;$('#btWinRate').textContent=backtestResult.winRate.toFixed(1)+'%';$('#btPf').textContent=Number.isFinite(backtestResult.pf)?backtestResult.pf.toFixed(2):'∞';$('#btDd').textContent=backtestResult.maxDd.toFixed(2)+'%'}
+  requestAnimationFrame(drawEquity);
 }
 function renderAiUi(){
-  $('#aiSwitch').classList.toggle('on',aiOn);
-  $('#aiSwitch b').textContent=aiOn?'AI ON':'AI OFF';
-  $('#aiSwitch small').textContent=aiOn?'LOCAL ENGINE':'0 CREDIT';
+  $('#aiSwitch').classList.toggle('on',aiOn);$('#aiSwitch b').textContent=aiOn?'AI ON':'AI OFF';$('#aiSwitch small').textContent=aiOn?'LOCAL FUSION':'0 CREDIT';
   if(!analysis){
     $('#bestTf').textContent='—';$('#direction').textContent='WAIT';$('#confidence').textContent='Confidence —';$('#suggestedLot').textContent='—';$('#maxLot').textContent='Max —';$('#signalSide').textContent='WAIT';$('#signalReason').textContent='ยังไม่ได้วิเคราะห์';$('#signalStatus').textContent='IDLE';
-    return;
+    ['entryZone','signalSl','signalTp1','signalTp2'].forEach(id=>$('#'+id).textContent='—');
+  }else{
+    const lot=lotFor(analysis);$('#bestTf').textContent=analysis.tf;$('#direction').textContent=analysis.market.open?(analysis.side==='WAIT'?'WAIT':analysis.side):('BIAS '+analysis.direction);$('#confidence').textContent='Confidence '+analysis.score+'%';
+    $('#suggestedLot').textContent=lot.suggested==='—'?'—':lot.suggested+' lot';$('#maxLot').textContent='Max '+lot.max;
+    $('#signalSide').textContent=analysis.market.open?analysis.side:('LAST '+analysis.direction);$('#signalReason').textContent=analysis.market.open?(analysis.blockers.length?analysis.blockers.join(' · '):`${analysis.setupType} · ${analysis.regime} · align ${analysis.align}/4`):'ตลาดปิด · Entry/SL/TP ใหม่ถูกปิด';
+    $('#signalStatus').textContent=!analysis.market.open?'CLOSED':analysis.side==='WAIT'?'WAIT':'READY';$('#signalStatus').className='signal-status '+(analysis.side==='BUY'&&analysis.market.open?'buy':analysis.side==='SELL'&&analysis.market.open?'sell':'');
+    if(analysis.side==='WAIT'||!analysis.market.open){['entryZone','signalSl','signalTp1','signalTp2'].forEach(id=>$('#'+id).textContent='—')}
+    else{$('#entryZone').textContent=price(analysis.entryLow)+' – '+price(analysis.entryHigh);$('#signalSl').textContent=price(analysis.sl);$('#signalTp1').textContent=price(analysis.tp1);$('#signalTp2').textContent=price(analysis.tp2)}
   }
-  const lot=lotFor(analysis);
-  $('#bestTf').textContent=analysis.tf;$('#direction').textContent=analysis.side;$('#confidence').textContent='Confidence '+analysis.score+'%';
-  $('#suggestedLot').textContent=lot.suggested==='—'?'—':lot.suggested+' lot';$('#maxLot').textContent='Max '+lot.max;
-  $('#signalSide').textContent=analysis.side;$('#signalReason').textContent=analysis.reason;$('#signalStatus').textContent=analysis.side==='WAIT'?'WAIT':'READY';
-  $('#signalStatus').className='signal-status '+(analysis.side==='BUY'?'buy':analysis.side==='SELL'?'sell':'');
-  $('#entryZone').textContent=analysis.side==='WAIT'?'—':analysis.entryLow.toFixed(2)+' – '+analysis.entryHigh.toFixed(2);
-  $('#signalSl').textContent=analysis.side==='WAIT'?'—':analysis.sl.toFixed(2);$('#signalTp1').textContent=analysis.side==='WAIT'?'—':analysis.tp1.toFixed(2);$('#signalTp2').textContent=analysis.side==='WAIT'?'—':analysis.tp2.toFixed(2);
+  renderMarketStatus();renderDataHealth();renderNews();renderFusion();renderCommand();renderGuardian();renderLifecycle();renderHome();
 }
+function renderAll(){renderHome();renderPlan();renderStats();renderAiUi()}
+
+function candleTime(c){return c?dtBangkok(c.ts,currentTf==='H1'):'—'}
+function visibleData(){
+  const src=marketData[currentTf]||[];if(!src.length)return{src,visible:[],start:0};
+  chartView.bars=clamp(Math.round(chartView.bars),18,Math.min(64,src.length));chartView.offset=clamp(Math.round(chartView.offset),0,Math.max(0,src.length-chartView.bars));
+  const end=src.length-chartView.offset,start=Math.max(0,end-chartView.bars);return{src,visible:src.slice(start,end),start}
+}
+function drawChart(){
+  const canvas=$('#marketChart'),vd=visibleData(),data=vd.visible,empty=$('#chartEmpty');
+  if(data.length<8){empty.classList.remove('hidden');return}else empty.classList.add('hidden');
+  const rect=canvas.getBoundingClientRect();if(rect.width<20)return;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);
+  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const W=rect.width,H=rect.height,pad={l:9,r:58,t:11,b:28},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);ctx.fillStyle='#060a0e';ctx.fillRect(0,0,W,H);
+  const ranges=data.map(c=>c.high-c.low),med=median(ranges)||1,lows=data.map(c=>c.low).sort((a,b)=>a-b),highs=data.map(c=>c.high).sort((a,b)=>a-b);
+  let lo=lows[Math.max(0,Math.floor(lows.length*.04))],hi=highs[Math.min(highs.length-1,Math.floor(highs.length*.96))],rg=Math.max(.02,hi-lo);lo-=rg*.10;hi+=rg*.10;rg=hi-lo;
+  if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){
+    const near=[analysis.entryLow,analysis.entryHigh,analysis.sl,analysis.tp1,analysis.tp2].filter(Number.isFinite).filter(v=>v>lo-rg*.25&&v<hi+rg*.25);if(near.length){lo=Math.min(lo,...near);hi=Math.max(hi,...near);rg=hi-lo}
+  }
+  const y=p=>pad.t+(hi-p)/rg*ph,step=pw/data.length,bw=clamp(step*.60,4.2,10);
+  ctx.fillStyle='rgba(11,17,23,.75)';ctx.fillRect(W-pad.r,0,pad.r,H);
+  for(let i=0;i<5;i++){const yy=pad.t+ph*i/4;ctx.strokeStyle='rgba(158,173,188,.065)';ctx.beginPath();ctx.moveTo(pad.l,yy+.5);ctx.lineTo(W-pad.r,yy+.5);ctx.stroke();ctx.fillStyle='#657281';ctx.font='8px ui-monospace,SFMono-Regular,Menlo,monospace';ctx.textAlign='right';ctx.fillText((hi-rg*i/4).toFixed(2),W-5,yy+3)}
+  for(let i=1;i<4;i++){const x=pad.l+pw*i/4;ctx.strokeStyle='rgba(158,173,188,.035)';ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke()}
+  const warm=vd.src.slice(Math.max(0,vd.start-80),vd.start+data.length),off=vd.start-Math.max(0,vd.start-80),cl=warm.map(c=>c.close),e9=ema(cl,9).slice(off),e21=ema(cl,21).slice(off);
+  const curve=(arr,col,w)=>{ctx.save();ctx.strokeStyle=col;ctx.lineWidth=w;ctx.lineJoin='round';ctx.beginPath();arr.forEach((v,i)=>{if(i>=data.length)return;const x=pad.l+step*i+step/2,yy=y(v);i?ctx.lineTo(x,yy):ctx.moveTo(x,yy)});ctx.stroke();ctx.restore()};
+  curve(e21,'rgba(226,189,104,.66)',1.35);curve(e9,'rgba(105,200,239,.82)',1.45);
+  if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){
+    const z1=y(Math.max(analysis.entryLow,analysis.entryHigh)),z2=y(Math.min(analysis.entryLow,analysis.entryHigh));ctx.fillStyle='rgba(105,200,239,.065)';ctx.fillRect(pad.l+pw*.28,Math.max(pad.t,z1),pw*.72,Math.max(2,Math.min(H-pad.b,z2)-Math.max(pad.t,z1)));
+  }
+  data.forEach((c,i)=>{
+    const x=pad.l+step*i+step/2,up=c.close>=c.open,col=up?'#63d8ac':'#eb6a7d',hy=clamp(y(c.high),pad.t,H-pad.b),ly=clamp(y(c.low),pad.t,H-pad.b),oy=clamp(y(c.open),pad.t,H-pad.b),cy=clamp(y(c.close),pad.t,H-pad.b);
+    ctx.strokeStyle=col;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,hy);ctx.lineTo(x,ly);ctx.stroke();ctx.fillStyle=col;ctx.fillRect(x-bw/2,Math.min(oy,cy),bw,Math.max(2.2,Math.abs(oy-cy)));
+    if(c.high>hi&&c.high-c.low>med*4){ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,pad.t+1);ctx.lineTo(x-3,pad.t+6);ctx.lineTo(x+3,pad.t+6);ctx.closePath();ctx.fill()}
+    if(c.low<lo&&c.high-c.low>med*4){ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,H-pad.b-1);ctx.lineTo(x-3,H-pad.b-6);ctx.lineTo(x+3,H-pad.b-6);ctx.closePath();ctx.fill()}
+  });
+  const level=(p,label,col)=>{if(!Number.isFinite(p))return;const yy=y(p);if(yy<pad.t||yy>H-pad.b)return;ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle=col;ctx.beginPath();ctx.moveTo(pad.l+pw*.30,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.restore();ctx.fillStyle=col;ctx.font='700 7px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(label,pad.l+pw*.31,yy-4)};
+  if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){level(analysis.entryCenter,'ENTRY','#69c8ef');level(analysis.sl,'SL','#ff7385');level(analysis.tp1,'TP1','#6ee7c3');level(analysis.tp2,'TP2','rgba(110,231,195,.58)')}
+  const last=data.at(-1),prev=data.at(-2)||last,ly=y(last.close);ctx.save();ctx.setLineDash([2,4]);ctx.strokeStyle='rgba(220,229,236,.22)';ctx.beginPath();ctx.moveTo(pad.l,ly);ctx.lineTo(W-pad.r,ly);ctx.stroke();ctx.restore();
+  const tagCol=last.close>=prev.close?'#63d8ac':'#eb6a7d';ctx.fillStyle=tagCol;ctx.fillRect(W-pad.r+3,clamp(ly-9,pad.t,H-pad.b-18),pad.r-7,18);ctx.fillStyle='#06100d';ctx.font='700 8px ui-monospace,monospace';ctx.textAlign='center';ctx.fillText(last.close.toFixed(2),W-pad.r/2,clamp(ly+3,pad.t+12,H-pad.b-6));
+  const labels=[0,Math.floor((data.length-1)/2),data.length-1];ctx.fillStyle='#5f6c79';ctx.font='7px -apple-system,sans-serif';labels.forEach((i,n)=>{ctx.textAlign=n===0?'left':n===2?'right':'center';ctx.fillText(candleTime(data[i]),n===0?pad.l:n===2?W-pad.r:pad.l+step*i+step/2,H-7)});
+  if(Number.isInteger(chartView.cross)&&chartView.cross>=0&&chartView.cross<data.length){
+    const i=chartView.cross,c=data[i],x=pad.l+step*i+step/2,yy=y(c.close);ctx.save();ctx.setLineDash([3,4]);ctx.strokeStyle='rgba(210,220,228,.25)';ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.restore();updateOhlc(c);
+  }else updateOhlc(last);
+  $('#chartPrice').textContent=price(last.close);$('#chartTf').textContent=currentTf;
+}
+function updateOhlc(c){$('#candleTime').textContent=candleTime(c);$('#candleO').textContent=price(c.open);$('#candleH').textContent=price(c.high);$('#candleL').textContent=price(c.low);$('#candleC').textContent=price(c.close)}
+const canvas=$('#marketChart');
+canvas.addEventListener('pointerdown',e=>{chartView.drag=true;chartView.moved=false;chartView.startX=e.clientX;chartView.startOffset=chartView.offset;canvas.setPointerCapture?.(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!chartView.drag)return;const vd=visibleData(),rect=canvas.getBoundingClientRect(),step=Math.max(1,(rect.width-67)/Math.max(1,vd.visible.length)),dx=e.clientX-chartView.startX;if(Math.abs(dx)>6)chartView.moved=true;if(chartView.moved){chartView.cross=null;chartView.offset=chartView.startOffset+Math.round(dx/step);drawChart()}});
+canvas.addEventListener('pointerup',e=>{if(!chartView.drag)return;if(!chartView.moved){const vd=visibleData(),r=canvas.getBoundingClientRect(),pw=r.width-67,local=clamp(e.clientX-r.left-9,0,pw-.1);chartView.cross=clamp(Math.floor(local/(pw/vd.visible.length)),0,vd.visible.length-1);drawChart()}chartView.drag=false});
+canvas.addEventListener('pointercancel',()=>chartView.drag=false);
+$('#zoomInBtn').addEventListener('click',()=>{chartView.bars=clamp(chartView.bars-5,18,64);drawChart()});
+$('#zoomOutBtn').addEventListener('click',()=>{chartView.bars=clamp(chartView.bars+5,18,64);drawChart()});
+$('#latestBtn').addEventListener('click',()=>{chartView.offset=0;chartView.cross=null;drawChart()});
+$('#tfTabs').addEventListener('click',e=>{const b=e.target.closest('button[data-tf]');if(!b)return;currentTf=b.dataset.tf;chartView.offset=0;chartView.cross=null;chartView.bars={M1:28,M5:30,M15:30,H1:34}[currentTf]||30;$$('#tfTabs button').forEach(x=>x.classList.toggle('active',x===b));drawChart()});
+window.addEventListener('resize',()=>{requestAnimationFrame(drawChart);requestAnimationFrame(drawEquity)});
+
+function drawEquity(){
+  const c=$('#equityChart');if(!c||!validPlan(plan))return;const rows=plan.days.filter(d=>d.actual!=null),vals=[plan.start,...rows.map(d=>d.actual)],r=c.getBoundingClientRect();if(r.width<10)return;const dpr=Math.min(devicePixelRatio||1,2);c.width=r.width*dpr;c.height=r.height*dpr;const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,pad=16;ctx.clearRect(0,0,W,H);ctx.fillStyle='#080d12';ctx.fillRect(0,0,W,H);
+  if(vals.length<2){ctx.fillStyle='#687685';ctx.font='9px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('บันทึก Session เพื่อสร้าง Equity Curve',W/2,H/2);return}
+  let lo=Math.min(...vals),hi=Math.max(...vals),rg=Math.max(.01,hi-lo);lo-=rg*.15;hi+=rg*.15;rg=hi-lo;const x=i=>pad+(W-pad*2)*i/(vals.length-1),y=v=>pad+(hi-v)/rg*(H-pad*2);
+  ctx.strokeStyle='rgba(158,173,188,.06)';for(let i=0;i<4;i++){const yy=pad+(H-pad*2)*i/3;ctx.beginPath();ctx.moveTo(pad,yy);ctx.lineTo(W-pad,yy);ctx.stroke()}
+  ctx.strokeStyle='#69c8ef';ctx.lineWidth=1.8;ctx.beginPath();vals.forEach((v,i)=>i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v)));ctx.stroke();ctx.fillStyle='#6ee7c3';vals.forEach((v,i)=>{ctx.beginPath();ctx.arc(x(i),y(v),2.3,0,Math.PI*2);ctx.fill()});
+}
+
+function runBacktest(){
+  const c=marketData.M15||[];if(c.length<180){toast('M15 data ไม่พอสำหรับ Backtest');return}
+  let wins=0,losses=0,grossWin=0,grossLoss=0,equity=1,peak=1,maxDd=0,samples=0;
+  for(let i=80;i<c.length-12;i+=3){
+    const hist=c.slice(0,i+1),r=analyzeTf(hist,'M15');if(!r||r.regime==='RANGE'||r.quality<72)continue;
+    const center=(r.ema9+r.ema21)/2,R=r.atr||center*.001,side=r.direction,sl=side==='BUY'?center-R: center+R,tp=side==='BUY'?center+R*1.55:center-R*1.55;
+    let outcome=null;
+    for(const bar of c.slice(i+1,i+13)){
+      if(side==='BUY'){if(bar.low<=sl){outcome='L';break}if(bar.high>=tp){outcome='W';break}}
+      else{if(bar.high>=sl){outcome='L';break}if(bar.low<=tp){outcome='W';break}}
+    }
+    if(!outcome)continue;samples++;
+    if(outcome==='W'){wins++;grossWin+=1.55;equity+=.0155}else{losses++;grossLoss+=1;equity-=.01}
+    peak=Math.max(peak,equity);maxDd=Math.max(maxDd,(peak-equity)/peak*100);
+  }
+  backtestResult={samples,winRate:samples?wins/samples*100:0,pf:grossLoss?grossWin/grossLoss:Infinity,maxDd,at:Date.now()};saveJson(BT_KEY,backtestResult);renderStats();toast('Backtest เสร็จแล้ว');
+}
+$('#runBacktestBtn').addEventListener('click',runBacktest);
+$('#clearScanMemoryBtn').addEventListener('click',()=>{scanMemory=[];saveJson(SCAN_KEY,scanMemory);renderStats();toast('ล้าง Scan Memory แล้ว')});
+
 async function analyze(){
   if(!aiOn){toast('เปิด AI ก่อน');return}
   $('#analyzeBtn').textContent='SCANNING…';
-  const ok=await loadPack();
-  if(!ok){toast('ยังไม่มี xauusd.json หรือข้อมูลไม่พอ');$('#analyzeBtn').textContent='ANALYZE';drawChart();return}
-  analysis=chooseAnalysis();
-  $('#marketMode').textContent='HISTORICAL';$('#dataSource').textContent='GitHub Data Pack';
-  $('#marketPill').classList.add('live');$('#marketText').textContent='DATA READY';
-  renderAiUi();drawChart();$('#analyzeBtn').textContent='ANALYZE';
+  const [mk,nw]=await Promise.all([loadPack(),loadNews()]);
+  if(!mk){toast('ยังไม่มี xauusd.json หรือข้อมูลไม่พอ');$('#analyzeBtn').textContent='ANALYZE';renderAiUi();return}
+  analysis=chooseAnalysis();registerScan();if(analysis?.side!=='WAIT'&&analysis.market.open)registerSignal();processActiveSignal();renderAll();drawChart();$('#analyzeBtn').textContent='ANALYZE';
 }
-$('#aiSwitch').addEventListener('click',async()=>{
-  aiOn=!aiOn;localStorage.setItem(AI_KEY,aiOn?'1':'0');renderAiUi();
-  if(aiOn)await analyze();
-});
+$('#aiSwitch').addEventListener('click',async()=>{aiOn=!aiOn;localStorage.setItem(AI_KEY,aiOn?'1':'0');renderAiUi();if(aiOn)await analyze()});
 $('#analyzeBtn').addEventListener('click',analyze);
 
-$('#tfTabs').addEventListener('click',e=>{
-  const b=e.target.closest('button[data-tf]');if(!b)return;
-  currentTf=b.dataset.tf;$$('#tfTabs button').forEach(x=>x.classList.toggle('active',x===b));drawChart();
-});
-function drawChart(){
-  const canvas=$('#marketChart'),data=(marketData[currentTf]||[]).slice(-32);
-  const empty=$('#chartEmpty');
-  if(data.length<8){empty.classList.remove('hidden');return}else empty.classList.add('hidden');
-  const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=r.width*dpr;canvas.height=r.height*dpr;
-  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,pad={l:8,r:52,t:12,b:24},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
-  ctx.clearRect(0,0,W,H);ctx.fillStyle='#070b10';ctx.fillRect(0,0,W,H);
-  const lows=data.map(c=>c.low).sort((a,b)=>a-b),highs=data.map(c=>c.high).sort((a,b)=>a-b);
-  let lo=lows[Math.floor(lows.length*.05)]??Math.min(...lows),hi=highs[Math.floor(highs.length*.95)]??Math.max(...highs),rg=Math.max(.02,hi-lo);lo-=rg*.12;hi+=rg*.12;rg=hi-lo;
-  const y=p=>pad.t+(hi-p)/rg*ph,step=pw/data.length,bw=clamp(step*.58,4,9);
-  ctx.strokeStyle='rgba(155,170,184,.07)';ctx.lineWidth=1;
-  for(let i=0;i<5;i++){const yy=pad.t+ph*i/4;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.fillStyle='#677483';ctx.font='8px ui-monospace,monospace';ctx.textAlign='right';ctx.fillText((hi-rg*i/4).toFixed(2),W-4,yy+3)}
-  data.forEach((c,i)=>{const x=pad.l+step*i+step/2,up=c.close>=c.open,col=up?'#66d9ad':'#ef6b7c',hy=clamp(y(c.high),pad.t,H-pad.b),ly=clamp(y(c.low),pad.t,H-pad.b),oy=clamp(y(c.open),pad.t,H-pad.b),cy=clamp(y(c.close),pad.t,H-pad.b);ctx.strokeStyle=col;ctx.beginPath();ctx.moveTo(x,hy);ctx.lineTo(x,ly);ctx.stroke();ctx.fillStyle=col;ctx.fillRect(x-bw/2,Math.min(oy,cy),bw,Math.max(2,Math.abs(oy-cy)))});
-  const closes=data.map(c=>c.close),e9=ema(closes,9),e21=ema(closes,21);
-  const curve=(arr,col)=>{ctx.strokeStyle=col;ctx.lineWidth=1.3;ctx.beginPath();arr.forEach((v,i)=>{const x=pad.l+step*i+step/2,yy=y(v);i?ctx.lineTo(x,yy):ctx.moveTo(x,yy)});ctx.stroke()};
-  curve(e21,'rgba(226,189,104,.68)');curve(e9,'rgba(105,200,239,.82)');
-  const last=data.at(-1);$('#chartPrice').textContent=last.close.toFixed(2);$('#chartTf').textContent=currentTf;
-}
-window.addEventListener('resize',()=>requestAnimationFrame(drawChart));
+$('#editPlanBtn').addEventListener('click',()=>{if(!validPlan(plan))return;$('#planModalTitle').textContent='แก้ไขแผน';$('#planStartInput').value=plan.start;$('#planTargetInput').value=plan.target;$('#savePlanBtn').textContent='SAVE CHANGES';$('#cancelPlanBtn').classList.remove('hidden');openModal('#planModal')});
+$('#cancelPlanBtn').addEventListener('click',()=>closeModal('#planModal'));
+$('#savePlanBtn').addEventListener('click',()=>{const start=num($('#planStartInput').value),target=num($('#planTargetInput').value);if(start<=0||target<=start){toast('Target ต้องมากกว่าทุนเริ่มต้น');return}const actuals=validPlan(plan)?plan.days.map(d=>({actual:d.actual,note:d.note})):new Array(30).fill(null);plan=buildPlan(start,target,actuals);saveJson(PLAN_KEY,plan);closeModal('#planModal');renderAll();toast('บันทึกแผนแล้ว')});
+$('#endSessionBtn').addEventListener('click',()=>{if(!validPlan(plan))return;const bal=num($('#endBalanceInput').value);if(bal<=0){toast('กรอก Balance หลังจบ Session');return}const idx=todayIndex();plan.days[idx].actual=bal;plan.days[idx].note=$('#endNoteInput').value.trim();const actuals=plan.days.map(d=>({actual:d.actual,note:d.note}));plan=buildPlan(plan.start,plan.target,actuals);saveJson(PLAN_KEY,plan);$('#endBalanceInput').value='';$('#endNoteInput').value='';renderAll();toast('บันทึก Session แล้ว')});
+$('#jumpTodayBtn').addEventListener('click',()=>{($('#planList .current')||$('#planList .plan-row'))?.scrollIntoView({behavior:'smooth',block:'center'})});
+
+$('#settingsBtn').addEventListener('click',()=>{$('#minLotInput').value=settings.minLot;$('#contractInput').value=settings.contractSize;$('#newsBeforeInput').value=settings.newsBefore??20;$('#newsAfterInput').value=settings.newsAfter??15;openModal('#settingsModal')});
+$('#closeSettingsBtn').addEventListener('click',()=>closeModal('#settingsModal'));
+$('#saveSettingsBtn').addEventListener('click',()=>{settings={minLot:Math.max(.01,num($('#minLotInput').value)||.01),contractSize:Math.max(1,num($('#contractInput').value)||100),newsBefore:clamp(num($('#newsBeforeInput').value)||20,0,120),newsAfter:clamp(num($('#newsAfterInput').value)||15,0,120)};saveJson(SETTINGS_KEY,settings);closeModal('#settingsModal');renderAll();toast('บันทึก Settings แล้ว')});
+$('#resetAllBtn').addEventListener('click',()=>{if(!confirm('ล้างข้อมูลแผนทั้งหมดและเริ่มใหม่?'))return;[PLAN_KEY,AI_KEY,SCAN_KEY,SIGNAL_KEY,BT_KEY].forEach(k=>localStorage.removeItem(k));plan=null;aiOn=false;analysis=null;scanMemory=[];activeSignal=null;backtestResult=null;closeModal('#settingsModal');firstRun()});
 
 function firstRun(){
-  if(!validPlan(plan)){
-    $('#planModalTitle').textContent='เริ่ม OneMonth OS';
-    $('#planStartInput').value='10';$('#planTargetInput').value='300';$('#savePlanBtn').textContent='CREATE PLAN';$('#cancelPlanBtn').classList.add('hidden');
-    openModal('#planModal');
-  }else renderAll();
+  if(!validPlan(plan)){ $('#planModalTitle').textContent='เริ่ม OneMonth OS';$('#planStartInput').value='10';$('#planTargetInput').value='300';$('#savePlanBtn').textContent='CREATE PLAN';$('#cancelPlanBtn').classList.add('hidden');openModal('#planModal') }
 }
-
-firstRun();
-renderAll();
-if(aiOn)setTimeout(analyze,250);
+async function boot(){
+  await Promise.all([loadPack(),loadNews()]);
+  renderAll();drawChart();firstRun();
+  if(aiOn)setTimeout(analyze,350);
+}
+boot();
 })();
 </script>
 </body>
