@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V29 Layout Recovery</title>
+<title>OneMonth OS V29.2 UI Balance</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -3861,6 +3861,296 @@ button{
   }
 }
 
+
+/* ==========================================================
+   V29.2 — UI BALANCE PATCH (INDEX ONLY)
+   Focus: iPhone 390/393/430, dynamic money values, clean spacing.
+   ========================================================== */
+:root{
+  --ui-gap:10px;
+  --ui-radius:20px;
+  --ui-border:rgba(78,184,205,.17);
+  --ui-panel:#06131b;
+  --ui-panel2:#071721;
+}
+html,body{overflow-x:hidden!important;overscroll-behavior-x:none!important}
+body{font-variant-numeric:tabular-nums!important}
+.app{
+  width:100%!important;
+  max-width:760px!important;
+  padding-left:12px!important;
+  padding-right:12px!important;
+  padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))!important;
+}
+.view{padding-bottom:20px!important}
+
+/* ---------- header: no ellipsis, no crushed brand ---------- */
+.topbar{
+  grid-template-columns:minmax(0,1fr) auto!important;
+  column-gap:7px!important;
+  min-height:78px!important;
+  padding:8px 0 13px!important;
+  align-items:center!important;
+}
+.brand{gap:8px!important;overflow:visible!important;min-width:0!important}
+.brandmark-premium{
+  flex:0 0 54px!important;
+  width:54px!important;height:54px!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.30)!important;
+}
+.brandcopy{min-width:0!important;overflow:visible!important}
+.brandcopy b{
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  font-size:clamp(13px,3.55vw,16px)!important;
+  letter-spacing:.075em!important;
+  line-height:1!important;
+}
+.brandcopy small{
+  display:block!important;
+  margin-top:6px!important;
+  font-size:7px!important;
+  letter-spacing:.09em!important;
+  line-height:1.32!important;
+  max-width:155px!important;
+}
+.topactions{gap:5px!important}
+.market-pill{
+  min-width:82px!important;max-width:86px!important;
+  height:46px!important;
+  padding:0 8px!important;
+  border-radius:14px!important;
+}
+.market-pill span{font-size:7px!important;letter-spacing:.075em!important;line-height:1.18!important}
+.market-pill i{width:6px!important;height:6px!important;flex-basis:6px!important}
+.icon-btn{flex:0 0 43px!important;width:43px!important;height:43px!important;border-radius:14px!important}
+.icon-btn svg{width:22px!important;height:22px!important}
+
+/* ---------- visual hierarchy: less outline, more depth ---------- */
+.card,.metric-card,.mission,.system-brief,.session-card-clean,.ai-hero,.ai-quick,
+.command-card,.fusion-card,.intel-card,.final-ai-card,.learning-card,.guardian-card,
+.chart-card,.market-intel,.data-health,.news-card,.news-policy-card,.plan-summary,
+.equity-card,.version-card,.system-doctor{
+  border-color:var(--ui-border)!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.018)!important;
+}
+.card::after{opacity:.07!important}
+
+/* ---------- balance / target: handle $5,000.00 and beyond ---------- */
+.hero-grid{gap:8px!important}
+.metric-card{
+  min-height:148px!important;
+  padding:16px!important;
+  border-radius:20px!important;
+}
+.metric-card .kicker,.target-card .kicker{
+  max-width:none!important;
+  font-size:8px!important;
+  line-height:1.2!important;
+  letter-spacing:.13em!important;
+  padding-right:45px!important;
+  white-space:nowrap!important;
+}
+.target-card .kicker{padding-right:77px!important}
+.metric-card h2{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:31px 0 8px!important;
+  font-size:28px!important;
+  line-height:1!important;
+  letter-spacing:-.035em!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+.metric-card p{font-size:10px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.metric-icon{top:13px!important;right:13px!important;width:35px!important;height:35px!important;border-radius:11px!important}
+.metric-actions{top:12px!important;right:11px!important;gap:4px!important}
+.metric-actions .metric-icon{width:31px!important;height:31px!important}
+.metric-edit{height:31px!important;min-height:31px!important;padding:0 8px!important;font-size:8px!important}
+
+/* ---------- mission proportions ---------- */
+.mission{padding:17px!important;border-radius:22px!important}
+.mission-head h3{font-size:29px!important;line-height:1!important}
+.health-badge{min-height:40px!important;max-width:136px!important;padding:0 9px!important}
+.health-badge span{font-size:7px!important;letter-spacing:.06em!important}
+.target-row{
+  grid-template-columns:minmax(0,1fr) 112px!important;
+  gap:7px!important;
+  margin:14px 0 16px!important;
+}
+.target-main>span{font-size:11px!important}
+.target-main strong{
+  display:block!important;
+  width:100%!important;
+  font-size:39px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  letter-spacing:-.04em!important;
+}
+.target-main small{font-size:10px!important}
+
+/* ---------- ring: cleaner neon, 100% stays on one line ---------- */
+.neon-progress-ring{--ring-size:112px;--ring-radius:46px!important}
+.neon-progress-ring::before{
+  inset:-5px!important;
+  filter:blur(10px)!important;
+  opacity:.58!important;
+}
+.ring-halo{
+  inset:-3px!important;
+  border-color:rgba(76,239,235,.16)!important;
+  box-shadow:0 0 13px rgba(43,230,229,.16),0 0 30px rgba(43,230,229,.07)!important;
+}
+.ring-track{inset:4px!important}
+.ring-progress{inset:4px!important;filter:drop-shadow(0 0 3px rgba(113,255,244,.75)) drop-shadow(0 0 7px rgba(38,231,232,.34))!important}
+.ring-core{inset:21px!important}
+.ring-core b{
+  display:block!important;
+  width:100%!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+  font-size:25px!important;
+  line-height:1!important;
+  letter-spacing:-.03em!important;
+}
+.ring-core small{font-size:6px!important;letter-spacing:.10em!important;line-height:1.15!important;max-width:70px!important}
+.ring-spark{width:8px!important;height:8px!important;margin:-4px 0 0 -4px!important;transform-origin:4px 4px!important;box-shadow:0 0 4px #fff,0 0 9px #52f7e2!important}
+
+/* ---------- three tiles: values never clip ---------- */
+.triple{gap:6px!important}
+.mini{
+  min-height:84px!important;
+  padding:10px 7px!important;
+  gap:5px!important;
+  border-radius:14px!important;
+}
+.mini-icon{flex:0 0 27px!important;width:27px!important;height:27px!important;border-radius:9px!important}
+.mini-icon svg{width:15px!important;height:15px!important}
+.mini>div:last-child{min-width:0!important;width:100%!important}
+.mini span{font-size:6.4px!important;line-height:1.2!important;letter-spacing:.075em!important}
+.mini b{
+  display:block!important;
+  width:100%!important;
+  margin-top:4px!important;
+  font-size:12px!important;
+  line-height:1.05!important;
+  letter-spacing:-.015em!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+
+/* ---------- risk + guides: cleaner and more balanced ---------- */
+.risk-grid,.daily-guide{gap:7px!important}
+.risk-card{min-height:102px!important;padding:12px!important;gap:8px!important;border-radius:17px!important}
+.risk-card .risk-icon{flex:0 0 34px!important;width:34px!important;height:34px!important}
+.risk-card span{font-size:7px!important;letter-spacing:.08em!important}
+.risk-card b{font-size:19px!important;white-space:nowrap!important}
+.daily-guide-card{min-height:132px!important;padding:13px!important;border-radius:17px!important}
+.daily-guide-card .guide-icon{width:34px!important;height:34px!important;margin-bottom:9px!important}
+.daily-guide-card span{font-size:7px!important;letter-spacing:.08em!important}
+.guide-copy b,.daily-guide-card.time .guide-copy b{font-size:17px!important;line-height:1.12!important}
+.guide-copy small{font-size:8px!important;line-height:1.4!important}
+.notice{font-size:9px!important;line-height:1.45!important;padding:11px 13px!important}
+
+/* ---------- AI hero: switch is a compact status control, not floating text ---------- */
+.ai-hero{padding:17px!important;border-radius:21px!important}
+.ai-hero-top{display:grid!important;grid-template-columns:minmax(0,1fr) 90px!important;gap:10px!important;align-items:start!important}
+.ai-hero-top>div:first-child{min-width:0!important}
+.ai-hero h2{font-size:clamp(24px,7vw,30px)!important;line-height:1.12!important;margin-top:10px!important}
+.ai-hero p{font-size:10px!important;line-height:1.5!important;max-width:100%!important}
+.ai-symbol{width:38px!important;height:38px!important;border-radius:12px!important;margin-bottom:9px!important}
+.ai-switch{
+  width:90px!important;min-width:90px!important;
+  min-height:58px!important;
+  padding:8px!important;
+  border-radius:15px!important;
+  display:grid!important;
+  grid-template-columns:9px minmax(0,1fr)!important;
+  gap:7px!important;
+  align-items:center!important;
+}
+.ai-switch i{width:9px!important;height:9px!important}
+.ai-switch span{display:block!important;min-width:0!important;text-align:left!important}
+.ai-switch b{display:block!important;font-size:8px!important;line-height:1.15!important;white-space:nowrap!important}
+.ai-switch small{display:block!important;font-size:7px!important;line-height:1.15!important;margin-top:4px!important;white-space:nowrap!important}
+.gold-action{min-height:58px!important;border-radius:16px!important;padding:0 14px!important}
+.gold-action>span:last-child b{font-size:14px!important}
+.gold-action>span:last-child small{font-size:8px!important}
+.ai-grid{gap:7px!important}
+.ai-quick{min-height:104px!important;padding:13px!important;border-radius:17px!important}
+.ai-quick>span{font-size:7px!important;letter-spacing:.09em!important}
+.ai-quick b{font-size:19px!important;line-height:1.05!important}
+.ai-quick small{font-size:9px!important}
+
+/* ---------- stats: less empty vertical space ---------- */
+#recentList .plan-row-head{min-height:80px!important;padding:12px 14px!important}
+#recentList .plan-row{min-height:80px!important}
+#recentList .daybox{width:46px!important;height:46px!important;font-size:16px!important}
+#recentList .plan-row b{font-size:12px!important}
+#recentList .plan-row small{font-size:9px!important;margin-top:4px!important}
+#recentList .plan-profit{font-size:13px!important}
+
+/* ---------- settings: compact, aligned, nothing floats outside ---------- */
+#settingsModal .sheet{padding:16px!important}
+.form-grid{gap:8px!important}
+.field{min-height:70px!important;padding:11px!important}
+.field input{font-size:16px!important}
+.sheet-actions{gap:8px!important}
+.sheet-actions button{min-height:46px!important;font-size:10px!important}
+.system-doctor,.version-card{padding:13px!important;margin-top:12px!important}
+.doctor-row{min-height:38px!important;padding:8px 0!important}
+.version-grid>div{min-height:60px!important;padding:10px!important}
+.cache-actions button{min-height:44px!important}
+.settings-reset{min-height:46px!important}
+
+/* ---------- bottom nav: lower profile and reserve content space ---------- */
+.bottom-nav{
+  height:78px!important;
+  left:8px!important;right:8px!important;
+  bottom:max(7px,env(safe-area-inset-bottom,0px))!important;
+  border-radius:20px!important;
+  padding:5px!important;
+}
+.bottom-nav button{height:66px!important;border-radius:15px!important}
+.bottom-nav button svg{width:21px!important;height:21px!important}
+.bottom-nav button span{font-size:7px!important;margin-top:3px!important}
+
+/* ---------- install gate: compact but still premium ---------- */
+.install-shell{padding-top:calc(env(safe-area-inset-top,0px) + 18px)!important}
+.gate-logo{width:84px!important;height:84px!important;border-radius:23px!important;margin-bottom:16px!important}
+.install-title{font-size:clamp(27px,7.5vw,35px)!important;line-height:1.08!important}
+.install-copy{font-size:10px!important;line-height:1.6!important}
+.install-step{min-height:62px!important;padding:10px!important}
+.install-step b{font-size:10px!important}.install-step span{font-size:9px!important}
+.install-action{height:48px!important;min-height:48px!important}
+
+/* ---------- exact narrow phone pass ---------- */
+@media(max-width:390px){
+  .app{padding-left:9px!important;padding-right:9px!important}
+  .brandmark-premium{flex-basis:50px!important;width:50px!important;height:50px!important;border-radius:15px!important}
+  .brandcopy b{font-size:13px!important;letter-spacing:.06em!important}
+  .brandcopy small{font-size:6.4px!important;max-width:137px!important}
+  .market-pill{min-width:76px!important;max-width:78px!important;height:43px!important;padding:0 6px!important}
+  .market-pill span{font-size:6.4px!important}
+  .icon-btn{flex-basis:40px!important;width:40px!important;height:40px!important}
+  .metric-card{padding:13px!important;min-height:140px!important}
+  .metric-card h2{font-size:25px!important}
+  .metric-card .kicker,.target-card .kicker{font-size:7px!important}
+  .target-row{grid-template-columns:minmax(0,1fr) 104px!important}
+  .target-main strong{font-size:36px!important}
+  .neon-progress-ring{--ring-size:104px;--ring-radius:43px!important}
+  .ring-core{inset:20px!important}.ring-core b{font-size:23px!important}
+  .mini{padding:8px 5px!important}.mini b{font-size:10.5px!important}.mini span{font-size:5.8px!important}
+  .risk-card b{font-size:17px!important}
+  .guide-copy b,.daily-guide-card.time .guide-copy b{font-size:15px!important}
+  .ai-hero-top{grid-template-columns:minmax(0,1fr) 82px!important}
+  .ai-switch{width:82px!important;min-width:82px!important;padding:7px!important}
+}
+
 </style>
 </head>
 <body>
@@ -4683,7 +4973,7 @@ const NEWS_CACHE_KEY='onemonth_os_news_cache_v21';
 const FRESH_OPEN_MS=60*60*1000;     // 60 min when market is open
 const FRESH_CLOSED_MS=72*60*60*1000;
 
-const APP_VERSION='V29 LAYOUT RECOVERY';
+const APP_VERSION='V29.2 UI BALANCE';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -6849,5 +7139,38 @@ if(appLaunch.isStandalone()){
 }
 })();
 </script>
+
+<script>
+/* V29.2 dynamic numeric fit — presentation only. */
+(()=>{
+  const specs={
+    homeBalance:[28,21],homeTarget:[28,21],todayProfit:[39,27],
+    todayStart:[12,9],todayClose:[12,9],tpStop:[19,14],maxLoss:[19,14]
+  };
+  function fit(el,max,min){
+    if(!el||!el.parentElement)return;
+    el.style.fontSize=max+'px';
+    let size=max, guard=0;
+    const available=el.parentElement.clientWidth-2;
+    while(el.scrollWidth>available && size>min && guard++<24){
+      size-=.5;el.style.fontSize=size+'px';
+    }
+  }
+  function fitAll(){
+    for(const [id,[max,min]] of Object.entries(specs))fit(document.getElementById(id),max,min);
+    const pct=document.getElementById('monthPct'); if(pct)fit(pct,25,19);
+  }
+  const observer=new MutationObserver(()=>requestAnimationFrame(fitAll));
+  window.addEventListener('DOMContentLoaded',()=>{
+    for(const id of Object.keys(specs)){
+      const el=document.getElementById(id);if(el)observer.observe(el,{childList:true,subtree:true,characterData:true});
+    }
+    const pct=document.getElementById('monthPct');if(pct)observer.observe(pct,{childList:true,subtree:true,characterData:true});
+    fitAll();setTimeout(fitAll,250);setTimeout(fitAll,900);
+  },{once:true});
+  window.addEventListener('resize',()=>requestAnimationFrame(fitAll),{passive:true});
+})();
+</script>
+
 </body>
 </html>
