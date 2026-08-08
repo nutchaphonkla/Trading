@@ -1,0 +1,179 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+const ROOT = path.resolve(process.cwd());
+const API = process.env.TWELVE_DATA_API_KEY;
+
+if (!API) {
+  throw new Error('Missing TWELVE_DATA_API_KEY secret');
+}
+
+const symbol = 'XAU/USD';
+
+async function twelve(interval, outputsize) {
+  const url = new URL('https://api.twelvedata.com/time_series');
+
+  url.searchParams.set('symbol', symbol);
+  url.searchParams.set('interval', interval);
+  url.searchParams.set('outputsize', String(outputsize));
+  url.searchParams.set('timezone', 'UTC');
+  url.searchParams.set('apikey', API);
+
+  const res = await fetch(url);
+  const json = await res.json();
+
+  if (
+    !res.ok ||
+    json.status === 'error' ||
+    !Array.isArray(json.values)
+  ) {
+    throw new Error(
+      json.message || `Twelve Data ${interval} failed`
+    );
+  }
+
+  return json.values
+    .slice()
+    .reverse()
+    .map(v => ({
+      ts: Date.parse(
+        String(v.datetime).replace(' ', 'T') + 'Z'
+      ),
+      datetime: v.datetime,
+      open: Number(v.open),
+      high: Number(v.high),
+      low: Number(v.low),
+      close: Number(v.close)
+    }))
+    .filter(c =>
+      [c.open, c.high, c.low, c.close].every(Number.isFinite)
+    );
+}
+
+function aggregate(candles, minutes) {
+  const ms = minutes * 60_000;
+  const map = new Map();
+
+  for (const c of candles) {
+    const bucket = Math.floor(c.ts / ms) * ms;
+    let x = map.get(bucket);
+
+    if (!x) {
+      x = {
+        ts: bucket,
+        datetime: new Date(bucket)
+          .toISOString()
+          .replace('T', ' ')
+          .slice(0, 19),
+        open: c.open,
+        high: c.high,
+        low: c.low,
+        close: c.close
+      };
+      map.set(bucket, x);
+    } else {
+      x.high = Math.max(x.high, c.high);
+      x.low = Math.min(x.low, c.low);
+      x.close = c.close;
+    }
+  }
+
+  return [...map.values()].sort((a, b) => a.ts - b.ts);
+}
+
+console.log('Loading XAU/USD market data...');
+
+const [m1, h1] = await Promise.all([
+  twelve('1min', 5000),
+  twelve('1h', 500)
+]);
+
+const pack = {
+  generatedAt: new Date().toISOString(),
+  source: 'Twelve Data via GitHub Actions',
+  symbol,
+  timeframes: {
+    M1: m1.slice(-1400),
+    M5: aggregate(m1, 5).slice(-1000),
+    M15: aggregate(m1, 15).slice(-700),
+    H1: h1.slice(-500)
+  }
+};
+
+await fs.writeFile(
+  path.join(ROOT, 'xauusd.json'),
+  JSON.stringify(pack)
+);
+
+console.log(
+  `XAUUSD updated: M1 ${pack.timeframes.M1.length}, M5 ${pack.timeframes.M5.length}, M15 ${pack.timeframes.M15.length}, H1 ${pack.timeframes.H1.length}`
+);
+
+const goldKeywords = [
+  'non farm',
+  'nonfarm',
+  'payroll',
+  'cpi',
+  'consumer price',
+  'pce',
+  'fed',
+  'fomc',
+  'powell',
+  'gdp',
+  'jobless',
+  'jolts',
+  'ppi',
+  'producer price',
+  'retail sales',
+  'ism',
+  'adp',
+  'employment',
+  'unemployment',
+  'interest rate'
+];
+
+let events = [];
+
+try {
+  const url =
+    'https://api.tradingeconomics.com/calendar/country/united%20states?c=guest:guest&importance=2';
+
+  const res = await fetch(url);
+
+  if (res.ok) {
+    const raw = await res.json();
+
+    events = (Array.isArray(raw) ? raw : [])
+      .filter(e => {
+        const text = (
+          (e.Event || '') +
+          ' ' +
+          (e.Category || '')
+        ).toLowerCase();
+
+        return goldKeywords.some(k => text.includes(k));
+      })
+      .map(e => ({
+        date: e.Date,
+        event: e.Event || 'US Event',
+        importance: Number(e.Importance || 2),
+        actual: e.Actual ?? null,
+        forecast: e.Forecast ?? null,
+        previous: e.Previous ?? null
+      }));
+  }
+} catch (err) {
+  console.warn('News update skipped:', err.message);
+}
+
+await fs.writeFile(
+  path.join(ROOT, 'news.json'),
+  JSON.stringify({
+    generatedAt: new Date().toISOString(),
+    source: 'Trading Economics',
+    events
+  })
+);
+
+console.log(`News updated: ${events.length} events`);
+console.log('DONE');
