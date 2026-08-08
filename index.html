@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V32.0 Unified Learning Brain</title>
+<title>OneMonth OS V33.0 Precision Learning</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -4229,6 +4229,18 @@ body{font-variant-numeric:tabular-nums!important}
 #aiView>.card,#aiView>.ai-grid,#aiView>.intel-stack{margin-bottom:10px!important}.intel-stack{gap:10px!important}.card{border-color:rgba(91,185,216,.12)!important}.ai-quick{min-height:116px!important}.ai-quick b{line-height:1.1!important}.bottom-nav-six{box-shadow:0 -12px 38px rgba(0,0,0,.42)!important;border-color:rgba(91,185,216,.15)!important}
 @media(max-width:520px){.brain-source-grid{grid-template-columns:1fr}.brain-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.history-grid-v32{grid-template-columns:repeat(2,minmax(0,1fr))}.brain-blend-strip{grid-template-columns:1fr}.brain-conflict-pill{grid-row:auto;grid-column:auto;justify-self:start}.brain-blend-weights{grid-column:auto}.ai-core-toolbar>*{flex:1 1 auto}.ai-detail-toggle{min-width:132px}}
 
+
+/* === V33.0 Precision Learning / cleaner execution UX === */
+.model-health-strip{margin-top:10px;padding:11px 12px;border-radius:15px;background:rgba(5,12,18,.82);border:1px solid rgba(110,231,195,.09);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.model-health-strip>div{min-width:0}.model-health-strip span{display:block;color:#667683;font-size:5.3px;font-weight:900;letter-spacing:.08em}.model-health-strip b{display:block;margin-top:4px;font-size:7px;color:#eef4f7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.model-health-strip b.good{color:var(--mint)}.model-health-strip b.warn{color:var(--amber)}.model-health-strip b.bad{color:var(--red)}
+.precision-entry-card{padding:15px!important;border-radius:21px!important;background:linear-gradient(180deg,rgba(7,14,20,.98),rgba(5,10,16,.98))!important;border:1px solid rgba(105,200,239,.13)!important;box-shadow:0 16px 44px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.025)!important}
+.precision-entry-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.precision-entry-head h3{margin:4px 0 0;font-size:16px;line-height:1.2}.precision-state{padding:7px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.08);font-size:6px;font-weight:950;letter-spacing:.08em;color:#9aa7b2;white-space:nowrap}.precision-state.good{color:var(--mint);border-color:rgba(110,231,195,.18);background:rgba(110,231,195,.035)}.precision-state.warn{color:var(--amber);border-color:rgba(240,200,108,.18);background:rgba(240,200,108,.035)}.precision-state.bad{color:var(--red);border-color:rgba(255,115,133,.18);background:rgba(255,115,133,.035)}
+.precision-score-row{display:grid;grid-template-columns:1.05fr 1.95fr;gap:10px;margin-top:12px}.precision-score-box,.precision-zone-box{padding:12px;border-radius:16px;background:#050b10;border:1px solid rgba(255,255,255,.045)}.precision-score-box span,.precision-zone-box span{display:block;color:#667683;font-size:5.4px;font-weight:900;letter-spacing:.08em}.precision-score-box b{display:block;margin-top:5px;font-size:22px;line-height:1;color:#eef4f7}.precision-zone-box b{display:block;margin-top:5px;font-size:11px;color:#8ddcf5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.precision-zone-box small{display:block;margin-top:5px;color:#70808c;font-size:6.2px;line-height:1.45}
+.precision-bar{height:7px;margin-top:11px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}.precision-bar i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,rgba(105,200,239,.58),rgba(110,231,195,.95));transition:width .3s ease}
+.precision-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}.precision-metrics>div{padding:9px;border-radius:13px;background:rgba(4,9,14,.9);border:1px solid rgba(255,255,255,.04)}.precision-metrics span{display:block;color:#63717e;font-size:5.1px;font-weight:900;letter-spacing:.07em}.precision-metrics b{display:block;margin-top:4px;font-size:6.8px;line-height:1.4}.precision-note-v33{margin-top:10px;padding:10px 11px;border-radius:13px;background:rgba(105,200,239,.025);border:1px solid rgba(105,200,239,.08);color:#81909c;font-size:6.6px;line-height:1.58}.precision-note-v33 strong{color:#8ddcf5}
+.brain-source-card{overflow:hidden}.brain-source-note{line-height:1.55!important}.brain-blend-strip{border-radius:15px!important}.ai-grid{gap:8px!important}.ai-quick{min-height:78px!important}.ai-quick span{letter-spacing:.07em!important}.ai-core-toolbar{gap:8px!important}.final-ai-card{border-radius:21px!important}.execution-gates{gap:7px!important}.exec-gate{border-radius:12px!important}
+@media(max-width:520px){.model-health-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.precision-score-row{grid-template-columns:1fr 1.7fr}.precision-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
@@ -4405,7 +4417,7 @@ body{font-variant-numeric:tabular-nums!important}
         <div class="ai-scan-row">
           <button class="gold-action" id="analyzeBtn">
             <span class="gold-action-icon">✦</span>
-            <span><b>RUN FULL MARKET SCAN</b><small>Trend · Structure · News · Risk · Session</small></span>
+            <span><b>RUN PRECISION MARKET SCAN</b><small>Live · History · Learning · Entry Quality · Risk</small></span>
           </button>
         </div>
         <div class="ai-core-toolbar">
@@ -4442,6 +4454,24 @@ body{font-variant-numeric:tabular-nums!important}
         <div class="gate-grid" id="gateGrid"></div>
       </article>
 
+      <article class="card precision-entry-card">
+        <div class="precision-entry-head">
+          <div><div class="kicker">PRECISION ENTRY ENGINE</div><h3>รอ Retest · ไม่ไล่ราคา</h3></div>
+          <span class="precision-state warn" id="precisionState">WAIT</span>
+        </div>
+        <div class="precision-score-row">
+          <div class="precision-score-box"><span>ENTRY QUALITY</span><b id="precisionScore">—</b></div>
+          <div class="precision-zone-box"><span>IDEAL ENTRY ZONE</span><b id="precisionZone">—</b><small id="precisionZoneMeta">รอการวิเคราะห์</small></div>
+        </div>
+        <div class="precision-bar"><i id="precisionBar"></i></div>
+        <div class="precision-metrics">
+          <div><span>MAX CHASE</span><b id="precisionChase">—</b></div>
+          <div><span>MODEL LOWER BOUND</span><b id="precisionLower">—</b></div>
+          <div><span>LEARNED MFE / MAE</span><b id="precisionExcursion">—</b></div>
+          <div><span>PATTERN MATCH</span><b id="precisionMatch">—</b></div>
+        </div>
+        <div class="precision-note-v33" id="precisionNote"><strong>WAIT</strong> · ระบบจะอนุญาตเมื่อ Trend, Retest, Confirmation, Model Health และ No‑Chase สอดคล้องกัน</div>
+      </article>
 
       <div class="intel-stack">
         <article class="card intel-card advanced-ai-card">
@@ -4518,6 +4548,12 @@ body{font-variant-numeric:tabular-nums!important}
                 <div><span>MODEL UPDATED</span><b id="backgroundUpdated">—</b></div>
               </div>
               <div class="brain-source-note" id="backgroundBrainNote">กำลังอ่าน ai-learning.json และตรวจ GitHub Actions</div>
+              <div class="model-health-strip">
+                <div><span>MODEL HEALTH</span><b id="modelHealthScore">—</b></div>
+                <div><span>WALK-FORWARD</span><b id="modelValidationScore">—</b></div>
+                <div><span>UNCERTAINTY</span><b id="modelUncertainty">—</b></div>
+                <div><span>REGIME DRIFT</span><b id="modelDrift">—</b></div>
+              </div>
             </section>
 
             <section class="brain-source-card history-brain">
@@ -5122,7 +5158,7 @@ const AI_DETAIL_KEY='onemonth_os_ai_detail_v32';
 const FRESH_OPEN_MS=60*60*1000;     // 60 min when market is open
 const FRESH_CLOSED_MS=72*60*60*1000;
 
-const APP_VERSION='V32.0 UNIFIED LEARNING BRAIN';
+const APP_VERSION='V33.0 PRECISION LEARNING';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -5132,6 +5168,8 @@ const V25_EDGE_MIN_SAMPLES=4;
 const V25_READY_PROB_MIN=58;
 const V25_READY_EV_MIN=.18;
 const V25_NO_TRADE_MAX=34;
+const V33_ENTRY_SCORE_MIN=70;
+const V33_MODEL_HEALTH_FLOOR=42;
 let v25={
   edges:[],sessionFit:0,setupEdge:0,winProb:0,ev:0,noTradeScore:100,noTradeReasons:[],
   lifecycle:'WATCH',decision:'WAIT',explain:'',bestEdge:null,brainBlend:null
@@ -5229,19 +5267,25 @@ function historyBrainState(){
 }
 function rsiBucketV32(v){const n=Number(v);if(!Number.isFinite(n))return'MID';return n<40?'LOW':n>60?'HIGH':'MID'}
 function bgSessionV32(){const s=sessionBucket();return s==='NY'?'NEW_YORK':s}
+
+function modelHealthV33(){
+  const m=backgroundLearning?.modelHealth||{},v=backgroundLearning?.validation||{},c=backgroundLearning?.current||{};
+  const score=clamp(Number(m.score)||0,0,100),uncertainty=Number(m.uncertaintyPts??c.uncertaintyPts??90),drift=Number(m.driftPts)||0,coverage=Number(v.coverage??m.coverage)||0;
+  const status=m.status||(score>=75?'STRONG':score>=60?'GOOD':score>=45?'CAUTION':'WEAK');
+  const uncertaintyLabel=m.uncertainty||(uncertainty<=16?'LOW':uncertainty<=28?'MEDIUM':'HIGH');
+  return{score,status,uncertainty,uncertaintyLabel,drift,coverage,validation:v};
+}
 function backgroundEvidenceFor(a){
   if(!a||!backgroundLearning?.ready)return null;
-  const direction=(a.side&&a.side!=='WAIT'?a.side:a.direction)||'WAIT';
-  const regime=a.regime||'UNKNOWN',sess=bgSessionV32(),rb=rsiBucketV32(a.rsi),structure=a.structure||'RANGE';
-  const key=[direction,regime,sess,rb,structure].join('|');
-  const edges=Array.isArray(backgroundLearning.edges)?backgroundLearning.edges:[];
-  let row=edges.find(e=>e.key===key);
-  if(!row)row=edges.filter(e=>e.direction===direction&&e.regime===regime&&e.session===sess).sort((x,y)=>(y.samples||0)-(x.samples||0))[0];
-  if(!row)row=edges.filter(e=>e.direction===direction&&e.regime===regime).sort((x,y)=>(y.samples||0)-(x.samples||0))[0];
-  if(!row&&backgroundLearning.current?.direction===direction)row={posteriorWinRate:backgroundLearning.current.learnedWinProbability,samples:backgroundLearning.current.samples,reliability:backgroundLearning.current.reliability,key:backgroundLearning.current.key};
+  const direction=(a.side&&a.side!=='WAIT'?a.side:a.direction)||'WAIT',regime=a.regime||'UNKNOWN',sess=bgSessionV32(),rb=rsiBucketV32(a.rsi),structure=a.structure||'RANGE',key=[direction,regime,sess,rb,structure].join('|'),edges=Array.isArray(backgroundLearning.edges)?backgroundLearning.edges:[];
+  let row=edges.find(e=>e.key===key),matchLevel='EXACT';
+  if(!row){row=edges.filter(e=>e.direction===direction&&e.regime===regime&&e.session===sess&&e.structure===structure).sort((x,y)=>(y.effectiveSamples||y.samples||0)-(x.effectiveSamples||x.samples||0))[0];matchLevel='REGIME_SESSION_STRUCTURE'}
+  if(!row){row=edges.filter(e=>e.direction===direction&&e.regime===regime&&e.structure===structure).sort((x,y)=>(y.effectiveSamples||y.samples||0)-(x.effectiveSamples||x.samples||0))[0];matchLevel='REGIME_STRUCTURE'}
+  if(!row){row=edges.filter(e=>e.direction===direction&&e.regime===regime).sort((x,y)=>(y.effectiveSamples||y.samples||0)-(x.effectiveSamples||x.samples||0))[0];matchLevel='REGIME'}
+  if(!row&&backgroundLearning.current?.direction===direction){row={...backgroundLearning.current,posteriorWinRate:backgroundLearning.current.learnedWinProbability};matchLevel=backgroundLearning.current.matchLevel||'CURRENT'}
   if(!row)return null;
-  const prob=Number(row.posteriorWinRate??row.learnedWinProbability??50),samples=Number(row.samples)||0,reliability=clamp(Number(row.reliability)||0,0,1);
-  return{prob:clamp(prob,5,95),samples,reliability,key:row.key||key,row};
+  const prob=Number(row.posteriorWinRate??row.learnedWinProbability??50),samples=Number(row.samples)||0,effectiveSamples=Number(row.effectiveSamples??samples)||0,reliability=clamp(Number(row.reliability??backgroundLearning?.global?.reliability)||0,0,1),lower=Number(row.lowerBound??Math.max(5,prob-25)),upper=Number(row.upperBound??Math.min(95,prob+25)),uncertainty=Number(row.uncertaintyPts??Math.max(0,upper-lower));
+  return{prob:clamp(prob,5,95),samples,effectiveSamples,reliability,lower:clamp(lower,1,99),upper:clamp(upper,1,99),uncertainty:clamp(uncertainty,0,98),matchLevel:row.matchLevel||matchLevel,key:row.key||key,avgMfeR:Number(row.avgMfeR)||0,avgMaeR:Number(row.avgMaeR)||0,recentWinRate:Number(row.recentWinRate),row};
 }
 function historicalEvidenceV32(a){
   if(!a||!historyBrain?.ready)return null;
@@ -5253,16 +5297,20 @@ function historicalEvidenceV32(a){
   const samples=Number(tf?.sampleCount||tf?.candles||historyBrain?.totalCandles||0);
   return{prob:clamp(prob,5,95),samples,tf:a.tf||'GLOBAL'};
 }
+
 function brainBlendFor(a,baseProb){
-  const bg=backgroundEvidenceFor(a),hist=historicalEvidenceV32(a);let bgW=0,histW=0;
-  if(bg&&bg.samples>=8)bgW=clamp(.08+bg.reliability*.16,0,.24);
-  if(hist)histW=hist.samples>=80?.10:.05;
-  if(bgW+histW>.34){const k=.34/(bgW+histW);bgW*=k;histW*=k}
-  const liveW=1-bgW-histW;
-  const prob=clamp(baseProb*liveW+(bg?.prob??baseProb)*bgW+(hist?.prob??baseProb)*histW,5,95);
-  const conflict=!!bg&&bg.samples>=18&&bg.reliability>=.28&&bg.prob<40;
-  const hardConflict=!!bg&&bg.samples>=30&&bg.reliability>=.45&&bg.prob<34;
-  return{prob,bg,hist,weights:{live:liveW,background:bgW,history:histW},conflict,hardConflict};
+  const bg=backgroundEvidenceFor(a),hist=historicalEvidenceV32(a),health=modelHealthV33();let bgW=0,histW=0;
+  if(bg&&bg.effectiveSamples>=4){
+    const healthFactor=clamp(health.score/100,.18,1),uncertaintyFactor=clamp(1-bg.uncertainty/60,.12,1),sampleFactor=clamp(Math.log10(bg.effectiveSamples+1)/1.7,.18,1);
+    bgW=clamp((.06+bg.reliability*.17)*healthFactor*uncertaintyFactor*sampleFactor,.015,.28);
+    if(health.score<V33_MODEL_HEALTH_FLOOR)bgW*=.28;
+  }
+  if(hist){const hUnc=Number(historyBrain?.timeframes?.[a.tf]?.latest?.uncertaintyPts??historyBrain?.global?.uncertaintyPts??35),hConf=clamp(1-hUnc/70,.2,1);histW=(hist.samples>=80?.10:.05)*hConf}
+  if(bgW+histW>.36){const k=.36/(bgW+histW);bgW*=k;histW*=k}
+  const liveW=1-bgW-histW,prob=clamp(baseProb*liveW+(bg?.prob??baseProb)*bgW+(hist?.prob??baseProb)*histW,5,95);
+  const conflict=!!bg&&bg.effectiveSamples>=10&&bg.upper<49&&bg.prob<44;
+  const hardConflict=!!bg&&bg.effectiveSamples>=18&&bg.upper<44&&health.score>=55;
+  return{prob,bg,hist,health,weights:{live:liveW,background:bgW,history:histW},conflict,hardConflict};
 }
 function renderBackgroundBrain(){
   if(!$('#backgroundBrainStatus'))return;
@@ -5279,6 +5327,7 @@ function renderBackgroundBrain(){
   $('#backgroundCalibration').textContent=Number.isFinite(Number(global.calibrationError))?Number(global.calibrationError).toFixed(1)+' pts':'—';
   const bgAt=Date.parse(backgroundLearning?.generatedAt||'');$('#backgroundUpdated').textContent=Number.isFinite(bgAt)?fmtAge(Date.now()-bgAt)+' ago':'—';
   $('#backgroundBrainNote').textContent=bs.note+(githubLearningRun.conclusion?` · Last run ${String(githubLearningRun.conclusion).toUpperCase()}`:'');
+  const mh=modelHealthV33(),val=backgroundLearning?.validation||{};const mhEl=$('#modelHealthScore');if(mhEl){mhEl.textContent=`${mh.score.toFixed(0)}/100 · ${mh.status}`;mhEl.className=mh.score>=60?'good':mh.score>=42?'warn':'bad'}const vv=$('#modelValidationScore');if(vv){vv.textContent=Number.isFinite(Number(val.brier))?`Brier ${Number(val.brier).toFixed(3)} · ${Number(val.coverage||0).toFixed(0)}%`:'—';vv.className=mh.score>=60?'good':mh.score>=42?'warn':'bad'}const uu=$('#modelUncertainty');if(uu){uu.textContent=`${mh.uncertaintyLabel} · ±${(mh.uncertainty/2).toFixed(1)} pts`;uu.className=mh.uncertainty<=20?'good':mh.uncertainty<=30?'warn':'bad'}const dd=$('#modelDrift');if(dd){dd.textContent=`${mh.drift.toFixed(1)} pts`;dd.className=mh.drift<=8?'good':mh.drift<=16?'warn':'bad'}
   const hstat=$('#historyBrainStatus');hstat.textContent=hs.status;hstat.className='brain-status-pill '+hs.tone;
   $('#historyBrainTitle').textContent=historyBrain?.ready?'Historical pattern pack':'History pack unavailable';
   $('#historyBiasV32').textContent=historyBrain?.global?.bias||'—';
@@ -5289,7 +5338,7 @@ function renderBackgroundBrain(){
   const blend=v25?.brainBlend;
   if(blend){
     $('#brainBlendProbability').textContent=`P(win) ${blend.prob.toFixed(1)}%`;
-    $('#brainBlendWeights').textContent=`Live ${Math.round(blend.weights.live*100)}% · Background ${Math.round(blend.weights.background*100)}% · History ${Math.round(blend.weights.history*100)}%`;
+    $('#brainBlendWeights').textContent=`Live ${Math.round(blend.weights.live*100)}% · Background ${Math.round(blend.weights.background*100)}% · History ${Math.round(blend.weights.history*100)}% · Health ${blend.health.score.toFixed(0)}`;
     const c=$('#brainConflictChip');c.textContent=blend.hardConflict?'HARD CONFLICT':blend.conflict?'HISTORY CONFLICT':'NO CONFLICT';c.className='brain-conflict-pill '+(blend.hardConflict?'bad':blend.conflict?'warn':'');
   }else{
     $('#brainBlendProbability').textContent='WAIT ANALYSIS';$('#brainBlendWeights').textContent='Live — · Background — · History —';const c=$('#brainConflictChip');c.textContent='NO CONFLICT';c.className='brain-conflict-pill';
@@ -5843,6 +5892,39 @@ function analyzeTf(c,tf){
   const center=(e9[n]+e21[n])/2,dist=Math.abs(last-center)/(A||1),stretched=dist>1.2,pullback=dist<.45;
   return{tf,direction,quality,last,atr:A,rsi:R,adx:ADX,ema9:e9[n],ema21:e21[n],ema50:e50[n],structure:S.state,bos:S.bos,swingHigh:S.swingHigh,swingLow:S.swingLow,regime,stretched,pullback,edge,bull,bear}
 }
+
+function buildPrecisionPlanV33(X,side){
+  const R=X.atr||Math.abs(X.last)*.001||1,bg=backgroundEvidenceFor({...X,side,direction:side}),health=modelHealthV33();
+  let center=(X.ema9+X.ema21)/2,anchor='EMA BLEND';
+  const bosLevel=side==='BUY'?X.swingHigh:X.swingLow;
+  if(X.bos===side&&Number.isFinite(bosLevel)&&Math.abs(X.last-bosLevel)<=R*1.55){center=bosLevel*.68+X.ema21*.32;anchor='BOS RETEST'}
+  else if(X.pullback){center=X.ema9*.58+X.ema21*.42;anchor='EMA PULLBACK'}
+  else{center=X.ema21;anchor='EMA21 RETEST'}
+  let halfMult=X.regime==='VOLATILE'?.125:X.regime==='TREND'?.075:.10;
+  if((bg?.uncertainty||35)>28)halfMult+=.018;if(health.score<55)halfMult+=.012;halfMult=clamp(halfMult,.065,.145);
+  const entryLow=center-R*halfMult,entryHigh=center+R*halfMult,learnedMae=bg?.avgMaeR>0?bg.avgMaeR:null,learnedMfe=bg?.avgMfeR>0?bg.avgMfeR:null;
+  const riskR=clamp(Math.max(.72,learnedMae?learnedMae*1.18:.82),.72,1.70);
+  let sl;
+  if(side==='BUY')sl=Number.isFinite(X.swingLow)?Math.min(X.swingLow-R*.10,center-R*riskR):center-R*riskR;
+  else sl=Number.isFinite(X.swingHigh)?Math.max(X.swingHigh+R*.10,center+R*riskR):center+R*riskR;
+  let risk=Math.abs(center-sl);risk=clamp(risk,R*.72,R*1.85);sl=side==='BUY'?center-risk:center+risk;
+  const learnedTarget=learnedMfe?clamp(learnedMfe*.72,1.30,2.05):null,baseTp=X.regime==='TREND'?1.65:X.regime==='VOLATILE'?1.45:1.35,tp1R=clamp(learnedTarget?baseTp*.55+learnedTarget*.45:baseTp,1.30,2.05),tp2R=clamp(tp1R+(X.regime==='TREND'?.80:.55),1.80,2.85),tp1=side==='BUY'?center+risk*tp1R:center-risk*tp1R,tp2=side==='BUY'?center+risk*tp2R:center-risk*tp2R;
+  return{center,entryLow,entryHigh,sl,tp1,tp2,rr:tp1R,anchor,zoneHalf:R*halfMult,bg,health,learnedMae,learnedMfe};
+}
+function precisionEntryGateV33(a){
+  if(!a||!Number.isFinite(a.entryCenter)||!Number.isFinite(a.atr))return{score:0,state:'WAIT',tone:'warn',hardBlock:false,note:'รอ Entry Plan',inZone:false,chaseOk:false};
+  const bg=backgroundEvidenceFor(a),health=modelHealthV33(),atr=Math.max(a.atr,.000001),dist=Math.abs(a.last-a.entryCenter),zoneLo=Math.min(a.entryLow,a.entryHigh),zoneHi=Math.max(a.entryLow,a.entryHigh),inZone=a.last>=zoneLo&&a.last<=zoneHi,chaseLimit=dynamicChaseLimit(a),chaseOk=!Number.isFinite(chaseLimit)||dist<=chaseLimit;
+  let score=43;score+=(a.align>=4?10:a.align>=3?6:0);score+=a.core?8:0;score+=confirmation.state==='READY'?12:confirmation.state==='CONFIRMING'?4:-8;score+=a.bos===a.direction?8:a.pullback?6:0;score+=clamp((health.score-50)*.16,-8,8);if(bg){score+=clamp((bg.lower-45)*.32,-8,10);score-=clamp((bg.uncertainty-18)*.22,0,9)}if(a.regime==='RANGE')score-=18;if(a.stretched)score-=14;if(!chaseOk)score-=24;if(inZone)score+=6;score=clamp(Math.round(score),0,100);
+  const modelWeak=bg&&health.score<38&&bg.uncertainty>34,hardBlock=!chaseOk||a.regime==='RANGE'||a.stretched||modelWeak||score<55;
+  let state='WAIT RETEST',tone='warn';if(!chaseOk){state='CHASE BLOCK';tone='bad'}else if(modelWeak){state='MODEL UNCERTAIN';tone='bad'}else if(inZone&&score>=V33_ENTRY_SCORE_MIN){state='AT ZONE';tone='good'}else if(score>=V33_ENTRY_SCORE_MIN){state='ARMED';tone='good'}else if(score<55){state='BLOCK';tone='bad'}
+  const note=!chaseOk?'ราคาไกลเกิน Max Chase · ห้ามไล่ราคา':modelWeak?'Model uncertainty สูง · ให้น้ำหนัก Live มากขึ้นและรอข้อมูล':inZone&&score>=V33_ENTRY_SCORE_MIN?'ราคาอยู่ใน Ideal Entry Zone และ Gate หลักผ่าน':'รอราคา Retest เข้า Zone พร้อม M1/M5 Confirmation';
+  return{score,state,tone,hardBlock,note,inZone,chaseOk,chaseLimit,distAtr:dist/atr,bg,health};
+}
+function renderPrecisionEntryV33(){
+  if(!$('#precisionState'))return;const p=v25?.precision,a=analysis;if(!p||!a){$('#precisionState').textContent='WAIT';$('#precisionState').className='precision-state warn';$('#precisionScore').textContent='—';$('#precisionZone').textContent='—';$('#precisionZoneMeta').textContent='รอการวิเคราะห์';$('#precisionBar').style.width='0%';$('#precisionChase').textContent='—';$('#precisionLower').textContent='—';$('#precisionExcursion').textContent='—';$('#precisionMatch').textContent='—';$('#precisionNote').innerHTML='<strong>WAIT</strong> · รอข้อมูลตลาด';return}
+  $('#precisionState').textContent=p.state;$('#precisionState').className='precision-state '+p.tone;$('#precisionScore').textContent=p.score+'/100';$('#precisionBar').style.width=p.score+'%';$('#precisionZone').textContent=price(a.entryLow)+' – '+price(a.entryHigh);$('#precisionZoneMeta').textContent=`${a.entryAnchor||a.setupType||'RETEST'} · ${p.inZone?'PRICE IN ZONE':'รอราคาเข้า Zone'}`;$('#precisionChase').textContent=Number.isFinite(p.chaseLimit)?'±'+price(p.chaseLimit):'—';$('#precisionLower').textContent=p.bg?`${p.bg.lower.toFixed(0)}% (90% CI)`:'NO MODEL';$('#precisionExcursion').textContent=p.bg?`${p.bg.avgMfeR.toFixed(2)}R / ${p.bg.avgMaeR.toFixed(2)}R`:'—';$('#precisionMatch').textContent=p.bg?(p.bg.matchLevel+' · '+Math.round(p.bg.effectiveSamples)+' eff'):'LIVE ONLY';$('#precisionNote').innerHTML=`<strong>${p.state}</strong> · ${p.note}`;
+}
+
 function chooseAnalysis(){
   tfResults={};for(const tf of ['H1','M15','M5','M1']){const r=analyzeTf(marketData[tf],tf);if(r)tfResults[tf]=r}
   const H=tfResults.H1,A=tfResults.M15,B=tfResults.M5,C=tfResults.M1;if(!H||!A)return null;
@@ -5863,24 +5945,12 @@ function chooseAnalysis(){
   if(X.stretched)blockers.push('PRICE STRETCHED');
   if(score<78)blockers.push('CONFIDENCE < 78');
   const conf=confirmationForDirection(dominant);if(conf.state!=='READY'&&mkt.open)blockers.push(conf.state==='CONFIRMING'?'CONFIRMING':'WAIT CONFIRM');let side=blockers.length?'WAIT':dominant,entryLow=null,entryHigh=null,entryCenter=null,sl=null,tp1=null,tp2=null,rr=0,setupType='WAIT';
-  if(side!=='WAIT'){
-    const R=X.atr||Math.abs(X.last)*.001;setupType=X.bos===side?'BOS RETEST':X.pullback?'EMA PULLBACK':'MEAN RETEST';
-    entryCenter=X.pullback?(X.ema9+X.ema21)/2:X.ema21;entryLow=entryCenter-R*.12;entryHigh=entryCenter+R*.12;
-    if(side==='BUY'){
-      sl=Number.isFinite(X.swingLow)?Math.min(X.swingLow-R*.10,entryCenter-R*.72):entryCenter-R*.9;
-      let risk=Math.abs(entryCenter-sl);risk=clamp(risk,R*.7,R*2);sl=entryCenter-risk;const sess=mkt.session,reg=X.regime;
-      const tp1R=reg==='TREND'?1.65:reg==='VOLATILE'?1.45:1.35;
-      const tp2R=reg==='TREND'?2.45:reg==='VOLATILE'?2.10:1.85;
-      tp1=entryCenter+risk*tp1R;tp2=entryCenter+risk*tp2R;rr=(tp1-entryCenter)/risk;
-    }else{
-      sl=Number.isFinite(X.swingHigh)?Math.max(X.swingHigh+R*.10,entryCenter+R*.72):entryCenter+R*.9;
-      let risk=Math.abs(sl-entryCenter);risk=clamp(risk,R*.7,R*2);sl=entryCenter+risk;const sess=mkt.session,reg=X.regime;
-      const tp1R=reg==='TREND'?1.65:reg==='VOLATILE'?1.45:1.35;
-      const tp2R=reg==='TREND'?2.45:reg==='VOLATILE'?2.10:1.85;
-      tp1=entryCenter-risk*tp1R;tp2=entryCenter-risk*tp2R;rr=(entryCenter-tp1)/risk;
-    }
-  }
-  const result={...X,side,direction:dominant,score,align,core,entryLow,entryHigh,entryCenter,sl,tp1,tp2,rr,setupType,blockers,market:mkt,news,guardian:g};
+
+if(side!=='WAIT'){
+  setupType=X.bos===side?'BOS RETEST':X.pullback?'EMA PULLBACK':'MEAN RETEST';
+  const pp=buildPrecisionPlanV33(X,side);entryCenter=pp.center;entryLow=pp.entryLow;entryHigh=pp.entryHigh;sl=pp.sl;tp1=pp.tp1;tp2=pp.tp2;rr=pp.rr;X.entryAnchor=pp.anchor;
+}
+  const result={...X,side,direction:dominant,score,align,core,entryLow,entryHigh,entryCenter,entryAnchor:X.entryAnchor||setupType,sl,tp1,tp2,rr,setupType,blockers,market:mkt,news,guardian:g};
   buildIntelligence(result);
   runFinalDecisionEngine(result);
   if(result.side!=='WAIT'&&(!intelligenceAllowsReady()||!finalDecisionAllowsReady())){
@@ -6371,41 +6441,21 @@ function lifecycleStateV25(a){
   return'WATCH';
 }
 
+
 function runFinalDecisionEngine(a){
   if(!a){
-    v25={...v25,sessionFit:0,setupEdge:0,winProb:0,ev:0,noTradeScore:100,noTradeReasons:[],lifecycle:'WATCH',decision:'WAIT',explain:'รอข้อมูล',bestEdge:null,brainBlend:null};
-    renderBackgroundBrain();return v25;
+    v25={...v25,sessionFit:0,setupEdge:0,winProb:0,ev:0,noTradeScore:100,noTradeReasons:[],lifecycle:'WATCH',decision:'WAIT',explain:'รอข้อมูล',bestEdge:null,brainBlend:null,modelHealth:modelHealthV33(),precision:null};
+    renderBackgroundBrain();renderPrecisionEntryV33();return v25;
   }
-  const setup=intelligence.best?.name||a.setupType||'UNKNOWN';
-  const edgeRow=lookupSpecificEdge(a,setup);
-  const setupEdge=edgeRow?edgeRow.edge:clamp((intelligence.best?.score||a.score||0)*.86,0,92);
-  const sessionFit=trueSessionFit(a,setup);
-  const raw=clamp(intelligence.rawConfidence*.50+setupEdge*.28+sessionFit*.22,0,96);
-  const baseProb=walkForwardCalibration(raw,a,setup);
-  const blend=brainBlendFor(a,baseProb);
-  const winProb=blend.prob;
-  const ev=expectedValue(winProb,Number(a.rr||0));
-  const nt=noTradeEngine(a);
-  if(blend.conflict){nt.score=clamp(nt.score+(blend.hardConflict?28:16),0,100);nt.reasons.push({name:`Background conflict ${blend.bg.prob.toFixed(0)}% / ${blend.bg.samples} samples`,pts:blend.hardConflict?28:16,blocked:blend.hardConflict})}
-  const hardBlock=nt.reasons.some(r=>r.blocked)||blend.hardConflict;
-  const ready=!hardBlock
-    && nt.score<=V25_NO_TRADE_MAX
-    && winProb>=V25_READY_PROB_MIN
-    && ev>=V25_READY_EV_MIN
-    && dataQuality.score>=DATA_QUALITY_READY_MIN
-    && confirmation.state==='READY'
-    && !newsContext().lock
-    && !guardian().locked
-    && a.regime!=='RANGE'
-    && Number(a.rr||0)>=1.45;
-  const decision=ready?'READY':nt.score>=60?'NO TRADE':'WAIT';
-  v25={...v25,sessionFit,setupEdge,winProb,ev,noTradeScore:nt.score,noTradeReasons:nt.reasons,decision,bestEdge:edgeRow,brainBlend:blend};
-  v25.lifecycle=lifecycleStateV25(a);
-  const memoryText=edgeRow?`${edgeRow.n} local · ${(edgeRow.wr*100).toFixed(0)}% WR`:'local learning';
-  const bgText=blend.bg?`BG ${blend.bg.prob.toFixed(0)}%/${blend.bg.samples}`:'BG no-pack';
-  const histText=blend.hist?`History ${blend.hist.prob.toFixed(0)}%`:'History no-pack';
-  v25.explain=`${setup} · ${a.regime} · ${sessionBucket()} · P(win) ${winProb.toFixed(0)}% · EV ${ev.toFixed(2)}R · ${bgText} · ${histText} · NoTrade ${nt.score} · ${memoryText}`;
-  renderBackgroundBrain();return v25;
+  const setup=intelligence.best?.name||a.setupType||'UNKNOWN',edgeRow=lookupSpecificEdge(a,setup),setupEdge=edgeRow?edgeRow.edge:clamp((intelligence.best?.score||a.score||0)*.86,0,92),sessionFit=trueSessionFit(a,setup),raw=clamp(intelligence.rawConfidence*.50+setupEdge*.28+sessionFit*.22,0,96),baseProb=walkForwardCalibration(raw,a,setup),blend=brainBlendFor(a,baseProb),winProb=blend.prob,ev=expectedValue(winProb,Number(a.rr||0)),nt=noTradeEngine(a),precision=precisionEntryGateV33(a),health=blend.health||modelHealthV33();
+  if(blend.conflict){nt.score=clamp(nt.score+(blend.hardConflict?28:14),0,100);nt.reasons.push({name:`Background conflict ${blend.bg.prob.toFixed(0)}% CI ${blend.bg.lower.toFixed(0)}–${blend.bg.upper.toFixed(0)}`,pts:blend.hardConflict?28:14,blocked:blend.hardConflict})}
+  if(health.score<V33_MODEL_HEALTH_FLOOR){nt.score=clamp(nt.score+8,0,100);nt.reasons.push({name:`Model health ${health.score.toFixed(0)}/100 · Live weighted higher`,pts:8,blocked:false})}
+  if(precision.score<V33_ENTRY_SCORE_MIN){const pts=precision.score<55?24:14;nt.score=clamp(nt.score+pts,0,100);nt.reasons.push({name:`Entry quality ${precision.score}/100 · ${precision.state}`,pts,blocked:precision.hardBlock})}
+  const hardBlock=nt.reasons.some(r=>r.blocked)||blend.hardConflict||precision.hardBlock,ready=!hardBlock&&nt.score<=V25_NO_TRADE_MAX&&winProb>=V25_READY_PROB_MIN&&ev>=V25_READY_EV_MIN&&precision.score>=V33_ENTRY_SCORE_MIN&&dataQuality.score>=DATA_QUALITY_READY_MIN&&confirmation.state==='READY'&&!newsContext().lock&&!guardian().locked&&a.regime!=='RANGE'&&Number(a.rr||0)>=1.30,decision=ready?'READY':nt.score>=60?'NO TRADE':'WAIT';
+  v25={...v25,sessionFit,setupEdge,winProb,ev,noTradeScore:nt.score,noTradeReasons:nt.reasons,decision,bestEdge:edgeRow,brainBlend:blend,modelHealth:health,precision};v25.lifecycle=lifecycleStateV25(a);
+  const memoryText=edgeRow?`${edgeRow.n} local · ${(edgeRow.wr*100).toFixed(0)}% WR`:'local learning',bgText=blend.bg?`BG ${blend.bg.prob.toFixed(0)}% CI ${blend.bg.lower.toFixed(0)}–${blend.bg.upper.toFixed(0)} · ${blend.bg.matchLevel}`:'BG no-pack',histText=blend.hist?`History ${blend.hist.prob.toFixed(0)}%`:'History no-pack';
+  v25.explain=`${setup} · ${a.regime} · ${sessionBucket()} · P(win) ${winProb.toFixed(0)}% · EV ${ev.toFixed(2)}R · Entry ${precision.score}/100 ${precision.state} · Health ${health.score.toFixed(0)}/100 · ${bgText} · ${histText} · NoTrade ${nt.score} · ${memoryText}`;
+  renderBackgroundBrain();renderPrecisionEntryV33();return v25;
 }
 function finalDecisionAllowsReady(){return v25.decision==='READY'}
 function renderV25(){
@@ -6420,6 +6470,7 @@ function renderV25(){
   $('#finalExecState').textContent=v25.lifecycle||'WATCH';
   $('#finalConfidenceBar').style.width=clamp(v25.winProb,0,100)+'%';
   $('#finalDecisionExplain').textContent=v25.explain||'รอข้อมูลตลาด';
+  renderPrecisionEntryV33();
 
   const edges=buildSetupEdgeMemory().slice(0,6),list=$('#edgeMemoryList');
   if(list){
@@ -6870,6 +6921,7 @@ function renderAiUi(){
   const mic=$('#marketIntelChip');mic.textContent=analysis?(analysis.market.open?'LIVE ANALYSIS':'LAST SESSION'):'WAIT';mic.className='status-chip '+(analysis?.market.open?'good':'warn');
   const mps=$('#marketPageStatus');if(mps)mps.querySelector('b').textContent=marketStatus().open?'LIVE':'CLOSED';
   const nps=$('#newsPageStatus');if(nps){const nc=newsContext();nps.querySelector('b').textContent=nc.lock?'LOCK':nc.warn?'CAUTION':'CLEAR'}
+  renderBackgroundBrain();renderPrecisionEntryV33();
 
 }
 function renderAll(){
@@ -7184,7 +7236,7 @@ async function analyze(){
     console.error('Analyze failed',err);
     toast('Analyze error · ลอง Refresh Data');
   }finally{
-    btn.textContent='RUN FULL MARKET SCAN';btn.disabled=false;
+    btn.textContent='RUN PRECISION MARKET SCAN';btn.disabled=false;
     btn.classList.remove('action-pending');setBusy(false)
   }
 }
@@ -7485,7 +7537,7 @@ window.addEventListener('offline',()=>{renderFreshness();toast('ออฟไล�
 // V25.8: minimal no-cache Service Worker for PWA installability. It never caches HTML/data.
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=320',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=330',{updateViaCache:'none'})
       .catch(err=>console.warn('SW',err));
   });
 }
