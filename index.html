@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="One Month">
-<title>ONE MONTH — AI Trading OS</title>
+<title>ONE MONTH — Native AI Trading System</title>
 <style>
 :root{
   --bg:#07090d;
@@ -286,7 +286,6 @@ summary::-webkit-details-marker{display:none}
 .tvHead{display:flex;align-items:center;justify-content:space-between;padding:12px 13px 9px}
 .tvHead b{font-size:11px}
 .tvHead span{font-size:8px;color:var(--muted)}
-.tvChart{height:390px;width:100%;background:#090e14;border-top:1px solid var(--line);overflow:hidden}
 .tfSwitch{display:flex;gap:5px;padding:9px 10px;border-top:1px solid var(--line);overflow:auto;scrollbar-width:none}
 .tfSwitch::-webkit-scrollbar{display:none}
 .tfSwitch button{min-width:45px;border:1px solid var(--line);background:#090e14;color:#7e8998;height:30px;border-radius:10px;font-size:8px;font-weight:900}
@@ -301,10 +300,79 @@ summary::-webkit-details-marker{display:none}
 .scanError{display:none;margin-top:9px;padding:10px 11px;border-radius:14px;background:rgba(255,115,129,.055);border:1px solid rgba(255,115,129,.13);color:#ffc0c7;font-size:9px;line-height:1.45}
 .scanError.show{display:block}
 @media(max-width:380px){
-  .tvChart{height:350px}
   .livePrice{font-size:27px}
   .tfCell span{font-size:13px}
 }
+
+
+/* ===== APP VIEWS / AI MENU V2 ===== */
+.appView{display:none;animation:viewIn .18s ease}
+.appView.active{display:block}
+@keyframes viewIn{from{opacity:.35;transform:translateY(7px)}to{opacity:1;transform:none}}
+.nav.nav4{grid-template-columns:repeat(4,1fr)}
+.aiMenuHero{padding:18px;margin-top:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;position:relative;overflow:hidden}
+.aiMenuHero:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 10% 0%,rgba(117,216,255,.065),transparent 65%),radial-gradient(320px 200px at 100% 100%,rgba(112,242,180,.045),transparent 70%);pointer-events:none}
+.aiMenuHero>div{position:relative}
+.aiMenuHero h2{font-size:23px;line-height:1.08;letter-spacing:-.04em;margin:7px 0 8px}
+.aiMenuHero h2 span{background:linear-gradient(95deg,#fff,#c8fbe3 58%,#b9edff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.aiMenuHero p{max-width:360px;margin:0;color:var(--muted);font-size:10px;line-height:1.55}
+.aiHeroStatus{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:999px;padding:7px 9px;white-space:nowrap}
+.aiHeroStatus span{width:7px;height:7px;border-radius:50%;background:#566170}
+.aiHeroStatus span.live{background:var(--green);box-shadow:0 0 14px rgba(112,242,180,.5)}
+.aiHeroStatus b{font-size:8px;letter-spacing:.08em}
+.aiTodayGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.metric-card.aiQuick{border:1px solid var(--line);border-radius:17px;background:linear-gradient(180deg,rgba(17,24,33,.92),rgba(10,15,21,.96));padding:12px;min-width:0}
+.aiQuick span{display:block;color:var(--muted);font-size:7px;font-weight:850;letter-spacing:.08em}
+.aiQuick b{display:block;font-size:16px;letter-spacing:-.025em;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aiQuick small{display:block;color:var(--muted);font-size:7px;line-height:1.35;margin-top:4px}
+.signalChartCard{margin-top:9px;padding:13px 13px 10px}
+.signalChartHead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:8px}
+.signalChartHead b{display:block;font-size:12px;margin-top:4px}
+.signalChartHead>span{font-size:8px;color:var(--muted)}
+#signalChart{display:block;width:100%;height:250px;border-radius:13px;background:#080d13;border:1px solid rgba(255,255,255,.045)}
+.signalLegend{display:flex;justify-content:flex-end;gap:11px;margin-top:8px;color:var(--muted);font-size:7px;font-weight:800}
+.signalLegend span{display:flex;align-items:center;gap:5px}
+.signalLegend i{width:12px;height:2px;border-radius:99px;background:var(--cyan)}
+.signalLegend .slLegend i{background:var(--red)}
+.signalLegend .tpLegend i{background:var(--green)}
+#aiView .sectionHead:first-of-type{margin-top:20px}
+#aiView .chartSection{margin-bottom:8px}
+.aiAutoRow{display:flex;align-items:center;gap:7px;margin-top:9px}
+.autoScanBtn{height:34px;border-radius:11px;border:1px solid var(--line);background:#0a1017;color:#8693a3;padding:0 10px;font-size:8px;font-weight:900}
+.autoScanBtn.on{color:var(--green);border-color:rgba(112,242,180,.16);background:rgba(112,242,180,.05)}
+.autoScanInfo{font-size:8px;color:var(--muted)}
+@media(max-width:380px){
+  .aiMenuHero h2{font-size:21px}
+  .aiTodayGrid{gap:5px}
+  .metric-card.aiQuick{padding:10px 8px}
+  .aiQuick b{font-size:14px}
+  #signalChart{height:225px}
+}
+
+
+/* ===== ONE MONTH NATIVE MARKET CHART ===== */
+.intelGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.intelGrid>div{border:1px solid var(--line);background:#090f15;border-radius:13px;padding:9px;text-align:center}
+.intelGrid span{display:block;color:var(--muted);font-size:7px;font-weight:850;letter-spacing:.07em}
+.intelGrid b{display:block;font-size:10px;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ourChartHead{display:flex;align-items:center;justify-content:space-between;padding:12px 13px 10px}
+.ourChartHead b{display:block;font-size:12px;margin-top:4px}
+.chartLiveState{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;background:#090f15;padding:6px 8px}
+.chartLiveState i{width:6px;height:6px;border-radius:50%;background:#657080}
+.chartLiveState i.live{background:var(--green);box-shadow:0 0 12px rgba(112,242,180,.48)}
+.chartLiveState span{font-size:7px;color:#9ca8b7;font-weight:850}
+.marketChartWrap{height:400px;position:relative;background:#070c12;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden}
+#marketChart{display:block;width:100%;height:100%}
+.chartBrand{position:absolute;left:14px;bottom:12px;font-size:20px;font-weight:950;letter-spacing:.15em;color:rgba(255,255,255,.035);pointer-events:none}
+.chartTools{display:flex;align-items:center;gap:10px;padding:8px 10px;overflow:auto;white-space:nowrap;scrollbar-width:none}
+.chartTools::-webkit-scrollbar{display:none}
+.chartTools span{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:7px;font-weight:800}
+.chartTools span:last-child{margin-left:auto;color:#c8d2dd;font-size:9px}
+.chartTools i{width:12px;height:2px;border-radius:99px;display:inline-block;background:var(--cyan)}
+.chartTools .emaSlow{background:var(--amber)}
+.chartTools .structureMark{height:6px;width:6px;border-radius:50%;background:#a8b2c0}
+.tfSwitch button.active{color:#071013!important;background:linear-gradient(110deg,var(--green),var(--cyan))!important;border-color:transparent!important}
+@media(max-width:380px){.marketChartWrap{height:350px}.intelGrid>div{padding:8px 5px}}
 
 </style>
 </head>
@@ -314,7 +382,7 @@ summary::-webkit-details-marker{display:none}
   <header class="topbar">
     <div class="brand">
       <div class="logo"><i></i></div>
-      <div><b>ONE MONTH</b><small>AI TRADING OS</small></div>
+      <div><b>ONE MONTH</b><small>NATIVE AI TRADING OS</small></div>
     </div>
     <button class="iconbtn" id="settingsBtn" aria-label="settings">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -356,6 +424,7 @@ summary::-webkit-details-marker{display:none}
   </section>
 
   <main id="dashboard" class="dashboard">
+  <section id="homeView" class="appView active">
     <section class="summaryGrid">
       <div class="metric card">
         <div class="smallLabel">Current Balance</div>
@@ -422,6 +491,67 @@ summary::-webkit-details-marker{display:none}
       </div>
       <div class="riskBadge" id="riskBadge">AUTO RISK</div>
     </section>
+    <div class="sectionHead">
+      <h3>End Session</h3>
+      <span>กรอกยอด Balance จริง</span>
+    </div>
+    <section class="closeCard card">
+      <div class="closeRow">
+        <input id="actualInput" inputmode="decimal" placeholder="เช่น 102.40">
+        <button id="saveDayBtn">บันทึก</button>
+      </div>
+      <div class="closeHint">เมื่อบันทึก ระบบจะติ๊ก HIT/MISS แล้วคำนวณเป้าวันถัดไปใหม่จาก Target เดิมโดยอัตโนมัติ</div>
+      <div class="notice" id="notice"></div>
+    </section>
+  </section>
+
+  <section id="aiView" class="appView">
+
+    <section class="aiMenuHero card">
+      <div>
+        <div class="eyebrow">AI EXECUTION DESK</div>
+        <h2>วันนี้เล่นตรงไหน<br><span>ให้ระบบอ่านกราฟก่อน</span></h2>
+        <p>สแกน XAU/USD หลาย Timeframe แล้วคัด Setup ที่ชัดที่สุด พร้อม Entry, SL, TP และ Lot จากทุนจริงของแผน</p>
+      </div>
+      <div class="aiHeroStatus">
+        <span id="aiHeroDot"></span>
+        <b id="aiHeroState">READY</b>
+      </div>
+    </section>
+
+    <section class="aiTodayGrid">
+      <div class="metric-card aiQuick">
+        <span>BEST TF</span>
+        <b id="aiQuickTf">—</b>
+        <small>เลือกจาก M1 / M5 / M15 / H1</small>
+      </div>
+      <div class="metric-card aiQuick">
+        <span>DIRECTION</span>
+        <b id="aiQuickSide">WAIT</b>
+        <small id="aiQuickConfidence">Confidence —</small>
+      </div>
+      <div class="metric-card aiQuick">
+        <span>LOT TODAY</span>
+        <b id="aiQuickLot">—</b>
+        <small id="aiQuickMaxLot">Max —</small>
+      </div>
+    </section>
+
+    <section class="signalChartCard card">
+      <div class="signalChartHead">
+        <div>
+          <div class="smallLabel">AI SIGNAL CHART</div>
+          <b id="signalChartTitle">รอสแกนตลาด</b>
+        </div>
+        <span id="signalChartHint">Entry · SL · TP</span>
+      </div>
+      <canvas id="signalChart"></canvas>
+      <div class="signalLegend">
+        <span class="entryLegend"><i></i>ENTRY</span>
+        <span class="slLegend"><i></i>SL</span>
+        <span class="tpLegend"><i></i>TP</span>
+      </div>
+    </section>
 
     <div class="sectionHead">
       <h3>AI Market Scan</h3>
@@ -434,10 +564,14 @@ summary::-webkit-details-marker{display:none}
           <i class="aiPulse" id="aiPulse"></i>
           <div>
             <h3>XAU/USD Live Intelligence</h3>
-            <p>Multi-timeframe · EMA · RSI · ATR · Structure</p>
+            <p>H1 Bias · M15 Structure · M5 Setup · M1 Timing</p>
           </div>
         </div>
         <button class="aiRefresh" id="analyzeBtn">ANALYZE</button>
+      </div>
+      <div class="aiAutoRow">
+        <button class="autoScanBtn" id="autoScanBtn">AUTO SCAN OFF</button>
+        <span class="autoScanInfo">เปิดแล้วจะสแกนทุก 2 นาที เพื่อลดการใช้โควตา Free API</span>
       </div>
 
       <div class="livePriceRow">
@@ -461,6 +595,11 @@ summary::-webkit-details-marker{display:none}
       <div class="bestTfLine">
         <span>Time frame ที่ระบบมองว่าน่าเล่นสุดตอนนี้</span>
         <b id="bestTf">—</b>
+      </div>
+      <div class="intelGrid">
+        <div><span>REGIME</span><b id="regimeTag">—</b></div>
+        <div><span>SESSION</span><b id="sessionTag">—</b></div>
+        <div><span>MTF ALIGN</span><b id="alignTag">—</b></div>
       </div>
 
       <div class="signalPanel">
@@ -488,26 +627,42 @@ summary::-webkit-details-marker{display:none}
       </div>
 
       <div class="apiHint" id="apiHint">
-        <b>Realtime AI ต้องใช้ market-data feed:</b> ใส่ Twelve Data API Key ใน Settings ครั้งเดียว แล้วระบบจะดึง XAU/USD OHLC จริงมาวิเคราะห์ M1 / M5 / M15 / H1
+        <b>ข้อมูลกราฟมาจาก Market Feed จริง:</b> ระบบวาด Candlestick ภายในแอปเองทั้งหมด และใช้ WebSocket อัปเดตราคาสดเมื่อบัญชี API รองรับ
       </div>
       <div class="scanError" id="scanError"></div>
     </section>
 
     <section class="chartSection card">
-      <div class="tvHead">
-        <b>XAUUSD LIVE CHART</b>
-        <span id="chartTfLabel">TradingView · M15</span>
+      <div class="ourChartHead">
+        <div>
+          <div class="smallLabel">ONE MONTH MARKET CHART</div>
+          <b>XAUUSD · <span id="chartTfLabel">M15</span></b>
+        </div>
+        <div class="chartLiveState">
+          <i id="wsDot"></i>
+          <span id="wsState">REST DATA</span>
+        </div>
       </div>
-      <div class="tvChart" id="tvChart"></div>
+      <div class="marketChartWrap">
+        <canvas id="marketChart"></canvas>
+        <div class="chartBrand">ONE MONTH</div>
+      </div>
+      <div class="chartTools">
+        <span><i class="emaFast"></i>EMA 9</span>
+        <span><i class="emaSlow"></i>EMA 21</span>
+        <span><i class="structureMark"></i>STRUCTURE</span>
+        <span id="chartLastPrice">—</span>
+      </div>
       <div class="tfSwitch" id="tfSwitch">
-        <button data-tv="1" data-label="M1">M1</button>
-        <button data-tv="5" data-label="M5">M5</button>
-        <button class="active" data-tv="15" data-label="M15">M15</button>
-        <button data-tv="60" data-label="H1">H1</button>
-        <button data-tv="240" data-label="H4">H4</button>
+        <button data-tf="M1">M1</button>
+        <button data-tf="M5">M5</button>
+        <button class="active" data-tf="M15">M15</button>
+        <button data-tf="H1">H1</button>
       </div>
     </section>
+  </section>
 
+  <section id="planView" class="appView">
     <div class="sectionHead">
       <h3>30-Day Calendar</h3>
       <span id="calendarSummary">0 HIT · 0 MISS</span>
@@ -516,7 +671,24 @@ summary::-webkit-details-marker{display:none}
       <div class="weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
       <div class="calendar" id="calendar"></div>
     </section>
+    <div class="sectionHead">
+      <h3>Adaptive Roadmap</h3>
+      <span id="completeCount">0 / 30</span>
+    </div>
+    <section class="planCard card">
+      <div class="planTop"><b>30 SESSION PLAN</b><button id="resetBtn">เริ่มใหม่</button></div>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr><th>Day</th><th>Balance</th><th>Profit</th><th>Expected</th><th>Actual</th><th>Status</th></tr>
+          </thead>
+          <tbody id="planBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
 
+  <section id="statsView" class="appView">
     <div class="sectionHead">
       <h3>Equity Curve</h3>
       <span id="aheadBehind">On plan</span>
@@ -536,36 +708,6 @@ summary::-webkit-details-marker{display:none}
         <div class="chartStat"><span>Max Drawdown</span><b id="maxDrawdown">0.00%</b></div>
       </div>
     </section>
-
-    <div class="sectionHead">
-      <h3>End Session</h3>
-      <span>กรอกยอด Balance จริง</span>
-    </div>
-    <section class="closeCard card">
-      <div class="closeRow">
-        <input id="actualInput" inputmode="decimal" placeholder="เช่น 102.40">
-        <button id="saveDayBtn">บันทึก</button>
-      </div>
-      <div class="closeHint">เมื่อบันทึก ระบบจะติ๊ก HIT/MISS แล้วคำนวณเป้าวันถัดไปใหม่จาก Target เดิมโดยอัตโนมัติ</div>
-      <div class="notice" id="notice"></div>
-    </section>
-
-    <div class="sectionHead">
-      <h3>Adaptive Roadmap</h3>
-      <span id="completeCount">0 / 30</span>
-    </div>
-    <section class="planCard card">
-      <div class="planTop"><b>30 SESSION PLAN</b><button id="resetBtn">เริ่มใหม่</button></div>
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr><th>Day</th><th>Balance</th><th>Profit</th><th>Expected</th><th>Actual</th><th>Status</th></tr>
-          </thead>
-          <tbody id="planBody"></tbody>
-        </table>
-      </div>
-    </section>
-
     <div class="sectionHead"><h3>Risk Engine</h3><span>ระบบจัดการให้ · แก้ได้หากต้องการ</span></div>
     <details id="riskDetails">
       <summary>Advanced Lot Settings</summary>
@@ -578,19 +720,23 @@ summary::-webkit-details-marker{display:none}
     </details>
 
     <div class="disclaimer">ระบบนี้เป็น Trading Journal และเครื่องมือวางแผนเชิงคณิตศาสตร์เท่านั้น Target, Daily Stop และ Lot Guide ไม่รับประกันผลลัพธ์จริง และค่า contract/lot ของ XAUUSD แตกต่างกันตามโบรกเกอร์ โปรดตรวจสอบ specification ก่อนใช้งาน</div>
+  </section>
   </main>
 </div>
 
 <div class="bottom">
-  <nav class="nav">
-    <button class="active" data-go="home">
+  <nav class="nav nav4">
+    <button class="active" data-view="homeView">
       <svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>HOME
     </button>
-    <button data-go="plan">
+    <button data-view="aiView">
+      <svg viewBox="0 0 24 24"><path d="M8 9V7a4 4 0 0 1 8 0v2M6 9h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"/><path d="M9 13h.01M15 13h.01M9 16h6"/></svg>AI
+    </button>
+    <button data-view="planView">
       <svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg>PLAN
     </button>
-    <button data-go="analytics">
-      <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg>ANALYTICS
+    <button data-view="statsView">
+      <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg>STATS
     </button>
   </nav>
 </div>
@@ -1031,7 +1177,7 @@ function drawChart(){
   ctx.fillText('D30',W-pad.r,H-5);
 }
 
-window.addEventListener('resize',()=>requestAnimationFrame(drawChart));
+window.addEventListener('resize',()=>{requestAnimationFrame(drawChart);requestAnimationFrame(drawSignalChart)});
 
 $('#saveDayBtn').onclick=()=>{
   const actual=Number($('#actualInput').value);
@@ -1138,357 +1284,161 @@ function resetAll(){
 $('#resetBtn').onclick=resetAll;
 $('#sheetResetBtn').onclick=resetAll;
 
-$$('.nav button').forEach(b=>b.onclick=()=>{
-  $$('.nav button').forEach(x=>x.classList.toggle('active',x===b));
-  const go=b.dataset.go;
-  if(go==='home')window.scrollTo({top:0,behavior:'smooth'});
-  if(go==='plan')$('.calendarCard')?.scrollIntoView({behavior:'smooth',block:'start'});
-  if(go==='analytics')$('.chartCard')?.scrollIntoView({behavior:'smooth',block:'start'});
-});
+function showView(viewId){
+  $$('.appView').forEach(v=>v.classList.toggle('active',v.id===viewId));
+  $$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===viewId));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(viewId==='aiView'){
+    setTimeout(()=>{
+      if(!marketScan.best) drawSignalChart();
+      else renderMarketScan();
+    },80);
+  }
+  if(viewId==='statsView') setTimeout(()=>requestAnimationFrame(drawChart),80);
+}
+$$('.nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 
 
-/* ===== LIVE AI MARKET ENGINE ===== */
-const MARKET_INTERVALS = {
-  M1:{api:'1min', tv:'1', pref:-4},
-  M5:{api:'5min', tv:'5', pref:3},
-  M15:{api:'15min', tv:'15', pref:6},
-  H1:{api:'1h', tv:'60', pref:2}
+/* ===== ONE MONTH QUANT AI ENGINE ===== */
+const MARKET_INTERVALS={
+  M1:{api:'1min',seconds:60},M5:{api:'5min',seconds:300},
+  M15:{api:'15min',seconds:900},H1:{api:'1h',seconds:3600}
 };
-let marketScan = {results:{},best:null,last:null,busy:false};
+let marketScan={datasets:{},results:{},best:null,last:null,busy:false,selectedTf:'M15',livePrice:null,ws:null,lastTickTs:0};
+let autoScanTimer=null;
 
-function getApiKey(){
-  return localStorage.getItem('one_month_twelve_data_key') || '';
-}
-function setApiKey(v){
-  if(v) localStorage.setItem('one_month_twelve_data_key',v.trim());
-  else localStorage.removeItem('one_month_twelve_data_key');
-}
-function ema(values,period){
-  if(!values.length)return [];
-  const k=2/(period+1), out=[];
-  let prev=values[0];
-  for(let i=0;i<values.length;i++){
-    prev=i===0?values[i]:(values[i]*k+prev*(1-k));
-    out.push(prev);
-  }
-  return out;
-}
-function rsi(values,period=14){
-  if(values.length<period+2)return 50;
-  let gains=0,losses=0;
-  for(let i=1;i<=period;i++){
-    const d=values[i]-values[i-1];
-    if(d>=0)gains+=d; else losses-=d;
-  }
-  let ag=gains/period, al=losses/period;
-  for(let i=period+1;i<values.length;i++){
-    const d=values[i]-values[i-1];
-    const g=Math.max(d,0),l=Math.max(-d,0);
-    ag=(ag*(period-1)+g)/period;
-    al=(al*(period-1)+l)/period;
-  }
-  if(al===0)return 100;
-  const rs=ag/al;
-  return 100-(100/(1+rs));
-}
-function atr(candles,period=14){
-  if(candles.length<2)return 0;
-  const trs=[];
-  for(let i=1;i<candles.length;i++){
-    const h=candles[i].high,l=candles[i].low,pc=candles[i-1].close;
-    trs.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));
-  }
-  if(!trs.length)return 0;
-  const slice=trs.slice(-period);
-  return slice.reduce((a,b)=>a+b,0)/slice.length;
-}
-function median(arr){
-  if(!arr.length)return 0;
-  const s=[...arr].sort((a,b)=>a-b),m=Math.floor(s.length/2);
-  return s.length%2?s[m]:(s[m-1]+s[m])/2;
-}
-function atrSeries(candles,period=14){
-  const out=[];
-  for(let i=Math.max(2,period);i<=candles.length;i++) out.push(atr(candles.slice(0,i),period));
-  return out.filter(v=>Number.isFinite(v)&&v>0);
-}
-function tfAnalysis(candles,tf){
-  const closes=candles.map(c=>c.close);
-  if(closes.length<60) throw new Error(tf+' data ไม่พอสำหรับวิเคราะห์');
-  const e9=ema(closes,9),e21=ema(closes,21),e50=ema(closes,50);
-  const i=closes.length-1;
-  const close=closes[i], E9=e9[i],E21=e21[i],E50=e50[i];
-  const R=rsi(closes,14);
-  const A=atr(candles,14);
-  const aSeries=atrSeries(candles.slice(-70),14);
-  const medA=median(aSeries.slice(-35))||A;
-  const volRatio=medA?A/medA:1;
-  const slope=(e21[i]-e21[Math.max(0,i-5)])/(A||1);
-  const recent=candles.slice(-18);
-  const swingLow=Math.min(...recent.map(c=>c.low));
-  const swingHigh=Math.max(...recent.map(c=>c.high));
-  const dist9=Math.abs(close-E9)/(A||1);
+function getApiKey(){return localStorage.getItem('one_month_twelve_data_key')||''}
+function setApiKey(v){if(v)localStorage.setItem('one_month_twelve_data_key',v.trim());else localStorage.removeItem('one_month_twelve_data_key')}
 
+function ema(v,p){if(!v.length)return[];const k=2/(p+1),o=[];let x=v[0];v.forEach((n,i)=>{x=i?n*k+x*(1-k):n;o.push(x)});return o}
+function rsiSeries(v,p=14){const o=new Array(v.length).fill(null);if(v.length<=p)return o;let g=0,l=0;for(let i=1;i<=p;i++){const d=v[i]-v[i-1];g+=Math.max(d,0);l+=Math.max(-d,0)}let ag=g/p,al=l/p;o[p]=al===0?100:100-100/(1+ag/al);for(let i=p+1;i<v.length;i++){const d=v[i]-v[i-1];ag=(ag*(p-1)+Math.max(d,0))/p;al=(al*(p-1)+Math.max(-d,0))/p;o[i]=al===0?100:100-100/(1+ag/al)}return o}
+function trueRanges(c){const o=[c[0]?c[0].high-c[0].low:0];for(let i=1;i<c.length;i++)o.push(Math.max(c[i].high-c[i].low,Math.abs(c[i].high-c[i-1].close),Math.abs(c[i].low-c[i-1].close)));return o}
+function wilders(v,p=14){const o=new Array(v.length).fill(null);if(v.length<p)return o;let x=v.slice(0,p).reduce((a,b)=>a+b,0)/p;o[p-1]=x;for(let i=p;i<v.length;i++){x=(x*(p-1)+v[i])/p;o[i]=x}return o}
+function atrSeries2(c,p=14){return wilders(trueRanges(c),p)}
+function adxSeries(c,p=14){const n=c.length,tr=trueRanges(c),pd=[0],md=[0];for(let i=1;i<n;i++){const up=c[i].high-c[i-1].high,dn=c[i-1].low-c[i].low;pd.push(up>dn&&up>0?up:0);md.push(dn>up&&dn>0?dn:0)}const a=wilders(tr,p),pw=wilders(pd,p),mw=wilders(md,p),dx=new Array(n).fill(0);for(let i=0;i<n;i++)if(a[i]&&pw[i]!=null&&mw[i]!=null){const plus=100*pw[i]/a[i],minus=100*mw[i]/a[i],s=plus+minus;dx[i]=s?100*Math.abs(plus-minus)/s:0}return wilders(dx,p)}
+function macd(v){const a=ema(v,12),b=ema(v,26),line=v.map((_,i)=>a[i]-b[i]),sig=ema(line,9);return{hist:line.map((x,i)=>x-sig[i])}}
+function percentileRank(a,v){const x=a.filter(Number.isFinite);return x.length?x.filter(n=>n<=v).length/x.length:.5}
+function pivots(c,left=2,right=2){const highs=[],lows=[];for(let i=left;i<c.length-right;i++){let hi=true,lo=true;for(let j=i-left;j<=i+right;j++)if(j!==i){if(c[j].high>=c[i].high)hi=false;if(c[j].low<=c[i].low)lo=false}if(hi)highs.push({i,price:c[i].high,ts:c[i].ts});if(lo)lows.push({i,price:c[i].low,ts:c[i].ts})}return{highs,lows}}
+function structureState(c){const p=pivots(c),hs=p.highs.slice(-3),ls=p.lows.slice(-3),last=c.at(-1);let structure='RANGE',bos='NONE';if(hs.length>=2&&ls.length>=2){const hh=hs.at(-1).price>hs.at(-2).price,hl=ls.at(-1).price>ls.at(-2).price,lh=hs.at(-1).price<hs.at(-2).price,ll=ls.at(-1).price<ls.at(-2).price;if(hh&&hl)structure='BULL';if(lh&&ll)structure='BEAR'}const ph=hs.at(-1)?.price??null,pl=ls.at(-1)?.price??null;if(ph&&last.close>ph)bos='BULL';if(pl&&last.close<pl)bos='BEAR';return{structure,bos,pivots:p,lastSwingHigh:ph,lastSwingLow:pl}}
+function sessionInfo(){const h=new Date().getHours();if(h>=6&&h<13)return{name:'ASIA',quality:.72};if(h>=13&&h<19)return{name:'LONDON',quality:1};if(h>=19&&h<24)return{name:'NEW YORK',quality:1};return{name:'OFF-HOURS',quality:.58}}
+
+function analyzeTf(c,tf){
+  if(!c||c.length<80)throw new Error(tf+' data ไม่พอ');
+  const closes=c.map(x=>x.close),n=c.length-1,E9=ema(closes,9),E21=ema(closes,21),E50=ema(closes,50),E200=ema(closes,200);
+  const RSI=rsiSeries(closes),ATR=atrSeries2(c),ADX=adxSeries(c),M=macd(closes),close=closes[n],atr=ATR[n]||0,rsi=RSI[n]??50,adx=ADX[n]??0;
+  const s=structureState(c.slice(-90)),slope21=(E21[n]-E21[Math.max(0,n-8)])/(atr||1),volPct=percentileRank(ATR.slice(-80),atr);
   let bull=0,bear=0;
-  if(close>E9)bull+=10; else bear+=10;
-  if(E9>E21)bull+=12; else bear+=12;
-  if(E21>E50)bull+=18; else bear+=18;
-  bull+=clamp(slope*11,0,18);
-  bear+=clamp(-slope*11,0,18);
-  if(R>=52&&R<=70)bull+=14;
-  else if(R>70)bull+=5;
-  else if(R<=48&&R>=30)bear+=14;
-  else if(R<30)bear+=5;
-  if(dist9<=.45){bull+=8;bear+=8}
-  if(volRatio>=.65&&volRatio<=1.9){bull+=7;bear+=7}
-  if(close>Math.max(...candles.slice(-8,-1).map(c=>c.high)))bull+=7;
-  if(close<Math.min(...candles.slice(-8,-1).map(c=>c.low)))bear+=7;
+  if(close>E21[n])bull+=9;else bear+=9;if(E9[n]>E21[n])bull+=10;else bear+=10;if(E21[n]>E50[n])bull+=13;else bear+=13;if(close>E200[n])bull+=6;else bear+=6;
+  bull+=clamp(slope21*9,0,14);bear+=clamp(-slope21*9,0,14);
+  const tw=clamp((adx-15)/18,0,1);if(M.hist[n]>0)bull+=7*tw;else bear+=7*tw;
+  if(rsi>=52&&rsi<=68)bull+=7;else if(rsi<=48&&rsi>=32)bear+=7;if(rsi>74)bear+=3;if(rsi<26)bull+=3;
+  if(s.structure==='BULL')bull+=14;if(s.structure==='BEAR')bear+=14;if(s.bos==='BULL')bull+=13;if(s.bos==='BEAR')bear+=13;
+  if(adx>=22){if(bull>bear)bull+=8;else bear+=8}if(adx<16){bull-=5;bear-=5}
+  const dist21=Math.abs(close-E21[n])/(atr||1),pullback=dist21<=.42,stretched=dist21>1.15;if(pullback){bull+=3;bear+=3}if(stretched){bull-=4;bear-=4}
+  const biasVal=bull-bear,direction=biasVal>=0?'BUY':'SELL',strength=clamp(Math.abs(biasVal),0,100);
+  let regime=adx>=27?'TREND':adx<17?'RANGE':'TRANSITION';if(volPct>.86)regime='VOLATILE';
+  const quality=Math.round(clamp(45+strength*.65+(adx-18)*.8-(stretched?10:0)-(regime==='RANGE'?8:0),0,96));
+  return{tf,candles:c,bull,bear,biasVal,direction,strength,quality,close,ema9:E9[n],ema21:E21[n],ema50:E50[n],ema200:E200[n],rsi,atr,adx,macdHist:M.hist[n],slope21,volPct,regime,pullback,stretched,structure:s.structure,bos:s.bos,pivots:s.pivots,swingHigh:s.lastSwingHigh,swingLow:s.lastSwingLow}
+}
 
-  bull+=MARKET_INTERVALS[tf].pref;
-  bear+=MARKET_INTERVALS[tf].pref;
-  const raw=Math.max(bull,bear);
-  const direction=bull>bear?'BUY':'SELL';
-  const delta=Math.abs(bull-bear);
-  const score=Math.round(clamp(raw,0,100));
-  let side=(score>=62&&delta>=8)?direction:'WAIT';
-
-  // Avoid chasing if price is far from the fast EMA.
-  if(dist9>1.05 && side!=='WAIT') side='WAIT';
-
-  let entryCenter=close, entryLow=close,entryHigh=close,SL=null,TP1=null,TP2=null,rr=0;
+function chooseExecution(r){
+  const H=r.H1,A=r.M15,B=r.M5,C=r.M1,sess=sessionInfo(),weighted=H.biasVal*.36+A.biasVal*.31+B.biasVal*.23+C.biasVal*.10,dominant=weighted>=0?'BUY':'SELL';
+  const align=[H,A,B,C].filter(x=>x.direction===dominant).length,core=H.direction===dominant&&A.direction===dominant,opposite=H.direction!==A.direction;
+  let cs=[{tf:'M15',r:A,bonus:sess.name==='ASIA'?5:1},{tf:'M5',r:B,bonus:(sess.name==='LONDON'||sess.name==='NEW YORK')?7:2},{tf:'M1',r:C,bonus:(sess.name==='LONDON'||sess.name==='NEW YORK')?2:-8}]
+    .map(x=>{let q=x.r.quality+x.bonus+(x.r.direction===dominant?10:-20)+(x.r.pullback?8:0)+(x.r.bos===dominant?10:0)-(x.r.regime==='RANGE'?12:0)-(x.r.stretched?12:0);if(x.tf==='M1'&&B.direction!==dominant)q-=20;return{...x,setup:q}}).sort((x,y)=>y.setup-x.setup);
+  const chosen=cs[0],R=chosen.r;let conf=50+Math.min(20,Math.abs(weighted)*.32)+(align-2)*6+(core?10:-12)+(R.bos===dominant?7:0)+(R.pullback?5:0)+(R.adx>=20&&R.adx<=42?5:0)+(sess.quality===1?3:-3)-(R.stretched?12:0)-(R.regime==='RANGE'?10:0);
+  conf=clamp(Math.round(conf),0,93);let side=dominant;const blockers=[];if(opposite)blockers.push('H1 กับ M15 สวนกัน');if(!core)blockers.push('Bias หลักยังไม่ align');if(align<3)blockers.push('MTF confluence ต่ำ');if(R.regime==='RANGE')blockers.push('ตลาดเป็น range');if(R.stretched)blockers.push('ราคายืดจาก mean');if(conf<72)blockers.push('confidence ต่ำกว่า 72');if(Math.abs(weighted)<18)blockers.push('directional edge ยังบาง');if(blockers.length)side='WAIT';
+  let entryLow=null,entryHigh=null,entryCenter=null,sl=null,tp1=null,tp2=null,rr=0,setupType='WAIT';
   if(side!=='WAIT'){
-    if(side==='BUY'){
-      entryCenter=Math.min(close,Math.max(E21,E9));
-      entryLow=entryCenter-A*.10;
-      entryHigh=entryCenter+A*.10;
-      const structureSL=swingLow-A*.18;
-      SL=Math.min(structureSL,entryCenter-A*.85);
-      let risk=entryCenter-SL;
-      if(risk>A*2.2){SL=entryCenter-A*2.2;risk=entryCenter-SL}
-      TP1=entryCenter+risk*1.5;
-      TP2=entryCenter+risk*2.2;
-      rr=(TP1-entryCenter)/(entryCenter-SL);
-    }else{
-      entryCenter=Math.max(close,Math.min(E21,E9));
-      entryLow=entryCenter-A*.10;
-      entryHigh=entryCenter+A*.10;
-      const structureSL=swingHigh+A*.18;
-      SL=Math.max(structureSL,entryCenter+A*.85);
-      let risk=SL-entryCenter;
-      if(risk>A*2.2){SL=entryCenter+A*2.2;risk=SL-entryCenter}
-      TP1=entryCenter-risk*1.5;
-      TP2=entryCenter-risk*2.2;
-      rr=(entryCenter-TP1)/(SL-entryCenter);
-    }
+    const X=R.atr;if(R.bos===side){setupType='BOS RETEST';entryCenter=(side==='BUY'?R.swingHigh:R.swingLow)??R.ema9}else if(R.pullback){setupType='EMA PULLBACK';entryCenter=(R.ema9+R.ema21)/2}else{setupType='MEAN RETEST';entryCenter=R.ema21}
+    entryLow=entryCenter-X*.11;entryHigh=entryCenter+X*.11;
+    if(side==='BUY'){const structural=Number.isFinite(R.swingLow)?R.swingLow-X*.12:entryCenter-X*1.1;sl=Math.min(structural,entryCenter-X*.85);let risk=entryCenter-sl;if(risk>X*2){sl=entryCenter-X*2;risk=entryCenter-sl}if(risk<X*.7){sl=entryCenter-X*.7;risk=entryCenter-sl}const liq=Number.isFinite(R.swingHigh)&&R.swingHigh>entryCenter?R.swingHigh:null;tp1=liq&&liq-entryCenter>=risk*1.35?liq:entryCenter+risk*1.55;tp2=entryCenter+risk*2.25;rr=(tp1-entryCenter)/risk}
+    else{const structural=Number.isFinite(R.swingHigh)?R.swingHigh+X*.12:entryCenter+X*1.1;sl=Math.max(structural,entryCenter+X*.85);let risk=sl-entryCenter;if(risk>X*2){sl=entryCenter+X*2;risk=sl-entryCenter}if(risk<X*.7){sl=entryCenter+X*.7;risk=sl-entryCenter}const liq=Number.isFinite(R.swingLow)&&R.swingLow<entryCenter?R.swingLow:null;tp1=liq&&entryCenter-liq>=risk*1.35?liq:entryCenter-risk*1.55;tp2=entryCenter-risk*2.25;rr=(entryCenter-tp1)/risk}
+    if(rr<1.35){side='WAIT';blockers.push('R:R ไม่ถึงเกณฑ์')}
   }
-
-  const reasons=[];
-  if(E9>E21&&E21>E50) reasons.push('EMA เรียงตัวขึ้น');
-  if(E9<E21&&E21<E50) reasons.push('EMA เรียงตัวลง');
-  if(Math.abs(slope)>.2) reasons.push('trend slope ชัด');
-  if(R>=52&&R<=70) reasons.push('RSI หนุนฝั่งซื้อ');
-  if(R<=48&&R>=30) reasons.push('RSI หนุนฝั่งขาย');
-  if(dist9>.85) reasons.push('ราคาห่าง EMA มาก');
-  if(volRatio>1.7) reasons.push('volatility สูง');
-  if(volRatio<.65) reasons.push('volatility ต่ำ');
-
-  return {tf,score,side,direction,bull,bear,delta,close,ema9:E9,ema21:E21,ema50:E50,rsi:R,atr:A,volRatio,slope,swingLow,swingHigh,entryCenter,entryLow,entryHigh,sl:SL,tp1:TP1,tp2:TP2,rr,reasons};
+  const reasons=['H1 '+H.direction+' '+H.structure,'M15 '+A.direction+' '+A.structure+(A.bos!=='NONE'?' BOS '+A.bos:''),'M5 '+B.direction+' · ADX '+B.adx.toFixed(0),sess.name+' session',side!=='WAIT'?setupType:(blockers[0]||'WAIT')];
+  return{...R,tf:chosen.tf,score:conf,side,direction:dominant,entryLow,entryHigh,entryCenter,sl,tp1,tp2,rr,setupType,reasons,align,weighted,session:sess.name,regime:A.regime,coreAligned:core}
 }
 
 async function fetchCandles(tf){
-  const key=getApiKey();
-  if(!key) throw new Error('ยังไม่ได้ใส่ Twelve Data API Key');
-  const interval=MARKET_INTERVALS[tf].api;
-  const url='https://api.twelvedata.com/time_series?symbol='+encodeURIComponent('XAU/USD')+
-    '&interval='+encodeURIComponent(interval)+'&outputsize=180&apikey='+encodeURIComponent(key);
-  const res=await fetch(url,{cache:'no-store'});
-  const json=await res.json();
-  if(!res.ok || json.status==='error' || !Array.isArray(json.values)){
-    throw new Error(json.message || ('โหลด '+tf+' ไม่สำเร็จ'));
-  }
-  return json.values.slice().reverse().map(v=>({
-    datetime:v.datetime,
-    open:Number(v.open),high:Number(v.high),low:Number(v.low),close:Number(v.close)
-  })).filter(c=>[c.open,c.high,c.low,c.close].every(Number.isFinite));
+  const key=getApiKey();if(!key)throw new Error('ยังไม่ได้ใส่ Twelve Data API Key');
+  const url='https://api.twelvedata.com/time_series?symbol='+encodeURIComponent('XAU/USD')+'&interval='+encodeURIComponent(MARKET_INTERVALS[tf].api)+'&outputsize=240&timezone=UTC&apikey='+encodeURIComponent(key);
+  const res=await fetch(url,{cache:'no-store'}),j=await res.json();if(!res.ok||j.status==='error'||!Array.isArray(j.values))throw new Error(j.message||('โหลด '+tf+' ไม่สำเร็จ'));
+  return j.values.slice().reverse().map(v=>({ts:Date.parse(String(v.datetime).replace(' ','T')+'Z'),datetime:v.datetime,open:+v.open,high:+v.high,low:+v.low,close:+v.close})).filter(c=>[c.open,c.high,c.low,c.close].every(Number.isFinite));
+}
+function fmtPrice(v){return Number.isFinite(v)?Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}
+
+function lotFromSignal(s){
+  if(!s||s.side==='WAIT'||!Number.isFinite(s.sl)||!Number.isFinite(s.entryCenter))return{suggested:'—',max:'—',riskMoney:0};
+  const d=state.days[todayIndex()]||{maxLoss:0},bal=currentBalance(),riskMoney=Math.min(Number(d.maxLoss||0)/2,bal*.005),dist=Math.abs(s.entryCenter-s.sl),contract=Number(state.settings.contractSize||100),min=Number(state.settings.minLot||.01);
+  if(dist<=0||contract<=0||riskMoney<=0)return{suggested:'—',max:'—',riskMoney};const raw=riskMoney/(dist*contract),factor=clamp(Number(state.settings.lotFactor||.7),.1,1),floor=v=>Math.floor((v+1e-10)/min)*min;
+  if(raw<min)return{suggested:'< '+min.toFixed(2),max:'< '+min.toFixed(2),riskMoney};return{suggested:Math.max(min,floor(raw*factor)).toFixed(2),max:Math.max(min,floor(raw)).toFixed(2),riskMoney}
 }
 
-function fmtPrice(v){
-  if(v==null||!Number.isFinite(v))return '—';
-  return Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+function updateCandleFromTick(tf,price,tsSec){
+  const d=marketScan.datasets[tf];if(!d?.length)return;const sec=MARKET_INTERVALS[tf].seconds,bucket=Math.floor(tsSec/sec)*sec*1000,last=d.at(-1),lb=Number.isFinite(last.ts)?Math.floor(last.ts/(sec*1000))*sec*1000:null;
+  if(lb===bucket){last.close=price;last.high=Math.max(last.high,price);last.low=Math.min(last.low,price)}else if(!lb||bucket>lb){d.push({ts:bucket,datetime:new Date(bucket).toISOString(),open:last.close,high:price,low:price,close:price});if(d.length>260)d.shift()}
 }
-function lotFromSignal(sig){
-  if(!sig || sig.side==='WAIT' || sig.sl==null) return {suggested:'—',max:'—',riskMoney:0};
-  const day=state.days[todayIndex()] || {maxLoss:0};
-  const balance=currentBalance();
-  // Keep one trade inside half of the daily loss stop, capped around 0.5% balance.
-  const riskMoney=Math.min(Number(day.maxLoss||0)/2,balance*.005);
-  const dist=Math.abs(sig.entryCenter-sig.sl);
-  const contract=Number(state.settings.contractSize||100);
-  const min=Number(state.settings.minLot||.01);
-  if(dist<=0||contract<=0||riskMoney<=0)return {suggested:'—',max:'—',riskMoney};
-  const rawMax=riskMoney/(dist*contract);
-  const factor=clamp(Number(state.settings.lotFactor||.7),.1,1);
-  const floorLot=v=>Math.floor((v+1e-10)/min)*min;
-  if(rawMax<min)return {suggested:'< '+min.toFixed(2),max:'< '+min.toFixed(2),riskMoney};
-  const maxLot=Math.max(min,floorLot(rawMax));
-  const sug=Math.max(min,floorLot(rawMax*factor));
-  return {suggested:sug.toFixed(2),max:maxLot.toFixed(2),riskMoney};
+function handleLiveTick(price,tsSec){
+  if(!Number.isFinite(price))return;marketScan.livePrice=price;marketScan.lastTickTs=Date.now();Object.keys(MARKET_INTERVALS).forEach(tf=>updateCandleFromTick(tf,price,tsSec||Math.floor(Date.now()/1000)));
+  $('#liveGold').innerHTML=fmtPrice(price)+' <small>XAUUSD</small>';$('#chartLastPrice').textContent=fmtPrice(price);$('#wsDot').classList.add('live');$('#wsState').textContent='LIVE TICK';requestAnimationFrame(drawMarketChart)
+}
+function connectPriceStream(){
+  const key=getApiKey();if(!key)return;try{marketScan.ws?.close()}catch(_){}
+  try{const ws=new WebSocket('wss://ws.twelvedata.com/v1/quotes/price?apikey='+encodeURIComponent(key));marketScan.ws=ws;ws.onopen=()=>{ws.send(JSON.stringify({action:'subscribe',params:{symbols:'XAU/USD'}}));$('#wsState').textContent='CONNECTING'};ws.onmessage=e=>{try{const d=JSON.parse(e.data),p=Number(d.price);if(Number.isFinite(p))handleLiveTick(p,Number(d.timestamp)||Math.floor(Date.now()/1000))}catch(_){}};ws.onerror=ws.onclose=()=>{$('#wsDot').classList.remove('live');$('#wsState').textContent='REST DATA'}}catch(_){$('#wsState').textContent='REST DATA'}
 }
 
+function drawMarketChart(){
+  const canvas=$('#marketChart');if(!canvas)return;const rect=canvas.getBoundingClientRect();if(rect.width<20)return;const W=rect.width,H=rect.height||400,dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  const tf=marketScan.selectedTf,data=(marketScan.datasets[tf]||[]).slice(-64);if(data.length<5){ctx.fillStyle='rgba(127,139,155,.72)';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('กด ANALYZE เพื่อโหลดกราฟ XAUUSD จริง',W/2,H/2);return}
+  const closes=data.map(x=>x.close),e9=ema(closes,9),e21=ema(closes,21),signal=marketScan.best&&marketScan.best.tf===tf?marketScan.best:null,levels=signal?[signal.entryLow,signal.entryHigh,signal.sl,signal.tp1,signal.tp2].filter(Number.isFinite):[],vals=[...data.flatMap(c=>[c.high,c.low]),...levels];
+  let lo=Math.min(...vals),hi=Math.max(...vals),rg=Math.max(.2,hi-lo);lo-=rg*.08;hi+=rg*.08;const pad={l:8,r:52,t:12,b:22},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b,y=p=>pad.t+(hi-p)/(hi-lo)*ph,st=pw/data.length,cw=Math.max(2,Math.min(7,st*.58));
+  ctx.strokeStyle='rgba(255,255,255,.045)';for(let i=0;i<6;i++){const yy=pad.t+ph*i/5;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.fillStyle='rgba(127,139,155,.62)';ctx.font='8px -apple-system,sans-serif';ctx.textAlign='right';ctx.fillText((hi-(hi-lo)*i/5).toFixed(2),W-4,yy+3)}
+  for(let i=0;i<5;i++){const xx=pad.l+pw*i/4;ctx.beginPath();ctx.moveTo(xx,pad.t);ctx.lineTo(xx,H-pad.b);ctx.stroke()}
+  data.forEach((c,i)=>{const x=pad.l+st*i+st/2,col=c.close>=c.open?'rgba(112,242,180,.94)':'rgba(255,115,129,.94)';ctx.strokeStyle=col;ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,y(c.high));ctx.lineTo(x,y(c.low));ctx.stroke();ctx.fillRect(x-cw/2,Math.min(y(c.open),y(c.close)),cw,Math.max(1,Math.abs(y(c.open)-y(c.close))))});
+  const curve=(a,color)=>{ctx.strokeStyle=color;ctx.lineWidth=1.2;ctx.beginPath();a.forEach((v,i)=>{const x=pad.l+st*i+st/2,yy=y(v);i?ctx.lineTo(x,yy):ctx.moveTo(x,yy)});ctx.stroke()};curve(e9,'rgba(117,216,255,.78)');curve(e21,'rgba(255,214,107,.70)');
+  const ps=pivots(data);ctx.fillStyle='rgba(210,220,232,.65)';[...ps.highs.slice(-5),...ps.lows.slice(-5)].forEach(p=>{const x=pad.l+st*p.i+st/2;ctx.beginPath();ctx.arc(x,y(p.price),2,0,Math.PI*2);ctx.fill()});
+  const lvl=(p,label,color,dash=[5,4])=>{if(!Number.isFinite(p))return;const yy=y(p);ctx.save();ctx.setLineDash(dash);ctx.strokeStyle=color;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=color;ctx.font='bold 8px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(label+' '+p.toFixed(2),pad.l+4,Math.max(10,yy-4));ctx.restore()};
+  if(signal&&signal.side!=='WAIT'){ctx.fillStyle='rgba(117,216,255,.07)';ctx.fillRect(pad.l,y(Math.max(signal.entryLow,signal.entryHigh)),pw,Math.max(2,y(Math.min(signal.entryLow,signal.entryHigh))-y(Math.max(signal.entryLow,signal.entryHigh))));lvl(signal.entryCenter,'ENTRY','rgba(117,216,255,.98)');lvl(signal.sl,'SL','rgba(255,115,129,.98)',[4,3]);lvl(signal.tp1,'TP1','rgba(112,242,180,.98)');lvl(signal.tp2,'TP2','rgba(112,242,180,.58)',[3,4])}
+  lvl(data.at(-1).close,'NOW','rgba(235,241,247,.42)',[2,4]);ctx.fillStyle='rgba(127,139,155,.68)';ctx.font='8px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(tf,pad.l,H-6);ctx.textAlign='right';ctx.fillText(String(data.at(-1).datetime||'LIVE').slice(11,16)+' UTC',W-pad.r,H-6);$('#chartLastPrice').textContent=fmtPrice(data.at(-1).close)
+}
+
+function drawSignalChart(){
+  const canvas=$('#signalChart');if(!canvas)return;const rect=canvas.getBoundingClientRect();if(rect.width<20)return;const W=rect.width,H=rect.height||250,dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  const b=marketScan.best,data=b?(marketScan.datasets[b.tf]||[]).slice(-36):[];if(!b||data.length<5){ctx.fillStyle='rgba(127,139,155,.7)';ctx.font='10px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('รอสแกนตลาด',W/2,H/2);return}
+  const vals=[...data.flatMap(c=>[c.high,c.low]),b.entryLow,b.entryHigh,b.sl,b.tp1,b.tp2].filter(Number.isFinite);let lo=Math.min(...vals),hi=Math.max(...vals),rg=Math.max(.2,hi-lo);lo-=rg*.08;hi+=rg*.08;const pad={l:6,r:44,t:8,b:15},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b,y=p=>pad.t+(hi-p)/(hi-lo)*ph,st=pw/data.length,cw=Math.max(2,Math.min(6,st*.55));
+  ctx.strokeStyle='rgba(255,255,255,.04)';for(let i=0;i<4;i++){const yy=pad.t+ph*i/3;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke()}
+  data.forEach((c,i)=>{const x=pad.l+st*i+st/2,col=c.close>=c.open?'rgba(112,242,180,.88)':'rgba(255,115,129,.88)';ctx.strokeStyle=col;ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,y(c.high));ctx.lineTo(x,y(c.low));ctx.stroke();ctx.fillRect(x-cw/2,Math.min(y(c.open),y(c.close)),cw,Math.max(1,Math.abs(y(c.open)-y(c.close))))});
+  const l=(p,label,color)=>{if(!Number.isFinite(p))return;const yy=y(p);ctx.strokeStyle=color;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=color;ctx.font='bold 8px -apple-system,sans-serif';ctx.fillText(label,pad.l+3,yy-3)};if(b.side!=='WAIT'){l(b.entryCenter,'ENTRY','rgba(117,216,255,.95)');l(b.sl,'SL','rgba(255,115,129,.95)');l(b.tp1,'TP','rgba(112,242,180,.95)')}
+}
+
+function syncAiQuickCards(){
+  const b=marketScan.best;if(!b){$('#aiQuickTf').textContent='—';$('#aiQuickSide').textContent='WAIT';$('#aiQuickConfidence').textContent='Confidence —';$('#aiQuickLot').textContent='—';$('#aiQuickMaxLot').textContent='Max —';$('#aiHeroDot').classList.remove('live');$('#aiHeroState').textContent='READY';$('#signalChartTitle').textContent='รอสแกนตลาด';return}
+  const lm=lotFromSignal(b);$('#aiQuickTf').textContent=b.tf;$('#aiQuickSide').textContent=b.side;$('#aiQuickSide').style.color=b.side==='BUY'?'var(--green)':b.side==='SELL'?'var(--red)':'var(--amber)';$('#aiQuickConfidence').textContent='Confidence '+b.score+'%';$('#aiQuickLot').textContent=lm.suggested==='—'?'—':lm.suggested+' lot';$('#aiQuickMaxLot').textContent='Max '+(lm.max==='—'?'—':lm.max+' lot');$('#aiHeroDot').classList.toggle('live',!!marketScan.last);$('#aiHeroState').textContent=b.side==='WAIT'?'WAIT SETUP':b.side+' READY';$('#signalChartTitle').textContent=b.tf+' · '+b.side+' · '+b.setupType+' · '+b.score;$('#signalChartHint').textContent=b.side==='WAIT'?'AI ยังไม่อนุญาตให้ไล่ราคา':'ระดับมาจาก Structure + ATR'
+}
 function renderMarketScan(){
-  const results=marketScan.results||{};
-  Object.keys(MARKET_INTERVALS).forEach(tf=>{
-    const r=results[tf];
-    $('#score'+tf).textContent=r?r.score:'—';
-    $('#bias'+tf).textContent=r?(r.side==='WAIT'?r.direction+'?':r.side):'WAIT';
-    const el=document.querySelector('[data-score-tf="'+tf+'"]');
-    if(el)el.classList.toggle('best',!!marketScan.best&&marketScan.best.tf===tf);
-  });
-  const best=marketScan.best;
-  if(!best){
-    $('#bestTf').textContent='—';
-    $('#signalSide').textContent='WAIT';
-    $('#signalSide').className='signalSide wait';
-    return;
-  }
-  $('#liveGold').innerHTML=fmtPrice(best.close)+' <small>XAUUSD</small>';
-  $('#bestTf').textContent=best.tf+' · SCORE '+best.score;
-  $('#marketState').textContent=best.side==='WAIT'?'NO CLEAN SETUP':best.side+' BIAS';
-  $('#aiPulse').classList.add('live');
-  $('#signalSide').textContent=best.side;
-  $('#signalSide').className='signalSide '+(best.side==='BUY'?'buy':best.side==='SELL'?'sell':'wait');
-  $('#confidence').textContent='CONFIDENCE '+best.score+'%';
-  $('#signalReason').textContent=best.side==='WAIT'
-    ? 'ยังไม่มี setup ที่คมพอ · '+(best.reasons.join(' · ')||'รอ structure ชัดขึ้น')
-    : (best.reasons.join(' · ')||'multi-timeframe alignment');
-
-  if(best.side==='WAIT'){
-    ['entryZone','signalSL','signalTP1','signalTP2','signalRR','signalLot','signalMaxLot'].forEach(id=>$('#'+id).textContent='—');
-  }else{
-    $('#entryZone').textContent=fmtPrice(best.entryLow)+' – '+fmtPrice(best.entryHigh);
-    $('#signalSL').textContent=fmtPrice(best.sl);
-    $('#signalTP1').textContent=fmtPrice(best.tp1);
-    $('#signalTP2').textContent=fmtPrice(best.tp2);
-    $('#signalRR').textContent='1 : '+best.rr.toFixed(2);
-    const lm=lotFromSignal(best);
-    $('#signalLot').textContent=lm.suggested==='—'?'—':lm.suggested+' lot';
-    $('#signalMaxLot').textContent=lm.max==='—'?'—':lm.max+' lot';
-  }
-  if(marketScan.last){
-    $('#aiUpdated').textContent='อัปเดต '+marketScan.last.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-  }
+  const r=marketScan.results||{},b=marketScan.best;Object.keys(MARKET_INTERVALS).forEach(tf=>{const x=r[tf];$('#score'+tf).textContent=x?x.quality:'—';$('#bias'+tf).textContent=x?x.direction:'WAIT';const el=document.querySelector('[data-score-tf="'+tf+'"]');if(el)el.classList.toggle('best',!!b&&b.tf===tf)});
+  if(!b){syncAiQuickCards();drawSignalChart();drawMarketChart();return}
+  $('#liveGold').innerHTML=fmtPrice(marketScan.livePrice??b.close)+' <small>XAUUSD</small>';$('#bestTf').textContent=b.tf+' · '+b.setupType;$('#marketState').textContent=b.side==='WAIT'?'NO CLEAN SETUP':b.side+' SETUP';$('#aiPulse').classList.toggle('live',!!marketScan.last);$('#signalSide').textContent=b.side;$('#signalSide').className='signalSide '+(b.side==='BUY'?'buy':b.side==='SELL'?'sell':'wait');$('#confidence').textContent='CONFIDENCE '+b.score+'%';$('#signalReason').textContent=b.reasons.join(' · ');$('#regimeTag').textContent=b.regime;$('#sessionTag').textContent=b.session;$('#alignTag').textContent=b.align+'/4';
+  if(b.side==='WAIT'){['entryZone','signalSL','signalTP1','signalTP2','signalRR','signalLot','signalMaxLot'].forEach(id=>$('#'+id).textContent='—')}else{const lm=lotFromSignal(b);$('#entryZone').textContent=fmtPrice(b.entryLow)+' – '+fmtPrice(b.entryHigh);$('#signalSL').textContent=fmtPrice(b.sl);$('#signalTP1').textContent=fmtPrice(b.tp1);$('#signalTP2').textContent=fmtPrice(b.tp2);$('#signalRR').textContent='1 : '+b.rr.toFixed(2);$('#signalLot').textContent=lm.suggested==='—'?'—':lm.suggested+' lot';$('#signalMaxLot').textContent=lm.max==='—'?'—':lm.max+' lot'}
+  if(marketScan.last)$('#aiUpdated').textContent='อัปเดต '+marketScan.last.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});syncAiQuickCards();requestAnimationFrame(drawSignalChart);requestAnimationFrame(drawMarketChart)
 }
-
 async function analyzeMarket(){
-  if(marketScan.busy)return;
-  const key=getApiKey();
-  if(!key){
-    openOverlay('settingsOverlay');
-    $('#apiStatus').textContent='ใส่ API Key ก่อน แล้วกด SAVE จากนั้นกลับมากด ANALYZE';
-    return;
-  }
-  marketScan.busy=true;
-  $('#analyzeBtn').classList.add('loading');
-  $('#analyzeBtn').textContent='SCANNING…';
-  $('#scanError').classList.remove('show');
-  try{
-    const entries=await Promise.all(Object.keys(MARKET_INTERVALS).map(async tf=>{
-      const candles=await fetchCandles(tf);
-      return [tf,tfAnalysis(candles,tf)];
-    }));
-    marketScan.results=Object.fromEntries(entries);
-    const ranked=Object.values(marketScan.results).sort((a,b)=>{
-      const aWait=a.side==='WAIT'?10:0,bWait=b.side==='WAIT'?10:0;
-      return (b.score-bWait)-(a.score-aWait);
-    });
-    marketScan.best=ranked[0]||null;
-    marketScan.last=new Date();
-    renderMarketScan();
-    if(marketScan.best){
-      setTradingViewTf(MARKET_INTERVALS[marketScan.best.tf].tv,marketScan.best.tf);
-    }
-  }catch(err){
-    $('#scanError').textContent='โหลดข้อมูลไม่สำเร็จ: '+err.message;
-    $('#scanError').classList.add('show');
-    $('#marketState').textContent='DATA ERROR';
-    $('#aiPulse').classList.remove('live');
-  }finally{
-    marketScan.busy=false;
-    $('#analyzeBtn').classList.remove('loading');
-    $('#analyzeBtn').textContent='ANALYZE';
-  }
+  if(marketScan.busy)return;if(!getApiKey()){openOverlay('settingsOverlay');$('#apiStatus').textContent='ใส่ API Key ก่อน แล้วกด SAVE';return}
+  marketScan.busy=true;$('#analyzeBtn').classList.add('loading');$('#analyzeBtn').textContent='SCANNING…';$('#scanError').classList.remove('show');
+  try{const pairs=await Promise.all(Object.keys(MARKET_INTERVALS).map(async tf=>[tf,await fetchCandles(tf)]));marketScan.datasets=Object.fromEntries(pairs);marketScan.results=Object.fromEntries(pairs.map(([tf,c])=>[tf,analyzeTf(c,tf)]));marketScan.best=chooseExecution(marketScan.results);marketScan.last=new Date();marketScan.selectedTf=marketScan.best.tf||marketScan.selectedTf;$('#chartTfLabel').textContent=marketScan.selectedTf;$$('#tfSwitch button').forEach(x=>x.classList.toggle('active',x.dataset.tf===marketScan.selectedTf));renderMarketScan();connectPriceStream()}
+  catch(err){$('#scanError').textContent='โหลดข้อมูลไม่สำเร็จ: '+err.message;$('#scanError').classList.add('show');$('#marketState').textContent='DATA ERROR';$('#aiPulse').classList.remove('live')}
+  finally{marketScan.busy=false;$('#analyzeBtn').classList.remove('loading');$('#analyzeBtn').textContent='ANALYZE'}
 }
+function toggleAutoScan(){const b=$('#autoScanBtn');if(autoScanTimer){clearInterval(autoScanTimer);autoScanTimer=null;b.classList.remove('on');b.textContent='AUTO SCAN OFF';return}if(!getApiKey()){openOverlay('settingsOverlay');$('#apiStatus').textContent='ใส่ API Key ก่อนเปิด Auto Scan';return}b.classList.add('on');b.textContent='AUTO SCAN 2M';analyzeMarket();autoScanTimer=setInterval(()=>{if($('#aiView').classList.contains('active'))analyzeMarket()},120000)}
+$('#autoScanBtn').addEventListener('click',toggleAutoScan);$('#analyzeBtn').addEventListener('click',analyzeMarket);
+$$('#tfSwitch button').forEach(b=>b.addEventListener('click',()=>{marketScan.selectedTf=b.dataset.tf;$$('#tfSwitch button').forEach(x=>x.classList.toggle('active',x===b));$('#chartTfLabel').textContent=marketScan.selectedTf;requestAnimationFrame(drawMarketChart)}));
+$('#saveApiKeyBtn').addEventListener('click',()=>{const v=$('#marketApiKey').value.trim();setApiKey(v);$('#apiStatus').textContent=v?'บันทึกแล้ว · Key อยู่เฉพาะใน localStorage ของเครื่องนี้':'ลบ API Key แล้ว';if(v){$('#apiHint').style.display='none';connectPriceStream()}});
+$('#settingsBtn').addEventListener('click',()=>{$('#marketApiKey').value=getApiKey();$('#apiStatus').textContent=getApiKey()?'มี API Key ในเครื่องนี้แล้ว · กด SAVE เพื่อเปลี่ยน Key':'ยังไม่มี API Key · ต้องใส่ก่อนใช้ AI Market Scan'});
 
-function renderTradingView(interval='15',label='M15'){
-  const host=$('#tvChart');
-  if(!host)return;
-  host.innerHTML='<div class="tradingview-widget-container" style="height:100%;width:100%">'+
-    '<div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div></div>';
-  const wrap=host.firstElementChild;
-  const script=document.createElement('script');
-  script.type='text/javascript';
-  script.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-  script.async=true;
-  script.text=JSON.stringify({
-    autosize:true,
-    symbol:'OANDA:XAUUSD',
-    interval:String(interval),
-    timezone:'Asia/Bangkok',
-    theme:'dark',
-    style:'1',
-    locale:'en',
-    backgroundColor:'rgba(9,14,20,1)',
-    gridColor:'rgba(255,255,255,0.05)',
-    hide_side_toolbar:true,
-    allow_symbol_change:false,
-    save_image:false,
-    calendar:false,
-    details:false,
-    hotlist:false,
-    hide_volume:true,
-    withdateranges:true,
-    support_host:'https://www.tradingview.com'
-  });
-  wrap.appendChild(script);
-  $('#chartTfLabel').textContent='TradingView · '+label;
-}
-function setTradingViewTf(interval,label){
-  $$('#tfSwitch button').forEach(b=>b.classList.toggle('active',b.dataset.tv===String(interval)));
-  renderTradingView(interval,label);
-}
-$$('#tfSwitch button').forEach(b=>b.addEventListener('click',()=>setTradingViewTf(b.dataset.tv,b.dataset.label)));
-$('#analyzeBtn').addEventListener('click',analyzeMarket);
-
-$('#saveApiKeyBtn').addEventListener('click',()=>{
-  const v=$('#marketApiKey').value.trim();
-  setApiKey(v);
-  $('#apiStatus').textContent=v
-    ? 'บันทึกแล้ว · Key อยู่เฉพาะใน localStorage ของเครื่องนี้'
-    : 'ลบ API Key แล้ว';
-  if(v) $('#apiHint').style.display='none';
-});
-$('#settingsBtn').addEventListener('click',()=>{
-  $('#marketApiKey').value=getApiKey();
-  $('#apiStatus').textContent=getApiKey()
-    ? 'มี API Key ในเครื่องนี้แล้ว · กด SAVE เพื่อเปลี่ยน Key'
-    : 'ยังไม่มี API Key · ต้องใส่ก่อนใช้ AI Market Scan';
-});
-
-const _renderBase = render;
-render = function(){
-  _renderBase();
-  if(marketScan.best) renderMarketScan();
-};
-
-setTimeout(()=>{
-  renderTradingView('15','M15');
-  const hasKey=!!getApiKey();
-  if(hasKey){
-    $('#apiHint').style.display='none';
-    $('#apiStatus').textContent='มี API Key ในเครื่องนี้แล้ว';
-  }
-},120);
-
+const _renderBase=render;render=function(){_renderBase();if(marketScan.best)renderMarketScan()};
+window.addEventListener('resize',()=>{requestAnimationFrame(drawChart);requestAnimationFrame(drawSignalChart);requestAnimationFrame(drawMarketChart)});
+setTimeout(()=>{drawSignalChart();drawMarketChart();syncAiQuickCards();const hasKey=!!getApiKey();if(hasKey){$('#apiHint').style.display='none';$('#apiStatus').textContent='มี API Key ในเครื่องนี้แล้ว';connectPriceStream()}},120);
 
 refreshSetup();
 load();
