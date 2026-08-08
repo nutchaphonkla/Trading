@@ -1,11 +1,14 @@
 {
-  "version": "1.0",
-  "engine": "ONEMONTH-HISTORY-V1",
+  "version": "2.0",
+  "engine": "ONEMONTH-HISTORY-V2",
   "symbol": "XAUUSD",
-  "generatedAt": "2026-08-08T16:31:03.027Z",
+  "generatedAt": "2026-08-08T16:52:35.912Z",
   "sourceGeneratedAt": "2026-08-08T09:13:53.193Z",
   "sourceFingerprint": "a55d54b",
   "ready": true,
+  "recency": {
+    "halfLifeDays": 75
+  },
   "totalCandles": 1775,
   "timeframes": {
     "M1": {
@@ -14,14 +17,20 @@
       "to": "2026-08-08T09:12:00.000Z",
       "sampleCount": 109,
       "forwardBars": 15,
+      "recencyHalfLifeDays": 75,
       "latest": {
         "bias": "BUY",
         "strength": 73,
-        "upProbability": 14,
+        "upProbability": 37,
         "rsi": 51.96,
         "adx": 65.79,
         "structure": "BEAR",
-        "key": "BUY|TREND|MID|BEAR"
+        "key": "BUY|TREND|MID|BEAR",
+        "matchLevel": "EXACT",
+        "effectiveSamples": 7,
+        "lowerBound": 14.78,
+        "upperBound": 66.25,
+        "uncertaintyPts": 51.47
       },
       "regimes": {
         "TREND_BUY": 39,
@@ -33,91 +42,157 @@
       "patterns": [
         {
           "key": "BUY|TREND|MID|RANGE",
+          "matchLevel": "EXACT",
           "n": 14,
-          "upRate": 0.42857142857142855,
-          "avgReturnR": -0.3180614272751586,
-          "avgMfeR": 0.9001307196504732,
-          "avgMaeR": 1.5174995543975862
+          "effectiveSamples": 14,
+          "upRate": 0.4616,
+          "posteriorUpRate": 0.4616,
+          "lowerBound": 0.2671,
+          "upperBound": 0.6686,
+          "uncertaintyPts": 40.14725978542525,
+          "avgReturnR": -0.3177,
+          "avgMfeR": 0.9,
+          "avgMaeR": 1.5167
         },
         {
           "key": "BUY|TREND|MID|BULL",
+          "matchLevel": "EXACT",
           "n": 13,
-          "upRate": 0.38461538461538464,
-          "avgReturnR": -0.14163398776494882,
-          "avgMfeR": 0.8957134943152395,
-          "avgMaeR": 1.1475658316379145
+          "effectiveSamples": 13,
+          "upRate": 0.4401,
+          "posteriorUpRate": 0.4401,
+          "lowerBound": 0.2441,
+          "upperBound": 0.6567,
+          "uncertaintyPts": 41.26068553473486,
+          "avgReturnR": -0.1412,
+          "avgMfeR": 0.8956,
+          "avgMaeR": 1.1471
         },
         {
           "key": "SELL|TREND|MID|BULL",
+          "matchLevel": "EXACT",
           "n": 11,
-          "upRate": 0.6363636363636364,
-          "avgReturnR": -0.12047454823062798,
-          "avgMfeR": 1.2836481106865745,
-          "avgMaeR": 0.8005719085803681
+          "effectiveSamples": 11,
+          "upRate": 0.5652,
+          "posteriorUpRate": 0.5652,
+          "lowerBound": 0.3316,
+          "upperBound": 0.7729,
+          "uncertaintyPts": 44.129641843763864,
+          "avgReturnR": -0.1196,
+          "avgMfeR": 1.2836,
+          "avgMaeR": 0.7997
         },
         {
           "key": "SELL|TREND|MID|BEAR",
+          "matchLevel": "EXACT",
           "n": 11,
-          "upRate": 0.45454545454545453,
-          "avgReturnR": -0.17956720428097944,
-          "avgMfeR": 1.2748680963554706,
-          "avgMaeR": 0.7888814749891442
+          "effectiveSamples": 11,
+          "upRate": 0.4784,
+          "posteriorUpRate": 0.4784,
+          "lowerBound": 0.2607,
+          "upperBound": 0.7047,
+          "uncertaintyPts": 44.40022917758026,
+          "avgReturnR": -0.1789,
+          "avgMfeR": 1.275,
+          "avgMaeR": 0.7884
         },
         {
           "key": "SELL|TREND|MID|RANGE",
+          "matchLevel": "EXACT",
           "n": 11,
-          "upRate": 0.5454545454545454,
-          "avgReturnR": 0.12023647406830414,
-          "avgMfeR": 1.1267876658327367,
-          "avgMaeR": 0.6728275594805264
+          "effectiveSamples": 11,
+          "upRate": 0.5218,
+          "posteriorUpRate": 0.5218,
+          "lowerBound": 0.2955,
+          "upperBound": 0.7395,
+          "uncertaintyPts": 44.399674847413365,
+          "avgReturnR": 0.1203,
+          "avgMfeR": 1.1268,
+          "avgMaeR": 0.6726
         },
         {
           "key": "SELL|TRANSITION|MID|BEAR",
+          "matchLevel": "EXACT",
           "n": 8,
-          "upRate": 0.375,
-          "avgReturnR": -1.5044874519054026,
-          "avgMfeR": 1.5236909549772792,
-          "avgMaeR": 3.1072229313146695
+          "effectiveSamples": 8,
+          "upRate": 0.4502,
+          "posteriorUpRate": 0.4502,
+          "lowerBound": 0.2124,
+          "upperBound": 0.7133,
+          "uncertaintyPts": 50.08861353932439,
+          "avgReturnR": -1.5033,
+          "avgMfeR": 1.5238,
+          "avgMaeR": 3.1064
         },
         {
           "key": "BUY|TREND|MID|BEAR",
+          "matchLevel": "EXACT",
           "n": 7,
-          "upRate": 0.14285714285714285,
-          "avgReturnR": 0.1492548797112951,
-          "avgMfeR": 1.0916463349764511,
-          "avgMaeR": 1.0345126251838772
+          "effectiveSamples": 7,
+          "upRate": 0.3684,
+          "posteriorUpRate": 0.3684,
+          "lowerBound": 0.1478,
+          "upperBound": 0.6625,
+          "uncertaintyPts": 51.46637144125388,
+          "avgReturnR": 0.148,
+          "avgMfeR": 1.0907,
+          "avgMaeR": 1.0346
         },
         {
           "key": "BUY|TRANSITION|MID|BULL",
+          "matchLevel": "EXACT",
           "n": 6,
-          "upRate": 0.3333333333333333,
-          "avgReturnR": -1.0851378581555253,
-          "avgMfeR": 1.1334962539316984,
-          "avgMaeR": 2.2212968452549062
+          "effectiveSamples": 6,
+          "upRate": 0.4445,
+          "posteriorUpRate": 0.4445,
+          "lowerBound": 0.1842,
+          "upperBound": 0.7393,
+          "uncertaintyPts": 55.51453641314493,
+          "avgReturnR": -1.0856,
+          "avgMfeR": 1.1332,
+          "avgMaeR": 2.2213
         },
         {
           "key": "SELL|TREND|LOW|BEAR",
+          "matchLevel": "EXACT",
           "n": 5,
-          "upRate": 1,
-          "avgReturnR": 6.575071162028472,
-          "avgMfeR": 7.1905284600336445,
-          "avgMaeR": 1.015095587454473
+          "effectiveSamples": 5,
+          "upRate": 0.6465,
+          "posteriorUpRate": 0.6465,
+          "lowerBound": 0.3071,
+          "upperBound": 0.883,
+          "uncertaintyPts": 57.584920173326104,
+          "avgReturnR": 6.573,
+          "avgMfeR": 7.1886,
+          "avgMaeR": 1.0145
         },
         {
           "key": "BUY|TREND|HIGH|BULL",
+          "matchLevel": "EXACT",
           "n": 3,
-          "upRate": 0.3333333333333333,
-          "avgReturnR": -0.9770337137484951,
-          "avgMfeR": 0.36550575820754583,
-          "avgMaeR": 3.878236568438919
+          "effectiveSamples": 3,
+          "upRate": 0.4667,
+          "posteriorUpRate": 0.4667,
+          "lowerBound": 0.1386,
+          "upperBound": 0.8264,
+          "uncertaintyPts": 68.78488545993324,
+          "avgReturnR": -0.9783,
+          "avgMfeR": 0.3649,
+          "avgMaeR": 3.8777
         },
         {
           "key": "SELL|TREND|LOW|RANGE",
+          "matchLevel": "EXACT",
           "n": 3,
-          "upRate": 0.6666666666666666,
-          "avgReturnR": 0.4336984352820248,
-          "avgMfeR": 2.221197661297344,
-          "avgMaeR": 2.4498230660827325
+          "effectiveSamples": 3,
+          "upRate": 0.5333,
+          "posteriorUpRate": 0.5333,
+          "lowerBound": 0.1736,
+          "upperBound": 0.8614,
+          "uncertaintyPts": 68.78484263260121,
+          "avgReturnR": 0.4358,
+          "avgMfeR": 2.2217,
+          "avgMaeR": 2.4488
         }
       ]
     },
@@ -127,14 +202,20 @@
       "to": "2026-08-08T09:10:00.000Z",
       "sampleCount": 39,
       "forwardBars": 8,
+      "recencyHalfLifeDays": 75,
       "latest": {
         "bias": "BUY",
         "strength": 83,
-        "upProbability": 74,
+        "upProbability": 56,
         "rsi": 51.93,
         "adx": 20.32,
         "structure": "RANGE",
-        "key": "BUY|TRANSITION|MID|RANGE"
+        "key": "BUY|TRANSITION|MID|RANGE",
+        "matchLevel": "EXACT",
+        "effectiveSamples": 4,
+        "lowerBound": 22.11,
+        "upperBound": 85.34,
+        "uncertaintyPts": 63.23
       },
       "regimes": {
         "TREND_BUY": 2,
@@ -146,43 +227,73 @@
       "patterns": [
         {
           "key": "BUY|RANGE|MID|RANGE",
+          "matchLevel": "EXACT",
           "n": 10,
-          "upRate": 0.5,
-          "avgReturnR": 0.009753343960442352,
-          "avgMfeR": 0.40027479022546997,
-          "avgMaeR": 0.3302934801611116
+          "effectiveSamples": 10,
+          "upRate": 0.5001,
+          "posteriorUpRate": 0.5001,
+          "lowerBound": 0.2693,
+          "upperBound": 0.7308,
+          "uncertaintyPts": 46.148880805317894,
+          "avgReturnR": 0.0098,
+          "avgMfeR": 0.4003,
+          "avgMaeR": 0.3305
         },
         {
           "key": "BUY|TRANSITION|MID|RANGE",
+          "matchLevel": "EXACT",
           "n": 4,
-          "upRate": 0.75,
-          "avgReturnR": -0.0072719439392503055,
-          "avgMfeR": 0.3186895782722472,
-          "avgMaeR": 0.3632585381060971
+          "effectiveSamples": 4,
+          "upRate": 0.5625,
+          "posteriorUpRate": 0.5625,
+          "lowerBound": 0.2211,
+          "upperBound": 0.8534,
+          "uncertaintyPts": 63.226853721344824,
+          "avgReturnR": -0.0072,
+          "avgMfeR": 0.3189,
+          "avgMaeR": 0.3636
         },
         {
           "key": "SELL|TRANSITION|MID|RANGE",
+          "matchLevel": "EXACT",
           "n": 3,
-          "upRate": 0.3333333333333333,
-          "avgReturnR": 0.40019045035736617,
-          "avgMfeR": 1.1875612072676085,
-          "avgMaeR": 0.8554412523419977
+          "effectiveSamples": 3,
+          "upRate": 0.4667,
+          "posteriorUpRate": 0.4667,
+          "lowerBound": 0.1386,
+          "upperBound": 0.8264,
+          "uncertaintyPts": 68.78487919996465,
+          "avgReturnR": 0.4,
+          "avgMfeR": 1.1874,
+          "avgMaeR": 0.8547
         },
         {
           "key": "BUY|TRANSITION|MID|BULL",
+          "matchLevel": "EXACT",
           "n": 3,
-          "upRate": 0.3333333333333333,
-          "avgReturnR": -0.46443036745395866,
-          "avgMfeR": 0.438125951233753,
-          "avgMaeR": 1.2211341942931184
+          "effectiveSamples": 3,
+          "upRate": 0.4668,
+          "posteriorUpRate": 0.4668,
+          "lowerBound": 0.1386,
+          "upperBound": 0.8265,
+          "uncertaintyPts": 68.78505591176511,
+          "avgReturnR": -0.4643,
+          "avgMfeR": 0.4381,
+          "avgMaeR": 1.221
         },
         {
           "key": "BUY|RANGE|MID|BULL",
+          "matchLevel": "EXACT",
           "n": 3,
-          "upRate": 1,
-          "avgReturnR": 0.014450047658447714,
-          "avgMfeR": 0.37948625375253364,
-          "avgMaeR": 0.5165860256217755
+          "effectiveSamples": 3,
+          "upRate": 0.5998,
+          "posteriorUpRate": 0.5998,
+          "lowerBound": 0.2118,
+          "upperBound": 0.8932,
+          "uncertaintyPts": 68.13973684819052,
+          "avgReturnR": 0.0145,
+          "avgMfeR": 0.3795,
+          "avgMaeR": 0.5166
         }
       ]
     },
@@ -192,14 +303,20 @@
       "to": "2026-08-08T09:00:00.000Z",
       "sampleCount": 4,
       "forwardBars": 4,
+      "recencyHalfLifeDays": 75,
       "latest": {
         "bias": "BUY",
         "strength": 83,
-        "upProbability": 74,
+        "upProbability": 62,
         "rsi": 52.61,
         "adx": 13.52,
         "structure": "BEAR",
-        "key": "BUY|RANGE|MID|BEAR"
+        "key": "BUY|RANGE|MID|BEAR",
+        "matchLevel": "REGIME",
+        "effectiveSamples": 4,
+        "lowerBound": 26.29,
+        "upperBound": 88.62,
+        "uncertaintyPts": 62.33
       },
       "regimes": {
         "TREND_BUY": 0,
@@ -211,19 +328,27 @@
       "patterns": [
         {
           "key": "BUY|RANGE|MID|RANGE",
+          "matchLevel": "EXACT",
           "n": 3,
-          "upRate": 1,
-          "avgReturnR": 0.03180876326011875,
-          "avgMfeR": 0.24102008516122467,
-          "avgMaeR": 0.1526304620837611
+          "effectiveSamples": 3,
+          "upRate": 0.5999,
+          "posteriorUpRate": 0.5999,
+          "lowerBound": 0.2119,
+          "upperBound": 0.8932,
+          "uncertaintyPts": 68.13798312988418,
+          "avgReturnR": 0.0318,
+          "avgMfeR": 0.241,
+          "avgMaeR": 0.1526
         }
       ]
     }
   },
   "global": {
     "bias": "BUY",
-    "upProbability": 65,
+    "upProbability": 56,
     "agreement": 100,
-    "totalPatterns": 17
+    "totalPatterns": 17,
+    "uncertaintyPts": 60.9,
+    "confidence": 73
   }
 }
