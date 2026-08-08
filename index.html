@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V25.1 App Mode</title>
+<title>OneMonth OS V25.2 Stable AI</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -1415,6 +1415,12 @@ body.intro-active > #actionLoader,
 body.intro-active > .modal,
 body.intro-active > .toast{visibility:hidden!important}
 
+
+/* V25.2 launch safety */
+body.web-gated #appIntro,body.web-gated #bootLoader{display:none!important}
+body.web-gated #installGate{display:flex!important;visibility:visible!important}
+body.web-gated{overflow:hidden!important}
+
 </style>
 </head>
 <body class="app-booting">
@@ -2076,9 +2082,10 @@ const appLaunch={
   isIos:/iphone|ipad|ipod/i.test(navigator.userAgent),
   isAndroid:/android/i.test(navigator.userAgent),
   isStandalone(){
+    // iOS: navigator.standalone is the reliable distinction between Safari and Home Screen PWA.
+    if(this.isIos)return window.navigator.standalone===true;
     return window.matchMedia('(display-mode: standalone)').matches
-      || window.matchMedia('(display-mode: fullscreen)').matches
-      || window.navigator.standalone===true;
+      || window.matchMedia('(display-mode: fullscreen)').matches;
   },
   setIntro(pct,status,phase='SYSTEM CORE'){
     const p=clamp(Number(pct)||0,0,100);
@@ -2138,6 +2145,23 @@ window.addEventListener('appinstalled',()=>{
   $('#nativeInstallBtn')?.style.setProperty('display','none');
 });
 
+
+let __appRevealed=false;
+function revealAppNow(reason='READY'){
+  if(__appRevealed)return;
+  __appRevealed=true;
+  try{appLaunch.setIntro(100,'TERMINAL READY',reason)}catch(_){}
+  const intro=document.getElementById('appIntro');
+  const boot=document.getElementById('bootLoader');
+  if(intro)intro.classList.remove('show');
+  if(boot){boot.classList.add('hide');setTimeout(()=>boot.remove(),500)}
+  document.body.classList.remove('intro-active','app-booting');
+  document.body.classList.add('app-ready');
+  setTimeout(()=>document.body.classList.remove('app-ready'),420);
+}
+function safeUi(fn){try{return fn()}catch(e){console.error('SAFE UI',e);return null}}
+function hasMarketData(){return Object.values(marketData||{}).some(a=>Array.isArray(a)&&a.length>20)}
+
 const bootUI = {
   set(pct,status,note=''){
     const bar=document.getElementById('bootBar');
@@ -2159,20 +2183,8 @@ const bootUI = {
     if(nt && note) nt.textContent=note;
   },
   hide(){
-    const el=document.getElementById('bootLoader');
     this.set(100,'พร้อมใช้งาน','OneMonth OS พร้อมแล้ว');
-    appLaunch.finishIntro();
-    document.body.classList.remove('app-booting');
-    document.body.classList.add('app-ready');
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        if(el)el.classList.add('hide');
-      });
-    });
-    setTimeout(()=>{
-      if(el)el.remove();
-      document.body.classList.remove('app-ready');
-    },620);
+    revealAppNow('SYSTEM READY');
   }
 };
 bootUI.set(4,'กำลังเตรียมแอป…','กำลังอ่าน Plan / Settings / Offline Cache');
@@ -2208,7 +2220,7 @@ const NEWS_CACHE_KEY='onemonth_os_news_cache_v21';
 const FRESH_OPEN_MS=60*60*1000;     // 60 min when market is open
 const FRESH_CLOSED_MS=72*60*60*1000;
 
-const APP_VERSION='V25.1 APP MODE';
+const APP_VERSION='V25.2 STABLE AI';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -3979,36 +3991,57 @@ $('#clearScanMemoryBtn').addEventListener('click',async()=>{
 async function analyze(){
   if(!aiOn){toast('เปิด AI ก่อน');return}
   if(perfState.busy)return;
-  const btn=$('#analyzeBtn');setBusy(true,'กำลังวิเคราะห์ตลาด…','โหลด Market Data + News',12);btn.textContent='SCANNING…';btn.disabled=true;btn.classList.add('action-pending');
+  const btn=$('#analyzeBtn');
+  setBusy(true,'กำลังวิเคราะห์ตลาด…','ใช้ Data Pack ที่โหลดอยู่ในเครื่อง',14);
+  btn.textContent='SCANNING…';btn.disabled=true;btn.classList.add('action-pending');
   try{
     await nextFrame();
-    setActionUI('กำลังวิเคราะห์ตลาด…','โหลด XAUUSD และข่าวล่าสุด',28);
-    const [mk]=await Promise.all([loadPack(),loadNews()]);
-    if(!mk){toast('ยังไม่มี xauusd.json หรือข้อมูลไม่พอ');return}
+    if(!hasMarketData()){
+      toast('ยังไม่มี Market Data · กด REFRESH DATA ก่อน');
+      return;
+    }
+    if(marketFreshness().stale&&marketStatus().open){
+      toast('ข้อมูลเก่า · Refresh Data ก่อนให้ AI ออก READY');
+    }
+    setActionUI('กำลังวิเคราะห์ตลาด…','Precision Data → Multi‑TF → Regime',36);
     perfState.windowCache.clear();
-    setActionUI('กำลังวิเคราะห์ตลาด…','คำนวณ Multi‑TF / Structure / Risk',58);
     await nextFrame();
-    analysis=chooseAnalysis();runLocalLearning();maybeRememberSignal(analysis);registerScan();
-    if(analysis?.side!=='WAIT'&&analysis.market.open)registerSignal();
+
+    analysis=chooseAnalysis();
+    setActionUI('กำลังวิเคราะห์ตลาด…','Setup Edge → Calibration → EV → No‑Trade',64);
+    runLocalLearning();
+    maybeRememberSignal(analysis);
+    registerScan();
+
+    if(analysis?.side!=='WAIT'&&analysis.market?.open)registerSignal();
     processActiveSignal();
-    setActionUI('กำลังอัปเดตหน้าจอ…','จัดทำ Signal / Lot / Best Window',82);
+
+    setActionUI('กำลังสรุป Signal…','Entry · SL · TP · Lot · Best Window',84);
     perfState.planKey='';perfState.statsKey='';
     await renderAllProgressive();
     if(activeView('marketView'))scheduleChartDraw();
-    setActionUI('เสร็จแล้ว','AI Scan พร้อมใช้งาน',100);
-  }catch(err){console.error('Analyze failed',err);toast('Analyze error: '+err.message)}
-  finally{btn.textContent='RUN FULL MARKET SCAN';btn.disabled=false;btn.classList.remove('action-pending');setBusy(false)}
+    setActionUI('เสร็จแล้ว','AI วิเคราะห์จากข้อมูล Local สำเร็จ',100);
+  }catch(err){
+    console.error('Analyze failed',err);
+    toast('Analyze error · ลอง Refresh Data');
+  }finally{
+    btn.textContent='RUN FULL MARKET SCAN';btn.disabled=false;
+    btn.classList.remove('action-pending');setBusy(false)
+  }
 }
 $('#aiSwitch').addEventListener('click',async()=>{
   if(perfState.busy)return;
   const turningOn=!aiOn;
-  setBusy(true,turningOn?'กำลังเปิด AI…':'กำลังปิด AI…',turningOn?'เตรียม Fusion Engine และข้อมูลตลาด':'บันทึกสถานะ AI',18);
+  setBusy(true,turningOn?'กำลังเปิด AI…':'กำลังปิด AI…',turningOn?'เปิด Local Intelligence Engine':'บันทึกสถานะ AI',20);
   try{
-    await nextFrame();aiOn=turningOn;localStorage.setItem(AI_KEY,aiOn?'1':'0');
-    setActionUI(turningOn?'กำลังเปิด AI…':'กำลังปิด AI…','อัปเดตระบบ',55);
-    renderAiUi();await nextFrame();
+    aiOn=turningOn;
+    localStorage.setItem(AI_KEY,aiOn?'1':'0');
+    setActionUI(turningOn?'กำลังเปิด AI…':'กำลังปิด AI…','ไม่เรียก Market API เพิ่ม',68);
+    renderAiUi();
+    await new Promise(r=>setTimeout(r,80));
+    setActionUI('เสร็จแล้ว',aiOn?'AI Local Engine พร้อม':'AI Live ปิดแล้ว',100);
   }finally{setBusy(false)}
-  if(aiOn)setTimeout(()=>analyze(),80);
+  if(aiOn&&hasMarketData())setTimeout(()=>analyze(),120);
 });
 $('#analyzeBtn').addEventListener('click',analyze);
 $('#marketRefreshBtn').addEventListener('click',async()=>{
@@ -4094,13 +4127,46 @@ window.addEventListener('unhandledrejection',e=>{console.error('Promise rejectio
 function firstRun(){
   if(!validPlan(plan)){ $('#planModalTitle').textContent='เริ่ม OneMonth OS';$('#planStartInput').value='10';$('#planTargetInput').value='300';$('#savePlanBtn').textContent='CREATE PLAN';$('#cancelPlanBtn').classList.add('hidden');openModal('#planModal') }
 }
-async function boot(){
-  const bootStart=Date.now();
+async function syncMarketInBackground(){
   try{
-    // Phase 1: local-only work first. This makes first interaction predictable.
-    bootUI.set(10,'กำลังอ่านข้อมูลในเครื่อง…','Plan · Settings · AI State · Offline Cache');
-    await nextFrame();
+    const results=await Promise.allSettled([loadPack(),loadNews()]);
+    const marketOk=results[0].status==='fulfilled'&&results[0].value;
+    const newsOk=results[1].status==='fulfilled'&&results[1].value;
 
+    safeUi(()=>{runLocalLearning();renderPipeline();renderFreshness();renderDataQuality()});
+
+    if(marketOk||hasMarketData()){
+      perfState.windowCache.clear();
+      analysis=chooseAnalysis();
+      runLocalLearning();
+      processActiveSignal();
+      if(aiOn){
+        maybeRememberSignal(analysis);
+        registerScan();
+        if(analysis?.side!=='WAIT'&&analysis.market?.open)registerSignal();
+      }
+    }
+
+    perfState.planKey='';perfState.statsKey='';
+    await renderAllProgressive();
+    if(activeView('marketView'))scheduleChartDraw();
+    safeUi(()=>renderVersionManager());
+
+    if(!marketOk&&!newsOk)toast('ใช้ Offline Cache · Sync ออนไลน์ไม่สำเร็จ');
+  }catch(err){
+    console.error('BACKGROUND SYNC',err);
+    safeUi(()=>{renderFreshness();renderVersionManager()});
+  }
+}
+
+async function boot(){
+  // IMPORTANT: nothing external is allowed to block app launch.
+  const watchdog=setTimeout(()=>revealAppNow('SAFE START'),1600);
+
+  try{
+    appLaunch.setIntro(12,'กำลังอ่านข้อมูลในเครื่อง…','LOCAL CACHE');
+
+    // Local cache only. No network, no heavy AI scan.
     const cachedMarket=loadCache(MARKET_CACHE_KEY);
     const cachedNews=loadCache(NEWS_CACHE_KEY);
 
@@ -4110,85 +4176,42 @@ async function boot(){
         packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):cachedMarket.savedAt;
         packMeta.source='Offline Cache';
         rebuildMarketData(j);
-      }catch(_){}
+      }catch(e){console.warn('cached market',e)}
     }
+    appLaunch.setIntro(34,'กำลังเตรียมข้อมูลตลาด…','LOCAL MARKET');
 
     if(cachedNews?.value){
       try{
         const j=cachedNews.value;
         newsPack.generatedAt=j.generatedAt?Date.parse(j.generatedAt):cachedNews.savedAt;
         newsPack.events=(j.events||j.data||[]).map(normalizeNewsEvent).filter(e=>e.ts);
-      }catch(_){}
+      }catch(e){console.warn('cached news',e)}
     }
 
-    bootUI.set(24,'กำลังเตรียมหน้าหลัก…','ใช้ Cache ก่อน เพื่อให้แอปไม่ดูเหมือนค้าง');
-    renderHome();
-    renderAiUi();
-    await nextFrame();
+    // Keep pre-launch rendering intentionally light.
+    safeUi(()=>renderHome());
+    safeUi(()=>renderMarketStatus());
+    safeUi(()=>renderFreshness());
+    appLaunch.setIntro(62,'กำลังเตรียม Trading Terminal…','UI CORE');
 
-    // Phase 2: network work runs while the loader remains visible.
-    bootUI.set(38,'กำลัง Sync Market Data…','ตรวจ xauusd.json เวอร์ชันล่าสุด');
-    const marketPromise=loadPack();
+    await new Promise(r=>setTimeout(r,90));
+    safeUi(()=>firstRun());
+    appLaunch.setIntro(84,'พร้อมเปิดระบบ…','BACKGROUND SYNC');
 
-    bootUI.set(50,'กำลัง Sync News Radar…','ตรวจ news.json และ News Lock');
-    const newsPromise=loadNews();
+    // Reveal BEFORE network/AI work.
+    await new Promise(r=>setTimeout(r,160));
+    clearTimeout(watchdog);
+    revealAppNow('BACKGROUND SYNC');
 
-    const results=await Promise.allSettled([marketPromise,newsPromise]);
-    const marketOk=results[0].status==='fulfilled' && results[0].value;
-    const newsOk=results[1].status==='fulfilled' && results[1].value;
-
-    runLocalLearning();renderPipeline();
-
-    bootUI.set(68,'กำลังเตรียม AI Engine…',marketOk?'Market Data พร้อม':'ใช้ Market Cache ล่าสุด');
-    await nextFrame();
-
-    if(marketOk || Object.values(marketData).some(a=>a.length>20)){
-      analysis=chooseAnalysis();
-      processActiveSignal();
-    }
-
-    bootUI.set(80,'กำลังสร้างหน้าจอ…','Home · AI · Market · News · Plan · Stats');
-    await renderAllProgressive();
-    firstRun();
-
-    bootUI.set(91,'กำลังตรวจระบบสุดท้าย…','Data Freshness · Risk Guardian · Best Window');
-    renderFreshness();
-    await nextFrame();
-
-    if(!marketOk && !newsOk && !cachedMarket && !cachedNews){
-      bootUI.error('ไม่พบข้อมูลออนไลน์หรือ Cache','แอปจะเปิดได้ แต่ Market/News จะยังไม่มีข้อมูล');
-      await new Promise(r=>setTimeout(r,650));
-    }
-
-    // Loader must feel intentional, but should not artificially slow fast launches.
-    const elapsed=Date.now()-bootStart;
-    if(elapsed<900)await new Promise(r=>setTimeout(r,900-elapsed));
-
-    bootUI.hide();
-
-    // Expensive AI scan happens AFTER app is visible, with the normal action loader.
-    if(aiOn && (marketOk || Object.values(marketData).some(a=>a.length>20))){
-      setTimeout(()=>analyze(),180);
-    }
+    // Heavy/data work is deliberately deferred until dashboard is visible.
+    setTimeout(()=>syncMarketInBackground(),80);
   }catch(err){
-    console.error('BOOT ERROR',err);
-    bootUI.error('เปิดด้วย Safe Mode','พบข้อผิดพลาดระหว่างเตรียมระบบ');
-    try{
-      renderHome();renderAiUi();firstRun();
-    }catch(_){}
-    setTimeout(()=>bootUI.hide(),700);
+    console.error('BOOT SAFE MODE',err);
+    clearTimeout(watchdog);
+    revealAppNow('SAFE MODE');
+    setTimeout(()=>syncMarketInBackground(),160);
   }
 }
-const bootSafetyTimer=setTimeout(()=>{
-  const loader=document.getElementById('bootLoader');
-  if(loader){
-    bootUI.error('โหลดนานกว่าปกติ','เปิดแอปด้วยข้อมูลที่เตรียมได้แล้ว');
-    setTimeout(()=>bootUI.hide(),450);
-  }
-},6500);
-
-
-
 function renderVersionManager(){
   if(!$('#appVersionText'))return;
   $('#appVersionText').textContent=APP_VERSION;
@@ -4270,9 +4293,9 @@ $('#recheckInstallBtn')?.addEventListener('click',()=>{
 
 if(appLaunch.isStandalone()){
   appLaunch.startIntro();
-  boot().finally(()=>clearTimeout(bootSafetyTimer));
+  // Start on a macrotask so the cinematic intro paints first.
+  setTimeout(()=>boot(),0);
 }else{
-  clearTimeout(bootSafetyTimer);
   appLaunch.gateBrowser();
 }
 })();
