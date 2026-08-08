@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V22</title>
+<title>OneMonth OS V24</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -1158,6 +1158,104 @@ canvas{display:block}
 .cache-actions button{height:38px;border-radius:11px;border:1px solid #1d3340;background:#071018;color:#aab7c2;font-size:7px;font-weight:900}
 .cache-actions button.dangerish{border-color:rgba(255,89,110,.16);color:#ff8291;background:rgba(255,89,110,.025)}
 
+
+/* ==========================================================
+   V23 PRODUCTION INTELLIGENCE
+   ========================================================== */
+.intel-stack{display:grid;gap:8px;margin-top:8px}
+.intel-card{padding:14px}
+.intel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.intel-head h3{font-size:15px;margin:4px 0 0}
+.intel-chip{
+  flex:0 0 auto;padding:6px 8px;border-radius:9px;border:1px solid #1d3340;
+  background:#071018;color:#91a0ad;font-size:6.5px;font-weight:900
+}
+.intel-chip.good{color:#51e894;border-color:rgba(81,232,148,.15);background:rgba(81,232,148,.03)}
+.intel-chip.warn{color:#f0c86c;border-color:rgba(240,200,108,.16);background:rgba(240,200,108,.03)}
+.intel-chip.bad{color:#ff596e;border-color:rgba(255,89,110,.16);background:rgba(255,89,110,.03)}
+.router-grid,.ev-grid,.cal-grid,.memory-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px
+}
+.router-grid>div,.ev-grid>div,.cal-grid>div,.memory-grid>div{
+  padding:9px;border-radius:11px;background:#050b10;border:1px solid rgba(255,255,255,.04);min-width:0
+}
+.router-grid span,.ev-grid span,.cal-grid span,.memory-grid span{
+  display:block;color:#687684;font-size:5.5px;font-weight:900;letter-spacing:.07em
+}
+.router-grid b,.ev-grid b,.cal-grid b,.memory-grid b{
+  display:block;font-size:8px;margin-top:4px;white-space:normal;overflow-wrap:anywhere
+}
+.setup-list{display:grid;gap:6px;margin-top:10px}
+.setup-row{
+  display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+  padding:10px;border-radius:12px;background:#050b10;border:1px solid rgba(255,255,255,.045)
+}
+.setup-row.top{border-color:rgba(81,232,148,.17);background:linear-gradient(90deg,rgba(81,232,148,.045),#050b10)}
+.setup-row b{display:block;font-size:8px}
+.setup-row small{display:block;color:#6f7d89;font-size:6px;margin-top:3px;line-height:1.45}
+.setup-score{font-size:12px;font-weight:950;color:#91a0ad}
+.setup-row.top .setup-score{color:#51e894}
+.execution-gates{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:10px}
+.exec-gate{
+  display:flex;align-items:center;justify-content:space-between;gap:7px;
+  padding:8px 9px;border-radius:10px;background:#050b10;border:1px solid rgba(255,255,255,.04)
+}
+.exec-gate span{font-size:6.5px;color:#81909d}
+.exec-gate b{font-size:6px}
+.exec-gate.pass b{color:#51e894}.exec-gate.warn b{color:#f0c86c}.exec-gate.block b{color:#ff596e}
+.ai-explain{
+  margin-top:9px;padding:10px;border-radius:12px;background:#050b10;border:1px solid rgba(99,199,240,.08);
+  color:#92a1ae;font-size:7px;line-height:1.55
+}
+.shadow-banner{
+  display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:9px;
+  padding:9px 10px;border-radius:12px;background:rgba(228,185,79,.025);border:1px solid rgba(228,185,79,.12)
+}
+.shadow-banner span{font-size:7px;color:#a99870}.shadow-banner b{font-size:7px;color:#e4b94f}
+.ai-mode-toggle{
+  height:30px;border-radius:9px;border:1px solid #1c3340;background:#071018;color:#9eacb8;
+  font-size:6.5px;font-weight:900;padding:0 9px
+}
+@media(max-width:390px){
+  .router-grid,.ev-grid,.cal-grid,.memory-grid,.execution-gates{gap:5px}
+}
+
+
+/* ==========================================================
+   V24 PRECISION DATA ENGINE
+   ========================================================== */
+.precision-card{padding:14px;margin-top:8px}
+.precision-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.precision-head h3{font-size:15px;margin:4px 0 0}
+.precision-pill{
+  padding:6px 8px;border-radius:9px;border:1px solid #1c3340;background:#071018;
+  color:#8f9eaa;font-size:6.5px;font-weight:900
+}
+.precision-pill.good{color:#51e894;border-color:rgba(81,232,148,.16);background:rgba(81,232,148,.03)}
+.precision-pill.warn{color:#f0c86c;border-color:rgba(240,200,108,.16);background:rgba(240,200,108,.03)}
+.precision-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}
+.precision-grid>div{
+  padding:9px;border-radius:11px;background:#050b10;border:1px solid rgba(255,255,255,.04);min-width:0
+}
+.precision-grid span{display:block;color:#687684;font-size:5.5px;font-weight:900;letter-spacing:.07em}
+.precision-grid b{display:block;font-size:8px;margin-top:4px;overflow-wrap:anywhere}
+.precision-note{margin-top:9px;color:#6f7d89;font-size:7px;line-height:1.5}
+.learning-card{padding:14px;margin-top:8px}
+.learning-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.learning-head h3{font-size:15px;margin:4px 0 0}
+.learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}
+.learning-grid>div{padding:9px;border-radius:11px;background:#050b10;border:1px solid rgba(255,255,255,.04)}
+.learning-grid span{display:block;color:#687684;font-size:5.5px;font-weight:900;letter-spacing:.07em}
+.learning-grid b{display:block;font-size:8px;margin-top:4px}
+.learning-note{margin-top:9px;padding:9px 10px;border-radius:11px;background:rgba(81,232,148,.025);border:1px solid rgba(81,232,148,.10);color:#7e8d99;font-size:7px;line-height:1.5}
+.learning-note strong{color:#51e894}
+.chart-health-badge{
+  display:inline-flex;align-items:center;gap:5px;margin-left:7px;padding:4px 6px;border-radius:8px;
+  background:#071018;border:1px solid #19303d;color:#7e8c98;font-size:5.5px;font-weight:900
+}
+.chart-health-badge.good{color:#51e894;border-color:rgba(81,232,148,.14)}
+.chart-health-badge.warn{color:#f0c86c;border-color:rgba(240,200,108,.14)}
+
 </style>
 </head>
 <body class="app-booting">
@@ -1346,6 +1444,84 @@ canvas{display:block}
         <div class="gate-grid" id="gateGrid"></div>
       </article>
 
+
+      <div class="intel-stack">
+        <article class="card intel-card">
+          <div class="intel-head">
+            <div><div class="kicker">REGIME ROUTER</div><h3>Strategy Router</h3></div>
+            <span class="intel-chip" id="routerChip">WAIT</span>
+          </div>
+          <div class="router-grid">
+            <div><span>REGIME</span><b id="routerRegime">—</b></div>
+            <div><span>ACTIVE STRATEGY</span><b id="routerStrategy">—</b></div>
+            <div><span>SESSION EDGE</span><b id="routerSession">—</b></div>
+            <div><span>EXECUTION STYLE</span><b id="routerStyle">—</b></div>
+          </div>
+        </article>
+
+        <article class="card intel-card">
+          <div class="intel-head">
+            <div><div class="kicker">SETUP RANKING</div><h3>AI Candidate Setups</h3></div>
+            <span class="intel-chip" id="setupBestChip">NO SETUP</span>
+          </div>
+          <div class="setup-list" id="setupRankingList"></div>
+        </article>
+
+        <article class="card intel-card">
+          <div class="intel-head">
+            <div><div class="kicker">EXPECTANCY ENGINE</div><h3>Probability & EV</h3></div>
+            <span class="intel-chip" id="evChip">WAIT</span>
+          </div>
+          <div class="ev-grid">
+            <div><span>RAW CONFIDENCE</span><b id="rawConfidence">—</b></div>
+            <div><span>CALIBRATED</span><b id="calConfidence">—</b></div>
+            <div><span>EXPECTED VALUE</span><b id="expectedValue">—</b></div>
+            <div><span>CHASE LIMIT</span><b id="chaseLimitText">—</b></div>
+          </div>
+          <div class="ai-explain" id="aiExplainShort">รอการวิเคราะห์</div>
+        </article>
+
+        <article class="card intel-card">
+          <div class="intel-head">
+            <div><div class="kicker">EXECUTION GATE</div><h3>ก่อน READY ต้องผ่านทุกข้อ</h3></div>
+            <button class="ai-mode-toggle" id="shadowToggle">SHADOW OFF</button>
+          </div>
+          <div class="execution-gates" id="executionGateGrid"></div>
+          <div class="shadow-banner">
+            <span>Shadow Mode เก็บผล Signal โดยไม่ปล่อย READY เพื่อทดสอบโมเดลใหม่</span>
+            <b id="shadowStatus">OFF</b>
+          </div>
+        </article>
+
+        
+        <article class="card learning-card">
+          <div class="learning-head">
+            <div><div class="kicker">LOCAL LEARNING ENGINE</div><h3>Fetch Once · Analyze Many</h3></div>
+            <span class="precision-pill good" id="learningStatus">LOCAL</span>
+          </div>
+          <div class="learning-grid">
+            <div><span>API MODE</span><b id="learningApiMode">GITHUB DATA PACK</b></div>
+            <div><span>LOCAL REPLAYS</span><b id="learningReplays">0</b></div>
+            <div><span>MEMORY UPDATED</span><b id="learningUpdated">—</b></div>
+            <div><span>API CALLS BY LEARNING</span><b>0</b></div>
+          </div>
+          <div class="learning-note"><strong>AI OFF ได้</strong> · Learning Engine ยังย้อนตรวจ TP/SL/MFE/MAE จากข้อมูลที่โหลดมาแล้วได้ โดยไม่เรียก Twelve Data เพิ่ม</div>
+        </article>
+
+<article class="card intel-card">
+          <div class="intel-head">
+            <div><div class="kicker">OUTCOME MEMORY</div><h3>AI Learning Memory</h3></div>
+            <span class="intel-chip" id="memoryChip">0 SAMPLES</span>
+          </div>
+          <div class="memory-grid">
+            <div><span>TRACKED SIGNALS</span><b id="memorySignals">0</b></div>
+            <div><span>CALIBRATION BIAS</span><b id="memoryBias">—</b></div>
+            <div><span>AVG MFE</span><b id="memoryMfe">—</b></div>
+            <div><span>AVG MAE</span><b id="memoryMae">—</b></div>
+          </div>
+        </article>
+      </div>
+
       <article class="card signal-card">
         <div class="signal-top">
           <div><div class="kicker">AI SIGNAL</div><h3 id="signalSide">WAIT</h3><p id="signalReason">ยังไม่ได้วิเคราะห์</p></div>
@@ -1448,6 +1624,23 @@ canvas{display:block}
           <div><span>TF CONSISTENCY</span><b id="dqTf">—</b></div>
         </div>
         <div class="quality-note" id="dqNote">AI จะไม่ออก READY ถ้าคุณภาพข้อมูลต่ำกว่าค่าที่ปลอดภัย</div>
+      </article>
+
+      
+      <article class="card precision-card">
+        <div class="precision-head">
+          <div><div class="kicker">PRECISION DATA PIPELINE</div><h3>Clean → Rebuild → Analyze</h3></div>
+          <span class="precision-pill" id="pipelineStatus">WAIT</span>
+        </div>
+        <div class="precision-grid">
+          <div><span>RAW CANDLES</span><b id="pipeRaw">—</b></div>
+          <div><span>CLEAN CANDLES</span><b id="pipeClean">—</b></div>
+          <div><span>DUPLICATES REMOVED</span><b id="pipeDupes">—</b></div>
+          <div><span>OUTLIERS QUARANTINED</span><b id="pipeOutliers">—</b></div>
+          <div><span>CONTINUOUS SEGMENT</span><b id="pipeSegment">—</b></div>
+          <div><span>TF SOURCE</span><b id="pipeTfSource">—</b></div>
+        </div>
+        <div class="precision-note" id="pipeNote">กราฟจะใช้เฉพาะช่วงข้อมูลล่าสุดที่ต่อเนื่อง และ AI จะไม่เห็นแท่งที่ถูก quarantine</div>
       </article>
 
       <div class="section-head market-section-head"><div><div class="kicker">PRO MARKET VIEW</div><h3>Native Chart</h3></div><button id="marketRefreshBtn">REFRESH DATA</button></div>
@@ -1675,8 +1868,24 @@ const NEWS_CACHE_KEY='onemonth_os_news_cache_v21';
 const FRESH_OPEN_MS=60*60*1000;     // 60 min when market is open
 const FRESH_CLOSED_MS=72*60*60*1000;
 
-const APP_VERSION='V22';
+const APP_VERSION='V24';
 const DATA_QUALITY_READY_MIN=78;
+
+const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
+const SHADOW_KEY='onemonth_os_shadow_mode_v23';
+let shadowMode=localStorage.getItem(SHADOW_KEY)==='1';
+let outcomeMemory=loadJson(OUTCOME_KEY,[]);
+
+let pipelineStats={
+  raw:0,clean:0,duplicates:0,outliers:0,segment:0,source:'—',status:'WAIT',lastRun:0
+};
+let localReplayCount=0;
+
+let intelligence={
+  router:null,setups:[],best:null,rawConfidence:0,calibrated:0,ev:0,chaseLimit:null,
+  executionGates:[],explain:'',probability:0
+};
+
 let dataQuality={score:0,ohlc:0,timestamp:0,gap:0,tf:0,issues:[]};
 let confirmation={state:'WATCH',progress:0,m1:0,m5:0,required:3,reason:'รอข้อมูล'};
  // historical pack can be older on weekends
@@ -1753,6 +1962,23 @@ async function runUiAction({title,detail='กรุณารอสักคร�
 }
 function stableKey(v){try{return JSON.stringify(v)}catch(_){return String(v)}}
 function activeView(id){return $('#'+id)?.classList.contains('active')}
+
+async 
+function createAnalyticsWorker(){
+  if(!('Worker' in window))return null;
+  const code=`
+    self.onmessage=e=>{
+      const {type,data}=e.data||{};
+      if(type==='stats'){
+        const arr=data||[];let wins=0,losses=0,grossWin=0,grossLoss=0;
+        for(const x of arr){if(x>0){wins++;grossWin+=x}else if(x<0){losses++;grossLoss+=Math.abs(x)}}
+        self.postMessage({type:'statsResult',result:{wins,losses,pf:grossLoss?grossWin/grossLoss:Infinity,samples:arr.length}});
+      }
+    };
+  `;
+  try{return new Worker(URL.createObjectURL(new Blob([code],{type:'text/javascript'})))}catch(_){return null}
+}
+const analyticsWorker=createAnalyticsWorker();
 
 async function fetchFast(url,opts={},timeout=6500){
   const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),timeout);
@@ -1852,6 +2078,153 @@ function showView(id){
 }
 $$('[data-nav]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.nav)));
 
+
+function tfMs(tf){return {M1:60000,M5:300000,M15:900000,H1:3600000}[tf]||60000}
+function robustMedian(arr){
+  const a=arr.filter(Number.isFinite).slice().sort((x,y)=>x-y);
+  if(!a.length)return 0;
+  const m=Math.floor(a.length/2);
+  return a.length%2?a[m]:(a[m-1]+a[m])/2;
+}
+function mad(arr,med){
+  const d=arr.filter(Number.isFinite).map(x=>Math.abs(x-med));
+  return robustMedian(d)||0;
+}
+function dedupeCandles(arr){
+  const map=new Map();
+  for(const c of arr){
+    if(!c||!Number.isFinite(c.ts))continue;
+    const prev=map.get(c.ts);
+    if(!prev)map.set(c.ts,c);
+    else{
+      // Prefer candle with non-zero range and larger information content.
+      const prevInfo=Math.abs(prev.close-prev.open)+(prev.high-prev.low);
+      const curInfo=Math.abs(c.close-c.open)+(c.high-c.low);
+      if(curInfo>prevInfo)map.set(c.ts,c);
+    }
+  }
+  return [...map.values()].sort((a,b)=>a.ts-b.ts);
+}
+function quarantineOutliers(arr,tf){
+  if(arr.length<20)return{clean:arr.slice(),outliers:0};
+  const ranges=arr.map(c=>c.high-c.low).filter(x=>x>0);
+  const med=robustMedian(ranges)||1;
+  const m=mad(ranges,med)||med*.25;
+  const limit=Math.max(med*7,med+10*m);
+  const exp=tfMs(tf);
+  const clean=[];let outliers=0,prev=null;
+  for(const c of arr){
+    const range=c.high-c.low;
+    const gap=prev?Math.abs(c.open-prev.close):0;
+    const tooWide=range>limit;
+    const impossibleGap=prev&&gap>Math.max(limit*2,med*12);
+    const flatNoise=range<med*.002&&Math.abs(c.close-c.open)<med*.001;
+    if(tooWide||impossibleGap){outliers++;prev=c;continue}
+    // keep a small amount of flat candles, but reject pathological repeated filler elsewhere
+    clean.push(c);prev=c;
+  }
+  return{clean,outliers};
+}
+function removeRepeatedFillers(arr){
+  if(arr.length<8)return{clean:arr.slice(),removed:0};
+  const clean=[];let removed=0,run=0,lastKey='';
+  for(const c of arr){
+    const key=[c.open,c.high,c.low,c.close].map(v=>Number(v).toFixed(4)).join('|');
+    if(key===lastKey)run++;else run=1;
+    lastKey=key;
+    if(run>3){removed++;continue}
+    clean.push(c);
+  }
+  return{clean,removed};
+}
+function latestContinuousSegment(arr,tf){
+  if(arr.length<2)return arr.slice();
+  const exp=tfMs(tf),maxGap=exp*3.25;
+  let start=arr.length-1;
+  for(let i=arr.length-1;i>0;i--){
+    const gap=arr[i].ts-arr[i-1].ts;
+    if(gap<=0||gap>maxGap){start=i;break}
+    start=i-1;
+  }
+  return arr.slice(start);
+}
+function aggregateCandles(src,targetTf){
+  const bucketMs=tfMs(targetTf);
+  if(!src.length||bucketMs<=60000)return src.slice();
+  const out=[];let cur=null,bucket=-1;
+  for(const c of src){
+    const b=Math.floor(c.ts/bucketMs)*bucketMs;
+    if(b!==bucket){
+      if(cur)out.push(cur);
+      bucket=b;cur={ts:b,open:c.open,high:c.high,low:c.low,close:c.close};
+    }else{
+      cur.high=Math.max(cur.high,c.high);cur.low=Math.min(cur.low,c.low);cur.close=c.close;
+    }
+  }
+  if(cur)out.push(cur);
+  return out;
+}
+function cleanSingleTf(raw,tf){
+  const normalized=(raw||[]).map(normalizeCandle).filter(Boolean).sort((a,b)=>a.ts-b.ts);
+  const before=normalized.length;
+  const deduped=dedupeCandles(normalized);
+  const dupes=before-deduped.length;
+  const q=quarantineOutliers(deduped,tf);
+  const fillers=removeRepeatedFillers(q.clean);
+  const continuous=latestContinuousSegment(fillers.clean,tf);
+  return{raw:before,clean:continuous,duplicates:dupes+fillers.removed,outliers:q.outliers,segment:continuous.length};
+}
+function rebuildMarketData(pack){
+  const tf=pack.timeframes||pack.data||pack||{};
+  const rawM1=tf.M1||[];
+  const m1=cleanSingleTf(rawM1,'M1');
+
+  let source='PACK TF';
+  let cleanM1=m1.clean;
+  let rebuilt={M1:cleanM1,M5:[],M15:[],H1:[]};
+
+  if(cleanM1.length>=180){
+    rebuilt.M5=aggregateCandles(cleanM1,'M5');
+    rebuilt.M15=aggregateCandles(cleanM1,'M15');
+    rebuilt.H1=aggregateCandles(cleanM1,'H1');
+    source='REBUILT FROM M1';
+  }else{
+    rebuilt.M5=cleanSingleTf(tf.M5||[],'M5').clean;
+    rebuilt.M15=cleanSingleTf(tf.M15||[],'M15').clean;
+    rebuilt.H1=cleanSingleTf(tf.H1||[],'H1').clean;
+  }
+
+  for(const k of ['M1','M5','M15','H1'])marketData[k]=rebuilt[k];
+
+  const rawCount=['M1','M5','M15','H1'].reduce((n,k)=>n+((tf[k]||[]).length),0);
+  const cleanCount=['M1','M5','M15','H1'].reduce((n,k)=>n+marketData[k].length,0);
+  const packDupes=Math.max(0,rawCount-cleanCount-m1.outliers);
+  pipelineStats={
+    raw:rawCount,clean:cleanCount,duplicates:Math.max(m1.duplicates,packDupes),
+    outliers:m1.outliers,segment:marketData.M15.length||marketData.M5.length||marketData.M1.length,
+    source,status:cleanCount>=80?'READY':'LIMITED',lastRun:Date.now()
+  };
+  return pipelineStats;
+}
+function renderPipeline(){
+  if(!$('#pipelineStatus'))return;
+  $('#pipeRaw').textContent=pipelineStats.raw.toLocaleString();
+  $('#pipeClean').textContent=pipelineStats.clean.toLocaleString();
+  $('#pipeDupes').textContent=pipelineStats.duplicates.toLocaleString();
+  $('#pipeOutliers').textContent=pipelineStats.outliers.toLocaleString();
+  $('#pipeSegment').textContent=pipelineStats.segment+' candles';
+  $('#pipeTfSource').textContent=pipelineStats.source;
+  const p=$('#pipelineStatus');
+  p.textContent=pipelineStats.status;p.className='precision-pill '+(pipelineStats.status==='READY'?'good':'warn');
+  $('#pipeNote').textContent=pipelineStats.source==='REBUILT FROM M1'
+    ? 'M5/M15/H1 ถูกสร้างใหม่จาก M1 ที่ผ่านการ Clean แล้ว · AI และกราฟใช้ชุดเดียวกัน'
+    : 'M1 ไม่พอสำหรับ rebuild ทุก TF · ใช้ TF pack ที่ Clean แยกกัน';
+  const cb=$('#chartHealthBadge');if(cb){
+    cb.textContent='PIPE '+pipelineStats.status;
+    cb.className='chart-health-badge '+(pipelineStats.status==='READY'?'good':'warn')
+  }
+}
+
 function normalizeCandle(v){
   const o=num(v.open),h=num(v.high),l=num(v.low),c=num(v.close);
   const ts=num(v.ts)||Date.parse(String(v.datetime||'').replace(' ','T')+'Z')||0;
@@ -1867,20 +2240,20 @@ async function loadPack(){
   try{
     const res=await fetchFast('./xauusd.json?ts='+Date.now(),{cache:'no-store'},6500);
     if(!res.ok)throw new Error('xauusd.json not found');
-    const j=await res.json(),tf=j.timeframes||j.data||j;
+    const j=await res.json();
     packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):Date.now();packMeta.source=j.source||'GitHub Data Pack';
-    for(const k of ['M1','M5','M15','H1'])marketData[k]=(tf[k]||[]).map(normalizeCandle).filter(Boolean).sort((a,b)=>a.ts-b.ts);
+    rebuildMarketData(j);
     saveCache(MARKET_CACHE_KEY,j);
-    renderFreshness();renderDataQuality();renderConfirmation();renderVersionManager();
+    renderFreshness();renderDataQuality();renderConfirmation();renderVersionManager();renderIntelligence();renderPipeline();renderLearningEngine();
     return Object.values(marketData).some(a=>a.length>20);
   }catch(e){
     console.warn('market pack network',e);
     const cached=loadCache(MARKET_CACHE_KEY);
     if(cached?.value){
       try{
-        const j=cached.value,tf=j.timeframes||j.data||j;
+        const j=cached.value;
         packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):cached.savedAt;packMeta.source='Offline Cache';
-        for(const k of ['M1','M5','M15','H1'])marketData[k]=(tf[k]||[]).map(normalizeCandle).filter(Boolean).sort((a,b)=>a.ts-b.ts);
+        rebuildMarketData(j);
         renderFreshness();
         return Object.values(marketData).some(a=>a.length>20);
       }catch(_){}
@@ -2068,13 +2441,30 @@ function chooseAnalysis(){
     entryCenter=X.pullback?(X.ema9+X.ema21)/2:X.ema21;entryLow=entryCenter-R*.12;entryHigh=entryCenter+R*.12;
     if(side==='BUY'){
       sl=Number.isFinite(X.swingLow)?Math.min(X.swingLow-R*.10,entryCenter-R*.72):entryCenter-R*.9;
-      let risk=Math.abs(entryCenter-sl);risk=clamp(risk,R*.7,R*2);sl=entryCenter-risk;tp1=entryCenter+risk*1.55;tp2=entryCenter+risk*2.25;rr=(tp1-entryCenter)/risk;
+      let risk=Math.abs(entryCenter-sl);risk=clamp(risk,R*.7,R*2);sl=entryCenter-risk;const sess=mkt.session,reg=X.regime;
+      const tp1R=reg==='TREND'?1.65:reg==='VOLATILE'?1.45:1.35;
+      const tp2R=reg==='TREND'?2.45:reg==='VOLATILE'?2.10:1.85;
+      tp1=entryCenter+risk*tp1R;tp2=entryCenter+risk*tp2R;rr=(tp1-entryCenter)/risk;
     }else{
       sl=Number.isFinite(X.swingHigh)?Math.max(X.swingHigh+R*.10,entryCenter+R*.72):entryCenter+R*.9;
-      let risk=Math.abs(sl-entryCenter);risk=clamp(risk,R*.7,R*2);sl=entryCenter+risk;tp1=entryCenter-risk*1.55;tp2=entryCenter-risk*2.25;rr=(entryCenter-tp1)/risk;
+      let risk=Math.abs(sl-entryCenter);risk=clamp(risk,R*.7,R*2);sl=entryCenter+risk;const sess=mkt.session,reg=X.regime;
+      const tp1R=reg==='TREND'?1.65:reg==='VOLATILE'?1.45:1.35;
+      const tp2R=reg==='TREND'?2.45:reg==='VOLATILE'?2.10:1.85;
+      tp1=entryCenter-risk*tp1R;tp2=entryCenter-risk*tp2R;rr=(entryCenter-tp1)/risk;
     }
   }
-  return{...X,side,direction:dominant,score,align,core,entryLow,entryHigh,entryCenter,sl,tp1,tp2,rr,setupType,blockers,market:mkt,news,guardian:g}
+  const result={...X,side,direction:dominant,score,align,core,entryLow,entryHigh,entryCenter,sl,tp1,tp2,rr,setupType,blockers,market:mkt,news,guardian:g};
+  buildIntelligence(result);
+  if(result.side!=='WAIT'&&!intelligenceAllowsReady()){
+    result.side='WAIT';
+    result.blockers=[...new Set([...(result.blockers||[]),'EXECUTION GATE'])];
+  }
+  if(shadowMode&&result.side!=='WAIT'){
+    result.shadowCandidate=true;
+    result.side='WAIT';
+    result.blockers=[...new Set([...(result.blockers||[]),'SHADOW MODE'])];
+  }
+  return result
 }
 
 function candleDirection(c){return c.close>c.open?1:c.close<c.open?-1:0}
@@ -2106,6 +2496,258 @@ function renderConfirmation(){
   el.className='confirm-state '+(confirmation.state==='READY'?'ready':confirmation.state==='CONFIRMING'?'wait':'block');
   $('#confirmBar').style.width=confirmation.progress+'%';
   $('#confirmMeta').textContent=confirmation.reason;
+}
+
+
+function sessionEdgeLabel(){
+  const s=marketStatus().session;
+  if(s==='NEW YORK')return 'HIGH · NY';
+  if(s==='LONDON')return 'MED-HIGH · LONDON';
+  if(s==='ASIA')return 'LOW-MED · ASIA';
+  return 'LOW';
+}
+function routeStrategy(a){
+  if(!a)return{regime:'UNKNOWN',strategy:'WAIT',style:'NO TRADE',session:sessionEdgeLabel()};
+  let strategy='WAIT',style='NO TRADE';
+  if(a.regime==='TREND'){
+    strategy=a.bos===a.direction?'BOS RETEST':'EMA PULLBACK';
+    style='PULLBACK / CONTINUATION';
+  }else if(a.regime==='VOLATILE'){
+    strategy='BREAKOUT RETEST';
+    style='WIDER BUFFER / SMALLER LOT';
+  }else if(a.regime==='TRANSITION'){
+    strategy='STRUCTURE CONFIRM';
+    style='WAIT FOR BOS';
+  }else if(a.regime==='RANGE'){
+    strategy='NO-TRADE RANGE';
+    style='CAPITAL PRESERVATION';
+  }
+  return{regime:a.regime,strategy,style,session:sessionEdgeLabel()};
+}
+function buildSetupCandidates(a){
+  if(!a)return[];
+  const base=a.score||0,dir=a.direction,reg=a.regime;
+  const candidates=[
+    {
+      name:'BOS Retest',
+      score:clamp(base+(a.bos===dir?9:-11)+(reg==='TREND'?7:0)+(a.pullback?3:0),0,99),
+      reason:`${a.bos===dir?'BOS aligned':'BOS not confirmed'} · ${reg}`
+    },
+    {
+      name:'EMA Pullback',
+      score:clamp(base+(a.pullback?10:-8)+(reg==='TREND'?6:0)-(a.stretched?12:0),0,99),
+      reason:`${a.pullback?'near EMA zone':'not in pullback'} · ${a.stretched?'stretched':'not stretched'}`
+    },
+    {
+      name:'Breakout Retest',
+      score:clamp(base+(reg==='VOLATILE'?9:0)+(a.adx>=27?6:-3)+(a.bos===dir?5:0),0,99),
+      reason:`ADX ${a.adx.toFixed(0)} · ${reg}`
+    },
+    {
+      name:'Mean Reversion',
+      score:clamp(base+(reg==='RANGE'?11:-18)+(a.stretched?6:0),0,99),
+      reason:`${reg==='RANGE'?'range edge':'not range'}`
+    }
+  ];
+  return candidates.sort((x,y)=>y.score-x.score);
+}
+function calibrationStats(){
+  const rows=outcomeMemory.filter(x=>Number.isFinite(x.rawScore)&&['WIN','LOSS'].includes(x.outcome));
+  if(rows.length<8)return{bias:0,samples:rows.length,winRate:null};
+  const avgPred=rows.reduce((a,b)=>a+b.rawScore/100,0)/rows.length;
+  const actual=rows.filter(x=>x.outcome==='WIN').length/rows.length;
+  return{bias:actual-avgPred,samples:rows.length,winRate:actual};
+}
+function calibrateConfidence(raw){
+  const c=calibrationStats();
+  if(c.samples<8)return clamp(raw*.92,0,94);
+  return clamp((raw/100+c.bias*.55)*100,0,94);
+}
+function expectedValue(prob,rr){
+  const p=clamp(prob/100,.01,.99),R=Math.max(.1,rr||0);
+  return p*R-(1-p)*1;
+}
+function dynamicChaseLimit(a){
+  if(!a||!Number.isFinite(a.atr))return null;
+  const mult=a.regime==='VOLATILE'?.35:a.regime==='TREND'?.28:.20;
+  return a.atr*mult;
+}
+function executionSpreadRisk(a){
+  if(!a||!Number.isFinite(a.atr))return{ok:false,label:'NO ATR'};
+  // Proxy because broker live spread is unavailable in this static app.
+  const proxy=Math.max(.01,a.atr*.06);
+  return{ok:proxy<=a.atr*.10,label:'PROXY '+proxy.toFixed(2),proxy};
+}
+function buildExecutionGates(a){
+  const fresh=!marketFreshness().stale;
+  const quality=dataQuality.score>=DATA_QUALITY_READY_MIN;
+  const confirm=confirmation.state==='READY';
+  const news=!newsContext().lock;
+  const risk=!guardian().locked;
+  const rr=!!a&&Number(a.rr)>=1.45;
+  const ev=intelligence.ev>0.12;
+  const chase=!!a&&(!Number.isFinite(a.entryCenter)||!Number.isFinite(a.last)||!Number.isFinite(intelligence.chaseLimit)||Math.abs(a.last-a.entryCenter)<=intelligence.chaseLimit);
+  const regime=!!a&&a.regime!=='RANGE';
+  const spread=executionSpreadRisk(a).ok;
+  return[
+    ['Fresh Data',fresh,fresh?'PASS':'STALE'],
+    ['Data Quality',quality,dataQuality.score+'/100'],
+    ['Confirmation',confirm,confirmation.state],
+    ['News',news,news?'CLEAR':'LOCK'],
+    ['Risk',risk,risk?'PASS':'LOCK'],
+    ['R:R',rr,a?.rr?Number(a.rr).toFixed(2):'—'],
+    ['Expected Value',ev,intelligence.ev.toFixed(2)],
+    ['Chase',chase,chase?'PASS':'TOO FAR'],
+    ['Regime',regime,a?.regime||'—'],
+    ['Exec Buffer',spread,executionSpreadRisk(a).label]
+  ];
+}
+function buildShortExplain(a){
+  if(!a)return'รอข้อมูลตลาด';
+  const parts=[
+    `H1 ${tfResults.H1?.direction||'—'}`,
+    `M15 ${tfResults.M15?.structure||'—'}`,
+    `${a.regime}`,
+    `Align ${a.align}/4`,
+    newsContext().lock?'News Lock':'News Clear',
+    `RR ${Number(a.rr||0).toFixed(2)}`,
+    `EV ${intelligence.ev.toFixed(2)}`
+  ];
+  return parts.join(' · ');
+}
+function buildIntelligence(a){
+  if(!a){
+    intelligence={router:null,setups:[],best:null,rawConfidence:0,calibrated:0,ev:0,chaseLimit:null,executionGates:[],explain:'รอข้อมูล',probability:0};
+    return intelligence;
+  }
+  const router=routeStrategy(a),setups=buildSetupCandidates(a),best=setups[0]||null;
+  const raw=clamp((a.score||0)+(best?((best.score-a.score)*.28):0),0,96);
+  const calibrated=calibrateConfidence(raw);
+  const prob=calibrated;
+  const rr=Number(a.rr||0);
+  const ev=expectedValue(prob,rr);
+  const chaseLimit=dynamicChaseLimit(a);
+  intelligence={router,setups,best,rawConfidence:raw,calibrated,ev,chaseLimit,executionGates:[],explain:'',probability:prob};
+  intelligence.executionGates=buildExecutionGates(a);
+  intelligence.explain=buildShortExplain(a);
+  return intelligence;
+}
+function intelligenceAllowsReady(){
+  return intelligence.executionGates.length>0&&intelligence.executionGates.every(g=>g[1]);
+}
+function renderIntelligence(){
+  const I=intelligence,router=I.router;
+  $('#routerRegime').textContent=router?.regime||'—';
+  $('#routerStrategy').textContent=router?.strategy||'—';
+  $('#routerSession').textContent=router?.session||'—';
+  $('#routerStyle').textContent=router?.style||'—';
+  const rc=$('#routerChip');if(rc){rc.textContent=router?.strategy||'WAIT';rc.className='intel-chip '+(router&&router.strategy!=='WAIT'&&!router.strategy.includes('NO-TRADE')?'good':'warn')}
+  const list=$('#setupRankingList');if(list){
+    list.innerHTML=I.setups.slice(0,4).map((s,i)=>`<div class="setup-row ${i===0?'top':''}"><div><b>${i+1}. ${s.name}</b><small>${s.reason}</small></div><div class="setup-score">${Math.round(s.score)}</div></div>`).join('')||'<div class="setup-row"><div><small>ยังไม่มี Candidate</small></div></div>';
+  }
+  const sb=$('#setupBestChip');if(sb){sb.textContent=I.best?I.best.name:'NO SETUP';sb.className='intel-chip '+(I.best&&I.best.score>=78?'good':'warn')}
+  $('#rawConfidence').textContent=I.rawConfidence?Math.round(I.rawConfidence)+'/100':'—';
+  $('#calConfidence').textContent=I.calibrated?Math.round(I.calibrated)+'/100':'—';
+  $('#expectedValue').textContent=Number.isFinite(I.ev)?I.ev.toFixed(2)+'R':'—';
+  $('#chaseLimitText').textContent=Number.isFinite(I.chaseLimit)?'±'+price(I.chaseLimit):'—';
+  $('#aiExplainShort').textContent=I.explain||'รอการวิเคราะห์';
+  const evc=$('#evChip');if(evc){evc.textContent=I.ev>0.12?'POSITIVE EV':'LOW EV';evc.className='intel-chip '+(I.ev>0.12?'good':I.ev>-0.05?'warn':'bad')}
+  const eg=$('#executionGateGrid');if(eg)eg.innerHTML=I.executionGates.map(([n,ok,label])=>`<div class="exec-gate ${ok?'pass':label==='LOCK'||label==='STALE'||label==='TOO FAR'?'block':'warn'}"><span>${n}</span><b>${label}</b></div>`).join('');
+  const cs=calibrationStats();
+  $('#memoryChip').textContent=cs.samples+' SAMPLES';
+  $('#memorySignals').textContent=outcomeMemory.length;
+  $('#memoryBias').textContent=cs.samples<8?'LEARNING':((cs.bias>=0?'+':'')+(cs.bias*100).toFixed(1)+'%');
+  const mfe=outcomeMemory.filter(x=>Number.isFinite(x.mfe));const mae=outcomeMemory.filter(x=>Number.isFinite(x.mae));
+  $('#memoryMfe').textContent=mfe.length?(mfe.reduce((a,b)=>a+b.mfe,0)/mfe.length).toFixed(2)+'R':'—';
+  $('#memoryMae').textContent=mae.length?(mae.reduce((a,b)=>a+b.mae,0)/mae.length).toFixed(2)+'R':'—';
+  $('#shadowToggle').textContent=shadowMode?'SHADOW ON':'SHADOW OFF';$('#shadowStatus').textContent=shadowMode?'ON':'OFF';
+}
+function recordShadowSignal(a){
+  if(!a||!a.market?.open||!IAmFinite(a.entryCenter))return;
+}
+function IAmFinite(v){return Number.isFinite(Number(v))}
+
+function runLocalLearning(){
+  if(!Array.isArray(outcomeMemory)||!outcomeMemory.length){
+    localReplayCount=0;renderLearningEngine();return{updated:0}
+  }
+  let updated=0,replayed=0;
+  for(const rec of outcomeMemory){
+    if(!rec||!rec.tf||!Number.isFinite(rec.createdAt)||!Number.isFinite(rec.entry)||!Number.isFinite(rec.sl))continue;
+    const arr=marketData[rec.tf]||[];
+    const after=arr.filter(c=>c.ts>=rec.createdAt).slice(0,120);
+    if(!after.length)continue;
+    replayed++;
+    const risk=Math.abs(rec.entry-rec.sl)||1;
+    let mfe=0,mae=0,outcome=rec.outcome||null;
+    for(const c of after){
+      if(rec.side==='BUY'){
+        mfe=Math.max(mfe,(c.high-rec.entry)/risk);
+        mae=Math.max(mae,(rec.entry-c.low)/risk);
+        if(!outcome&&c.low<=rec.sl){outcome='LOSS';break}
+        if(!outcome&&Number.isFinite(rec.tp1)&&c.high>=rec.tp1){outcome='WIN';break}
+      }else{
+        mfe=Math.max(mfe,(rec.entry-c.low)/risk);
+        mae=Math.max(mae,(c.high-rec.entry)/risk);
+        if(!outcome&&c.high>=rec.sl){outcome='LOSS';break}
+        if(!outcome&&Number.isFinite(rec.tp1)&&c.low<=rec.tp1){outcome='WIN';break}
+      }
+    }
+    if(rec.mfe!==mfe||rec.mae!==mae||rec.outcome!==outcome){
+      rec.mfe=mfe;rec.mae=mae;rec.outcome=outcome;rec.lastReplay=Date.now();updated++;
+    }
+  }
+  localReplayCount=replayed;
+  if(updated){
+    outcomeMemory=outcomeMemory.slice(-180);
+    saveJson(OUTCOME_KEY,outcomeMemory);
+  }
+  renderLearningEngine();
+  return{updated,replayed}
+}
+function renderLearningEngine(){
+  if(!$('#learningStatus'))return;
+  $('#learningStatus').textContent='LOCAL';
+  $('#learningApiMode').textContent=packMeta.source==='Offline Cache'?'OFFLINE CACHE':'GITHUB DATA PACK';
+  $('#learningReplays').textContent=localReplayCount;
+  const last=outcomeMemory.map(x=>x.lastReplay||0).filter(Boolean).sort((a,b)=>b-a)[0];
+  $('#learningUpdated').textContent=last?fmtAge(Date.now()-last)+' ago':'—';
+}
+
+function updateOutcomeMemory(){
+  if(!outcomeMemory.length)return;
+  let changed=false;
+  for(const rec of outcomeMemory){
+    if(rec.outcome||!rec.tf||!IAmFinite(rec.entry)||!IAmFinite(rec.sl)||!IAmFinite(rec.tp1))continue;
+    const arr=marketData[rec.tf]||[];const after=arr.filter(c=>c.ts>=rec.createdAt).slice(0,80);
+    if(!after.length)continue;
+    const risk=Math.abs(rec.entry-rec.sl)||1;
+    let mfe=0,mae=0,outcome=null;
+    for(const c of after){
+      if(rec.side==='BUY'){
+        mfe=Math.max(mfe,(c.high-rec.entry)/risk);mae=Math.max(mae,(rec.entry-c.low)/risk);
+        if(c.low<=rec.sl){outcome='LOSS';break}
+        if(c.high>=rec.tp1){outcome='WIN';break}
+      }else{
+        mfe=Math.max(mfe,(rec.entry-c.low)/risk);mae=Math.max(mae,(c.high-rec.entry)/risk);
+        if(c.high>=rec.sl){outcome='LOSS';break}
+        if(c.low<=rec.tp1){outcome='WIN';break}
+      }
+    }
+    rec.mfe=mfe;rec.mae=mae;if(outcome)rec.outcome=outcome;changed=true;
+  }
+  if(changed){outcomeMemory=outcomeMemory.slice(-180);saveJson(OUTCOME_KEY,outcomeMemory)}
+}
+function maybeRememberSignal(a){
+  if(!a||!a.market?.open||!IAmFinite(a.entryCenter)||!IAmFinite(a.sl)||!IAmFinite(a.tp1))return;
+  const sig=`${a.side}|${a.tf}|${Math.round(a.entryCenter*100)}|${Math.round(a.sl*100)}`;
+  if(outcomeMemory.some(x=>x.sig===sig))return;
+  outcomeMemory.push({
+    sig,createdAt:Date.now(),side:a.side,tf:a.tf,entry:a.entryCenter,sl:a.sl,tp1:a.tp1,tp2:a.tp2,
+    rawScore:intelligence.rawConfidence,calibrated:intelligence.calibrated,setup:intelligence.best?.name||a.setupType,
+    regime:a.regime,shadow:shadowMode,outcome:null,mfe:null,mae:null
+  });
+  outcomeMemory=outcomeMemory.slice(-180);saveJson(OUTCOME_KEY,outcomeMemory)
 }
 
 function lotFor(a){
@@ -2508,7 +3150,7 @@ function renderStats(){
   if(activeView('statsView'))drawEquity();
 }
 function renderAiUi(){
-  $('#aiSwitch').classList.toggle('on',aiOn);$('#aiSwitch b').textContent=aiOn?'AI ON':'AI OFF';$('#aiSwitch small').textContent=aiOn?'LOCAL FUSION':'0 CREDIT';
+  $('#aiSwitch').classList.toggle('on',aiOn);$('#aiSwitch b').textContent=aiOn?'AI LIVE':'AI OFF';$('#aiSwitch small').textContent=aiOn?'LOCAL FUSION':'0 CREDIT';
   if(!analysis){
     $('#bestTf').textContent='—';$('#direction').textContent='WAIT';$('#confidence').textContent='Confidence —';$('#suggestedLot').textContent='—';$('#maxLot').textContent='Max —';$('#signalSide').textContent='WAIT';$('#signalReason').textContent='ยังไม่ได้วิเคราะห์';$('#signalStatus').textContent='IDLE';
     ['entryZone','signalSl','signalTp1','signalTp2'].forEach(id=>$('#'+id).textContent='—');
@@ -2552,9 +3194,14 @@ async function renderAllProgressive(){
 
 function candleTime(c){return c?dtBangkok(c.ts,currentTf==='H1'):'—'}
 function visibleData(){
-  const src=marketData[currentTf]||[];if(!src.length)return{src,visible:[],start:0};
-  chartView.bars=clamp(Math.round(chartView.bars),28,Math.min(120,src.length));chartView.offset=clamp(Math.round(chartView.offset),0,Math.max(0,src.length-chartView.bars));
-  const end=src.length-chartView.offset,start=Math.max(0,end-chartView.bars);return{src,visible:src.slice(start,end),start}
+  const full=(marketData[currentTf]||[]);
+  const src=latestContinuousSegment(full,currentTf);
+  if(!src.length)return{src:[],visible:[],start:0,end:0};
+  chartView.bars=clamp(Math.round(chartView.bars),28,Math.min(120,src.length));
+  chartView.offset=clamp(Math.round(chartView.offset),0,Math.max(0,src.length-chartView.bars));
+  const end=Math.max(0,src.length-chartView.offset);
+  const start=Math.max(0,end-chartView.bars);
+  return{src,visible:src.slice(start,end),start,end}
 }
 function drawChartNow(){
   const canvas=$('#marketChart'),vd=visibleData(),data=vd.visible,empty=$('#chartEmpty');
@@ -2601,26 +3248,27 @@ function sanitizedVisibleData(){
   const ranges=raw.map(c=>c.high-c.low).filter(v=>Number.isFinite(v)&&v>0);
   const med=median(ranges)||1,q95=percentile(ranges,.95)||med*2;
   const clean=[];
-  let prev=null;
+  let prev=null,flatRun=0;
   for(const c of raw){
     const range=c.high-c.low;
     const body=Math.abs(c.close-c.open);
     const gap=prev?Math.abs(c.open-prev.close):0;
-    // Keep real spikes, but cap clearly malformed values for visual scaling only.
-    const visualRangeLimit=Math.max(q95*2.6,med*5);
+    const nearFlat=range<med*.08&&body<med*.03;
+    flatRun=nearFlat?flatRun+1:0;
+    if(flatRun>5){prev=c;continue}
+    const visualRangeLimit=Math.max(q95*2.1,med*4.2);
     let vc={...c};
-    if(range>visualRangeLimit*2.4){
-      const mid=(c.open+c.close)/2;
-      const half=visualRangeLimit/2;
+    if(range>visualRangeLimit*2.2){
+      const mid=(c.open+c.close)/2,half=visualRangeLimit/2;
       vc={...vc,high:Math.max(c.open,c.close,mid+half),low:Math.min(c.open,c.close,mid-half),visualCapped:true}
     }
-    if(prev&&gap>Math.max(q95*4,med*8)){
+    if(prev&&gap>Math.max(q95*3.2,med*7)){
       vc={...vc,open:prev.close,visualGapAdjusted:true};
-      vc.high=Math.max(vc.high,vc.open,vc.close);vc.low=Math.min(vc.low,vc.open,vc.close);
+      vc.high=Math.max(vc.high,vc.open,vc.close);vc.low=Math.min(vc.low,vc.open,vc.close)
     }
-    clean.push(vc);prev=c;
+    clean.push(vc);prev=c
   }
-  return {...vd,visible:clean};
+  return{...vd,visible:clean}
 }
 function drawChart(){
   if(!activeView('marketView'))return;
@@ -2812,7 +3460,7 @@ async function analyze(){
     perfState.windowCache.clear();
     setActionUI('กำลังวิเคราะห์ตลาด…','คำนวณ Multi‑TF / Structure / Risk',58);
     await nextFrame();
-    analysis=chooseAnalysis();registerScan();
+    analysis=chooseAnalysis();runLocalLearning();maybeRememberSignal(analysis);registerScan();
     if(analysis?.side!=='WAIT'&&analysis.market.open)registerSignal();
     processActiveSignal();
     setActionUI('กำลังอัปเดตหน้าจอ…','จัดทำ Signal / Lot / Best Window',82);
@@ -2930,12 +3578,10 @@ async function boot(){
 
     if(cachedMarket?.value){
       try{
-        const j=cachedMarket.value,tf=j.timeframes||j.data||j;
+        const j=cachedMarket.value;
         packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):cachedMarket.savedAt;
         packMeta.source='Offline Cache';
-        for(const k of ['M1','M5','M15','H1']){
-          marketData[k]=(tf[k]||[]).map(normalizeCandle).filter(Boolean).sort((a,b)=>a.ts-b.ts);
-        }
+        rebuildMarketData(j);
       }catch(_){}
     }
 
@@ -2962,6 +3608,8 @@ async function boot(){
     const results=await Promise.allSettled([marketPromise,newsPromise]);
     const marketOk=results[0].status==='fulfilled' && results[0].value;
     const newsOk=results[1].status==='fulfilled' && results[1].value;
+
+    runLocalLearning();renderPipeline();
 
     bootUI.set(68,'กำลังเตรียม AI Engine…',marketOk?'Market Data พร้อม':'ใช้ Market Cache ล่าสุด');
     await nextFrame();
@@ -3073,6 +3721,12 @@ $('#checkUpdateBtn')?.addEventListener('click',async()=>{
 });
 $('#clearCacheReloadBtn')?.addEventListener('click',()=>{
   if(confirm('ล้าง Cache แล้ว Reload แอปใหม่ทั้งหมด?'))clearAllCachesAndReload()
+});
+
+
+$('#shadowToggle')?.addEventListener('click',()=>{
+  shadowMode=!shadowMode;localStorage.setItem(SHADOW_KEY,shadowMode?'1':'0');renderIntelligence();
+  toast(shadowMode?'Shadow Mode ON · เก็บผลแต่ไม่ปล่อย READY':'Shadow Mode OFF')
 });
 
 boot().finally(()=>clearTimeout(bootSafetyTimer));
