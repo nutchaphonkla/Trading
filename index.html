@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="One Month">
-<title>ONE MONTH V9 — Fusion AI Trading System</title>
+<title>ONE MONTH V10 V10 — Fusion AI Trading System</title>
 <style>
 :root{
   --bg:#07090d;
@@ -510,6 +510,24 @@ summary::-webkit-details-marker{display:none}
 .replayEmpty{padding:24px;text-align:center;color:var(--muted);font-size:9px}
 @media(max-width:380px){.commandGrid,.guardianGrid,.memoryMetrics{gap:5px}.commandGrid>div,.guardianGrid>div,.memoryMetrics>div{padding:9px 7px}.lifeInfo{gap:4px}.lifeInfo>div{padding:8px 6px}}
 
+
+/* ===== V10 MARKET-CLOSED / DATA-LOAD FIX ===== */
+.marketModeBadge{
+  display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:6px 8px;border-radius:999px;
+  border:1px solid var(--line);font-size:7px;font-weight:900;color:#98a4b3;background:#090e14
+}
+.marketModeBadge i{width:6px;height:6px;border-radius:50%;background:#657080}
+.marketModeBadge.live{color:var(--green);border-color:rgba(112,242,180,.12);background:rgba(112,242,180,.04)}
+.marketModeBadge.live i{background:var(--green)}
+.marketModeBadge.closed{color:var(--amber);border-color:rgba(255,214,107,.12);background:rgba(255,214,107,.04)}
+.marketModeBadge.closed i{background:var(--amber)}
+.closedInfo{
+  margin-top:8px;padding:10px 11px;border-radius:13px;border:1px solid rgba(255,214,107,.10);
+  background:rgba(255,214,107,.035);color:#b8aa78;font-size:8px;line-height:1.5
+}
+.chartEmpty.loading button{opacity:.6;pointer-events:none}
+.tfSwitch button.loading{opacity:.55;pointer-events:none}
+
 </style>
 </head>
 <body>
@@ -696,6 +714,9 @@ summary::-webkit-details-marker{display:none}
       </div>
       <div class="commandAction" id="commandAction">
         <i></i><span>ระบบจะบอกสิ่งที่ควรทำตอนนี้หลังวิเคราะห์เสร็จ</span>
+      </div>
+      <div class="closedInfo hidden" id="closedInfo">
+        ตลาดปิดอยู่ · ระบบยังโหลดและวิเคราะห์แท่งเทียนของ Session ล่าสุดได้ แต่จะไม่เปิด Entry ใหม่หรือใช้ Live Tick
       </div>
     </section>
 
@@ -1617,7 +1638,7 @@ function showView(viewId){
 $$('.nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 
 
-/* ===== ONE MONTH ADAPTIVE AI v9 · CREDIT SAVER + NEWS ===== */
+/* ===== ONE MONTH ADAPTIVE AI v10 · CREDIT SAVER + NEWS ===== */
 const MARKET_INTERVALS={M1:{api:'1min',seconds:60,ttl:55000},M5:{api:'5min',seconds:300,ttl:260000},M15:{api:'15min',seconds:900,ttl:780000},H1:{api:'1h',seconds:3600,ttl:3300000}};
 const AI_KEY='one_month_ai_enabled_v7', TE_KEY='one_month_te_key_v7', CREDIT_KEY='one_month_credit_usage_v7', NEWS_KEY='one_month_news_cache_v7';
 const MEMORY_KEY='one_month_ai_memory_v9', ACTIVE_SIGNAL_KEY='one_month_ai_active_signal_v9';
@@ -1717,7 +1738,7 @@ function finalizeSignal(outcome,price){
   renderLifecycle();renderAiMemory();renderGuardian();renderCommandCenter();
 }
 function registerSignalFromBest(b){
-  if(!b||b.side==='WAIT'||!Number.isFinite(b.entryCenter)||guardianState().locked)return;
+  if(!b||b.historical||sessionInfo().closed||b.side==='WAIT'||!Number.isFinite(b.entryCenter)||guardianState().locked)return;
   if(activeSignal&&!isTerminalStatus(activeSignal)){
     const same=activeSignal.side===b.side&&activeSignal.tf===b.tf&&Math.abs(activeSignal.entryCenter-b.entryCenter)<Math.max(.01,(b.atr||1)*.35);
     if(same)return;
@@ -1845,6 +1866,7 @@ function renderCommandCenter(){
   const b=marketScan.best,n=newsContext(),g=guardianState(),mem=b?memoryStatsFor(b):{n:0,rate:.5,adjust:0},policy=regimePolicy(b);
   let badge='WAIT',cls='wait',headline='รอการวิเคราะห์',reason='เปิด AI และสแกนตลาดก่อน',action='ยังไม่มีคำสั่ง';
   if(!marketScan.aiEnabled){headline='AI OFF · 0 CREDIT';reason='ระบบไม่เรียก Market API หรือ WebSocket';action='เปิด AI เมื่อพร้อมวิเคราะห์'}
+  else if(sessionInfo().closed){badge='CLOSED';cls='wait';headline=b?.historical?('LAST SESSION · '+b.direction+' BIAS'):'MARKET CLOSED';reason=b?.historical?('Historical score '+b.score+' · M15 '+b.structure):'โหลด H1/M15 ล่าสุดเพื่อดูโครงสร้างย้อนหลัง';action='ตลาดปิด · ดูกราฟย้อนหลังได้ แต่ Entry/SL/TP ใหม่ถูกปิด'}
   else if(g.locked){badge='LOCK';cls='lock';headline='RISK GUARDIAN LOCK';reason=g.reasons.join(' · ');action='หยุดเพิ่มความเสี่ยงจนกว่าเงื่อนไข Guardian จะคลาย'}
   else if(n.lock){badge='NEWS';cls='lock';headline='NEWS LOCK';reason='อยู่ในช่วงข่าวแรง ไม่อนุญาต Entry ใหม่';action='รอให้ News Lock สิ้นสุดแล้วสแกนใหม่'}
   else if(activeSignal){badge=activeSignal.status;cls=activeSignal.side==='BUY'?'buy':'sell';headline=activeSignal.side+' '+activeSignal.tf+' · '+activeSignal.status;reason=activeSignal.setupType+' · Entry '+fmtPrice(activeSignal.entryCenter);action=activeSignal.status==='WATCH'?'รอราคาเข้า Entry Zone · ห้ามไล่ราคา':activeSignal.status==='ACTIVE'?'รักษา SL ตามระบบ · ไม่ขยาย Stop':'TP1 แล้ว · คุมความเสี่ยงและรอ TP2'}
@@ -1937,59 +1959,179 @@ function lotFromSignal(s){
 function disconnectStream(){try{if(marketScan.ws){marketScan.ws.onclose=null;marketScan.ws.close()}}catch(_){}marketScan.ws=null;$('#wsDot').classList.remove('live');$('#wsState').textContent='AI OFF'}
 function updateCandleFromTick(tf,price,tsSec){const d=marketScan.datasets[tf];if(!d?.length)return;const sec=MARKET_INTERVALS[tf].seconds,bucket=Math.floor(tsSec/sec)*sec*1000,last=d.at(-1),lb=Number.isFinite(last.ts)?Math.floor(last.ts/(sec*1000))*sec*1000:null;if(lb===bucket){last.close=price;last.high=Math.max(last.high,price);last.low=Math.min(last.low,price)}else if(!lb||bucket>lb){d.push({ts:bucket,datetime:new Date(bucket).toISOString(),open:last.close,high:price,low:price,close:price});if(d.length>260)d.shift()}}
 function handleLiveTick(price,tsSec){if(!Number.isFinite(price)||!marketScan.aiEnabled)return;marketScan.livePrice=price;marketScan.lastTickTs=Date.now();Object.keys(MARKET_INTERVALS).forEach(tf=>updateCandleFromTick(tf,price,tsSec||Math.floor(Date.now()/1000)));processSignalPrice(price,(tsSec||Math.floor(Date.now()/1000))*1000);$('#liveGold').innerHTML=fmtPrice(price)+' <small>XAUUSD</small>';$('#chartLastPrice').textContent=fmtPrice(price);$('#wsDot').classList.add('live');$('#wsState').textContent='LIVE · WS';requestAnimationFrame(drawMarketChart)}
-function connectPriceStream(){if(!marketScan.aiEnabled)return;const key=getApiKey();if(!key)return;disconnectStream();try{const ws=new WebSocket('wss://ws.twelvedata.com/v1/quotes/price?apikey='+encodeURIComponent(key));marketScan.ws=ws;ws.onopen=()=>{ws.send(JSON.stringify({action:'subscribe',params:{symbols:'XAU/USD'}}));$('#wsState').textContent='CONNECTING'};ws.onmessage=e=>{try{const d=JSON.parse(e.data),p=Number(d.price);if(Number.isFinite(p))handleLiveTick(p,Number(d.timestamp)||Math.floor(Date.now()/1000))}catch(_){}};ws.onerror=ws.onclose=()=>{if(marketScan.aiEnabled){$('#wsDot').classList.remove('live');$('#wsState').textContent='REST · CACHE'}}}catch(_){$('#wsState').textContent='REST · CACHE'}}
+function connectPriceStream(){if(!marketScan.aiEnabled||sessionInfo().closed){disconnectStream();renderMarketMode();return}const key=getApiKey();if(!key)return;disconnectStream();try{const ws=new WebSocket('wss://ws.twelvedata.com/v1/quotes/price?apikey='+encodeURIComponent(key));marketScan.ws=ws;ws.onopen=()=>{ws.send(JSON.stringify({action:'subscribe',params:{symbols:'XAU/USD'}}));$('#wsState').textContent='CONNECTING'};ws.onmessage=e=>{try{const d=JSON.parse(e.data),p=Number(d.price);if(Number.isFinite(p))handleLiveTick(p,Number(d.timestamp)||Math.floor(Date.now()/1000))}catch(_){}};ws.onerror=ws.onclose=()=>{if(marketScan.aiEnabled){$('#wsDot').classList.remove('live');$('#wsState').textContent='REST · CACHE'}}}catch(_){$('#wsState').textContent='REST · CACHE'}}
 
-function drawMarketChart(){const canvas=$('#marketChart');if(!canvas)return;const rect=canvas.getBoundingClientRect();if(rect.width<20)return;const W=rect.width,H=rect.height||400,dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);const tf=marketScan.selectedTf,data=(marketScan.datasets[tf]||[]).slice(-64);if(data.length<5){setChartState(marketScan.aiEnabled?(getApiKey()?'ready':'key'):'off');return}setChartState('data');if(!$('#wsDot').classList.contains('live'))$('#wsState').textContent='CANDLE FEED';const closes=data.map(x=>x.close),e9=ema(closes,9),e21=ema(closes,21),signal=marketScan.best&&marketScan.best.tf===tf?marketScan.best:null,levels=signal?[signal.entryLow,signal.entryHigh,signal.sl,signal.tp1,signal.tp2].filter(Number.isFinite):[],vals=[...data.flatMap(c=>[c.high,c.low]),...levels];let lo=Math.min(...vals),hi=Math.max(...vals),rg=Math.max(.2,hi-lo);lo-=rg*.08;hi+=rg*.08;const pad={l:8,r:52,t:12,b:22},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b,y=p=>pad.t+(hi-p)/(hi-lo)*ph,st=pw/data.length,cw=Math.max(2,Math.min(7,st*.58));ctx.strokeStyle='rgba(255,255,255,.045)';for(let i=0;i<6;i++){const yy=pad.t+ph*i/5;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.fillStyle='rgba(127,139,155,.62)';ctx.font='8px -apple-system,sans-serif';ctx.textAlign='right';ctx.fillText((hi-(hi-lo)*i/5).toFixed(2),W-4,yy+3)}for(let i=0;i<5;i++){const xx=pad.l+pw*i/4;ctx.beginPath();ctx.moveTo(xx,pad.t);ctx.lineTo(xx,H-pad.b);ctx.stroke()}data.forEach((c,i)=>{const x=pad.l+st*i+st/2,col=c.close>=c.open?'rgba(112,242,180,.94)':'rgba(255,115,129,.94)';ctx.strokeStyle=col;ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,y(c.high));ctx.lineTo(x,y(c.low));ctx.stroke();ctx.fillRect(x-cw/2,Math.min(y(c.open),y(c.close)),cw,Math.max(1,Math.abs(y(c.open)-y(c.close))))});const curve=(a,color)=>{ctx.strokeStyle=color;ctx.lineWidth=1.2;ctx.beginPath();a.forEach((v,i)=>{const x=pad.l+st*i+st/2,yy=y(v);i?ctx.lineTo(x,yy):ctx.moveTo(x,yy)});ctx.stroke()};curve(e9,'rgba(117,216,255,.78)');curve(e21,'rgba(255,214,107,.70)');const ps=pivots(data);ctx.fillStyle='rgba(210,220,232,.65)';[...ps.highs.slice(-5),...ps.lows.slice(-5)].forEach(p=>{const x=pad.l+st*p.i+st/2;ctx.beginPath();ctx.arc(x,y(p.price),2,0,Math.PI*2);ctx.fill()});const lvl=(p,label,color,dash=[5,4])=>{if(!Number.isFinite(p))return;const yy=y(p);ctx.save();ctx.setLineDash(dash);ctx.strokeStyle=color;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=color;ctx.font='bold 8px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(label+' '+p.toFixed(2),pad.l+4,Math.max(10,yy-4));ctx.restore()};if(signal&&signal.side!=='WAIT'){ctx.fillStyle='rgba(117,216,255,.07)';ctx.fillRect(pad.l,y(Math.max(signal.entryLow,signal.entryHigh)),pw,Math.max(2,y(Math.min(signal.entryLow,signal.entryHigh))-y(Math.max(signal.entryLow,signal.entryHigh))));lvl(signal.entryCenter,'ENTRY','rgba(117,216,255,.98)');lvl(signal.sl,'SL','rgba(255,115,129,.98)',[4,3]);lvl(signal.tp1,'TP1','rgba(112,242,180,.98)');lvl(signal.tp2,'TP2','rgba(112,242,180,.58)',[3,4])}lvl(data.at(-1).close,'NOW','rgba(235,241,247,.42)',[2,4]);$('#chartLastPrice').textContent=fmtPrice(data.at(-1).close)}
+function drawMarketChart(){const canvas=$('#marketChart');if(!canvas)return;const rect=canvas.getBoundingClientRect();if(rect.width<20)return;const W=rect.width,H=rect.height||400,dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);const tf=marketScan.selectedTf,data=(marketScan.datasets[tf]||[]).slice(-64);if(data.length<5){setChartState(marketScan.aiEnabled?(getApiKey()?'ready':'key'):'off','',tf);return}setChartState('data','',tf);if(!$('#wsDot').classList.contains('live'))$('#wsState').textContent=sessionInfo().closed?'HISTORICAL':'CANDLE FEED';const closes=data.map(x=>x.close),e9=ema(closes,9),e21=ema(closes,21),signal=marketScan.best&&marketScan.best.tf===tf?marketScan.best:null,levels=signal?[signal.entryLow,signal.entryHigh,signal.sl,signal.tp1,signal.tp2].filter(Number.isFinite):[],vals=[...data.flatMap(c=>[c.high,c.low]),...levels];let lo=Math.min(...vals),hi=Math.max(...vals),rg=Math.max(.2,hi-lo);lo-=rg*.08;hi+=rg*.08;const pad={l:8,r:52,t:12,b:22},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b,y=p=>pad.t+(hi-p)/(hi-lo)*ph,st=pw/data.length,cw=Math.max(2,Math.min(7,st*.58));ctx.strokeStyle='rgba(255,255,255,.045)';for(let i=0;i<6;i++){const yy=pad.t+ph*i/5;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.fillStyle='rgba(127,139,155,.62)';ctx.font='8px -apple-system,sans-serif';ctx.textAlign='right';ctx.fillText((hi-(hi-lo)*i/5).toFixed(2),W-4,yy+3)}for(let i=0;i<5;i++){const xx=pad.l+pw*i/4;ctx.beginPath();ctx.moveTo(xx,pad.t);ctx.lineTo(xx,H-pad.b);ctx.stroke()}data.forEach((c,i)=>{const x=pad.l+st*i+st/2,col=c.close>=c.open?'rgba(112,242,180,.94)':'rgba(255,115,129,.94)';ctx.strokeStyle=col;ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,y(c.high));ctx.lineTo(x,y(c.low));ctx.stroke();ctx.fillRect(x-cw/2,Math.min(y(c.open),y(c.close)),cw,Math.max(1,Math.abs(y(c.open)-y(c.close))))});const curve=(a,color)=>{ctx.strokeStyle=color;ctx.lineWidth=1.2;ctx.beginPath();a.forEach((v,i)=>{const x=pad.l+st*i+st/2,yy=y(v);i?ctx.lineTo(x,yy):ctx.moveTo(x,yy)});ctx.stroke()};curve(e9,'rgba(117,216,255,.78)');curve(e21,'rgba(255,214,107,.70)');const ps=pivots(data);ctx.fillStyle='rgba(210,220,232,.65)';[...ps.highs.slice(-5),...ps.lows.slice(-5)].forEach(p=>{const x=pad.l+st*p.i+st/2;ctx.beginPath();ctx.arc(x,y(p.price),2,0,Math.PI*2);ctx.fill()});const lvl=(p,label,color,dash=[5,4])=>{if(!Number.isFinite(p))return;const yy=y(p);ctx.save();ctx.setLineDash(dash);ctx.strokeStyle=color;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=color;ctx.font='bold 8px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(label+' '+p.toFixed(2),pad.l+4,Math.max(10,yy-4));ctx.restore()};if(signal&&signal.side!=='WAIT'){ctx.fillStyle='rgba(117,216,255,.07)';ctx.fillRect(pad.l,y(Math.max(signal.entryLow,signal.entryHigh)),pw,Math.max(2,y(Math.min(signal.entryLow,signal.entryHigh))-y(Math.max(signal.entryLow,signal.entryHigh))));lvl(signal.entryCenter,'ENTRY','rgba(117,216,255,.98)');lvl(signal.sl,'SL','rgba(255,115,129,.98)',[4,3]);lvl(signal.tp1,'TP1','rgba(112,242,180,.98)');lvl(signal.tp2,'TP2','rgba(112,242,180,.58)',[3,4])}lvl(data.at(-1).close,'NOW','rgba(235,241,247,.42)',[2,4]);$('#chartLastPrice').textContent=fmtPrice(data.at(-1).close)}
 function drawSignalChart(){const canvas=$('#signalChart');if(!canvas)return;const rect=canvas.getBoundingClientRect();if(rect.width<20)return;const W=rect.width,H=rect.height||250,dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);const b=marketScan.best,data=b?(marketScan.datasets[b.tf]||[]).slice(-36):[];if(!b||data.length<5){ctx.fillStyle='rgba(127,139,155,.7)';ctx.font='10px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText(marketScan.aiEnabled?'รอสแกนตลาด':'AI OFF',W/2,H/2);return}const vals=[...data.flatMap(c=>[c.high,c.low]),b.entryLow,b.entryHigh,b.sl,b.tp1,b.tp2].filter(Number.isFinite);let lo=Math.min(...vals),hi=Math.max(...vals),rg=Math.max(.2,hi-lo);lo-=rg*.08;hi+=rg*.08;const pad={l:6,r:44,t:8,b:15},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b,y=p=>pad.t+(hi-p)/(hi-lo)*ph,st=pw/data.length,cw=Math.max(2,Math.min(6,st*.55));ctx.strokeStyle='rgba(255,255,255,.04)';for(let i=0;i<4;i++){const yy=pad.t+ph*i/3;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke()}data.forEach((c,i)=>{const x=pad.l+st*i+st/2,col=c.close>=c.open?'rgba(112,242,180,.88)':'rgba(255,115,129,.88)';ctx.strokeStyle=col;ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,y(c.high));ctx.lineTo(x,y(c.low));ctx.stroke();ctx.fillRect(x-cw/2,Math.min(y(c.open),y(c.close)),cw,Math.max(1,Math.abs(y(c.open)-y(c.close))))});const l=(p,label,color)=>{if(!Number.isFinite(p))return;const yy=y(p);ctx.strokeStyle=color;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=color;ctx.font='bold 8px -apple-system,sans-serif';ctx.fillText(label,pad.l+3,yy-3)};if(b.side!=='WAIT'){l(b.entryCenter,'ENTRY','rgba(117,216,255,.95)');l(b.sl,'SL','rgba(255,115,129,.95)');l(b.tp1,'TP','rgba(112,242,180,.95)')}}
 
 function renderFusion(){
   const b=marketScan.best,n=newsContext(),sess=sessionInfo(),guard=guardianState();
+  if(sess.closed){
+    const H=marketScan.results.H1,A=marketScan.results.M15;
+    const gates=[
+      ['Market Status',false,'CLOSED'],
+      ['Last Session Data',!!(H&&A),H&&A?'LOADED':'WAIT'],
+      ['H1 Bias',!!H,H?.direction||'—'],
+      ['M15 Structure',!!A,A?.structure||'—'],
+      ['News Calendar',!n.lock,n.lock?'LOCK':'READY'],
+      ['Execution',false,'DISABLED']
+    ];
+    $('#gateList').innerHTML=gates.map(([name,ok,label])=>`<div class="gate ${ok?'pass':'block'}"><i></i><span>${name}</span><b>${label}</b></div>`).join('');
+    $('#fusionScore').textContent=b?.historical?('HIST '+b.score):'CLOSED';
+    renderMarketMode();
+    return;
+  }
   let gates=[
-    ['HTF Trend',!!b?.coreAligned],
-    ['Structure / BOS',!!b&&(b.structure!=='RANGE'||b.bos!=='NONE')],
-    ['Momentum',!!b&&b.adx>=18],
-    ['Volatility',!!b&&b.regime!=='RANGE'&&!b.stretched],
-    ['News / Session',!n.lock&&!sess.closed],
-    ['Risk / Memory',!!b&&!guard.locked&&(b.memory?.adjust??0)>-8]
+    ['HTF Trend',!!b?.coreAligned,'PASS'],
+    ['Structure / BOS',!!b&&(b.structure!=='RANGE'||b.bos!=='NONE'),'PASS'],
+    ['Momentum',!!b&&b.adx>=18,'PASS'],
+    ['Volatility',!!b&&b.regime!=='RANGE'&&!b.stretched,'PASS'],
+    ['News / Session',!n.lock&&!sess.closed,'PASS'],
+    ['Risk / Memory',!!b&&!guard.locked&&(b.memory?.adjust??0)>-8,'PASS']
   ];
   $('#gateList').innerHTML=gates.map(([name,ok])=>`<div class="gate ${ok?'pass':'block'}"><i></i><span>${name}</span><b>${ok?'PASS':'BLOCK'}</b></div>`).join('');
-  const pass=gates.filter(x=>x[1]).length,score=b?Math.round((b.score*.72)+(pass/6*28)):0;$('#fusionScore').textContent=score+' / 100'
+  const pass=gates.filter(x=>x[1]).length,score=b?Math.round((b.score*.72)+(pass/6*28)):0;
+  $('#fusionScore').textContent=score+' / 100';
 }
-function syncAiQuickCards(){const b=marketScan.best;if(!b){$('#aiQuickTf').textContent='—';$('#aiQuickSide').textContent='WAIT';$('#aiQuickConfidence').textContent='Confidence —';$('#aiQuickLot').textContent='—';$('#aiQuickMaxLot').textContent='Max —';$('#signalChartTitle').textContent=marketScan.aiEnabled?'รอสแกนตลาด':'AI OFF';renderFusion();return}const lm=lotFromSignal(b);$('#aiQuickTf').textContent=b.tf;$('#aiQuickSide').textContent=b.side;$('#aiQuickSide').style.color=b.side==='BUY'?'var(--green)':b.side==='SELL'?'var(--red)':'var(--amber)';$('#aiQuickConfidence').textContent='Confidence '+b.score+'%';$('#aiQuickLot').textContent=lm.suggested==='—'?'—':lm.suggested+' lot';$('#aiQuickMaxLot').textContent='Max '+(lm.max==='—'?'—':lm.max+' lot');$('#signalChartTitle').textContent=b.tf+' · '+b.side+' · '+b.setupType+' · '+b.score;$('#signalChartHint').textContent=b.side==='WAIT'?(b.blockers?.[0]||'AI ไม่อนุญาตให้เข้า'):'Structure + News + Risk ผ่าน';renderFusion()}
-function renderMarketScan(){const r=marketScan.results||{},b=marketScan.best;Object.keys(MARKET_INTERVALS).forEach(tf=>{const x=r[tf];$('#score'+tf).textContent=x?x.quality:'—';$('#bias'+tf).textContent=x?x.direction:'WAIT';const el=document.querySelector('[data-score-tf="'+tf+'"]');if(el)el.classList.toggle('best',!!b&&b.tf===tf)});if(!b){syncAiQuickCards();drawSignalChart();drawMarketChart();return}$('#liveGold').innerHTML=fmtPrice(marketScan.livePrice??b.close)+' <small>XAUUSD</small>';$('#bestTf').textContent=b.tf+' · '+b.setupType;$('#marketState').textContent=b.side==='WAIT'?'NO CLEAN SETUP':b.side+' SETUP';$('#aiPulse').classList.toggle('live',marketScan.aiEnabled);$('#signalSide').textContent=b.side;$('#signalSide').className='signalSide '+(b.side==='BUY'?'buy':b.side==='SELL'?'sell':'wait');$('#confidence').textContent='CONFIDENCE '+b.score+'%';$('#signalReason').textContent=b.reasons.join(' · ');$('#regimeTag').textContent=b.regime;$('#sessionTag').textContent=b.session;$('#alignTag').textContent=b.align+'/4';if(b.side==='WAIT'){['entryZone','signalSL','signalTP1','signalTP2','signalRR','signalLot','signalMaxLot'].forEach(id=>$('#'+id).textContent='—')}else{const lm=lotFromSignal(b);$('#entryZone').textContent=fmtPrice(b.entryLow)+' – '+fmtPrice(b.entryHigh);$('#signalSL').textContent=fmtPrice(b.sl);$('#signalTP1').textContent=fmtPrice(b.tp1);$('#signalTP2').textContent=fmtPrice(b.tp2);$('#signalRR').textContent='1 : '+b.rr.toFixed(2);$('#signalLot').textContent=lm.suggested==='—'?'—':lm.suggested+' lot';$('#signalMaxLot').textContent=lm.max==='—'?'—':lm.max+' lot'}if(marketScan.last)$('#aiUpdated').textContent='อัปเดต '+marketScan.last.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});syncAiQuickCards();renderLifecycle();renderGuardian();renderAiMemory();renderCommandCenter();requestAnimationFrame(drawSignalChart);requestAnimationFrame(drawMarketChart)}
+function syncAiQuickCards(){const b=marketScan.best;if(!b){$('#aiQuickTf').textContent='—';$('#aiQuickSide').textContent='WAIT';$('#aiQuickConfidence').textContent='Confidence —';$('#aiQuickLot').textContent='—';$('#aiQuickMaxLot').textContent='Max —';$('#signalChartTitle').textContent=marketScan.aiEnabled?'รอสแกนตลาด':'AI OFF';renderFusion();return}const lm=lotFromSignal(b);$('#aiQuickTf').textContent=b.tf;$('#aiQuickSide').textContent=b.historical?('WAIT · '+b.direction):b.side;$('#aiQuickSide').style.color=b.side==='BUY'?'var(--green)':b.side==='SELL'?'var(--red)':'var(--amber)';$('#aiQuickConfidence').textContent='Confidence '+b.score+'%';$('#aiQuickLot').textContent=lm.suggested==='—'?'—':lm.suggested+' lot';$('#aiQuickMaxLot').textContent='Max '+(lm.max==='—'?'—':lm.max+' lot');$('#signalChartTitle').textContent=b.historical?(b.tf+' · LAST SESSION · '+b.direction+' · '+b.score):(b.tf+' · '+b.side+' · '+b.setupType+' · '+b.score);$('#signalChartHint').textContent=b.side==='WAIT'?(b.blockers?.[0]||'AI ไม่อนุญาตให้เข้า'):'Structure + News + Risk ผ่าน';renderFusion()}
+function renderMarketScan(){const r=marketScan.results||{},b=marketScan.best;Object.keys(MARKET_INTERVALS).forEach(tf=>{const x=r[tf];$('#score'+tf).textContent=x?x.quality:'—';$('#bias'+tf).textContent=x?x.direction:'WAIT';const el=document.querySelector('[data-score-tf="'+tf+'"]');if(el)el.classList.toggle('best',!!b&&b.tf===tf)});if(!b){syncAiQuickCards();drawSignalChart();drawMarketChart();return}$('#liveGold').innerHTML=fmtPrice(marketScan.livePrice??b.close)+' <small>XAUUSD</small>';$('#bestTf').textContent=b.tf+' · '+b.setupType;$('#marketState').textContent=b.side==='WAIT'?'NO CLEAN SETUP':b.side+' SETUP';$('#aiPulse').classList.toggle('live',marketScan.aiEnabled);$('#signalSide').textContent=b.side;$('#signalSide').className='signalSide '+(b.side==='BUY'?'buy':b.side==='SELL'?'sell':'wait');$('#confidence').textContent='CONFIDENCE '+b.score+'%';$('#signalReason').textContent=b.reasons.join(' · ');$('#regimeTag').textContent=b.regime;$('#sessionTag').textContent=b.session;$('#alignTag').textContent=b.align+'/4';if(b.side==='WAIT'){['entryZone','signalSL','signalTP1','signalTP2','signalRR','signalLot','signalMaxLot'].forEach(id=>$('#'+id).textContent='—')}else{const lm=lotFromSignal(b);$('#entryZone').textContent=fmtPrice(b.entryLow)+' – '+fmtPrice(b.entryHigh);$('#signalSL').textContent=fmtPrice(b.sl);$('#signalTP1').textContent=fmtPrice(b.tp1);$('#signalTP2').textContent=fmtPrice(b.tp2);$('#signalRR').textContent='1 : '+b.rr.toFixed(2);$('#signalLot').textContent=lm.suggested==='—'?'—':lm.suggested+' lot';$('#signalMaxLot').textContent=lm.max==='—'?'—':lm.max+' lot'}if(marketScan.last)$('#aiUpdated').textContent='อัปเดต '+marketScan.last.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});syncAiQuickCards();renderLifecycle();renderGuardian();renderAiMemory();renderCommandCenter();renderMarketMode();requestAnimationFrame(drawSignalChart);requestAnimationFrame(drawMarketChart)}
 
 
-function setChartState(mode,message=''){
+function setChartState(mode,message='',tf=marketScan.selectedTf){
   const wrap=$('#marketChartWrap'),title=$('#chartEmptyTitle'),desc=$('#chartEmptyText'),btn=$('#chartEmptyBtn');
   if(!wrap)return;
-  const hasData=Object.values(marketScan.datasets||{}).some(v=>Array.isArray(v)&&v.length>5);
+  const selectedData=marketScan.datasets?.[tf];
+  const hasData=Array.isArray(selectedData)&&selectedData.length>5;
   wrap.classList.remove('hasData','noData');
+  $('#chartEmpty')?.classList.toggle('loading',mode==='loading');
   if(hasData){wrap.classList.add('hasData');return}
   wrap.classList.add('noData');
-  if(mode==='off'){title.textContent='AI ยังปิดอยู่';desc.textContent='เปิด AI ก่อน ระบบจะโหลดแท่งเทียน XAUUSD จริงและใช้ Smart Credit Engine ให้';btn.textContent='เปิด AI';btn.dataset.action='enable'}
-  else if(mode==='key'){title.textContent='ยังไม่มี Market API Key';desc.textContent='ใส่ Twelve Data API Key ครั้งเดียว แล้วกราฟจะโหลดจาก Market Feed จริง';btn.textContent='ตั้งค่า API';btn.dataset.action='settings'}
-  else if(mode==='loading'){title.textContent='กำลังโหลด Market Data';desc.textContent='กำลังอ่าน H1 และ M15 ก่อน แล้วค่อยลง TF เล็กเฉพาะเมื่อจำเป็น';btn.textContent='กำลังวิเคราะห์…';btn.dataset.action='none'}
-  else if(mode==='error'){title.textContent='โหลดกราฟไม่สำเร็จ';desc.textContent=message||'ตรวจ API Key หรือโควตา แล้วลองใหม่อีกครั้ง';btn.textContent='ลองใหม่';btn.dataset.action='retry'}
-  else{title.textContent='พร้อมโหลดกราฟ';desc.textContent='กดวิเคราะห์เพื่อดึงแท่งเทียนล่าสุดเข้าสู่กราฟของเรา';btn.textContent='ANALYZE';btn.dataset.action='retry'}
+
+  if(mode==='off'){
+    title.textContent='AI ยังปิดอยู่';
+    desc.textContent='เปิด AI ก่อน ระบบจะโหลดแท่งเทียน XAUUSD จริงโดยใช้ Smart Credit Engine';
+    btn.textContent='เปิด AI';btn.dataset.action='enable';btn.dataset.tf=tf;
+  }else if(mode==='key'){
+    title.textContent='ยังไม่มี Market API Key';
+    desc.textContent='ใส่ Twelve Data API Key ครั้งเดียว แล้วระบบจะโหลดกราฟจริงได้';
+    btn.textContent='ตั้งค่า API';btn.dataset.action='settings';btn.dataset.tf=tf;
+  }else if(mode==='loading'){
+    title.textContent='กำลังโหลด '+tf;
+    desc.textContent='กำลังดึงแท่งเทียน '+tf+' ล่าสุดจาก Market Feed';
+    btn.textContent='กำลังโหลด…';btn.dataset.action='none';btn.dataset.tf=tf;
+  }else if(mode==='error'){
+    title.textContent='โหลด '+tf+' ไม่สำเร็จ';
+    desc.textContent=message||'ตรวจ API Key / สิทธิ์ XAUUSD / โควตา แล้วลองใหม่';
+    btn.textContent='ลองใหม่';btn.dataset.action='loadtf';btn.dataset.tf=tf;
+  }else{
+    const closed=sessionInfo().closed;
+    title.textContent=closed?'โหลด Session ล่าสุด · '+tf:'พร้อมโหลดกราฟ · '+tf;
+    desc.textContent=closed
+      ?'ตลาดปิดอยู่ แต่ยังโหลดแท่งเทียน Session ล่าสุดเพื่อดูโครงสร้างและ Bias ได้'
+      :'กดเพื่อดึงแท่งเทียน '+tf+' ล่าสุดเข้าสู่กราฟของเรา';
+    btn.textContent='โหลด '+tf;btn.dataset.action='loadtf';btn.dataset.tf=tf;
+  }
 }
 $('#chartEmptyBtn').addEventListener('click',()=>{
-  const a=$('#chartEmptyBtn').dataset.action;
+  const a=$('#chartEmptyBtn').dataset.action,tf=$('#chartEmptyBtn').dataset.tf||marketScan.selectedTf;
   if(a==='enable')setAiEnabled(true);
   else if(a==='settings')openOverlay('settingsOverlay');
   else if(a==='retry')analyzeMarket(false);
+  else if(a==='loadtf')loadTimeframe(tf,false);
 });
+
+
+function historicalBest(H,A,news){
+  const same=H.direction===A.direction;
+  const direction=same?H.direction:(Math.abs(H.biasVal)>=Math.abs(A.biasVal)?H.direction:A.direction);
+  const score=Math.round(clamp((H.quality*.48+A.quality*.52)+(same?6:-8),0,92));
+  return {
+    ...A,tf:'M15',score,rawScore:score,side:'WAIT',direction,
+    setupType:'LAST SESSION',historical:true,
+    entryLow:null,entryHigh:null,entryCenter:null,sl:null,tp1:null,tp2:null,rr:0,
+    blockers:['MARKET CLOSED · ENTRY DISABLED'],
+    reasons:[
+      'ตลาดปิด · วิเคราะห์ Session ล่าสุด',
+      'H1 '+H.direction+' '+H.structure,
+      'M15 '+A.direction+' '+A.structure+(A.bos!=='NONE'?' · BOS '+A.bos:'')
+    ],
+    align:same?2:1,weighted:H.biasVal*.48+A.biasVal*.52,
+    session:'MARKET CLOSED',coreAligned:same,news
+  };
+}
+
+async function loadTimeframe(tf,force=false){
+  if(!marketScan.aiEnabled){setChartState('off','',tf);return}
+  if(!getApiKey()){setChartState('key','',tf);openOverlay('settingsOverlay');return}
+  const btn=[...document.querySelectorAll('#tfSwitch button')].find(x=>x.dataset.tf===tf);
+  try{
+    btn?.classList.add('loading');
+    setChartState('loading','',tf);
+    const d=await getCandles(tf,force);
+    marketScan.results[tf]=analyzeTf(d,tf);
+    marketScan.selectedTf=tf;
+    $('#chartTfLabel').textContent=tf;
+    $$('#tfSwitch button').forEach(x=>x.classList.toggle('active',x.dataset.tf===tf));
+    setChartState('data','',tf);
+    drawMarketChart();
+    renderCreditStats();
+  }catch(err){
+    setChartState('error',err.message,tf);
+    $('#scanError').textContent='โหลด '+tf+' ไม่สำเร็จ: '+err.message;
+    $('#scanError').classList.add('show');
+  }finally{
+    btn?.classList.remove('loading');
+  }
+}
+
+function renderMarketMode(){
+  const sess=sessionInfo(),hasData=Object.values(marketScan.datasets||{}).some(x=>Array.isArray(x)&&x.length>5);
+  const closed=$('#closedInfo');
+  if(closed)closed.classList.toggle('hidden',!sess.closed);
+  if(sess.closed){
+    $('#marketState').textContent=hasData?'LAST SESSION':'MARKET CLOSED';
+    if(!$('#wsDot').classList.contains('live'))$('#wsState').textContent=hasData?'HISTORICAL':'NO DATA';
+  }else{
+    if(!marketScan.best)$('#marketState').textContent=hasData?'DATA READY':'READY TO SCAN';
+  }
+}
 
 async function analyzeMarket(force=false){
   if(!marketScan.aiEnabled){setChartState('off');$('#scanError').textContent='AI ปิดอยู่ · เปิด AI ก่อนเพื่อเริ่มวิเคราะห์';$('#scanError').classList.add('show');return}if(marketScan.busy)return;if(!getApiKey()){setChartState('key');openOverlay('settingsOverlay');$('#apiStatus').textContent='ใส่ Twelve Data API Key ก่อน';return}marketScan.busy=true;setChartState('loading');marketScan.lastScanCost=0;renderCreditStats();$('#analyzeBtn').classList.add('loading');$('#analyzeBtn').textContent='SMART SCAN…';$('#scanError').classList.remove('show');
-  try{await fetchGoldNews(false);const news=newsContext(),sess=sessionInfo();if(sess.closed){marketScan.best={tf:'M15',score:0,side:'WAIT',setupType:'MARKET CLOSED',blockers:['ตลาดปิด'],reasons:['MARKET CLOSED'],session:sess.name,regime:'CLOSED',align:0,coreAligned:false,rr:0,stretched:false,structure:'RANGE',adx:0};marketScan.last=new Date();renderMarketScan();return}if(news.lock&&!force){marketScan.best={tf:'M15',score:0,side:'WAIT',setupType:'NEWS LOCK',blockers:['NEWS LOCK'],reasons:['ข่าวแรงอยู่ใน lock window'],session:sess.name,regime:'NEWS',align:0,coreAligned:false,rr:0,stretched:false,structure:'RANGE',adx:0,news};marketScan.last=new Date();renderMarketScan();return}
+  try{await fetchGoldNews(false);const news=newsContext(),sess=sessionInfo();if(sess.closed){
+      const [h1,m15]=await Promise.all([getCandles('H1',force),getCandles('M15',force)]);
+      marketScan.results.H1=analyzeTf(h1,'H1');
+      marketScan.results.M15=analyzeTf(m15,'M15');
+      marketScan.best=historicalBest(marketScan.results.H1,marketScan.results.M15,news);
+      marketScan.last=new Date();
+      marketScan.selectedTf='M15';
+      $('#chartTfLabel').textContent='M15';
+      $$('#tfSwitch button').forEach(x=>x.classList.toggle('active',x.dataset.tf==='M15'));
+      reconcileActiveSignal();
+      renderMarketScan();
+      renderMarketMode();
+      disconnectStream();
+      return;
+    }if(news.lock&&!force){marketScan.best={tf:'M15',score:0,side:'WAIT',setupType:'NEWS LOCK',blockers:['NEWS LOCK'],reasons:['ข่าวแรงอยู่ใน lock window'],session:sess.name,regime:'NEWS',align:0,coreAligned:false,rr:0,stretched:false,structure:'RANGE',adx:0,news};marketScan.last=new Date();renderMarketScan();return}
     const [h1,m15]=await Promise.all([getCandles('H1',force),getCandles('M15',force)]);marketScan.results.H1=analyzeTf(h1,'H1');marketScan.results.M15=analyzeTf(m15,'M15');const core=preflightCore(marketScan.results.H1,marketScan.results.M15);if(!core.promising){marketScan.best=buildWaitFromCore(marketScan.results.H1,marketScan.results.M15,'Core scan ไม่ผ่าน · ประหยัด M5/M1 credits',news);reconcileActiveSignal();marketScan.last=new Date();renderMarketScan();connectPriceStream();return}
     const m5=await getCandles('M5',force);marketScan.results.M5=analyzeTf(m5,'M5');const m5ok=marketScan.results.M5.direction===core.side&&marketScan.results.M5.quality>=58&&marketScan.results.M5.regime!=='RANGE';if(!m5ok){marketScan.best={...buildWaitFromCore(marketScan.results.H1,marketScan.results.M15,'M5 ไม่ confirm · หยุดที่ 3 credits',news),tf:'M5',quality:marketScan.results.M5.quality,close:marketScan.results.M5.close,structure:marketScan.results.M5.structure,adx:marketScan.results.M5.adx,regime:marketScan.results.M5.regime};reconcileActiveSignal();marketScan.last=new Date();renderMarketScan();connectPriceStream();return}
     const needM1=!news.warn&&(sess.name==='LONDON'||sess.name==='NEW YORK'||sess.name==='LDN+NY');if(needM1){const m1=await getCandles('M1',force);marketScan.results.M1=analyzeTf(m1,'M1')}else marketScan.results.M1=null;marketScan.best=applyAdaptiveIntelligence(chooseExecution(marketScan.results,news));reconcileActiveSignal();registerSignalFromBest(marketScan.best);marketScan.last=new Date();marketScan.selectedTf=marketScan.best.tf||'M15';$('#chartTfLabel').textContent=marketScan.selectedTf;$$('#tfSwitch button').forEach(x=>x.classList.toggle('active',x.dataset.tf===marketScan.selectedTf));renderMarketScan();connectPriceStream();
   }catch(err){setChartState('error',err.message);$('#scanError').textContent='โหลดข้อมูลไม่สำเร็จ: '+err.message;$('#scanError').classList.add('show');$('#marketState').textContent='DATA ERROR'}finally{marketScan.busy=false;$('#analyzeBtn').classList.remove('loading');$('#analyzeBtn').textContent='ANALYZE';renderCreditStats()}
 }
 
-function setAiEnabled(on){marketScan.aiEnabled=!!on;localStorage.setItem(AI_KEY,on?'1':'0');const btn=$('#aiPowerBtn');btn.classList.toggle('on',on);btn.classList.toggle('off',!on);btn.querySelector('b').textContent=on?'AI ON':'AI OFF';btn.querySelector('small').textContent=on?'SMART CREDIT':'0 CREDIT';$('#aiPulse').classList.toggle('live',on);$('#marketState').textContent=on?'READY TO SCAN':'AI OFF';$('#wsState').textContent=on?'CANDLE FEED':'AI OFF';if(!on){setChartState('off');disconnectStream();if(autoScanTimer){clearInterval(autoScanTimer);autoScanTimer=null}$('#autoScanBtn').classList.remove('on');$('#autoScanBtn').textContent='SMART SCAN OFF';$('#creditModeInfo').textContent='AI OFF = ไม่เรียก Twelve Data API และปิด WebSocket';}else{$('#creditModeInfo').textContent='Stage 1: H1+M15 → M5 → M1 เฉพาะเมื่อ setup ผ่าน · cache ตามแท่ง';setChartState(getApiKey()?'ready':'key');fetchGoldNews(false);analyzeMarket(false)}drawSignalChart();drawMarketChart();syncAiQuickCards();renderLifecycle();renderGuardian();renderAiMemory();renderCommandCenter()}
-function toggleAutoScan(){if(!marketScan.aiEnabled){setAiEnabled(true);return}const b=$('#autoScanBtn');if(autoScanTimer){clearInterval(autoScanTimer);autoScanTimer=null;b.classList.remove('on');b.textContent='SMART SCAN OFF';return}b.classList.add('on');b.textContent='SMART SCAN ON';analyzeMarket(false);autoScanTimer=setInterval(()=>{if(marketScan.aiEnabled&&$('#aiView').classList.contains('active'))analyzeMarket(false)},60000)}
+function setAiEnabled(on){marketScan.aiEnabled=!!on;localStorage.setItem(AI_KEY,on?'1':'0');const btn=$('#aiPowerBtn');btn.classList.toggle('on',on);btn.classList.toggle('off',!on);btn.querySelector('b').textContent=on?'AI ON':'AI OFF';btn.querySelector('small').textContent=on?'SMART CREDIT':'0 CREDIT';$('#aiPulse').classList.toggle('live',on);$('#marketState').textContent=on?'READY TO SCAN':'AI OFF';$('#wsState').textContent=on?'CANDLE FEED':'AI OFF';if(!on){setChartState('off');disconnectStream();if(autoScanTimer){clearInterval(autoScanTimer);autoScanTimer=null}$('#autoScanBtn').classList.remove('on');$('#autoScanBtn').textContent='SMART SCAN OFF';$('#creditModeInfo').textContent='AI OFF = ไม่เรียก Twelve Data API และปิด WebSocket';}else{$('#creditModeInfo').textContent=sessionInfo().closed?'ตลาดปิด: โหลด H1+M15 Session ล่าสุด · TF อื่นโหลดเฉพาะเมื่อกด':'Stage 1: H1+M15 → M5 → M1 เฉพาะเมื่อ setup ผ่าน · cache ตามแท่ง';setChartState(getApiKey()?'ready':'key');fetchGoldNews(false);analyzeMarket(false)}drawSignalChart();drawMarketChart();syncAiQuickCards();renderLifecycle();renderGuardian();renderAiMemory();renderCommandCenter()}
+function toggleAutoScan(){
+  if(!marketScan.aiEnabled){setAiEnabled(true);return}
+  const b=$('#autoScanBtn');
+  if(sessionInfo().closed){
+    b.classList.remove('on');b.textContent='CLOSED · LAST SESSION';
+    analyzeMarket(false);
+    return;
+  }
+  if(autoScanTimer){clearInterval(autoScanTimer);autoScanTimer=null;b.classList.remove('on');b.textContent='SMART SCAN OFF';return}
+  b.classList.add('on');b.textContent='SMART SCAN ON';analyzeMarket(false);
+  autoScanTimer=setInterval(()=>{if(marketScan.aiEnabled&&$('#aiView').classList.contains('active'))analyzeMarket(false)},60000)
+}
 
 $('#clearMemoryBtn').addEventListener('click',()=>{
   if(confirm('ล้าง AI Signal Memory ทั้งหมด?')){
@@ -1997,8 +2139,15 @@ $('#clearMemoryBtn').addEventListener('click',()=>{
   }
 });
 $('#aiPowerBtn').addEventListener('click',()=>setAiEnabled(!marketScan.aiEnabled));$('#autoScanBtn').addEventListener('click',toggleAutoScan);$('#analyzeBtn').addEventListener('click',()=>analyzeMarket(false));$('#refreshNewsBtn').addEventListener('click',()=>fetchGoldNews(true));
-$$('#tfSwitch button').forEach(b=>b.addEventListener('click',()=>{marketScan.selectedTf=b.dataset.tf;$$('#tfSwitch button').forEach(x=>x.classList.toggle('active',x===b));$('#chartTfLabel').textContent=marketScan.selectedTf;requestAnimationFrame(drawMarketChart)}));
-$('#saveApiKeyBtn').addEventListener('click',()=>{const v=$('#marketApiKey').value.trim();setApiKey(v);$('#apiStatus').textContent=v?'บันทึกแล้ว · Smart Credit Engine พร้อมใช้งาน':'ลบ API Key แล้ว';if(v&&marketScan.aiEnabled)analyzeMarket(false)});$('#saveTeKeyBtn').addEventListener('click',()=>{const v=$('#teApiKey').value.trim();setTeKey(v);$('#teApiStatus').textContent=v?'บันทึก Calendar key แล้ว':'ใช้ guest:guest';fetchGoldNews(true)});
+$$('#tfSwitch button').forEach(b=>b.addEventListener('click',async()=>{
+  const tf=b.dataset.tf;
+  marketScan.selectedTf=tf;
+  $$('#tfSwitch button').forEach(x=>x.classList.toggle('active',x===b));
+  $('#chartTfLabel').textContent=tf;
+  if(!(marketScan.datasets[tf]?.length>5)) await loadTimeframe(tf,false);
+  else requestAnimationFrame(drawMarketChart);
+}));
+$('#saveApiKeyBtn').addEventListener('click',()=>{const v=$('#marketApiKey').value.trim();setApiKey(v);$('#apiStatus').textContent=v?'บันทึกแล้ว · กด ANALYZE เพื่อทดสอบสิทธิ์ XAU/USD':'ลบ API Key แล้ว';if(v&&marketScan.aiEnabled)analyzeMarket(false)});$('#saveTeKeyBtn').addEventListener('click',()=>{const v=$('#teApiKey').value.trim();setTeKey(v);$('#teApiStatus').textContent=v?'บันทึก Calendar key แล้ว':'ใช้ guest:guest';fetchGoldNews(true)});
 $('#settingsBtn').addEventListener('click',()=>{$('#marketApiKey').value=getApiKey();$('#teApiKey').value=localStorage.getItem(TE_KEY)||'';$('#apiStatus').textContent=getApiKey()?'มี Market API Key แล้ว':'ยังไม่มี Twelve Data API Key';$('#teApiStatus').textContent=localStorage.getItem(TE_KEY)?'มี Calendar key แล้ว':'ใช้ guest:guest'});
 
 const _renderBase=render;render=function(){_renderBase();renderCreditStats();renderLifecycle();renderGuardian();renderAiMemory();renderCommandCenter();if(marketScan.best)renderMarketScan()};
