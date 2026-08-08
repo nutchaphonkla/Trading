@@ -1,0 +1,23 @@
+OneMonth OS V25.8 Stable Flow
+
+JavaScript syntax: PASS
+Web forced install gate: PASS
+No browser bypass button: PASS
+PWA intro: PASS
+Premium intro icon: PASS
+First run plan required: PASS
+Required modal cannot backdrop-close: PASS
+Balance input exists: PASS
+Target input exists: PASS
+Navigation recovery retained: PASS
+No-cache SW registered: PASS
+
+Expected flow:
+1. Open in Safari/browser -> install gate only.
+2. Add to Home Screen / install PWA.
+3. Open from app icon -> premium cinematic intro.
+4. Boot uses local/cache only and cannot wait on network.
+5. If no saved plan -> required Balance + Month Target modal.
+6. Save plan -> dashboard + all V25.7 core navigation/features.
+
+The minimal V25.8 service worker does not cache HTML or data.
