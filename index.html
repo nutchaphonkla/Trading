@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OneMonth">
-<title>OneMonth OS V16</title>
+<title>OneMonth OS V17</title>
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2367e7c2'/%3E%3Cstop offset='1' stop-color='%2367c9f3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='118' fill='%23071018'/%3E%3Cpath d='M118 330V218m74 112V156m74 174V236m74 94V124' stroke='url(%23g)' stroke-width='26' stroke-linecap='round'/%3E%3Cpath d='M115 373h282' stroke='%23f1c76c' stroke-width='14' stroke-linecap='round' opacity='.9'/%3E%3C/svg%3E">
 
@@ -451,6 +451,263 @@ body{background:#04070a}
   .roadmap-bottom{gap:5px}
 }
 
+
+/* =========================================================
+   ONEMONTH OS V17 — LUXURY NATIVE FINANCE UI
+   ========================================================= */
+:root{
+  --bg:#020507;
+  --panel:#071016;
+  --panel-soft:#0a141c;
+  --panel-raise:#0d1821;
+  --line:#16232d;
+  --line-strong:#22323f;
+  --text:#f4f7f9;
+  --muted:#798694;
+  --muted2:#566371;
+  --mint:#67e8c5;
+  --cyan:#68c9f2;
+  --gold:#dcbf75;
+  --red:#ff7185;
+  --shadow-soft:0 18px 50px rgba(0,0,0,.28);
+}
+html,body{background:
+  radial-gradient(circle at 50% -12%,rgba(79,139,170,.10),transparent 30%),
+  #020507;
+}
+body{letter-spacing:-.005em}
+.app{
+  max-width:780px;
+  padding-left:16px;padding-right:16px;
+  padding-top:calc(env(safe-area-inset-top) + 14px)
+}
+.topbar{
+  margin-bottom:22px;
+  padding:3px 2px 0;
+}
+.brand{gap:11px}
+.brandmark{
+  width:47px;height:47px;border-radius:15px;
+  background:linear-gradient(145deg,#0c1821,#061017);
+  border-color:#21313e;
+  box-shadow:inset 0 1px rgba(255,255,255,.025),0 12px 28px rgba(0,0,0,.24)
+}
+.brandcopy b{font-size:15px;letter-spacing:.17em}
+.brandcopy small{font-size:7px;letter-spacing:.18em;color:#647382}
+.market-pill{
+  height:34px;border-radius:12px;padding:0 10px;
+  background:#071017;border-color:#1c2b36;font-size:7px
+}
+.icon-btn{width:38px;height:38px;border-radius:12px;background:#071017;border-color:#1c2b36}
+.card{
+  background:linear-gradient(180deg,#09131b 0%,#071017 100%);
+  border:1px solid #182733;
+  box-shadow:inset 0 1px rgba(255,255,255,.018),0 18px 44px rgba(0,0,0,.18);
+  border-radius:20px;
+}
+.kicker{
+  font-size:6.5px;letter-spacing:.16em;
+  color:#71808f
+}
+.hero-grid{gap:8px}
+.metric-card{
+  min-height:118px;padding:17px 17px 15px;border-radius:20px
+}
+.metric-card h2{
+  font-size:27px;margin-top:10px;letter-spacing:-.055em
+}
+.metric-card p{font-size:7.5px}
+.metric-edit{
+  right:11px;top:11px!important;
+  font-size:7px!important;padding:6px 8px!important;
+  background:#0b1922!important;border-color:#1f3747!important
+}
+.mission{
+  margin-top:8px;padding:18px;border-radius:22px
+}
+.mission-head h3{font-size:18px;margin-top:4px}
+.badge{
+  padding:7px 9px;font-size:6.5px;border-radius:10px;
+  background:#081018
+}
+.target-row{margin-top:17px}
+.target-main span{font-size:7.5px}
+.target-main strong{font-size:34px;margin-top:4px}
+.target-main small{font-size:7.5px}
+.ring{width:88px;height:88px}
+.ring:before{inset:9px;background:#071017}
+.ring b{font-size:17px}.ring small{font-size:6px}
+.triple{margin-top:15px;gap:6px}
+.mini{
+  padding:10px;border-radius:14px;background:#071017;border-color:#162631
+}
+.mini span{font-size:6px}.mini b{font-size:11px;margin-top:5px}
+.risk-grid{gap:6px;margin-top:7px}
+.risk-card{
+  padding:13px;border-radius:16px!important;background:#071017
+}
+.risk-card span{font-size:6px}.risk-card b{font-size:18px;margin-top:6px}
+.daily-guide{gap:6px;margin-top:7px}
+.daily-guide-card{
+  min-height:74px;border-radius:16px;padding:12px;background:#071017
+}
+.daily-guide-card span{font-size:6px}
+.daily-guide-card b{font-size:15px;margin-top:5px}
+.daily-guide-card small{font-size:6px;margin-top:4px}
+.notice{
+  border-radius:13px;padding:10px 11px;font-size:7px;
+  background:rgba(220,191,117,.025)
+}
+.section-head{margin:22px 3px 8px}
+.section-head h3{
+  font-size:17px;letter-spacing:-.035em
+}
+.section-head span,.section-head button{font-size:7px}
+.system-brief,.command-card,.data-health,.news-card,.fusion-card,
+.life-card,.guardian-card,.backtest-card{
+  padding:14px;border-radius:20px;margin-top:8px
+}
+.brief-top h3,.command-head h3,.news-head h3,.backtest-head h3{
+  font-size:15px;margin-top:4px
+}
+.status-chip{
+  padding:6px 8px;font-size:6.5px;border-radius:9px
+}
+.brief-grid,.data-grid,.guardian-grid,.backtest-grid{gap:5px;margin-top:10px}
+.brief-cell,.data-cell,.guardian-cell,.bt-cell{
+  padding:9px;border-radius:12px;background:#060c11
+}
+.brief-cell span,.data-cell span,.guardian-cell span,.bt-cell span{font-size:5.5px}
+.brief-cell b,.data-cell b,.guardian-cell b,.bt-cell b{font-size:9px;margin-top:4px}
+.command-copy{font-size:7.5px;margin-top:5px}
+.command-action{margin-top:9px;padding:10px 11px;border-radius:12px}
+.command-action span{font-size:7.5px}
+.ai-hero{
+  padding:16px;border-radius:22px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(103,232,197,.055),transparent 35%),
+    #081119
+}
+.ai-hero h2{font-size:21px;margin:6px 0}
+.ai-hero p{font-size:8px;max-width:480px}
+.ai-switch{min-width:94px;height:46px;border-radius:14px;padding:0 11px}
+.ai-switch b{font-size:8px}.ai-switch small{font-size:5.5px}
+.ai-grid{gap:6px;margin-top:8px}
+.ai-quick{padding:13px;border-radius:17px}
+.ai-quick span{font-size:6px}.ai-quick b{font-size:15px;margin-top:5px}.ai-quick small{font-size:6px}
+.news-list{border-radius:13px;margin-top:8px}
+.news-row{padding:8px;grid-template-columns:44px 1fr auto;gap:7px}
+.news-time{font-size:7.5px}.news-main b{font-size:7.5px}.news-main small{font-size:6px}
+.gate-grid{gap:5px;margin-top:9px}
+.gate{padding:8px 9px;border-radius:11px}
+.gate span{font-size:7px}.gate b{font-size:6px}
+.chart-card{
+  border-radius:20px;
+  box-shadow:0 22px 55px rgba(0,0,0,.28)
+}
+.chart-head{min-height:54px;padding:11px 12px}
+.chart-title small{font-size:5.5px}.chart-title b{font-size:12px}
+.chart-tool{height:27px;border-radius:8px;font-size:6.5px}
+.chart-ohlc{height:27px;font-size:6px}
+.chart-ohlc b{font-size:6.5px}
+.chart-wrap{height:320px}
+.chart-legend{min-height:31px;font-size:6px;padding:0 10px}
+.tf-tabs{padding:8px;gap:5px}
+.tf-tabs button{
+  height:33px;min-width:49px;border-radius:10px;font-size:7px
+}
+.signal-card{
+  padding:14px;border-radius:20px
+}
+.signal-top h3{font-size:21px}
+.signal-top p{font-size:7px}
+.signal-status{padding:7px 9px;font-size:6.5px}
+.signal-levels{gap:5px;margin-top:9px}
+.level{padding:9px;border-radius:11px}
+.level span{font-size:5.5px}.level b{font-size:9px}
+.life-steps{gap:5px;margin-top:9px}
+.life-step{min-height:36px;border-radius:11px}.life-step span{font-size:5.5px}
+.life-meta{gap:5px;margin-top:6px}.life-meta div{padding:7px}.life-meta span{font-size:5px}.life-meta b{font-size:7px}
+.guardian-head b{font-size:12px}.guardian-head p{font-size:7px}
+.risk-score{min-width:50px;height:34px;font-size:8px;border-radius:10px}
+.backtest-note{font-size:7px}
+.bt-run{height:29px;font-size:7px}
+.progress{height:5px;margin-top:9px}
+.plan-summary{padding:14px;border-radius:20px}
+.plan-explainer{font-size:6.5px}
+.roadmap-shell{
+  padding:7px;
+  background:#060c11;
+  border-radius:20px
+}
+.roadmap-days{gap:4px}
+.roadmap-row{
+  padding:10px;border-radius:15px;background:#081119;
+  border-color:#14232e
+}
+.roadmap-top{
+  grid-template-columns:38px 1fr auto;gap:9px
+}
+.roadmap-day{
+  width:38px;height:38px;border-radius:11px;font-size:11px
+}
+.roadmap-main b{font-size:9.5px}
+.roadmap-main small{font-size:6px}
+.roadmap-pnl{font-size:8.5px}
+.status-mini{padding:4px 6px;font-size:5.5px}
+.roadmap-bottom{gap:4px;margin-top:7px}
+.roadmap-info{padding:6px 7px;border-radius:9px}
+.roadmap-info span{font-size:5px}.roadmap-info b{font-size:6.5px}
+.stats-grid{gap:6px}
+.stat{
+  padding:15px;border-radius:18px;
+  min-height:95px
+}
+.stat span{font-size:6px}.stat b{font-size:20px;margin-top:6px}
+.plan-row{
+  padding:10px 11px
+}
+.plan-row-head{grid-template-columns:36px 1fr auto;gap:9px}
+.daybox{width:36px;height:36px;border-radius:11px;font-size:11px}
+.plan-row b{font-size:9px}.plan-row small{font-size:6px}
+.plan-profit{font-size:9px}
+.equity-card{padding:10px;border-radius:18px}
+.equity-wrap{height:175px}
+.memory-row{padding:9px 11px}.memory-row b{font-size:7.5px}.memory-row small{font-size:6px}
+.bottom-nav{
+  width:min(748px,calc(100% - 18px));
+  height:67px;bottom:calc(8px + env(safe-area-inset-bottom));
+  border-radius:20px;padding:5px;
+  background:rgba(6,11,16,.95);
+  box-shadow:0 24px 60px rgba(0,0,0,.50)
+}
+.bottom-nav button{
+  border-radius:15px;font-size:6px;gap:3px
+}
+.bottom-nav button svg{width:17px;height:17px}
+.bottom-nav button.active{
+  background:linear-gradient(180deg,#141f29,#101922);
+  box-shadow:inset 0 1px rgba(255,255,255,.025)
+}
+.sheet{
+  border-radius:24px 24px 18px 18px;
+  padding:16px;background:#081119
+}
+.sheet h2{font-size:22px}
+.field{padding:10px;border-radius:13px}
+.field label{font-size:6px}.field input{font-size:16px}
+.primary,.secondary,.danger{height:44px;border-radius:13px;font-size:8px}
+@media(max-width:520px){
+  .app{padding-left:12px;padding-right:12px}
+  .brandcopy small{display:block;max-width:170px}
+  .hero-grid{gap:6px}
+  .metric-card{padding:15px}
+  .metric-card h2{font-size:24px}
+  .mission{padding:16px}
+  .chart-wrap{height:300px}
+  .roadmap-shell{padding:6px}
+}
+
 </style>
 </head>
 <body>
@@ -467,7 +724,7 @@ body{background:#04070a}
       </div>
       <div class="brandcopy">
         <b>ONEMONTH OS</b>
-        <small>XAUUSD EXECUTION & PLAN OS</small>
+        <small>XAUUSD · EXECUTION INTELLIGENCE</small>
       </div>
     </div>
     <div class="topactions">
@@ -547,7 +804,7 @@ body{background:#04070a}
         </div>
       </article>
 
-      <div class="section-head"><h3>ปิด Session</h3><span>กรอก Balance จริงเมื่อจบวัน</span></div>
+      <div class="section-head"><div><div class="kicker">SESSION CLOSE</div><h3>ปิดวันเทรด</h3></div><span>FINAL BALANCE</span></div>
       <article class="card mission session-card-clean">
         <div class="form-grid">
           <div class="field"><label>BALANCE AFTER SESSION</label><input id="endBalanceInput" inputmode="decimal" placeholder="เช่น 11.20"></div>
@@ -702,7 +959,7 @@ body{background:#04070a}
     </section>
 
     <section class="view" id="planView">
-      <div class="section-head"><h3>30‑Day Roadmap</h3><button id="jumpTodayBtn">วันนี้</button></div>
+      <div class="section-head"><div><div class="kicker">CAPITAL ROADMAP</div><h3>30‑Day Plan</h3></div><button id="jumpTodayBtn">TODAY</button></div>
       <article class="card plan-summary">
         <div class="mission-head"><div><div class="kicker">PLAN PROGRESS</div><h3 id="planProgressText">0 / 30</h3></div><div class="badge" id="planPace">ON PLAN</div></div>
         <div class="progress"><i id="planProgressBar"></i></div>
@@ -712,7 +969,7 @@ body{background:#04070a}
     </section>
 
     <section class="view" id="statsView">
-      <div class="section-head"><h3>Performance</h3><span>จาก Session ที่บันทึกไว้</span></div>
+      <div class="section-head"><div><div class="kicker">ACCOUNT ANALYTICS</div><h3>Performance</h3></div><span>REAL SESSIONS</span></div>
       <div class="stats-grid">
         <article class="card stat"><span>COMPLETED</span><b id="statCompleted">0</b></article>
         <article class="card stat"><span>HIT RATE</span><b id="statHitRate">—</b></article>
