@@ -1,1 +1,34 @@
+name: Update XAUUSD data pack
 
+on:
+  workflow_dispatch:
+  schedule:
+    # 4 snapshots/day on weekdays. Frontend uses these before spending live API credits.
+    - cron: '10 1,7,13,20 * * 1-5'
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build XAUUSD + news data packs
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: node update-data.mjs
+      - name: Commit changed packs
+        run: |
+          git config user.name "one-month-data-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add xauusd.json news.json
+          if git diff --cached --quiet; then
+            echo "No data changes"
+            exit 0
+          fi
+          git commit -m "data: refresh XAUUSD pack"
+          git push
