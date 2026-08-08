@@ -19,7 +19,7 @@ jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 8
 
     steps:
       - name: Checkout latest repository
@@ -32,11 +32,34 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Rebuild full-history brain
+      - name: Validate AI builders
+        run: |
+          node --check build-ai-history.mjs
+          node --check build-ai-learning.mjs
+
+      - name: Rebuild recency-weighted history brain
         run: node build-ai-history.mjs
 
-      - name: Train adaptive outcome model
+      - name: Train precision learning model
         run: node build-ai-learning.mjs
+
+      - name: Verify learned brain files
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          for (const file of ['ai-history.json', 'ai-learning.json']) {
+            if (!fs.existsSync(file)) throw new Error(`Missing ${file}`);
+            const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+            console.log(file, {
+              ready: data.ready,
+              version: data.version,
+              samples: data.global?.samples ?? data.totalCandles ?? 0,
+              health: data.modelHealth?.score ?? data.global?.confidence ?? null,
+              generatedAt: data.generatedAt
+            });
+          }
+          NODE
 
       - name: Commit learned brain
         shell: bash
@@ -51,6 +74,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "ai: refresh background learning brain"
+          git commit -m "ai: refresh V33 precision learning brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
