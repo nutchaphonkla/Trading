@@ -37,27 +37,44 @@ jobs:
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
 
-      - name: Rebuild recency-weighted history brain
+      - name: Rebuild guarded history brain
         run: node build-ai-history.mjs
 
-      - name: Train precision learning model
+      - name: Train precision guard model
         run: node build-ai-learning.mjs
 
-      - name: Verify learned brain files
+      - name: Verify brain and safety guards
         shell: bash
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          for (const file of ['ai-history.json', 'ai-learning.json']) {
-            if (!fs.existsSync(file)) throw new Error(`Missing ${file}`);
-            const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-            console.log(file, {
-              ready: data.ready,
-              version: data.version,
-              samples: data.global?.samples ?? data.totalCandles ?? 0,
-              health: data.modelHealth?.score ?? data.global?.confidence ?? null,
-              generatedAt: data.generatedAt
-            });
+          const history = JSON.parse(fs.readFileSync('ai-history.json', 'utf8'));
+          const learning = JSON.parse(fs.readFileSync('ai-learning.json', 'utf8'));
+
+          if (!history.generatedAt) throw new Error('ai-history.json missing generatedAt');
+          if (!learning.generatedAt) throw new Error('ai-learning.json missing generatedAt');
+
+          console.log('History brain', {
+            ready: history.ready,
+            version: history.version,
+            candles: history.totalCandles || 0,
+            samples: history.totalSamples || history.global?.totalSamples || 0,
+            confidence: history.global?.confidence ?? null
+          });
+
+          console.log('Learning brain', {
+            ready: learning.ready,
+            version: learning.version,
+            samples: learning.global?.samples || 0,
+            health: learning.modelHealth?.score ?? null,
+            guard: learning.qualityGuards?.backgroundUse ?? 'WAIT_DATA',
+            calibration: learning.validation?.calibrationError ?? null,
+            drift: learning.modelHealth?.driftPts ?? null,
+            uncertainty: learning.modelHealth?.uncertaintyPts ?? null
+          });
+
+          if (learning.ready && !learning.qualityGuards) {
+            throw new Error('V34 learning pack missing qualityGuards');
           }
           NODE
 
@@ -74,6 +91,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "ai: refresh V33 precision learning brain"
+          git commit -m "ai: refresh V34 precision guard brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
