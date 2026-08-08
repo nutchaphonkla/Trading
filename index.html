@@ -3,135 +3,241 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#07090c">
+<meta name="theme-color" content="#07090d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="One Month">
-<title>ONE MONTH — Trading System</title>
+<title>ONE MONTH — Trading OS</title>
 <style>
 :root{
-  --bg:#07090c;--panel:#0d1117;--panel2:#111721;--line:rgba(255,255,255,.075);
-  --text:#f7f9fc;--muted:#7f8998;--green:#69f0ae;--red:#ff6b7a;--cyan:#69d7ff;
-  --gold:#ffd76a;--radius:24px;--shadow:0 24px 80px rgba(0,0,0,.45)
+  --bg:#07090d;
+  --panel:#0d1219;
+  --panel2:#101720;
+  --panel3:#0a0f15;
+  --line:rgba(255,255,255,.075);
+  --line2:rgba(255,255,255,.12);
+  --text:#f5f7fb;
+  --muted:#7f8b9b;
+  --muted2:#596373;
+  --green:#70f2b4;
+  --green2:#3edb98;
+  --cyan:#75d8ff;
+  --red:#ff7381;
+  --amber:#ffd66b;
+  --radius:24px;
+  --shadow:0 24px 70px rgba(0,0,0,.38);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",sans-serif}
-body{min-height:100dvh;background:
- radial-gradient(900px 420px at 50% -120px,rgba(105,215,255,.12),transparent 65%),
- radial-gradient(760px 520px at 110% 20%,rgba(105,240,174,.07),transparent 60%),var(--bg)}
-button,input,select{font:inherit}
+html{background:var(--bg)}
+body{
+  margin:0; min-height:100dvh; color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter","Segoe UI",sans-serif;
+  background:
+    radial-gradient(720px 420px at 50% -130px,rgba(117,216,255,.12),transparent 65%),
+    radial-gradient(580px 400px at 105% 18%,rgba(112,242,180,.055),transparent 68%),
+    radial-gradient(520px 360px at -10% 48%,rgba(117,216,255,.04),transparent 68%),
+    var(--bg);
+}
+button,input{font:inherit}
 button{cursor:pointer}
-.app{max-width:520px;margin:auto;min-height:100dvh;padding:0 16px 104px}
+.app{width:min(100%,540px);margin:auto;min-height:100dvh;padding:0 16px 112px}
 .safe{height:max(14px,env(safe-area-inset-top))}
-.topbar{height:64px;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;gap:11px;align-items:center}
-.mark{width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#121923,#090c11);box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
-.mark:before{content:"";width:15px;height:15px;border-radius:5px;background:linear-gradient(135deg,var(--green),var(--cyan));box-shadow:0 0 24px rgba(105,240,174,.35)}
-.brand h1{font-size:14px;letter-spacing:.12em;margin:0;font-weight:850}
-.brand p{font-size:10px;color:var(--muted);margin:3px 0 0;letter-spacing:.08em}
-.iconbtn{width:38px;height:38px;border-radius:13px;border:1px solid var(--line);background:#0c1118;color:#cbd4df;display:grid;place-items:center}
-.hero{padding:18px 0 6px}
-.eyebrow{font-size:11px;letter-spacing:.16em;color:var(--muted);font-weight:800;text-transform:uppercase}
-.hero h2{font-size:32px;line-height:1.07;letter-spacing:-.055em;margin:8px 0 8px;max-width:420px}
-.hero h2 span{background:linear-gradient(100deg,#fff 10%,#b9f8d8 55%,#aeeaff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{color:var(--muted);font-size:13px;line-height:1.6;margin:0;max-width:420px}
-.card{background:linear-gradient(180deg,rgba(18,24,33,.92),rgba(11,15,21,.94));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-.setup{margin-top:20px;padding:18px}
-.setup-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.setup-title h3{margin:0;font-size:15px}
-.pill{font-size:10px;font-weight:850;letter-spacing:.08em;padding:7px 9px;border-radius:999px;background:rgba(105,240,174,.09);color:var(--green);border:1px solid rgba(105,240,174,.16)}
-.money-input{position:relative}
-.money-input .symbol{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-weight:850;font-size:22px;color:#93a0b1}
-.money-input input{width:100%;height:66px;border:1px solid var(--line);border-radius:19px;background:#090d13;color:#fff;padding:0 18px 0 42px;font-size:26px;font-weight:850;outline:none;letter-spacing:-.03em}
-.money-input input:focus{border-color:rgba(105,215,255,.34);box-shadow:0 0 0 4px rgba(105,215,255,.06)}
-.setup small{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin:10px 3px 14px}
-.primary{width:100%;border:0;border-radius:18px;height:54px;font-weight:900;color:#06100d;background:linear-gradient(110deg,var(--green),#91f8d0 54%,var(--cyan));box-shadow:0 14px 34px rgba(105,240,174,.12)}
+.topbar{height:62px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px}
+.logo{width:37px;height:37px;border-radius:13px;display:grid;place-items:center;border:1px solid var(--line2);background:linear-gradient(145deg,#141c27,#090d13);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 24px rgba(0,0,0,.2)}
+.logo i{width:15px;height:15px;border-radius:5px;background:linear-gradient(135deg,var(--green),var(--cyan));box-shadow:0 0 25px rgba(112,242,180,.32)}
+.brand b{display:block;font-size:13px;letter-spacing:.14em}
+.brand small{display:block;font-size:9px;color:var(--muted);letter-spacing:.1em;margin-top:3px}
+.iconbtn{width:38px;height:38px;border-radius:13px;border:1px solid var(--line);background:#0b1118;color:#bac5d2;display:grid;place-items:center}
+.card{background:linear-gradient(180deg,rgba(17,24,33,.94),rgba(10,15,21,.96));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero{padding:17px 1px 6px}
+.eyebrow{text-transform:uppercase;letter-spacing:.16em;color:var(--muted);font-size:10px;font-weight:850}
+.hero h1{font-size:32px;line-height:1.06;letter-spacing:-.055em;margin:8px 0 9px}
+.hero h1 span{background:linear-gradient(95deg,#fff 7%,#c8fbe3 56%,#b9edff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:12px;line-height:1.62;color:var(--muted);margin:0;max-width:440px}
+
+/* setup */
+.setup{padding:17px;margin-top:18px}
+.setupHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.setupHead h2{font-size:14px;margin:0}
+.autopill{font-size:9px;font-weight:900;letter-spacing:.08em;color:var(--green);padding:7px 9px;border-radius:999px;border:1px solid rgba(112,242,180,.16);background:rgba(112,242,180,.07)}
+.fieldLabel{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:850;margin:0 0 7px 2px}
+.money{position:relative}
+.money>span{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#8c98a8;font-size:19px;font-weight:900}
+.money input{
+  width:100%;height:61px;border:1px solid var(--line);border-radius:18px;
+  background:#080d13;color:#fff;font-size:24px;font-weight:900;letter-spacing:-.035em;
+  padding:0 16px 0 39px;outline:none;
+}
+.money input:focus,.compactInput:focus{border-color:rgba(117,216,255,.35);box-shadow:0 0 0 4px rgba(117,216,255,.055)}
+.targetArea{margin-top:13px;padding:14px;border:1px solid var(--line);border-radius:19px;background:rgba(255,255,255,.018)}
+.targetTop{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.recBadge{font-size:9px;color:var(--cyan);font-weight:850;white-space:nowrap}
+.targetMeta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.metaBox{border-radius:14px;background:#090e14;border:1px solid var(--line);padding:10px}
+.metaBox span{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
+.metaBox b{display:block;font-size:13px;margin-top:5px}
+.quickTargets{display:flex;gap:7px;overflow:auto;margin-top:10px;padding-bottom:1px;scrollbar-width:none}
+.quickTargets::-webkit-scrollbar{display:none}
+.quickTargets button{white-space:nowrap;border:1px solid var(--line);background:#0b1118;color:#aab5c3;border-radius:999px;padding:8px 10px;font-size:9px;font-weight:850}
+.quickTargets button.rec{border-color:rgba(112,242,180,.18);color:var(--green);background:rgba(112,242,180,.06)}
+.primary{
+  height:53px;width:100%;border:0;border-radius:17px;margin-top:14px;
+  background:linear-gradient(110deg,var(--green),#a3fbd7 55%,var(--cyan));
+  color:#06100d;font-weight:950;box-shadow:0 15px 35px rgba(112,242,180,.10)
+}
+.setupNote{font-size:9px;color:var(--muted2);line-height:1.5;margin:10px 2px 0}
 .hidden{display:none!important}
 .dashboard{display:none}
 .dashboard.show{display:block}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 10px}
-.metric{padding:16px;min-height:110px;position:relative;overflow:hidden}
-.metric:after{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-45px;top:-45px;background:radial-gradient(circle,rgba(105,215,255,.08),transparent 70%)}
-.label{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.09em;text-transform:uppercase}
-.value{font-size:23px;font-weight:900;letter-spacing:-.04em;margin-top:9px}
-.sub{font-size:10px;color:var(--muted);margin-top:5px}
-.mission{padding:18px;margin-top:10px;position:relative;overflow:hidden}
-.mission:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(105,240,174,.035),transparent 38%,rgba(105,215,255,.035));pointer-events:none}
-.mission-head{display:flex;align-items:start;justify-content:space-between;gap:14px}
-.mission h3{font-size:18px;margin:4px 0 0;letter-spacing:-.02em}
-.daybadge{white-space:nowrap;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:11px;font-weight:850;color:#c9d2dd;background:rgba(255,255,255,.025)}
-.focus{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-top:18px}
-.bigtarget .amount{font-size:37px;font-weight:950;letter-spacing:-.065em;margin-top:5px}
-.bigtarget .amount.positive{color:var(--green)}
-.bigtarget .hint{font-size:11px;color:var(--muted);margin-top:3px}
-.ring{--p:0;width:90px;height:90px;border-radius:50%;background:conic-gradient(var(--green) calc(var(--p)*1%),rgba(255,255,255,.06) 0);display:grid;place-items:center;position:relative}
-.ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0e131b}
-.ring .inside{z-index:1;text-align:center}
-.ring b{display:block;font-size:18px}
-.ring span{font-size:9px;color:var(--muted);font-weight:750}
-.triplet{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
-.mini{background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:16px;padding:12px 10px}
-.mini b{display:block;font-size:13px;margin-top:5px}
-.mini span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:800}
-.lotbox{margin-top:12px;padding:15px;border-radius:18px;border:1px solid rgba(105,215,255,.12);background:rgba(105,215,255,.035);display:flex;align-items:center;justify-content:space-between;gap:14px}
-.lotbox .lot{font-size:22px;font-weight:950}
-.lotbox p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.4}
-.lotflag{font-size:10px;font-weight:900;padding:7px 9px;border-radius:999px;background:rgba(255,215,106,.09);color:var(--gold);border:1px solid rgba(255,215,106,.16)}
-.section-head{display:flex;align-items:end;justify-content:space-between;margin:24px 2px 10px}
-.section-head h3{font-size:15px;margin:0}
-.section-head span{font-size:10px;color:var(--muted)}
-.close-card{padding:16px}
-.close-card .row{display:flex;gap:10px}
-.close-card input{flex:1;min-width:0;height:52px;border-radius:16px;border:1px solid var(--line);background:#090d13;color:#fff;font-weight:850;font-size:18px;padding:0 14px;outline:none}
-.close-card button{height:52px;border-radius:16px;border:0;background:#eef4f7;color:#071013;font-weight:900;padding:0 16px}
-.close-card p{font-size:10px;color:var(--muted);line-height:1.5;margin:10px 2px 0}
-.notice{margin-top:10px;border-radius:16px;padding:12px 13px;font-size:11px;line-height:1.5;border:1px solid var(--line);display:none}
+
+/* overview */
+.summaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0 9px}
+.metric{padding:15px;min-height:104px;position:relative;overflow:hidden}
+.metric:after{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-52px;top:-48px;background:radial-gradient(circle,rgba(117,216,255,.09),transparent 70%)}
+.metric .label,.smallLabel{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:850}
+.metric .big{font-size:22px;font-weight:950;letter-spacing:-.045em;margin-top:8px}
+.metric .sub{font-size:9px;color:var(--muted);margin-top:5px}
+.targetEdit{border:0;background:transparent;color:var(--cyan);font-size:9px;font-weight:850;padding:0}
+
+.mission{padding:17px;margin-top:9px;overflow:hidden;position:relative}
+.mission:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(112,242,180,.035),transparent 40%,rgba(117,216,255,.03))}
+.missionHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;position:relative}
+.missionHead h2{font-size:18px;margin:4px 0 0}
+.health{font-size:9px;font-weight:900;padding:8px 9px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.025);color:#c4ceda}
+.focus{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;margin-top:16px;position:relative}
+.targetAmount{font-size:36px;font-weight:950;letter-spacing:-.065em;color:var(--green);margin-top:5px}
+.targetRate{font-size:10px;color:var(--muted);margin-top:3px}
+.ring{--p:0;width:88px;height:88px;border-radius:50%;background:conic-gradient(var(--green) calc(var(--p)*1%),rgba(255,255,255,.06) 0);display:grid;place-items:center;position:relative}
+.ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0e141c}
+.ring div{z-index:1;text-align:center}
+.ring b{display:block;font-size:17px}
+.ring span{display:block;font-size:8px;color:var(--muted);font-weight:800;margin-top:1px}
+.triplet{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px;position:relative}
+.mini{padding:11px 9px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.023)}
+.mini span{font-size:8px;text-transform:uppercase;letter-spacing:.065em;color:var(--muted);font-weight:800}
+.mini b{font-size:12px;display:block;margin-top:5px}
+
+/* daily stop */
+.stopBox{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}
+.stopCell{border-radius:17px;border:1px solid var(--line);padding:12px;background:#0a1016}
+.stopCell .cap{font-size:8px;text-transform:uppercase;letter-spacing:.08em;font-weight:850;color:var(--muted)}
+.stopCell b{display:block;font-size:16px;margin-top:5px}
+.stopCell.tp b{color:var(--green)}
+.stopCell.sl b{color:var(--red)}
+.stopCell small{font-size:8px;color:var(--muted);display:block;margin-top:4px;line-height:1.35}
+.sessionRule{margin-top:8px;padding:10px 11px;border-radius:14px;background:rgba(255,214,107,.045);border:1px solid rgba(255,214,107,.10);font-size:9px;color:#c8b875;line-height:1.45}
+
+/* lot */
+.lotCard{margin-top:9px;padding:15px;display:flex;justify-content:space-between;align-items:center;gap:13px}
+.lotValue{font-size:23px;font-weight:950;letter-spacing:-.04em;margin-top:5px}
+.lotNote{font-size:9px;color:var(--muted);line-height:1.4;margin-top:4px}
+.riskBadge{padding:8px 10px;border-radius:999px;font-size:9px;font-weight:900;border:1px solid rgba(117,216,255,.15);color:var(--cyan);background:rgba(117,216,255,.055);white-space:nowrap}
+
+/* sections */
+.sectionHead{display:flex;align-items:end;justify-content:space-between;margin:23px 2px 9px}
+.sectionHead h3{font-size:14px;margin:0}
+.sectionHead span,.linkBtn{font-size:9px;color:var(--muted)}
+.linkBtn{border:0;background:transparent;padding:0;color:var(--cyan);font-weight:800}
+.calendarCard{padding:14px}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:7px}
+.weekdays span{text-align:center;font-size:8px;color:var(--muted2);font-weight:800}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.dayTile{aspect-ratio:1/1;border:1px solid var(--line);background:#0a0f15;border-radius:12px;color:#788494;font-size:9px;font-weight:850;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative}
+.dayTile i{width:5px;height:5px;border-radius:50%;background:#303844}
+.dayTile.hit{background:rgba(112,242,180,.055);border-color:rgba(112,242,180,.13);color:#b9f6db}
+.dayTile.hit i{background:var(--green)}
+.dayTile.miss{background:rgba(255,115,129,.055);border-color:rgba(255,115,129,.13);color:#ffc0c7}
+.dayTile.miss i{background:var(--red)}
+.dayTile.current{outline:1px solid rgba(117,216,255,.5);box-shadow:0 0 0 3px rgba(117,216,255,.04)}
+.dayTile.future{opacity:.72}
+
+.chartCard{padding:14px 14px 12px}
+.chartTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.legend{display:flex;gap:10px;font-size:8px;color:var(--muted);font-weight:800}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend i{width:13px;height:2px;border-radius:9px;background:var(--cyan)}
+.legend span:last-child i{background:var(--green)}
+.chartWrap{height:205px;width:100%;position:relative}
+#equityChart{width:100%;height:100%;display:block}
+.chartStats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+.chartStat{border-radius:13px;border:1px solid var(--line);background:#090e14;padding:9px}
+.chartStat span{display:block;font-size:7px;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.06em}
+.chartStat b{display:block;font-size:11px;margin-top:5px}
+
+/* end session */
+.closeCard{padding:15px}
+.closeRow{display:flex;gap:8px}
+.closeRow input{min-width:0;flex:1;height:50px;border-radius:15px;border:1px solid var(--line);background:#090e14;color:#fff;font-size:17px;font-weight:900;padding:0 13px;outline:none}
+.closeRow button{height:50px;border:0;border-radius:15px;padding:0 15px;background:#eef5f7;color:#071013;font-weight:950}
+.closeHint{font-size:9px;color:var(--muted);line-height:1.45;margin:9px 2px 0}
+.notice{display:none;margin-top:9px;border-radius:14px;padding:10px 11px;font-size:9px;line-height:1.45}
 .notice.show{display:block}
-.notice.good{background:rgba(105,240,174,.055);color:#b8f8d9;border-color:rgba(105,240,174,.14)}
-.notice.bad{background:rgba(255,107,122,.055);color:#ffc0c7;border-color:rgba(255,107,122,.14)}
-.plan-card{overflow:hidden}
-.plan-toolbar{padding:14px 15px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
-.plan-toolbar b{font-size:13px}
-.reset{border:0;background:transparent;color:#8793a2;font-size:10px}
-.table-wrap{overflow:auto;max-height:440px}
-table{width:100%;border-collapse:collapse;min-width:620px}
-th{position:sticky;top:0;background:#0e131b;color:#768292;font-size:9px;text-transform:uppercase;letter-spacing:.08em;text-align:right;padding:11px 12px;z-index:1}
+.notice.good{color:#bdf8dc;background:rgba(112,242,180,.055);border:1px solid rgba(112,242,180,.13)}
+.notice.bad{color:#ffc0c7;background:rgba(255,115,129,.055);border:1px solid rgba(255,115,129,.13)}
+
+/* plan */
+.planCard{overflow:hidden}
+.planTop{height:45px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.planTop b{font-size:11px}
+.planTop button{border:0;background:transparent;color:#7b8796;font-size:9px}
+.tableWrap{overflow:auto;max-height:390px}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th{position:sticky;top:0;background:#0d131b;z-index:2;color:#707b8a;font-size:8px;letter-spacing:.07em;text-transform:uppercase;padding:10px;text-align:right}
 th:first-child,td:first-child{text-align:left}
-td{padding:12px;border-top:1px solid rgba(255,255,255,.055);font-size:11px;text-align:right;color:#cdd5df}
-tr.current{background:rgba(105,215,255,.035)}
-td strong{font-size:12px;color:#fff}
-.status{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 7px;font-size:9px;font-weight:850}
-.status.wait{color:#8e99a7;background:rgba(255,255,255,.045)}
-.status.hit{color:var(--green);background:rgba(105,240,174,.08)}
-.status.miss{color:var(--red);background:rgba(255,107,122,.08)}
-.dot{width:5px;height:5px;border-radius:50%;background:currentColor}
-.advanced{margin-top:10px}
-details{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.018);overflow:hidden}
-summary{padding:14px 15px;font-size:11px;font-weight:850;color:#aab5c3;cursor:pointer;list-style:none}
+td{padding:11px 10px;border-top:1px solid rgba(255,255,255,.05);font-size:10px;color:#c9d1dc;text-align:right}
+tr.now{background:rgba(117,216,255,.03)}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:8px;font-weight:900;padding:5px 7px;border-radius:999px}
+.status:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.status.hit{color:var(--green);background:rgba(112,242,180,.07)}
+.status.miss{color:var(--red);background:rgba(255,115,129,.07)}
+.status.wait{color:#8b96a5;background:rgba(255,255,255,.04)}
+
+/* advanced */
+details{border-radius:18px;border:1px solid var(--line);overflow:hidden;background:rgba(255,255,255,.015)}
+summary{list-style:none;padding:14px;color:#a4afbd;font-size:10px;font-weight:850;cursor:pointer}
 summary::-webkit-details-marker{display:none}
-.advanced-body{padding:0 15px 15px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field label{display:block;font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:0 0 6px 2px}
-.field input{width:100%;height:44px;border-radius:13px;border:1px solid var(--line);background:#090d13;color:#fff;padding:0 11px;outline:none;font-size:12px}
-.warning{margin:18px 2px;color:#5f6875;font-size:9px;line-height:1.55}
-.bottom{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,9,12,0),rgba(7,9,12,.94) 22%,rgba(7,9,12,.98));z-index:20}
-.nav{height:62px;border:1px solid var(--line);background:rgba(13,17,23,.92);backdrop-filter:blur(22px);border-radius:21px;display:grid;grid-template-columns:repeat(3,1fr);padding:5px}
-.nav button{border:0;background:transparent;color:#687383;border-radius:16px;font-size:9px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.nav button.active{background:rgba(255,255,255,.055);color:#f7f9fc}
-.nav svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
-.sheet{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);display:none;align-items:flex-end}
-.sheet.show{display:flex}
-.sheet-inner{width:min(520px,100%);margin:auto;background:#0c1118;border:1px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;padding:9px 18px calc(22px + env(safe-area-inset-bottom));animation:up .24s ease}
-@keyframes up{from{transform:translateY(40px);opacity:.3}to{transform:none;opacity:1}}
-.handle{width:44px;height:5px;border-radius:99px;background:#28303a;margin:0 auto 18px}
-.sheet h3{margin:0 0 6px;font-size:20px}
-.sheet p{font-size:11px;color:var(--muted);line-height:1.5;margin:0 0 16px}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
-.result-grid div{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.025)}
-.result-grid span{font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:800}
-.result-grid b{display:block;font-size:16px;margin-top:5px}
-.sheet .done{width:100%;height:52px;border:0;border-radius:17px;font-weight:900;background:#eef4f7;color:#071013}
-.empty{padding:22px;text-align:center;color:var(--muted);font-size:11px}
-@media(max-width:370px){.hero h2{font-size:28px}.bigtarget .amount{font-size:32px}.triplet{gap:6px}.mini{padding:10px 8px}}
+.advancedBody{padding:0 14px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.advField label{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:800;margin:0 0 5px 2px}
+.compactInput{width:100%;height:42px;border:1px solid var(--line);border-radius:12px;background:#090e14;color:#fff;padding:0 10px;outline:none;font-size:11px}
+.disclaimer{font-size:8px;line-height:1.55;color:#596371;margin:15px 2px 2px}
+
+/* bottom */
+.bottom{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(540px,100%);z-index:40;padding:9px 16px calc(9px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,9,13,0),rgba(7,9,13,.93) 24%,rgba(7,9,13,.99))}
+.nav{height:61px;border-radius:21px;border:1px solid var(--line);background:rgba(13,18,25,.93);backdrop-filter:blur(22px);display:grid;grid-template-columns:repeat(3,1fr);padding:5px}
+.nav button{border:0;background:transparent;color:#667282;border-radius:15px;font-size:8px;font-weight:850;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.nav button.active{color:#f4f7fa;background:rgba(255,255,255,.055)}
+.nav svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+
+/* modal */
+.overlay{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.64);backdrop-filter:blur(10px);display:none;align-items:flex-end}
+.overlay.show{display:flex}
+.sheet{width:min(540px,100%);margin:auto;background:#0c1219;border:1px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;padding:9px 17px calc(20px + env(safe-area-inset-bottom));animation:up .22s ease}
+@keyframes up{from{opacity:.25;transform:translateY(38px)}to{opacity:1;transform:none}}
+.handle{height:5px;width:42px;border-radius:999px;background:#29313b;margin:0 auto 17px}
+.sheet h3{font-size:19px;margin:0 0 6px}
+.sheet p{font-size:10px;line-height:1.5;color:var(--muted);margin:0 0 14px}
+.sheetGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px}
+.sheetBox{border:1px solid var(--line);background:#090e14;border-radius:15px;padding:11px}
+.sheetBox span{font-size:8px;color:var(--muted);font-weight:800;text-transform:uppercase}
+.sheetBox b{display:block;font-size:14px;margin-top:5px}
+.sheetBtn{width:100%;height:50px;border:0;border-radius:16px;background:#eff5f7;color:#071013;font-weight:950}
+.modalInput{margin:9px 0 10px}
+.recommendLine{padding:10px;border-radius:14px;background:rgba(117,216,255,.045);border:1px solid rgba(117,216,255,.10);font-size:9px;color:#b8dbea;line-height:1.45;margin-bottom:10px}
+.dangerBtn{width:100%;height:46px;border-radius:15px;border:1px solid rgba(255,115,129,.16);background:rgba(255,115,129,.055);color:#ffabb5;font-weight:850;margin-top:8px}
+
+.lockBanner{display:none;margin-top:9px;border-radius:16px;padding:11px 12px;font-size:10px;font-weight:850;line-height:1.4}
+.lockBanner.show{display:block}
+.lockBanner.win{background:rgba(112,242,180,.06);border:1px solid rgba(112,242,180,.15);color:#bdf7dc}
+.lockBanner.loss{background:rgba(255,115,129,.06);border:1px solid rgba(255,115,129,.15);color:#ffc0c7}
+
+@media(max-width:380px){
+  .hero h1{font-size:28px}
+  .targetAmount{font-size:32px}
+  .triplet{gap:5px}
+  .mini{padding:10px 7px}
+  .chartWrap{height:185px}
+}
 </style>
 </head>
 <body>
@@ -139,234 +245,357 @@ summary::-webkit-details-marker{display:none}
   <div class="safe"></div>
   <header class="topbar">
     <div class="brand">
-      <div class="mark"></div>
-      <div><h1>ONE MONTH</h1><p>TRADING SYSTEM</p></div>
+      <div class="logo"><i></i></div>
+      <div><b>ONE MONTH</b><small>TRADING OS</small></div>
     </div>
-    <button class="iconbtn" id="topSettings" aria-label="settings">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.2 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H2.4V9.6h.09A1.7 1.7 0 0 0 4.2 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.6 4.2a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V2.4h4v.09A1.7 1.7 0 0 0 15 4.2a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 8.6a1.7 1.7 0 0 0 .6 1 1.7 1.7 0 0 0 1.1.4h.09v4h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg>
+    <button class="iconbtn" id="settingsBtn" aria-label="settings">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+      </svg>
     </button>
   </header>
 
-  <section class="hero" id="intro">
-    <div class="eyebrow">Adaptive 30-day plan</div>
-    <h2>ใส่ทุนครั้งเดียว<br><span>ที่เหลือให้ระบบจัดการ</span></h2>
-    <p>ระบบสร้างเป้ารายเดือน แตกเป็นเป้ารายวัน และปรับแผนใหม่จากผลจริงทุกวันโดยอัตโนมัติ</p>
+  <section id="intro" class="hero">
+    <div class="eyebrow">30-day adaptive system</div>
+    <h1>คุณกำหนดเป้า<br><span>ระบบวางแผนให้ทั้งหมด</span></h1>
+    <p>ใส่ทุนและ Target ที่ต้องการ ระบบคำนวณแผน 30 วัน, เป้าวันนี้, Daily Stop, Lot Guide และปรับแผนจากผลจริงทุกวัน</p>
   </section>
 
-  <section class="setup card" id="setup">
-    <div class="setup-title"><h3>ทุนเริ่มต้น</h3><span class="pill">AUTO PLAN</span></div>
-    <div class="money-input"><span class="symbol">$</span><input id="capital" inputmode="decimal" placeholder="100.00" value="100"></div>
-    <small>ค่าเริ่มต้นของระบบตั้งเป้ารวมประมาณ +10% ภายใน 30 session แล้วคำนวณแบบทบต้นให้ทั้งหมด</small>
-    <button class="primary" id="buildPlan">สร้างแผนของฉัน</button>
-  </section>
-
-  <main class="dashboard" id="dashboard">
-    <div class="grid2">
-      <div class="metric card"><div class="label">Current Balance</div><div class="value" id="currentBal">$0.00</div><div class="sub" id="pnlText">เริ่มต้นแผน</div></div>
-      <div class="metric card"><div class="label">Month Target</div><div class="value" id="monthTarget">$0.00</div><div class="sub" id="monthGrowth">Auto-generated</div></div>
+  <section id="setup" class="setup card">
+    <div class="setupHead">
+      <h2>สร้างแผนใหม่</h2>
+      <span class="autopill">SMART PLAN</span>
     </div>
 
+    <div class="fieldLabel">ทุนเริ่มต้น</div>
+    <div class="money"><span>$</span><input id="capitalInput" inputmode="decimal" value="100" placeholder="100.00"></div>
+
+    <div class="targetArea">
+      <div class="targetTop">
+        <div class="fieldLabel" style="margin:0">Target สิ้นเดือน</div>
+        <div class="recBadge" id="recText">แนะนำ $107.00</div>
+      </div>
+      <div class="money" style="margin-top:8px"><span>$</span><input id="targetInput" inputmode="decimal" value="107" placeholder="107.00"></div>
+      <div class="targetMeta">
+        <div class="metaBox"><span>Monthly Goal</span><b id="goalPct">+7.00%</b></div>
+        <div class="metaBox"><span>Required / Day</span><b id="requiredPct">+0.23%</b></div>
+      </div>
+      <div class="quickTargets" id="quickTargets"></div>
+    </div>
+
+    <button class="primary" id="buildBtn">สร้าง 30-Day Plan</button>
+    <div class="setupNote">“เป้าแนะนำ” เป็นช่วงสำหรับวางแผนจากขนาดทุน ไม่ใช่การรับประกันผลตอบแทน คุณสามารถกำหนด Target เองได้ทั้งหมด</div>
+  </section>
+
+  <main id="dashboard" class="dashboard">
+    <section class="summaryGrid">
+      <div class="metric card">
+        <div class="smallLabel">Current Balance</div>
+        <div class="big" id="currentBalance">$0.00</div>
+        <div class="sub" id="netPnl">เริ่มต้นแผน</div>
+      </div>
+      <div class="metric card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div class="smallLabel">Month Target</div>
+          <button class="targetEdit" id="editTargetBtn">แก้ไข</button>
+        </div>
+        <div class="big" id="monthTarget">$0.00</div>
+        <div class="sub" id="monthTargetMeta">30-day target</div>
+      </div>
+    </section>
+
     <section class="mission card">
-      <div class="mission-head">
-        <div><div class="eyebrow">Today's mission</div><h3 id="todayTitle">DAY 1</h3></div>
-        <div class="daybadge" id="planHealth">PLAN HEALTH 100</div>
+      <div class="missionHead">
+        <div>
+          <div class="eyebrow">Today's mission</div>
+          <h2 id="dayTitle">DAY 01</h2>
+        </div>
+        <div class="health" id="health">PLAN HEALTH 100</div>
       </div>
 
       <div class="focus">
-        <div class="bigtarget">
-          <div class="label">กำไรเป้าวันนี้</div>
-          <div class="amount positive" id="todayProfit">+$0.00</div>
-          <div class="hint" id="todayRate">เป้ารายวัน 0.00%</div>
+        <div>
+          <div class="smallLabel">กำไรเป้าวันนี้</div>
+          <div class="targetAmount" id="todayProfit">+$0.00</div>
+          <div class="targetRate" id="todayRate">Required 0.00%</div>
         </div>
         <div class="ring" id="ring" style="--p:0">
-          <div class="inside"><b id="ringPct">0%</b><span>MONTH</span></div>
+          <div><b id="progressPct">0%</b><span>MONTH</span></div>
         </div>
       </div>
 
       <div class="triplet">
-        <div class="mini"><span>เริ่มวันนี้</span><b id="todayStart">$0.00</b></div>
-        <div class="mini"><span>ปิดขั้นต่ำ</span><b id="todayClose">$0.00</b></div>
-        <div class="mini"><span>เหลือ</span><b id="daysLeft">30 วัน</b></div>
+        <div class="mini"><span>Start today</span><b id="todayStart">$0.00</b></div>
+        <div class="mini"><span>Close target</span><b id="todayClose">$0.00</b></div>
+        <div class="mini"><span>Days left</span><b id="daysLeft">30</b></div>
       </div>
 
-      <div class="lotbox">
-        <div>
-          <div class="label">XAUUSD LOT GUIDE</div>
-          <div class="lot" id="lotGuide">&lt; 0.01 lot</div>
-          <p id="lotNote">คำนวณจาก risk model ของระบบ</p>
+      <div class="stopBox">
+        <div class="stopCell tp">
+          <div class="cap">Take Profit Stop</div>
+          <b id="tpStop">+$0.00</b>
+          <small>ถึงเป้าแล้วให้จบ Session</small>
         </div>
-        <div class="lotflag" id="lotFlag">AUTO</div>
+        <div class="stopCell sl">
+          <div class="cap">Max Loss Today</div>
+          <b id="maxLoss">-$0.00</b>
+          <small>ถึงวงเงินขาดทุนให้หยุดวันนั้น</small>
+        </div>
+      </div>
+      <div class="sessionRule" id="sessionRule">ระบบจะคำนวณ Stop จาก Balance และความยากของ Target วันนี้อัตโนมัติ</div>
+      <div class="lockBanner" id="lockBanner"></div>
+    </section>
+
+    <section class="lotCard card">
+      <div>
+        <div class="smallLabel">Adaptive XAUUSD Lot</div>
+        <div class="lotValue" id="lotValue">&lt; 0.01 lot</div>
+        <div class="lotNote" id="lotNote">คำนวณจาก Max Loss วันนี้และระยะ SL</div>
+      </div>
+      <div class="riskBadge" id="riskBadge">AUTO RISK</div>
+    </section>
+
+    <div class="sectionHead">
+      <h3>30-Day Calendar</h3>
+      <span id="calendarSummary">0 HIT · 0 MISS</span>
+    </div>
+    <section class="calendarCard card">
+      <div class="weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+      <div class="calendar" id="calendar"></div>
+    </section>
+
+    <div class="sectionHead">
+      <h3>Equity Curve</h3>
+      <span id="aheadBehind">On plan</span>
+    </div>
+    <section class="chartCard card">
+      <div class="chartTop">
+        <div class="smallLabel">Expected vs Actual</div>
+        <div class="legend">
+          <span><i></i>PLAN</span>
+          <span><i></i>ACTUAL</span>
+        </div>
+      </div>
+      <div class="chartWrap"><canvas id="equityChart"></canvas></div>
+      <div class="chartStats">
+        <div class="chartStat"><span>Progress</span><b id="chartProgress">0%</b></div>
+        <div class="chartStat"><span>Hit Rate</span><b id="hitRate">—</b></div>
+        <div class="chartStat"><span>Max Drawdown</span><b id="maxDrawdown">0.00%</b></div>
       </div>
     </section>
 
-    <div class="section-head"><h3>จบวัน</h3><span>กรอก Balance จริงหลังหยุดเทรด</span></div>
-    <section class="close-card card">
-      <div class="row">
-        <input id="actualClose" inputmode="decimal" placeholder="เช่น 105.40">
-        <button id="saveDay">บันทึก</button>
+    <div class="sectionHead">
+      <h3>End Session</h3>
+      <span>กรอกยอด Balance จริง</span>
+    </div>
+    <section class="closeCard card">
+      <div class="closeRow">
+        <input id="actualInput" inputmode="decimal" placeholder="เช่น 102.40">
+        <button id="saveDayBtn">บันทึก</button>
       </div>
-      <p>ระบบจะเทียบกับเป้าวันนี้ → ติ๊ก HIT/MISS → แล้ว Rebalance วันถัดไปให้อัตโนมัติ</p>
+      <div class="closeHint">เมื่อบันทึก ระบบจะติ๊ก HIT/MISS แล้วคำนวณเป้าวันถัดไปใหม่จาก Target เดิมโดยอัตโนมัติ</div>
       <div class="notice" id="notice"></div>
     </section>
 
-    <div class="section-head"><h3>30-Day Roadmap</h3><span id="completedText">0 / 30 completed</span></div>
-    <section class="plan-card card">
-      <div class="plan-toolbar"><b>Adaptive Plan</b><button class="reset" id="resetBtn">เริ่มแผนใหม่</button></div>
-      <div class="table-wrap">
+    <div class="sectionHead">
+      <h3>Adaptive Roadmap</h3>
+      <span id="completeCount">0 / 30</span>
+    </div>
+    <section class="planCard card">
+      <div class="planTop"><b>30 SESSION PLAN</b><button id="resetBtn">เริ่มใหม่</button></div>
+      <div class="tableWrap">
         <table>
-          <thead><tr><th>Day</th><th>Balance</th><th>Target</th><th>Expected</th><th>Actual</th><th>Status</th></tr></thead>
+          <thead>
+            <tr><th>Day</th><th>Balance</th><th>Profit</th><th>Expected</th><th>Actual</th><th>Status</th></tr>
+          </thead>
           <tbody id="planBody"></tbody>
         </table>
       </div>
     </section>
 
-    <div class="section-head"><h3>ระบบเบื้องหลัง</h3><span>ไม่จำเป็นต้องตั้งค่า</span></div>
-    <section class="advanced">
-      <details id="advanced">
-        <summary>Advanced · Lot & Risk Engine</summary>
-        <div class="advanced-body">
-          <div class="field"><label>Risk / trade (%)</label><input id="riskPct" inputmode="decimal" value="0.5"></div>
-          <div class="field"><label>XAU SL move ($)</label><input id="slMove" inputmode="decimal" value="5"></div>
-          <div class="field"><label>Contract size</label><input id="contractSize" inputmode="decimal" value="100"></div>
-          <div class="field"><label>Min lot</label><input id="minLot" inputmode="decimal" value="0.01"></div>
-        </div>
-      </details>
-    </section>
+    <div class="sectionHead"><h3>Risk Engine</h3><span>ระบบจัดการให้ · แก้ได้หากต้องการ</span></div>
+    <details id="riskDetails">
+      <summary>Advanced Lot Settings</summary>
+      <div class="advancedBody">
+        <div class="advField"><label>SL Distance ($)</label><input class="compactInput" id="slDistance" inputmode="decimal" value="5"></div>
+        <div class="advField"><label>Contract Size</label><input class="compactInput" id="contractSize" inputmode="decimal" value="100"></div>
+        <div class="advField"><label>Min Lot</label><input class="compactInput" id="minLot" inputmode="decimal" value="0.01"></div>
+        <div class="advField"><label>Suggested / Max</label><input class="compactInput" id="lotFactor" inputmode="decimal" value="0.70"></div>
+      </div>
+    </details>
 
-    <p class="warning">Trading targets เป็นเพียงแผนทางคณิตศาสตร์ ไม่ใช่การรับประกันผลตอบแทน และ Lot Guide เป็นค่าประมาณจากสมมติฐาน XAUUSD ที่ตั้งไว้ในระบบ ควรตรวจสอบ contract specification ของโบรกเกอร์ก่อนใช้งานจริง</p>
+    <div class="disclaimer">ระบบนี้เป็น Trading Journal และเครื่องมือวางแผนเชิงคณิตศาสตร์เท่านั้น Target, Daily Stop และ Lot Guide ไม่รับประกันผลลัพธ์จริง และค่า contract/lot ของ XAUUSD แตกต่างกันตามโบรกเกอร์ โปรดตรวจสอบ specification ก่อนใช้งาน</div>
   </main>
 </div>
 
 <div class="bottom">
   <nav class="nav">
-    <button class="active" data-go="dashboard">
-      <svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>OVERVIEW
+    <button class="active" data-go="home">
+      <svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>HOME
     </button>
     <button data-go="plan">
       <svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg>PLAN
     </button>
-    <button data-go="settings">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>ENGINE
+    <button data-go="analytics">
+      <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg>ANALYTICS
     </button>
   </nav>
 </div>
 
-<div class="sheet" id="resultSheet">
-  <div class="sheet-inner">
+<!-- target editor -->
+<div class="overlay" id="targetOverlay">
+  <div class="sheet">
+    <div class="handle"></div>
+    <h3>แก้ไข Month Target</h3>
+    <p>กำหนด Target ใหม่ได้ตลอด ระบบจะคำนวณเฉพาะวันที่ยังไม่จบใหม่ โดยไม่แก้ผลย้อนหลัง</p>
+    <div class="recommendLine" id="editRecommend">เป้าแนะนำตามทุนปัจจุบัน —</div>
+    <div class="fieldLabel">New Target</div>
+    <div class="money modalInput"><span>$</span><input id="editTargetInput" inputmode="decimal"></div>
+    <div class="sheetGrid">
+      <div class="sheetBox"><span>Remaining Days</span><b id="editRemain">—</b></div>
+      <div class="sheetBox"><span>Required / Day</span><b id="editDaily">—</b></div>
+    </div>
+    <button class="sheetBtn" id="saveTargetBtn">อัปเดต Target</button>
+  </div>
+</div>
+
+<!-- end day result -->
+<div class="overlay" id="resultOverlay">
+  <div class="sheet">
     <div class="handle"></div>
     <h3 id="resultTitle">Target Hit</h3>
-    <p id="resultDesc">บันทึกผลวันนี้เรียบร้อยแล้ว ระบบคำนวณวันถัดไปให้แล้ว</p>
-    <div class="result-grid">
-      <div><span>Actual close</span><b id="resultActual">$0.00</b></div>
-      <div><span>Day P/L</span><b id="resultPnl">$0.00</b></div>
-      <div><span>Next target</span><b id="resultNext">$0.00</b></div>
-      <div><span>Plan health</span><b id="resultHealth">100</b></div>
+    <p id="resultDesc">บันทึกเรียบร้อยแล้ว</p>
+    <div class="sheetGrid">
+      <div class="sheetBox"><span>Actual Balance</span><b id="resultActual">$0.00</b></div>
+      <div class="sheetBox"><span>Day P/L</span><b id="resultPnl">$0.00</b></div>
+      <div class="sheetBox"><span>Next Target</span><b id="resultNext">$0.00</b></div>
+      <div class="sheetBox"><span>Plan Health</span><b id="resultHealth">100/100</b></div>
     </div>
-    <button class="done" id="closeSheet">ไปวันถัดไป</button>
+    <button class="sheetBtn" id="closeResultBtn">ไปวันถัดไป</button>
+  </div>
+</div>
+
+<!-- settings -->
+<div class="overlay" id="settingsOverlay">
+  <div class="sheet">
+    <div class="handle"></div>
+    <h3>Plan Engine</h3>
+    <p>ค่าหลักถูกคำนวณอัตโนมัติ คุณสามารถเริ่มแผนใหม่ได้จากตรงนี้</p>
+    <div class="sheetGrid">
+      <div class="sheetBox"><span>Sessions</span><b>30 Days</b></div>
+      <div class="sheetBox"><span>Plan Mode</span><b>Adaptive</b></div>
+    </div>
+    <button class="sheetBtn" id="closeSettingsBtn">เสร็จสิ้น</button>
+    <button class="dangerBtn" id="sheetResetBtn">ลบข้อมูลและเริ่มแผนใหม่</button>
   </div>
 </div>
 
 <script>
 const $ = s => document.querySelector(s);
-const fmt = n => '$' + Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const pct = n => (n*100).toFixed(2)+'%';
-const KEY='one_month_trading_system_v3';
+const $$ = s => [...document.querySelectorAll(s)];
+const money = n => '$' + Number(n || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const percent = n => (Number(n || 0) * 100).toFixed(2) + '%';
+const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
+const KEY='one_month_trading_os_v4';
 
 let state = {
-  start:0,
-  originalGoal:0,
-  activeGoal:0,
-  totalDays:30,
-  dailyRate:0,
-  days:[],
-  settings:{riskPct:.5,slMove:5,contractSize:100,minLot:.01}
+  start:0,target:0,totalDays:30,days:[],
+  settings:{slDistance:5,contractSize:100,minLot:.01,lotFactor:.70}
 };
 
+function recommendedGrowth(balance){
+  // Planning recommendation only: larger portfolios receive a lower suggested monthly pace.
+  if(balance < 50) return .08;
+  if(balance < 200) return .07;
+  if(balance < 500) return .065;
+  if(balance < 2000) return .06;
+  if(balance < 10000) return .05;
+  return .04;
+}
+function recommendation(balance){
+  const growth=recommendedGrowth(balance);
+  return {growth,target:balance*(1+growth)};
+}
+function dailyRequired(start,target,days){
+  if(days<=0 || start<=0 || target<=0) return 0;
+  if(target<=start) return 0;
+  return Math.pow(target/start,1/days)-1;
+}
+function currentBalance(){
+  const done=state.days.filter(d=>d.actual!=null);
+  return done.length ? Number(done[done.length-1].actual) : state.start;
+}
+function completed(){return state.days.filter(d=>d.actual!=null).length}
+function todayIndex(){return Math.min(completed(),state.totalDays-1)}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function load(){
   try{
-    const s=JSON.parse(localStorage.getItem(KEY));
-    if(s && s.start>0){state=s; showDashboard(); render(); return}
+    const saved=JSON.parse(localStorage.getItem(KEY));
+    if(saved && saved.start>0 && saved.target>0){
+      state=saved;
+      state.settings={slDistance:5,contractSize:100,minLot:.01,lotFactor:.70,...(state.settings||{})};
+      showDashboard();
+      recalcFuture();
+      render();
+      return;
+    }
   }catch(e){}
+  refreshSetup();
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 
-function buildInitial(capital){
-  const totalDays=30;
-  const monthlyGrowth=.10; // system baseline: +10% per 30 sessions
-  const goal=capital*(1+monthlyGrowth);
-  const rate=Math.pow(goal/capital,1/totalDays)-1;
+function buildPlan(start,target){
   state={
-    start:capital,
-    originalGoal:goal,
-    activeGoal:goal,
-    totalDays,
-    dailyRate:rate,
-    days:[],
-    settings:{riskPct:.5,slMove:5,contractSize:100,minLot:.01}
+    start,target,totalDays:30,days:[],
+    settings:{slDistance:5,contractSize:100,minLot:.01,lotFactor:.70}
   };
   recalcFuture();
   save();
 }
-
-function completedCount(){return state.days.filter(d=>d.actual!=null).length}
-function currentIndex(){return Math.min(completedCount(),state.totalDays-1)}
-function latestBalance(){
-  const done=state.days.filter(d=>d.actual!=null);
-  return done.length ? done[done.length-1].actual : state.start;
-}
-
 function recalcFuture(){
-  const completed=completedCount();
-  const current=latestBalance();
-  const remaining=state.totalDays-completed;
+  const done=completed();
+  const remain=state.totalDays-done;
+  const bal=currentBalance();
+  const actuals=state.days.map(d=>d.actual);
+  const statuses=state.days.map(d=>d.status);
+  const previous=state.days.map(d=>({...d}));
+  const rate=dailyRequired(bal,state.target,remain);
 
-  // Smart rebalance: keep original goal if required rate is sane.
-  // If catching up would demand >0.8% every remaining session, cap the pace
-  // and lower the active target instead of forcing an unrealistic recovery curve.
-  let targetGoal=state.originalGoal;
-  let required=remaining>0 ? Math.pow(targetGoal/current,1/remaining)-1 : 0;
-
-  if(current>=state.originalGoal){
-    required=0;
-    targetGoal=current;
-  }else if(required>.008){
-    required=.008;
-    targetGoal=current*Math.pow(1+required,remaining);
-  }else if(required<0){
-    required=0;
-  }
-  state.activeGoal=targetGoal;
-  state.dailyRate=required;
-
-  const oldActual = state.days.map(d=>d.actual);
-  const oldStatus = state.days.map(d=>d.status);
   const rebuilt=[];
-  let bal=state.start;
-
+  let running=state.start;
   for(let i=0;i<state.totalDays;i++){
-    if(i<completed){
-      const startBal = i===0 ? state.start : Number(oldActual[i-1]);
-      const actual=Number(oldActual[i]);
-      // preserve the target snapshot if possible; if not, estimate from old row
-      const previous=state.days[i]||{};
+    if(i<done){
+      const p=previous[i]||{};
+      const startBal=i===0?state.start:Number(actuals[i-1]);
+      const actual=Number(actuals[i]);
+      const expected=Number(p.expected ?? startBal);
       rebuilt.push({
-        day:i+1,
-        start:startBal,
-        profit:Number(previous.profit ?? Math.max(0,(previous.expected??startBal)-startBal)),
-        expected:Number(previous.expected ?? startBal),
+        day:i+1,start:startBal,
+        rate:Number(p.rate||0),
+        profit:Number(p.profit ?? Math.max(0,expected-startBal)),
+        expected,
         actual,
-        status:oldStatus[i] || (actual>=Number(previous.expected??startBal)?'hit':'miss'),
-        rate:Number(previous.rate ?? 0)
+        status:statuses[i] || (actual>=expected?'hit':'miss'),
+        maxLoss:Number(p.maxLoss||0)
       });
-      bal=actual;
+      running=actual;
     }else{
-      const p=bal*required;
-      const exp=bal+p;
-      rebuilt.push({day:i+1,start:bal,profit:p,expected:exp,actual:null,status:'wait',rate:required});
-      bal=exp;
+      const dayStart=running;
+      const profit=dayStart*rate;
+      const expected=dayStart+profit;
+      const maxLoss=calcDailyMaxLoss(dayStart,profit,rate);
+      rebuilt.push({day:i+1,start:dayStart,rate,profit,expected,actual:null,status:'wait',maxLoss});
+      running=expected;
     }
   }
   state.days=rebuilt;
+}
+
+function calcDailyMaxLoss(balance,profitTarget,rate){
+  // Daily stop engine: scale gently with plan difficulty, capped to avoid extreme values.
+  const baseRate=clamp(rate*.70,.0025,.01);
+  const byBalance=balance*baseRate;
+  const byTarget=Math.max(profitTarget*.85,balance*.0025);
+  return Math.min(balance*.01,Math.max(byBalance,Math.min(byTarget,balance*.01)));
 }
 
 function showDashboard(){
@@ -375,176 +604,388 @@ function showDashboard(){
   $('#dashboard').classList.add('show');
 }
 
-function calcHealth(){
-  const done=state.days.filter(d=>d.actual!=null);
-  if(!done.length) return 100;
-  const hits=done.filter(d=>d.status==='hit').length;
-  const current=latestBalance();
-  const progress=Math.max(0,Math.min(1,(current-state.start)/(state.originalGoal-state.start||1)));
-  const timeProgress=done.length/state.totalDays;
-  const pace = timeProgress ? Math.min(1.1, progress/timeProgress) : 1;
-  return Math.max(0,Math.min(100,Math.round((hits/done.length)*55 + Math.min(1,pace)*45)));
+function refreshSetup(){
+  const cap=Math.max(0,Number($('#capitalInput').value)||0);
+  const rec=recommendation(cap||100);
+  $('#recText').textContent='แนะนำ '+money(rec.target);
+  const target=Math.max(0,Number($('#targetInput').value)||0);
+  const g=cap>0?target/cap-1:0;
+  const d=dailyRequired(cap,target,30);
+  $('#goalPct').textContent=(g>=0?'+':'')+percent(g);
+  $('#requiredPct').textContent=(d>=0?'+':'')+percent(d);
+
+  const opts=[
+    {label:'Safe',g:Math.max(.03,rec.growth-.02)},
+    {label:'แนะนำ',g:rec.growth,rec:true},
+    {label:'High',g:rec.growth+.03}
+  ];
+  $('#quickTargets').innerHTML=opts.map(o=>{
+    const t=(cap||100)*(1+o.g);
+    return `<button class="${o.rec?'rec':''}" data-target="${t.toFixed(2)}">${o.label} ${money(t)}</button>`;
+  }).join('');
+  $$('#quickTargets button').forEach(b=>b.onclick=()=>{
+    $('#targetInput').value=Number(b.dataset.target).toFixed(2);
+    refreshSetup();
+  });
 }
 
-function lotGuide(balance){
+$('#capitalInput').addEventListener('input',()=>{
+  const cap=Math.max(0,Number($('#capitalInput').value)||0);
+  const rec=recommendation(cap||100);
+  $('#targetInput').value=rec.target.toFixed(2);
+  refreshSetup();
+});
+$('#targetInput').addEventListener('input',refreshSetup);
+
+$('#buildBtn').onclick=()=>{
+  const start=Number($('#capitalInput').value);
+  const target=Number($('#targetInput').value);
+  if(!start || start<=0){$('#capitalInput').focus();return}
+  if(!target || target<=start){$('#targetInput').focus();return}
+  buildPlan(start,target);
+  showDashboard();
+  render();
+};
+
+function planHealth(){
+  const done=state.days.filter(d=>d.actual!=null);
+  if(!done.length)return 100;
+  const hits=done.filter(d=>d.status==='hit').length;
+  const current=currentBalance();
+  const goalSpan=state.target-state.start;
+  const realProgress=goalSpan>0?clamp((current-state.start)/goalSpan,0,1):1;
+  const timeProgress=done.length/state.totalDays;
+  const pace=timeProgress>0?clamp(realProgress/timeProgress,0,1):1;
+  return Math.round((hits/done.length)*55 + pace*45);
+}
+
+function lotModel(day){
   const s=state.settings;
-  const riskMoney=balance*(Number(s.riskPct||0)/100);
-  const denom=Number(s.slMove||0)*Number(s.contractSize||0);
-  if(!denom || riskMoney<=0) return {text:'—',note:'ตรวจค่าระบบ Lot',flag:'CHECK'};
-  const raw=riskMoney/denom;
+  const riskBudget=Math.max(0,Number(day.maxLoss||0));
+  const denom=Number(s.slDistance||0)*Number(s.contractSize||0);
   const min=Number(s.minLot||.01);
-  if(raw<min){
+  const factor=clamp(Number(s.lotFactor||.7),.1,1);
+  if(!denom || riskBudget<=0)return {suggested:'—',max:'—',note:'ตรวจค่า SL / Contract',badge:'CHECK'};
+  const rawMax=riskBudget/denom;
+  const rawSuggested=rawMax*factor;
+  const floorLot=v=>Math.floor((v+1e-10)/min)*min;
+  const maxLot=floorLot(rawMax);
+  const suggested=floorLot(rawSuggested);
+
+  if(rawMax<min){
     return {
-      text:'< '+min.toFixed(2)+' lot',
-      note:`Risk ${fmt(riskMoney)} ต่ำกว่า lot ขั้นต่ำของโมเดล`,
-      flag:'LOW SIZE'
+      suggested:'< '+min.toFixed(2)+' lot',
+      max:'< '+min.toFixed(2),
+      note:`Risk budget ${money(riskBudget)} ต่ำกว่า lot ขั้นต่ำ`,
+      badge:'LOW SIZE'
     };
   }
-  const rounded=Math.floor(raw/min)*min;
   return {
-    text:rounded.toFixed(2)+' lot',
-    note:`Risk budget ${fmt(riskMoney)} · SL ${s.slMove}$`,
-    flag:'AUTO'
+    suggested:(Math.max(min,suggested)).toFixed(2)+' lot',
+    max:(Math.max(min,maxLot)).toFixed(2)+' lot',
+    note:`Max ${Math.max(min,maxLot).toFixed(2)} lot · SL ${s.slDistance}$ · budget ${money(riskBudget)}`,
+    badge:'AUTO RISK'
   };
+}
+
+function maxDrawdown(){
+  const vals=[state.start,...state.days.filter(d=>d.actual!=null).map(d=>Number(d.actual))];
+  let peak=vals[0]||0, max=0;
+  for(const v of vals){
+    if(v>peak)peak=v;
+    if(peak>0)max=Math.max(max,(peak-v)/peak);
+  }
+  return max;
 }
 
 function render(){
   if(!state.start)return;
-  const done=completedCount();
-  const idx=currentIndex();
-  const d=state.days[idx];
-  const current=latestBalance();
-  const net=current-state.start;
-  const progress=Math.max(0,Math.min(100,((current-state.start)/(state.originalGoal-state.start||1))*100));
-  const health=calcHealth();
+  const done=completed();
+  const idx=todayIndex();
+  const day=state.days[idx];
+  const bal=currentBalance();
+  const net=bal-state.start;
+  const health=planHealth();
+  const targetProgress=state.target>state.start?clamp((bal-state.start)/(state.target-state.start),0,1):1;
 
-  $('#currentBal').textContent=fmt(current);
-  $('#pnlText').textContent=(net>=0?'+':'')+fmt(net)+' since start';
-  $('#monthTarget').textContent=fmt(state.activeGoal);
-  const activeGrowth=(state.activeGoal/state.start-1);
-  $('#monthGrowth').textContent=(state.activeGoal<state.originalGoal-.001?'Rebalanced · ':'System goal · ')+pct(activeGrowth);
+  $('#currentBalance').textContent=money(bal);
+  $('#netPnl').textContent=(net>=0?'+':'')+money(net)+' since start';
+  $('#monthTarget').textContent=money(state.target);
+  $('#monthTargetMeta').textContent=(state.target/state.start-1>=0?'+':'')+percent(state.target/state.start-1)+' month goal';
+
+  $('#health').textContent='PLAN HEALTH '+health;
+  $('#ring').style.setProperty('--p',targetProgress*100);
+  $('#progressPct').textContent=Math.round(targetProgress*100)+'%';
+  $('#completeCount').textContent=done+' / '+state.totalDays;
 
   if(done>=state.totalDays){
-    $('#todayTitle').textContent='MONTH COMPLETE';
+    $('#dayTitle').textContent='MONTH COMPLETE';
     $('#todayProfit').textContent='DONE';
-    $('#todayRate').textContent='ครบ 30 session แล้ว';
-    $('#todayStart').textContent=fmt(current);
-    $('#todayClose').textContent=fmt(current);
-    $('#daysLeft').textContent='0 วัน';
-    $('#saveDay').disabled=true;
-    $('#actualClose').disabled=true;
+    $('#todayRate').textContent='ครบ 30 Session';
+    $('#todayStart').textContent=money(bal);
+    $('#todayClose').textContent=money(bal);
+    $('#daysLeft').textContent='0';
+    $('#tpStop').textContent='—';
+    $('#maxLoss').textContent='—';
+    $('#saveDayBtn').disabled=true;
+    $('#actualInput').disabled=true;
+    $('#lockBanner').className='lockBanner show win';
+    $('#lockBanner').textContent='MONTH COMPLETE · สรุปผล 30 วันเรียบร้อยแล้ว';
   }else{
-    $('#todayTitle').textContent='DAY '+(idx+1);
-    $('#todayProfit').textContent='+'+fmt(d.profit);
-    $('#todayRate').textContent='เป้ารายวัน '+pct(d.rate);
-    $('#todayStart').textContent=fmt(d.start);
-    $('#todayClose').textContent=fmt(d.expected);
-    $('#daysLeft').textContent=(state.totalDays-done)+' วัน';
-    $('#actualClose').placeholder='เป้าปิด '+fmt(d.expected);
+    $('#dayTitle').textContent='DAY '+String(day.day).padStart(2,'0');
+    $('#todayProfit').textContent='+'+money(day.profit);
+    $('#todayRate').textContent='Required '+percent(day.rate)+' / session';
+    $('#todayStart').textContent=money(day.start);
+    $('#todayClose').textContent=money(day.expected);
+    $('#daysLeft').textContent=String(state.totalDays-done);
+    $('#tpStop').textContent='+'+money(day.profit);
+    $('#maxLoss').textContent='-'+money(day.maxLoss);
+    $('#actualInput').placeholder='เป้าปิด '+money(day.expected);
+    $('#sessionRule').textContent=`วันนี้: ถึง ${money(day.expected)} = Target Complete · ต่ำกว่า ${money(day.start-day.maxLoss)} = Max Loss Zone`;
+    $('#lockBanner').className='lockBanner';
+    $('#lockBanner').textContent='';
   }
 
-  $('#ring').style.setProperty('--p',progress);
-  $('#ringPct').textContent=Math.round(progress)+'%';
-  $('#planHealth').textContent='PLAN HEALTH '+health;
-  $('#completedText').textContent=done+' / '+state.totalDays+' completed';
+  const lm=lotModel(day||{maxLoss:0});
+  $('#lotValue').textContent=lm.suggested;
+  $('#lotNote').textContent=lm.note;
+  $('#riskBadge').textContent=lm.badge;
 
-  const lg=lotGuide(current);
-  $('#lotGuide').textContent=lg.text;
-  $('#lotNote').textContent=lg.note;
-  $('#lotFlag').textContent=lg.flag;
-
+  renderCalendar();
   renderTable();
-  syncSettings();
+  renderAnalytics();
+  syncAdvanced();
   save();
+  requestAnimationFrame(drawChart);
+}
+
+function renderCalendar(){
+  const done=completed(), idx=todayIndex();
+  let hits=0,misses=0;
+  $('#calendar').innerHTML=state.days.map((d,i)=>{
+    if(d.status==='hit')hits++;
+    if(d.status==='miss')misses++;
+    const cls=[d.status,i===idx&&done<state.totalDays?'current':'',d.status==='wait'?'future':''].filter(Boolean).join(' ');
+    return `<div class="dayTile ${cls}"><span>${d.day}</span><i></i></div>`;
+  }).join('');
+  $('#calendarSummary').textContent=`${hits} HIT · ${misses} MISS`;
 }
 
 function renderTable(){
-  const done=completedCount(), idx=currentIndex();
+  const done=completed(),idx=todayIndex();
   $('#planBody').innerHTML=state.days.map((d,i)=>{
-    let st=d.status, label=st==='hit'?'HIT':st==='miss'?'MISS':'WAIT';
-    return `<tr class="${i===idx && done<state.totalDays?'current':''}">
-      <td><strong>${String(d.day).padStart(2,'0')}</strong></td>
-      <td>${fmt(d.start)}</td>
-      <td>+${fmt(d.profit)}</td>
-      <td>${fmt(d.expected)}</td>
-      <td>${d.actual==null?'—':fmt(d.actual)}</td>
-      <td><span class="status ${st}"><i class="dot"></i>${label}</span></td>
+    const label=d.status==='hit'?'HIT':d.status==='miss'?'MISS':'WAIT';
+    return `<tr class="${i===idx&&done<state.totalDays?'now':''}">
+      <td><b>${String(d.day).padStart(2,'0')}</b></td>
+      <td>${money(d.start)}</td>
+      <td>+${money(d.profit)}</td>
+      <td>${money(d.expected)}</td>
+      <td>${d.actual==null?'—':money(d.actual)}</td>
+      <td><span class="status ${d.status}">${label}</span></td>
     </tr>`;
   }).join('');
 }
 
-function syncSettings(){
-  $('#riskPct').value=state.settings.riskPct;
-  $('#slMove').value=state.settings.slMove;
-  $('#contractSize').value=state.settings.contractSize;
-  $('#minLot').value=state.settings.minLot;
+function renderAnalytics(){
+  const doneRows=state.days.filter(d=>d.actual!=null);
+  const hits=doneRows.filter(d=>d.status==='hit').length;
+  const hitRate=doneRows.length?hits/doneRows.length:0;
+  const bal=currentBalance();
+  const expectedAtNow=doneRows.length ? state.days[doneRows.length-1].expected : state.start;
+  const diff=bal-expectedAtNow;
+
+  $('#hitRate').textContent=doneRows.length?Math.round(hitRate*100)+'%':'—';
+  $('#maxDrawdown').textContent=percent(maxDrawdown());
+  const progress=state.target>state.start?clamp((bal-state.start)/(state.target-state.start),0,1):1;
+  $('#chartProgress').textContent=Math.round(progress*100)+'%';
+
+  if(!doneRows.length){
+    $('#aheadBehind').textContent='On plan';
+  }else if(Math.abs(diff)<.005){
+    $('#aheadBehind').textContent='On plan';
+  }else if(diff>0){
+    $('#aheadBehind').textContent='+'+money(diff)+' ahead';
+  }else{
+    $('#aheadBehind').textContent='-'+money(Math.abs(diff))+' behind';
+  }
 }
 
-$('#buildPlan').addEventListener('click',()=>{
-  const cap=Number($('#capital').value);
-  if(!cap || cap<=0){$('#capital').focus();return}
-  buildInitial(cap);showDashboard();render();
-});
+function drawChart(){
+  const canvas=$('#equityChart');
+  if(!canvas)return;
+  const rect=canvas.getBoundingClientRect();
+  if(rect.width<10||rect.height<10)return;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.round(rect.width*dpr);
+  canvas.height=Math.round(rect.height*dpr);
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
 
-$('#saveDay').addEventListener('click',()=>{
-  const actual=Number($('#actualClose').value);
-  const done=completedCount();
-  if(!actual || actual<=0 || done>=state.totalDays){$('#actualClose').focus();return}
-  const i=done;
-  const row=state.days[i];
+  const W=rect.width,H=rect.height;
+  const pad={l:7,r:7,t:12,b:20};
+  ctx.clearRect(0,0,W,H);
+
+  const expected=[state.start,...state.days.map(d=>d.expected)];
+  const actual=[state.start,...state.days.filter(d=>d.actual!=null).map(d=>Number(d.actual))];
+  const all=[...expected,...actual].filter(Number.isFinite);
+  let min=Math.min(...all),max=Math.max(...all);
+  const range=Math.max(1,max-min);
+  min-=range*.12;max+=range*.12;
+
+  const x=(i,count)=>pad.l+(W-pad.l-pad.r)*(i/(Math.max(1,count-1)));
+  const y=v=>pad.t+(H-pad.t-pad.b)*(1-(v-min)/(max-min||1));
+
+  ctx.strokeStyle='rgba(255,255,255,.055)';
+  ctx.lineWidth=1;
+  for(let i=0;i<4;i++){
+    const yy=pad.t+(H-pad.t-pad.b)*(i/3);
+    ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();
+  }
+
+  function line(values,color,width){
+    ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='round';
+    ctx.beginPath();
+    values.forEach((v,i)=>{
+      const xx=x(i,31),yy=y(v);
+      if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);
+    });
+    ctx.stroke();
+  }
+
+  line(expected,'rgba(117,216,255,.60)',1.6);
+  if(actual.length>1){
+    line(actual,'rgba(112,242,180,.98)',2.4);
+    const last=actual.length-1;
+    ctx.fillStyle='#70f2b4';
+    ctx.beginPath();ctx.arc(x(last,31),y(actual[last]),3.5,0,Math.PI*2);ctx.fill();
+  }
+
+  ctx.fillStyle='rgba(127,139,155,.72)';
+  ctx.font='8px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign='left';
+  ctx.fillText('D1',pad.l,H-5);
+  ctx.textAlign='center';
+  ctx.fillText('D15',x(14,31),H-5);
+  ctx.textAlign='right';
+  ctx.fillText('D30',W-pad.r,H-5);
+}
+
+window.addEventListener('resize',()=>requestAnimationFrame(drawChart));
+
+$('#saveDayBtn').onclick=()=>{
+  const actual=Number($('#actualInput').value);
+  const done=completed();
+  if(!actual||actual<=0||done>=state.totalDays){$('#actualInput').focus();return}
+
+  const row=state.days[done];
   const pnl=actual-row.start;
-  const hit=actual>=row.expected;
+  let status='miss';
+  let lockType='';
+
+  if(actual>=row.expected){status='hit';lockType='win'}
+  else if(actual<=row.start-row.maxLoss){status='miss';lockType='loss'}
+
   row.actual=actual;
-  row.status=hit?'hit':'miss';
-
-  // Preserve completed row then adapt remaining plan
-  state.days[i]=row;
+  row.status=status;
+  state.days[done]=row;
+  const hit=status==='hit';
   recalcFuture();
-  save();render();
+  save();
+  render();
 
-  const health=calcHealth();
-  $('#resultTitle').textContent=hit?'✓ Target Hit':'Target Miss';
+  if(lockType==='win'){
+    $('#lockBanner').className='lockBanner show win';
+    $('#lockBanner').textContent='TARGET COMPLETE · วันนี้ถึงเป้าแล้ว จบ Session ตามแผน';
+  }else if(lockType==='loss'){
+    $('#lockBanner').className='lockBanner show loss';
+    $('#lockBanner').textContent='MAX LOSS REACHED · วันนี้ควรหยุด Session ตาม Daily Stop';
+  }
+
+  $('#resultTitle').textContent=hit?'✓ TARGET HIT':'TARGET MISS';
   $('#resultTitle').style.color=hit?'var(--green)':'var(--red)';
   $('#resultDesc').textContent=hit
-    ?'วันนี้ทำถึงเป้าแล้ว ระบบอัปเดต Balance และคำนวณเป้าวันถัดไปให้เรียบร้อย'
-    :'วันนี้ต่ำกว่าเป้า ระบบ Rebalance แผนที่เหลือให้ใหม่ โดยไม่บังคับอัตราไล่ทุนที่สูงเกินโมเดล';
-  $('#resultActual').textContent=fmt(actual);
-  $('#resultPnl').textContent=(pnl>=0?'+':'')+fmt(pnl);
-  const n=completedCount()<state.totalDays?state.days[currentIndex()].profit:0;
-  $('#resultNext').textContent=completedCount()<state.totalDays?'+'+fmt(n):'DONE';
-  $('#resultHealth').textContent=health+'/100';
-  $('#resultSheet').classList.add('show');
-  $('#actualClose').value='';
-});
+    ?'วันนี้ทำถึงเป้า ระบบอัปเดต Equity และคำนวณวันถัดไปให้แล้ว'
+    :'ระบบบันทึกผลจริงและ Rebalance เป้าของวันที่เหลือเพื่อยังคง Month Target เดิม';
+  $('#resultActual').textContent=money(actual);
+  $('#resultPnl').textContent=(pnl>=0?'+':'')+money(pnl);
+  const next=completed()<state.totalDays?state.days[todayIndex()].profit:null;
+  $('#resultNext').textContent=next==null?'DONE':'+'+money(next);
+  $('#resultHealth').textContent=planHealth()+'/100';
+  $('#actualInput').value='';
+  openOverlay('resultOverlay');
+};
 
-$('#closeSheet').addEventListener('click',()=>$('#resultSheet').classList.remove('show'));
-$('#resultSheet').addEventListener('click',e=>{if(e.target.id==='resultSheet')e.currentTarget.classList.remove('show')});
+$('#closeResultBtn').onclick=()=>closeOverlay('resultOverlay');
 
-$('#resetBtn').addEventListener('click',()=>{
-  if(confirm('เริ่มแผนใหม่และลบผล 30 วันเดิม?')){
-    localStorage.removeItem(KEY);location.reload();
-  }
-});
+function recommendedForCurrent(){
+  const bal=currentBalance();
+  const rem=state.totalDays-completed();
+  const growth=recommendedGrowth(bal)*(rem/state.totalDays);
+  return {target:bal*(1+growth),growth,rem};
+}
+function refreshEditTarget(){
+  const val=Number($('#editTargetInput').value);
+  const bal=currentBalance();
+  const rem=state.totalDays-completed();
+  $('#editRemain').textContent=rem+' days';
+  $('#editDaily').textContent=percent(dailyRequired(bal,val,rem));
+}
+$('#editTargetBtn').onclick=()=>{
+  const rec=recommendedForCurrent();
+  $('#editTargetInput').value=state.target.toFixed(2);
+  $('#editRecommend').textContent=`จาก Balance ตอนนี้ ${money(currentBalance())} ระบบแนะนำ Target ประมาณ ${money(rec.target)} สำหรับ ${rec.rem} วันที่เหลือ`;
+  refreshEditTarget();
+  openOverlay('targetOverlay');
+};
+$('#editTargetInput').addEventListener('input',refreshEditTarget);
+$('#saveTargetBtn').onclick=()=>{
+  const t=Number($('#editTargetInput').value);
+  const bal=currentBalance();
+  if(!t||t<=bal){$('#editTargetInput').focus();return}
+  state.target=t;
+  recalcFuture();
+  save();render();
+  closeOverlay('targetOverlay');
+};
 
-['riskPct','slMove','contractSize','minLot'].forEach(id=>{
+function syncAdvanced(){
+  $('#slDistance').value=state.settings.slDistance;
+  $('#contractSize').value=state.settings.contractSize;
+  $('#minLot').value=state.settings.minLot;
+  $('#lotFactor').value=state.settings.lotFactor;
+}
+['slDistance','contractSize','minLot','lotFactor'].forEach(id=>{
   $('#'+id).addEventListener('change',()=>{
     state.settings[id]=Number($('#'+id).value);
     render();
   });
 });
 
-function go(where){
-  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.go===where));
-  if(where==='dashboard') window.scrollTo({top:0,behavior:'smooth'});
-  if(where==='plan') document.querySelector('.plan-card')?.scrollIntoView({behavior:'smooth',block:'start'});
-  if(where==='settings'){
-    $('#advanced').open=true;
-    document.querySelector('.advanced')?.scrollIntoView({behavior:'smooth',block:'center'});
+function openOverlay(id){$('#'+id).classList.add('show')}
+function closeOverlay(id){$('#'+id).classList.remove('show')}
+$$('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')}));
+
+$('#settingsBtn').onclick=()=>openOverlay('settingsOverlay');
+$('#closeSettingsBtn').onclick=()=>closeOverlay('settingsOverlay');
+
+function resetAll(){
+  if(confirm('ลบแผนและผลการเทรดทั้งหมด แล้วเริ่มใหม่?')){
+    localStorage.removeItem(KEY);
+    location.reload();
   }
 }
-document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
-$('#topSettings').addEventListener('click',()=>go('settings'));
+$('#resetBtn').onclick=resetAll;
+$('#sheetResetBtn').onclick=resetAll;
 
+$$('.nav button').forEach(b=>b.onclick=()=>{
+  $$('.nav button').forEach(x=>x.classList.toggle('active',x===b));
+  const go=b.dataset.go;
+  if(go==='home')window.scrollTo({top:0,behavior:'smooth'});
+  if(go==='plan')$('.calendarCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+  if(go==='analytics')$('.chartCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+refreshSetup();
 load();
 </script>
 </body>
