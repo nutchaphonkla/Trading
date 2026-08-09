@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {
   chooseAutoSource,
+  chooseTrainingSource,
   sourcePackFromM1,
   trainingView,
 } from '../update-data.mjs';
@@ -42,6 +43,37 @@ assert.deepEqual(
   chooseAutoSource({ marketOpen: true, mt5Connected: true, mt5Fresh: false, mt5Usable: true, twelveFresh: true, twelveUsable: true }),
   { kind: 'TWELVE', mode: 'API_ECO' },
   'a connected but stale MT5 price stream must not freeze the app when API data is fresh',
+);
+
+// V44.1 regression: live and training routers are independent.
+assert.deepEqual(
+  chooseTrainingSource({
+    mt5Connected: true,
+    mt5ArchiveAvailable: true,
+    twelveArchiveAvailable: true,
+    previousTrainingFeed: 'TWELVE_DATA_PRIMARY',
+  }),
+  { kind: 'MT5', trainingFeed: 'MT5_ACADEMY', mode: 'HEAVY' },
+  'connected MT5 with an isolated archive must stay the HEAVY training source even when live routing uses Twelve ECO',
+);
+assert.deepEqual(
+  chooseTrainingSource({
+    mt5Connected: false,
+    mt5ArchiveAvailable: true,
+    twelveArchiveAvailable: true,
+    previousTrainingFeed: 'MT5_ACADEMY',
+  }),
+  { kind: 'TWELVE', trainingFeed: 'TWELVE_DATA_PRIMARY', mode: 'ECO' },
+  'when MT5/computer is offline, training must return to the Twelve Data primary archive instead of using stale MT5 training',
+);
+assert.deepEqual(
+  chooseTrainingSource({
+    mt5Connected: true,
+    mt5ArchiveAvailable: false,
+    twelveArchiveAvailable: true,
+  }),
+  { kind: 'TWELVE', trainingFeed: 'TWELVE_DATA_PRIMARY', mode: 'ECO' },
+  'MT5 heartbeat without a usable isolated archive must not block API ECO training',
 );
 
 const mt5Source = sourcePackFromM1(
