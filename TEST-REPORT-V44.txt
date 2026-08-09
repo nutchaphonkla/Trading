@@ -1,0 +1,70 @@
+KAGE V44 AUTO HYBRID — FINAL VALIDATION REPORT
+===============================================
+
+PASS — Node syntax
+  update-data.mjs
+  build-ai-shadow.mjs
+  build-ai-history.mjs
+  build-ai-learning.mjs
+  build-ai-journal.mjs (unchanged, compatibility checked)
+  build-ai-governance.mjs
+  adaptive-ai-v42.js
+  cloudflare-worker.js
+
+PASS — Python compile
+  ai_provenance_v42.py
+  selfplay-lab.py
+  ml-train.py
+  tests/test_auto_hybrid_v44.py
+
+PASS — Regression / compatibility
+  pipeline closed-bar V42
+  shadow feed isolation V42
+  learning closed-bar V42
+  history provenance V42
+  governance provenance V42
+  journal forward-only V43
+  market-hours DST V43
+  adaptive AI V42/V43 behavior
+  self-play promotion V42 — 5 tests
+  ML provenance V42 — 3 tests
+
+PASS — New V44 tests
+  auto-hybrid V44 Node
+  auto-hybrid V44 Python — 6 tests
+  - MT5 routed provenance
+  - Twelve routed provenance
+  - cross-source rejection
+  - 12/12 candidate geometry invariant
+  - bounded historical anchor sampler / recent-tail preservation
+  - same-source self-play outcome isolation
+
+PASS — Workflow YAML parse
+  Update XAUUSD data pack
+  AI Background Learning
+
+PASS — Frontend
+  V44 index based on latest V43 recovery frontend
+  inline JavaScript syntax check
+  V43 forward/fill-candle safety retained in adaptive-ai-v42.js
+
+PASS — API-mode end-to-end local chain
+  shadow -> history -> learning -> journal -> governance -> selfplay -> ML -> shadow -> journal
+  all generated JSON packs remained non-empty and parseable
+  current audit data correctly returned WAIT_DATA at M15 371/420 instead of crashing
+
+PASS — MQL static safety
+  braces balanced
+  WebRequest present
+  CopyRates present
+  timer present
+  no CTrade
+  no OrderSend
+  no Buy/Sell execution calls
+
+NOT CLAIMED
+  Real MetaEditor compilation cannot be executed in this environment.
+  Real Cloudflare/MT5 network credentials cannot be exercised locally.
+  Full 60,000-bar XGBoost tournament was not completed locally; V44 now bounds the expensive ML
+  cohort to max 720 chronological anchors while retaining broad-history + newest-tail coverage,
+  specifically to make heavy history safe for GitHub Actions.

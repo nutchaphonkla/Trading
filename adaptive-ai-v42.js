@@ -204,8 +204,9 @@
     const expectedLabelSchema = ml ? ML_LABEL_SCHEMA : history ? HISTORY_LABEL_SCHEMA : NODE_LABEL_SCHEMA;
     const expectedLabelHash = ml ? ML_LABEL_HASH : history ? HISTORY_LABEL_HASH : NODE_LABEL_HASH;
     const versionOk = version.startsWith('V42') && schemaVersion === ARTIFACT_SCHEMA;
-    const feedOk = trainingSource === 'xauusd-primary.json'
-      && trainingFeed === 'TWELVE_DATA_PRIMARY' && provenance.mergeFeeds === false;
+    const feedPairOk = (trainingSource === 'xauusd-primary.json' && trainingFeed === 'TWELVE_DATA_PRIMARY')
+      || (trainingSource === 'xauusd-training.json' && ['TWELVE_DATA_PRIMARY', 'MT5_ACADEMY'].includes(trainingFeed));
+    const feedOk = feedPairOk && provenance.mergeFeeds === false;
     const fingerprintOk = hex24.test(sourceFingerprint)
       && sourceFingerprint === String(pack?.sourceFingerprint || '')
       && Number.isFinite(watermark) && watermark > 0;

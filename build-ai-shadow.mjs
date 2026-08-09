@@ -76,13 +76,16 @@ export function packFingerprint(pack = {}) {
 export function compatibleBrain(brain = {}) {
   const p = brain.artifactProvenance || {};
   const schema = brain.artifactSchema || {};
+  const trainingSource = String(p.trainingSource || '');
+  const trainingFeed = String(p.trainingFeed || '').toUpperCase();
+  const pairOk = (trainingSource === 'xauusd-primary.json' && trainingFeed === 'TWELVE_DATA_PRIMARY')
+    || (trainingSource === 'xauusd-training.json' && ['TWELVE_DATA_PRIMARY','MT5_ACADEMY'].includes(trainingFeed));
   return !!brain.ready
     && String(brain.version || '').startsWith('V42')
     && brain.status === 'TRUSTED'
     && brain?.governance?.trusted === true
     && p.schemaVersion === ARTIFACT_SCHEMA
-    && p.trainingSource === 'xauusd-primary.json'
-    && p.trainingFeed === 'TWELVE_DATA_PRIMARY'
+    && pairOk
     && p.mergeFeeds === false
     && p.labelSchema === LABEL_SCHEMA
     && p.labelSchemaHash === LABEL_SCHEMA_HASH
@@ -352,8 +355,11 @@ export function main() {
   const modelFp = String(brain.sourceFingerprint || brain.modelId || 'NOFP');
   const rows = Array.isArray(current.candidates) ? current.candidates : [];
   const modelCompatible = compatibleBrain(brain);
+  const modelTrainingFeed = String(brain?.artifactProvenance?.trainingFeed || '').toUpperCase();
+  const modelFeedKind = modelTrainingFeed === 'MT5_ACADEMY' ? 'FALLBACK' : modelTrainingFeed === 'TWELVE_DATA_PRIMARY' ? 'PRIMARY' : 'UNKNOWN';
+  const sourceCompatible = modelFeedKind === creationFeedKind;
   const candidateSchemaComplete = rows.length === 12;
-  const canCapture = modelCompatible && candidateSchemaComplete && creationSource && finite(marketTs);
+  const canCapture = modelCompatible && sourceCompatible && candidateSchemaComplete && creationSource && finite(marketTs);
   const known = new Set(journal.entries.map(x => x.id));
   let created = 0;
 
@@ -431,7 +437,7 @@ export function main() {
   journal.updatedAt = new Date().toISOString();
   journal.currentFeed = feed;
   journal.currentModel = modelFp;
-  journal.captureState = canCapture ? 'READY' : !modelCompatible ? 'MODEL_PROVENANCE_BLOCK' : !candidateSchemaComplete ? 'CANDIDATE_SCHEMA_BLOCK' : 'SOURCE_PROVENANCE_BLOCK';
+  journal.captureState = canCapture ? 'READY' : !modelCompatible ? 'MODEL_PROVENANCE_BLOCK' : !sourceCompatible ? 'MODEL_SOURCE_MISMATCH' : !candidateSchemaComplete ? 'CANDIDATE_SCHEMA_BLOCK' : 'SOURCE_PROVENANCE_BLOCK';
   journal.summary = summarize(journal.entries);
   journal.summary.provenanceVerified = journal.entries.filter(x => x.provenanceStatus === 'VERIFIED').length;
   journal.summary.provenanceBlocked = journal.entries.filter(x => ['SOURCE_MISMATCH', 'WAIT_SOURCE'].includes(x.provenanceStatus)).length;

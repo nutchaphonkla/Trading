@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""OneMonth OS V42 Autonomous Self-Play Precision Brain.
+"""OneMonth V44 auto-hybrid autonomous self-play precision brain.
 
 Design goals:
-- Train on Twelve Data PRIMARY history only when an isolated primary pack exists.
-- Score the currently ACTIVE feed (Twelve or MT5 fallback) without blending feed prices.
+- Train on exactly one routed source at a time: MT5 academy when connected, Twelve Data ECO otherwise.
+- Score the matching currently ACTIVE feed without blending or merging feed prices.
 - Use completed-bar timestamps to reduce timeframe look-ahead.
 - Label pending orders with M1 first-hit sequencing.
 - Generate 12 dynamic pending geometries (4 order types x 3 variants).
@@ -45,6 +45,7 @@ from ai_provenance_v42 import (
     compatible_artifact,
     feature_schema_hash,
     validate_primary_pack_metadata,
+    validate_training_pack_metadata,
 )
 
 try:
@@ -57,6 +58,7 @@ except Exception:
 ROOT = Path(os.environ.get("GITHUB_WORKSPACE", Path.cwd()))
 LIVE_DATA_PATH = ROOT / "xauusd.json"
 PRIMARY_DATA_PATH = ROOT / "xauusd-primary.json"
+TRAINING_DATA_PATH = ROOT / "xauusd-training.json"
 NEWS_PATH = ROOT / "news.json"
 OUT_PATH = ROOT / "ai-ml-brain.json"
 CANDIDATE_PATH = ROOT / "ai-ml-candidate.json"
@@ -68,18 +70,26 @@ THRESHOLD_PATH = ROOT / "ai-thresholds.json"
 COUNTERFACTUAL_PATH = ROOT / "ai-counterfactual.json"
 AUTOPSY_PATH = ROOT / "ai-autopsy.json"
 
-VERSION = "V42 AUTONOMOUS SELF-PLAY PRECISION BRAIN"
+VERSION = "V42.44 AUTO-HYBRID SELF-PLAY PRECISION BRAIN"
+GEOMETRY_SCHEMA = "PENDING_12_BOUNDED_RISK_V44"
 SEED = 3809
 RNG = np.random.default_rng(SEED)
 MIN_M15 = 420
 MIN_M1 = 1800
 N_FOLDS = 3
+# V44 bounds the expensive model tournament while preserving broad historical coverage.
+# Historical storage/replay may contain tens of thousands of bars; the ML tournament
+# trains on a deterministic chronological cohort plus the newest contiguous tail.
+MAX_TRAIN_ANCHORS = 720
+RECENT_TRAIN_ANCHORS = 240
 M1_MS = 60_000
 M5_MS = 5 * M1_MS
 M15_MS = 15 * M1_MS
 H1_MS = 60 * M1_MS
 FILL_HORIZON_MIN = 90
 OUTCOME_HORIZON_MIN = 180
+RUN_TRAINING_SOURCE = "xauusd-primary.json"
+RUN_TRAINING_FEED = "TWELVE_DATA_PRIMARY"
 PURGE_MS = (FILL_HORIZON_MIN + OUTCOME_HORIZON_MIN + 30) * M1_MS
 
 ORDER_TYPES = ("BUY_LIMIT", "SELL_LIMIT", "BUY_STOP", "SELL_STOP")
@@ -124,7 +134,7 @@ def wait_data(reason: str, counts: Optional[dict] = None) -> None:
         "ready": False,
         "status": "WAIT_DATA",
         "reason": reason,
-        "engine": "V42_PRIMARY_ISOLATED_AUTOML",
+        "engine": "V44_SINGLE_SOURCE_AUTOML",
         "artifactSchema": {
             "version": ARTIFACT_SCHEMA_VERSION,
             "featureSchemaHash": None,
@@ -132,7 +142,8 @@ def wait_data(reason: str, counts: Optional[dict] = None) -> None:
         },
         "artifactProvenance": {
             "schemaVersion": ARTIFACT_SCHEMA_VERSION,
-            "trainingFeed": "TWELVE_DATA_PRIMARY",
+            "trainingSource": RUN_TRAINING_SOURCE,
+            "trainingFeed": RUN_TRAINING_FEED,
             "mergeFeeds": False,
             "featureSchemaHash": None,
             "labelSchema": LABEL_SCHEMA,
@@ -144,15 +155,18 @@ def wait_data(reason: str, counts: Optional[dict] = None) -> None:
             "counts": counts or {},
             "minimum": {"M1": MIN_M1, "M15": MIN_M15, "M5": 180, "H1": 80},
             "shortfall": {
-                "M1": max(0, MIN_M1 - int(safe_num((counts or {}).get("primaryM1", (counts or {}).get("M1", 0)), 0))),
-                "M15": max(0, MIN_M15 - int(safe_num((counts or {}).get("primaryM15", (counts or {}).get("M15", 0)), 0))),
+                "M1": max(0, MIN_M1 - int(safe_num((counts or {}).get("trainingM1", (counts or {}).get("primaryM1", (counts or {}).get("M1", 0))), 0))),
+                "M15": max(0, MIN_M15 - int(safe_num((counts or {}).get("trainingM15", (counts or {}).get("primaryM15", (counts or {}).get("M15", 0))), 0))),
             },
         },
     }
     write_json(CANDIDATE_PATH, pack)
     # Do not destroy a previously valid active brain merely because a new training
-    # run is temporarily waiting for more isolated PRIMARY data.
-    if not compatible_artifact(load_json(OUT_PATH)):
+    # run is temporarily waiting for more isolated single-source data.
+    existing = load_json(OUT_PATH)
+    existing_prov = existing.get("artifactProvenance") or {}
+    same_source = existing_prov.get("trainingSource") == RUN_TRAINING_SOURCE and str(existing_prov.get("trainingFeed") or "").upper() == RUN_TRAINING_FEED
+    if not compatible_artifact(existing) or not same_source:
         write_json(OUT_PATH, pack)
     write_json(GOV_PATH, {
         "version": VERSION,
@@ -197,6 +211,7 @@ def pack_frames(pack: dict) -> Dict[str, pd.DataFrame]:
 
 
 def load_packs() -> Tuple[dict, dict, str]:
+    global RUN_TRAINING_SOURCE, RUN_TRAINING_FEED
     live = load_json(LIVE_DATA_PATH)
     if not live:
         wait_data("MISSING_XAUUSD_JSON")
@@ -206,30 +221,41 @@ def load_packs() -> Tuple[dict, dict, str]:
         wait_data("LIVE_FEED_ISOLATION_NOT_EXPLICIT")
     if live_watermark <= 0:
         wait_data("LIVE_CLOSED_BAR_WATERMARK_MISSING")
-    primary = load_json(PRIMARY_DATA_PATH)
-    if primary:
-        metadata_ok, metadata_reason, primary_watermark = validate_primary_pack_metadata(primary)
+
+    use_routed = TRAINING_DATA_PATH.exists()
+    train_path = TRAINING_DATA_PATH if use_routed else PRIMARY_DATA_PATH
+    train_pack = load_json(train_path)
+    RUN_TRAINING_SOURCE = train_path.name
+    if train_pack:
+        if use_routed:
+            metadata_ok, metadata_reason, training_watermark, training_feed = validate_training_pack_metadata(train_pack, train_path.name)
+            RUN_TRAINING_FEED = training_feed or str((train_pack.get("feed") or {}).get("trainingFeed") or "").upper() or "UNKNOWN"
+        else:
+            metadata_ok, metadata_reason, training_watermark = validate_primary_pack_metadata(train_pack)
+            RUN_TRAINING_FEED = "TWELVE_DATA_PRIMARY"
         if not metadata_ok:
-            wait_data(metadata_reason, {"primaryPack": True})
-        pf = pack_frames(primary)
+            wait_data(metadata_reason, {"trainingPack": True, "trainingSource": RUN_TRAINING_SOURCE, "trainingFeed": RUN_TRAINING_FEED})
+        tf = pack_frames(train_pack)
         widths = {"M1": M1_MS, "M5": M5_MS, "M15": M15_MS, "H1": H1_MS}
-        if any(len(df) and int(df.iloc[-1]["ts"]) + widths[key] > primary_watermark for key, df in pf.items()):
-            wait_data("PRIMARY_CONTAINS_UNCLOSED_BARS", {key: len(df) for key, df in pf.items()})
-        if len(pf["M15"]) >= MIN_M15 and len(pf["M1"]) >= MIN_M1:
-            return live, primary, "xauusd-primary.json"
+        if any(len(df) and int(df.iloc[-1]["ts"]) + widths[key] > training_watermark for key, df in tf.items()):
+            wait_data("TRAINING_CONTAINS_UNCLOSED_BARS", {key: len(df) for key, df in tf.items()})
+        if len(tf["M15"]) >= MIN_M15 and len(tf["M1"]) >= MIN_M1:
+            return live, train_pack, train_path.name
     active = str((live.get("feed") or {}).get("active") or "").upper()
     lf = pack_frames(live)
-    pf = pack_frames(primary) if primary else {k: pd.DataFrame() for k in ["M1", "M5", "M15", "H1"]}
-    wait_data("PRIMARY_TRAINING_PACK_NOT_READY", {
+    tf = pack_frames(train_pack) if train_pack else {k: pd.DataFrame() for k in ["M1", "M5", "M15", "H1"]}
+    wait_data("TRAINING_PACK_NOT_READY", {
         "liveActive": active or "UNKNOWN",
         "liveM1": len(lf["M1"]),
         "liveM15": len(lf["M15"]),
-        "primaryM1": len(pf["M1"]),
-        "primaryM5": len(pf["M5"]),
-        "primaryM15": len(pf["M15"]),
-        "primaryH1": len(pf["H1"]),
-        "primaryPack": bool(primary),
-        "rule": "V42 trains only on xauusd-primary.json; active MT5 fallback is inference-only",
+        "trainingM1": len(tf["M1"]),
+        "trainingM5": len(tf["M5"]),
+        "trainingM15": len(tf["M15"]),
+        "trainingH1": len(tf["H1"]),
+        "trainingPack": bool(train_pack),
+        "trainingSource": RUN_TRAINING_SOURCE,
+        "trainingFeed": RUN_TRAINING_FEED,
+        "rule": "V44 trains on one isolated source at a time: MT5_ACADEMY while heartbeat is online, otherwise Twelve Data API ECO.",
     })
     raise AssertionError
 
@@ -446,8 +472,16 @@ def candidate_geometry(row: pd.Series, order_type: str, variant: str) -> Optiona
         return None
 
     risk = abs(entry - sl)
-    if not math.isfinite(risk) or risk < 0.35 * a or risk > 3.2 * a:
+    if not math.isfinite(risk):
         return None
+    # V44 keeps the 4 x 3 candidate schema complete in strong trends. Structural
+    # swing stops can become many ATR away; instead of silently deleting a candidate,
+    # bound its risk geometry. The quality/OOD gates may still reject it later.
+    raw_risk = risk
+    bounded_risk = float(np.clip(risk, 0.45 * a, 3.0 * a))
+    if abs(bounded_risk - risk) > 1e-12:
+        risk = bounded_risk
+        sl = entry - side * risk
     tp1 = entry + side * risk * p["rr1"]
     tp2 = entry + side * risk * p["rr2"]
     zone_half = max(a * p["zone"], close * 0.00002)
@@ -468,6 +502,9 @@ def candidate_geometry(row: pd.Series, order_type: str, variant: str) -> Optiona
         "tp1": float(tp1),
         "tp2": float(tp2),
         "risk": float(risk),
+        "rawRisk": float(raw_risk),
+        "riskBounded": bool(abs(raw_risk - risk) > 1e-12),
+        "geometrySchema": GEOMETRY_SCHEMA,
         "rr": float(p["rr1"]),
         "rr2": float(p["rr2"]),
         "cancelLevel": float(cancel),
@@ -639,6 +676,63 @@ def simulate_outcome_m1(cache: dict, decision_ts: int, geom: dict) -> dict:
         "time_to_sl_min": float(time_sl) if np.isfinite(time_sl) else np.nan,
         "first_terminal": first_terminal,
     }
+
+def sample_training_anchors(anchor: pd.DataFrame, max_anchors: int = MAX_TRAIN_ANCHORS, recent_anchors: int = RECENT_TRAIN_ANCHORS) -> Tuple[pd.DataFrame, dict]:
+    """Deterministically cap expensive ML anchors without discarding historical regimes.
+
+    The older portion is sampled uniformly over the full chronology and the newest tail
+    remains contiguous. This is not a random split and never changes timestamp order.
+    """
+    total = int(len(anchor))
+    max_anchors = max(350, int(max_anchors))
+    recent_anchors = max(0, min(int(recent_anchors), max_anchors))
+    if total <= max_anchors:
+        return anchor.reset_index(drop=True).copy(), {
+            "strategy": "ALL_CHRONOLOGICAL",
+            "availableAnchors": total,
+            "usedAnchors": total,
+            "uniformHistoricalAnchors": max(0, total - min(total, recent_anchors)),
+            "recentContiguousAnchors": min(total, recent_anchors),
+            "maxTrainAnchors": max_anchors,
+        }
+
+    recent_n = min(recent_anchors, total)
+    old_end = total - recent_n
+    old_budget = max_anchors - recent_n
+    if old_budget <= 0:
+        idx = np.arange(total - max_anchors, total, dtype=int)
+        old_used = 0
+        recent_used = len(idx)
+    else:
+        # Include both ends of the older history so the training cohort spans the
+        # complete available regime range before appending the contiguous live tail.
+        if old_budget >= old_end:
+            old_idx = np.arange(old_end, dtype=int)
+        else:
+            old_idx = np.unique(np.rint(np.linspace(0, old_end - 1, old_budget)).astype(int))
+            # np.linspace+round should already hit the budget, but fill deterministic
+            # gaps defensively if floating-point rounding created duplicates.
+            if len(old_idx) < old_budget:
+                used = set(int(x) for x in old_idx)
+                fill = [i for i in range(old_end) if i not in used][:old_budget - len(old_idx)]
+                old_idx = np.sort(np.concatenate([old_idx, np.asarray(fill, dtype=int)]))
+        recent_idx = np.arange(old_end, total, dtype=int)
+        idx = np.unique(np.concatenate([old_idx, recent_idx])).astype(int)
+        if len(idx) > max_anchors:
+            idx = idx[-max_anchors:]
+        old_used = int(np.sum(idx < old_end))
+        recent_used = int(np.sum(idx >= old_end))
+
+    sampled = anchor.iloc[idx].sort_values("ts").drop_duplicates("ts", keep="last").reset_index(drop=True)
+    return sampled, {
+        "strategy": "UNIFORM_HISTORY_PLUS_RECENT_TAIL",
+        "availableAnchors": total,
+        "usedAnchors": int(len(sampled)),
+        "uniformHistoricalAnchors": old_used,
+        "recentContiguousAnchors": recent_used,
+        "maxTrainAnchors": max_anchors,
+    }
+
 
 def build_dataset(anchor: pd.DataFrame, m1: pd.DataFrame) -> Tuple[pd.DataFrame, List[str], List[dict]]:
     exclude = {
@@ -1408,6 +1502,7 @@ def source_fingerprint(pack: dict, tfs: Dict[str, pd.DataFrame], label: str) -> 
 
 
 def main() -> None:
+    global RUN_TRAINING_SOURCE, RUN_TRAINING_FEED
     live_pack, train_pack, train_source = load_packs()
     train_tfs = pack_frames(train_pack)
     live_tfs = pack_frames(live_pack)
@@ -1415,9 +1510,9 @@ def main() -> None:
     live_counts = {k: len(v) for k, v in live_tfs.items()}
 
     if train_counts["M15"] < MIN_M15 or train_counts["M1"] < MIN_M1:
-        wait_data("PRIMARY_HISTORY_TOO_SHORT", {**train_counts, "source": train_source})
+        wait_data("TRAINING_HISTORY_TOO_SHORT", {**train_counts, "source": train_source})
     if train_counts["M5"] < 180 or train_counts["H1"] < 80:
-        wait_data("PRIMARY_M5_H1_HISTORY_TOO_SHORT", train_counts)
+        wait_data("TRAINING_M5_H1_HISTORY_TOO_SHORT", train_counts)
     if live_counts["M15"] < 80 or live_counts["M1"] < 300:
         wait_data("LIVE_ACTIVE_FEED_HISTORY_TOO_SHORT", live_counts)
 
@@ -1425,8 +1520,10 @@ def main() -> None:
     existing = load_json(OUT_PATH)
     latest_live_m15 = int(live_tfs["M15"].iloc[-1]["ts"]) if len(live_tfs["M15"]) else 0
     old_market_ts = int(safe_num((existing.get("current") or {}).get("marketTs"), 0))
-    if os.environ.get("ML_FORCE") != "1" and existing.get("version") == VERSION and existing.get("ready") and latest_live_m15 and old_market_ts and latest_live_m15 - old_market_ts < 60 * 60 * 1000:
-        print("ML SKIP: V42 fewer than 4 new M15 bars")
+    existing_prov = existing.get("artifactProvenance") or {}
+    existing_same_source = existing_prov.get("trainingSource") == train_source and str(existing_prov.get("trainingFeed") or "").upper() == RUN_TRAINING_FEED
+    if os.environ.get("ML_FORCE") != "1" and existing.get("version") == VERSION and existing.get("ready") and existing_same_source and latest_live_m15 and old_market_ts and latest_live_m15 - old_market_ts < 60 * 60 * 1000:
+        print("ML SKIP: fewer than 4 new M15 bars on the same training source")
         raise SystemExit(0)
 
     train_anchor, _ = merged_anchor_features(train_tfs)
@@ -1435,11 +1532,12 @@ def main() -> None:
     train_anchor = train_anchor.dropna(subset=required).reset_index(drop=True)
     live_anchor = live_anchor.dropna(subset=required).reset_index(drop=True)
     if len(train_anchor) < 350:
-        wait_data("PRIMARY_FEATURE_HISTORY_TOO_SHORT", train_counts)
+        wait_data("TRAINING_FEATURE_HISTORY_TOO_SHORT", train_counts)
     if live_anchor.empty:
         wait_data("LIVE_FEATURES_NOT_READY", live_counts)
 
-    ds, feature_cols, _ = build_dataset(train_anchor, train_tfs["M1"])
+    train_anchor_used, anchor_sampling = sample_training_anchors(train_anchor)
+    ds, feature_cols, _ = build_dataset(train_anchor_used, train_tfs["M1"])
     _, live_feature_cols, current = build_dataset(live_anchor.tail(1), live_tfs["M1"])
     if len(current) != len(ORDER_TYPES) * len(VARIANTS):
         wait_data("CURRENT_CANDIDATE_SCHEMA_INCOMPLETE", {
@@ -1483,19 +1581,25 @@ def main() -> None:
     mae_q = fit_quantile_bundle(Xf, filled_ds["mae_r"].to_numpy(dtype=float), tf)
 
     fp = source_fingerprint(train_pack, train_tfs, train_source)
-    _, _, primary_watermark = validate_primary_pack_metadata(train_pack)
+    if train_source == "xauusd-training.json":
+        _, _, training_watermark, training_feed = validate_training_pack_metadata(train_pack, train_source)
+    else:
+        _, _, training_watermark = validate_primary_pack_metadata(train_pack)
+        training_feed = "TWELVE_DATA_PRIMARY"
+    RUN_TRAINING_FEED = training_feed
     schema_hash = feature_schema_hash(feature_cols)
     provenance = {
         "schemaVersion": ARTIFACT_SCHEMA_VERSION,
         "trainingSource": train_source,
-        "trainingFeed": "TWELVE_DATA_PRIMARY",
+        "trainingFeed": training_feed,
         "mergeFeeds": False,
         "featureSchemaHash": schema_hash,
         "labelSchema": LABEL_SCHEMA,
         "labelSchemaHash": LABEL_SCHEMA_HASH,
         "sourceFingerprint": fp,
-        "dataWatermark": primary_watermark,
+        "dataWatermark": training_watermark,
         "candidateSchemaCount": len(current),
+        "candidateGeometrySchema": GEOMETRY_SCHEMA,
     }
     pop_drift = population_drift(X, times)
     experts = context_stats(filled_ds)
@@ -1629,14 +1733,15 @@ def main() -> None:
     min_edge = 6.0
     max_disagreement = 17.0
 
-    # V38 guarded self-play threshold optimizer. Only PRIMARY Twelve shadow outcomes
+    # Guarded self-play threshold optimizer. Only same-source verified shadow outcomes
     # can promote these values, and selfplay-lab.py validates them on an unseen
     # chronological tail before activationReady becomes true.
     threshold_pack = load_json(THRESHOLD_PATH)
     threshold_schema_ok = bool(
         threshold_pack.get("artifactSchema") == ARTIFACT_SCHEMA_VERSION
         and threshold_pack.get("labelSchemaHash") == LABEL_SCHEMA_HASH
-        and threshold_pack.get("source") == "PRIMARY_SHADOW_OUTCOMES_ONLY"
+        and threshold_pack.get("source") in {"PRIMARY_SHADOW_OUTCOMES_ONLY", "TRAINING_SOURCE_SHADOW_OUTCOMES_ONLY"}
+        and (threshold_pack.get("source") == "PRIMARY_SHADOW_OUTCOMES_ONLY" or str(threshold_pack.get("trainingFeed") or "").upper() == training_feed)
     )
     auto_threshold_active = bool(threshold_schema_ok and threshold_pack.get("activationReady") and threshold_pack.get("trusted"))
     if auto_threshold_active:
@@ -1743,7 +1848,7 @@ def main() -> None:
         "generatedAt": utc_now(),
         "ready": bool(status == "TRUSTED" and gov.get("trusted")),
         "status": status,
-        "engine": "V42 M1 FIRST-HIT / XGB+HGB+TREES / SHADOW SELF-PLAY / AUTO THRESHOLD / AUTOPSY / COUNTERFACTUAL",
+        "engine": "V44 SOURCE-AWARE M1 FIRST-HIT / BOUNDED HISTORICAL COHORT / XGB+HGB+TREES / SHADOW SELF-PLAY / AUTO THRESHOLD / AUTOPSY / COUNTERFACTUAL",
         "sourceFingerprint": fp,
         "artifactSchema": {
             "version": ARTIFACT_SCHEMA_VERSION,
@@ -1753,16 +1858,18 @@ def main() -> None:
         "artifactProvenance": provenance,
         "dataIsolation": {
             "trainingSource": train_source,
-            "trainingFeed": "TWELVE_DATA_PRIMARY",
+            "trainingFeed": training_feed,
             "liveSource": source_live,
             "mergeFeeds": False,
-            "rule": "Primary history trains the brain. The currently active feed scores live candidates. No price averaging between feeds.",
+            "rule": "One routed isolated history source trains the brain. The matching active feed scores live candidates. No price averaging or candle merging between feeds.",
         },
         "training": {
-            "anchors": int(len(train_anchor)), "candidateSamples": int(len(ds)), "filledSamples": int(filled_mask.sum()),
+            "anchors": int(len(train_anchor_used)), "availableAnchors": int(len(train_anchor)), "usedAnchors": int(len(train_anchor_used)),
+            "anchorSampling": anchor_sampling, "candidateSamples": int(len(ds)), "filledSamples": int(filled_mask.sum()),
             "coverageDays": coverage_days, "labelCoverageDays": label_coverage_days, "M1": train_counts["M1"], "M5": train_counts["M5"], "M15": train_counts["M15"], "H1": train_counts["H1"],
             "labels": LABEL_SCHEMA, "fillHorizonMin": FILL_HORIZON_MIN, "outcomeHorizonMin": OUTCOME_HORIZON_MIN,
             "geometryVariants": list(VARIANTS), "candidateSpace": len(ORDER_TYPES) * len(VARIANTS),
+            "candidateGeometrySchema": GEOMETRY_SCHEMA,
         },
         "validation": {
             "folds": int(tp1_head.metrics.get("folds", 0)), "fill": fill_head.metrics, "tp1": tp1_head.metrics,
@@ -1813,11 +1920,12 @@ def main() -> None:
             "ready": bool(selfplay_pack.get("ready")),
             "shadow": shadow_pack.get("summary") or selfplay_pack.get("shadow") or {},
             "primaryResolved": selfplay_pack.get("primaryResolved") or {},
+            "trainingResolved": selfplay_pack.get("trainingResolved") or selfplay_pack.get("primaryResolved") or {},
             "forwardReplay": selfplay_pack.get("forwardReplay") or {},
             "thresholdOptimizer": {
                 **(selfplay_pack.get("thresholdOptimizer") or {}),
                 "active": auto_threshold_active,
-                "source": "PRIMARY_TWELVE_SHADOW_ONLY",
+                "source": f"{training_feed}_SHADOW_ONLY",
             },
             "counterfactual": {
                 "ready": bool(counterfactual_pack.get("ready")),
@@ -1853,14 +1961,14 @@ def main() -> None:
         identical_active = bool(
             compatible_artifact(existing_active)
             and existing_active.get("sourceFingerprint") == fp
-            and int(safe_num(existing_provenance.get("dataWatermark"), 0)) == int(primary_watermark)
+            and int(safe_num(existing_provenance.get("dataWatermark"), 0)) == int(training_watermark)
         )
         if gov.get("action") == "KEEP_IDENTICAL_EVIDENCE" and identical_active:
             gov["activeAction"] = "KEEP_IDENTICAL_ACTIVE"
         else:
             write_json(OUT_PATH, pack_out)
             gov["activeAction"] = "PROMOTE_CANDIDATE"
-    elif compatible_artifact(existing_active):
+    elif compatible_artifact(existing_active) and (existing_active.get("artifactProvenance") or {}).get("trainingSource") == train_source and str((existing_active.get("artifactProvenance") or {}).get("trainingFeed") or "").upper() == training_feed:
         gov["activeAction"] = "KEEP_COMPATIBLE_ACTIVE"
         gov["activeSourceFingerprint"] = existing_active.get("sourceFingerprint")
     else:

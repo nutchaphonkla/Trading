@@ -13,7 +13,7 @@ export const ARTIFACT_SCHEMA = 'KAGE_AI_V42';
 export const FEATURE_SCHEMA_HASH = 'c3372751b985cd6c32d06e0f';
 export const LABEL_SCHEMA = 'NODE_M30_FIRST_TOUCH_ATR_TP0.8_SL0.6_TIE_SL_TIMEOUT_SIGNED_GT_0.12_V42';
 export const LABEL_SCHEMA_HASH = 'dd88c080f7855fdab25a56f0';
-const TRAINING_FEED = 'TWELVE_DATA_PRIMARY';
+const ALLOWED_TRAINING_PAIRS = new Set(['xauusd-primary.json|TWELVE_DATA_PRIMARY','xauusd-training.json|TWELVE_DATA_PRIMARY','xauusd-training.json|MT5_ACADEMY']);
 const HOUR = 3_600_000;
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -24,6 +24,7 @@ const read = (p, fallback = null) => {
 const write = (p, v) => fs.writeFileSync(p, JSON.stringify(v, null, 2));
 const n = v => Number.isFinite(Number(v)) ? Number(v) : 0;
 const modelId = m => m?.modelId || `${m?.engine || 'MODEL'}:${m?.sourceFingerprint || 'NOFP'}`;
+const trainingPair = m => { const p=m?.artifactProvenance||{}; return `${p.trainingSource||''}|${String(p.trainingFeed||'').toUpperCase()}`; };
 
 export function artifactCompatibility(model) {
   const reasons = [];
@@ -36,8 +37,8 @@ export function artifactCompatibility(model) {
 
   if (!String(model.version || '').startsWith('V42')) reasons.push('VERSION_NOT_V42');
   if (schemaVersion !== ARTIFACT_SCHEMA) reasons.push('SCHEMA_VERSION_MISMATCH');
-  if (provenance.trainingSource !== 'xauusd-primary.json') reasons.push('TRAINING_SOURCE_MISMATCH');
-  if (provenance.trainingFeed !== TRAINING_FEED) reasons.push('TRAINING_FEED_MISMATCH');
+  const trainingPair = `${provenance.trainingSource || ''}|${String(provenance.trainingFeed || '').toUpperCase()}`;
+  if (!ALLOWED_TRAINING_PAIRS.has(trainingPair)) reasons.push('TRAINING_SOURCE_FEED_MISMATCH');
   if (provenance.mergeFeeds !== false) reasons.push('FEED_ISOLATION_NOT_EXPLICIT');
   if (featureHash !== FEATURE_SCHEMA_HASH || schema.featureSchemaHash !== FEATURE_SCHEMA_HASH) reasons.push('FEATURE_SCHEMA_HASH_MISMATCH');
   if (provenance.labelSchema !== LABEL_SCHEMA) reasons.push('LABEL_SCHEMA_MISMATCH');
@@ -256,20 +257,28 @@ export function main() {
   const materiallyBetter = !championDeployable || candidateScore >= championScore + 1.5;
   const freshNonInferior = championDeployable && championAge > 12 * HOUR && candidateScore >= championScore - 1.5;
   const schemaMigration = !!champion && !championDeployable && candidateQualified;
+  const sourceMigration = !!champion && !!candidate && trainingPair(champion) !== trainingPair(candidate);
   const rollbackProtection = rolledBack;
 
-  if (candidateQualified && !identicalEvidence && !rollbackProtection && (materiallyBetter || freshNonInferior || schemaMigration)) {
+  if (sourceMigration && !candidateQualified && championDeployable) {
+    champion = quarantineArtifact(champion, `TRAINING_SOURCE_SWITCH_WAIT:${trainingPair(champion)}->${trainingPair(candidate)}`);
+    write(CHAMPION, champion);
+    action = 'QUARANTINE_SOURCE_SWITCH_WAIT';
+    reason = 'Training source changed; old-source champion is blocked until a qualified same-source challenger exists';
+  } else if (candidateQualified && !identicalEvidence && !rollbackProtection && (materiallyBetter || freshNonInferior || schemaMigration || sourceMigration)) {
     const old = champion;
     // Never destroy a compatible rollback artifact by replacing it with legacy state.
     if (deployableArtifact(old)) write(PREVIOUS, annotate(old, 'PREVIOUS', { retiredAt: now }));
     champion = annotate(candidate, 'CHAMPION', {
       deployedAt: now,
-      promotionReason: schemaMigration ? 'V42_SCHEMA_MIGRATION' : materiallyBetter ? 'BETTER_VALIDATION' : 'FRESH_NON_INFERIOR',
+      promotionReason: sourceMigration ? 'V44_SOURCE_MIGRATION' : schemaMigration ? 'V42_SCHEMA_MIGRATION' : materiallyBetter ? 'BETTER_VALIDATION' : 'FRESH_NON_INFERIOR',
     });
     write(CHAMPION, champion);
     promoted = true;
     action = 'PROMOTE_CHALLENGER';
-    reason = schemaMigration
+    reason = sourceMigration
+      ? `Switch champion to current isolated training source ${trainingPair(candidate)}`
+      : schemaMigration
       ? 'Replace incompatible champion with a qualified V42 artifact'
       : materiallyBetter
         ? `Challenger score ${candidateScore.toFixed(1)} > champion ${championScore.toFixed(1)}`
@@ -320,6 +329,7 @@ export function main() {
     materiallyBetter,
     freshNonInferior,
     schemaMigration,
+    sourceMigration,
     identicalEvidence,
   });
   write(GOVERNANCE, state);

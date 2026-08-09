@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="KAGE CORE">
-<title>KAGE CORE · Audited Decision Intelligence V43</title>
+<title>KAGE CORE · Auto-Hybrid Decision Intelligence V44</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png?v=420">
@@ -5741,7 +5741,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 
 <div class="toast" id="toast"></div>
 
-<script src="./adaptive-ai-v42.js?v=430"></script>
+<script src="./adaptive-ai-v42.js?v=440"></script>
 <script>
 (()=>{
 'use strict';
@@ -5937,9 +5937,9 @@ const FRESH_OPEN_MS=15*60*1000;     // V34.1: execution-grade candle freshness
 const FRESH_CLOSED_MS=72*60*60*1000;
 const BG_FRESH_OPEN_MS=60*60*1000;   // model may support live decisions for max 60m
 const BG_LAST_SESSION_MS=72*60*60*1000;
-const V341_DATA_RETENTION_LABEL='PRIMARY M15 180D · H1 365D';
+const V341_DATA_RETENTION_LABEL='AUTO HYBRID · MT5 HEAVY / API ECO';
 
-const APP_VERSION='V42.0 KAGE CORE';
+const APP_VERSION='V44 AUTO HYBRID · KAGE CORE';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -6242,11 +6242,12 @@ function mlBrainStateV35(){
   if(!artifactPresent)return{status:'NO PACK',tone:'bad',trusted:false,artifactPresent:false,trained:false,note:'ยังโหลด ai-ml-brain.json ไม่สำเร็จ'};
   if(String(mlBrain?.status||'').toUpperCase()==='WAIT_DATA'){
     const c=mlBrain?.training?.counts||{},min=mlBrain?.training?.minimum||{};
-    const m15=Number(c.primaryM15??c.liveM15??0),m1=Number(c.primaryM1??c.liveM1??0);
+    const m15=Number(c.trainingM15??c.primaryM15??c.liveM15??0),m1=Number(c.trainingM1??c.primaryM1??c.liveM1??0);
     const need15=Number(min.M15||420),need1=Number(min.M1||1800);
     const short15=Math.max(0,need15-m15),short1=Math.max(0,need1-m1);
     const detail=short15?`M15 ${m15}/${need15} · ขาด ${short15} bars`:short1?`M1 ${m1}/${need1} · ขาด ${short1} bars`:'กำลังสร้าง feature pack';
-    return{status:'BOOTSTRAP',tone:'warn',trusted:false,artifactPresent:true,trained:false,note:`Training pack ยังไม่ถึง minimum · ${detail}`};
+    const source=String(mlBrain?.artifactProvenance?.trainingFeed||c.trainingFeed||'AUTO').replace('TWELVE_DATA_PRIMARY','API ECO').replace('MT5_ACADEMY','MT5 HEAVY');
+    return{status:'BOOTSTRAP',tone:'warn',trusted:false,artifactPresent:true,trained:false,note:`${source} training pack ยังไม่ถึง minimum · ${detail}`};
   }
   if(!trained)return{status:'MODEL EMPTY',tone:'warn',trusted:false,artifactPresent:true,trained:false,note:mlBrain?.reason||'พบ artifact แต่ยังไม่มี candidate ที่ train แล้ว'};
   const provenance=artifactProvenanceV42(mlBrain,{ml:true});
@@ -6260,7 +6261,7 @@ function mlBrainStateV35(){
   if(!m.open&&age<=BG_LAST_SESSION_MS)return{status:'LAST SESSION',tone:trusted?'good':'warn',trusted,artifactPresent:true,trained:true,note:`ML จาก Session ล่าสุด · Health ${score.toFixed(0)}/100 · Revalidate ตอนตลาดเปิด`};
   if(!m.open&&age>BG_LAST_SESSION_MS)return{status:'STALE',tone:'bad',trusted:false,artifactPresent:true,trained:true,note:'ML เก่ากว่า 72 ชั่วโมง · ใช้เป็น Reference เท่านั้น'};
   if(!trusted)return{status:'QUARANTINED',tone:'bad',trusted:false,artifactPresent:true,trained:true,note:`ML ถูกจำกัดอำนาจ · Health ${score.toFixed(0)} · Drift ${drift.toFixed(1)} · Uncertainty ${unc.toFixed(1)}`};
-  return{status:'TRUSTED',tone:'good',trusted:true,artifactPresent:true,trained:true,note:`Python V42 ผ่าน provenance + governance guard · Health ${score.toFixed(0)}/100`};
+  return{status:'TRUSTED',tone:'good',trusted:true,artifactPresent:true,trained:true,note:`Python V44 source-aware ผ่าน provenance + governance guard · Health ${score.toFixed(0)}/100`};
 }
 function technicalPendingCandidatesV35(a){
   const h1=tfResults.H1,m15=tfResults.M15,m5=tfResults.M5;
@@ -6357,8 +6358,8 @@ function feedHealthStateV361(){
   const holdOpen=m.open&&['HOLD','LAST_VALID','STALE','DEGRADED'].includes(mode);
   const blocked=legacy?staleOpen:(staleOpen||holdOpen||(!primaryOk&&!fallbackOk&&m.open));
   let label=legacy?'GITHUB PACK':'LAST VALID',tone=legacy?'warn':'warn';
-  if(active.includes('MT5')){label=packMeta.directFallback?'MT5 LIVE FALLBACK':'MT5 FALLBACK';tone='good'}
-  else if(active.includes('TWELVE')){label='TWELVE DATA';tone=primaryOk?'good':'warn'}
+  if(active.includes('MT5')){label=packMeta.directFallback?'MT5 LIVE HEAVY':mode.includes('HEAVY')?'MT5 HEAVY':'MT5';tone='good'}
+  else if(active.includes('TWELVE')){label=mode.includes('API_ECO')?'TWELVE ECO':'TWELVE DATA';tone=primaryOk?'good':'warn'}
   if(blocked)tone='bad';
   return{active,mode,status,primaryOk,fallbackOk,blocked,label,tone,fresh,recovery:Number(f.switching?.primaryRecoveryStreak||0),recoveryRequired:Number(f.switching?.primaryRecoveryRequired||2)};
 }
@@ -6372,39 +6373,33 @@ function marketFreshnessV361Raw(){
 async function augmentWithMt5FallbackV362(pack){
   try{
     if(!marketStatus().open)return{pack,used:false};
-    const f=pack?.feed||{},active=String(f.active||'').toUpperCase(),mode=String(f.mode||'').toUpperCase();
-    const fallbackActive=active.includes('MT5')||mode==='FALLBACK'||mode==='PRIMARY_RECOVERY';
-    if(!fallbackActive)return{pack,used:false};
+    const f=pack?.feed||{},active=String(f.active||'').toUpperCase();
+    // V44: browser direct refresh is allowed only when the GitHub router already selected MT5.
+    // This is same-source extension, never a Twelve+MT5 merge.
+    if(!active.includes('MT5'))return{pack,used:false};
     const publicUrl=f?.fallback?.publicFeedUrl;if(!publicUrl)return{pack,used:false};
     const url=new URL(publicUrl,location.href);url.searchParams.set('limit','6000');url.searchParams.set('_',Date.now());
-    const r=await fetchFast(url.toString(),{cache:'no-store'},3200);if(!r.ok)throw new Error('MT5 fallback feed '+r.status);
+    const r=await fetchFast(url.toString(),{cache:'no-store'},3200);if(!r.ok)throw new Error('MT5 direct feed '+r.status);
     const j=await r.json(),rows=(j?.timeframes?.M1||j?.bars||[]).map(normalizeCandle).filter(Boolean);if(rows.length<180)return{pack,used:false};
     const mt5Last=Number(rows.at(-1)?.ts)||0;if(!mt5Last)return{pack,used:false};
-    // V37 strict failover: when MT5 is ACTIVE, use the MT5 source by itself.
-    // Do not merge/average the Twelve M1 rows with MT5 rows in the browser.
-    const feed={...f,runtimeActive:'MT5_DIRECT',runtimeMode:'FALLBACK_LIVE',runtimeStatus:'LIVE',directLatestTs:mt5Last,fallback:{...(f.fallback||{}),ok:true,status:'ONLINE',latestTs:mt5Last,ageMs:Date.now()-mt5Last},switching:{...(f.switching||{}),mergeFeeds:false,policy:'PRIMARY_ONLY_THEN_ISOLATED_FAILOVER'}};
-    return{pack:{...pack,generatedAt:j.generatedAt||new Date().toISOString(),source:'MT5 isolated direct fallback',feed,timeframes:{M1:rows,M5:[],M15:[],H1:[]}},used:true};
-  }catch(e){console.warn('MT5 direct fallback skipped',e);return{pack,used:false}}
+    const directWatermark=mt5Last+60000;
+    const feed={...f,closedBarWatermark:directWatermark,runtimeActive:'MT5_DIRECT',runtimeMode:'MT5_DIRECT_HEAVY',runtimeStatus:'LIVE',directLatestTs:mt5Last,fallback:{...(f.fallback||{}),ok:true,connected:true,status:'ONLINE',latestTs:mt5Last,ageMs:Date.now()-mt5Last},switching:{...(f.switching||{}),mergeFeeds:false,policy:'MT5_FIRST_THEN_TWELVE_API_ECO'}};
+    return{pack:{...pack,generatedAt:j.generatedAt||new Date().toISOString(),source:'MT5 isolated direct live feed',closedBarWatermark:directWatermark,feed,timeframes:{M1:rows,M5:[],M15:[],H1:[]}},used:true};
+  }catch(e){console.warn('MT5 direct refresh skipped',e);return{pack,used:false}}
 }
 function renderFeedHealthV361(){
   if(!$('#feedActive'))return;const f=packMeta.feed||{},st=feedHealthStateV361(),p=f.primary||{},b=f.fallback||{};
   const pAge=Number(p.ageMs),bAge=Number(b.ageMs);const set=(cell,id,text,tone='')=>{const c=$('#'+cell),e=$('#'+id);if(e)e.textContent=text;if(c)c.className='feed-health-cell '+tone};
   set('feedActiveCell','feedActive',st.label,st.blocked?'bad':st.tone);
   set('feedModeCell','feedMode',String(f.runtimeMode||f.mode||'—').replace(/_/g,' '),st.blocked?'bad':(String(f.runtimeMode||f.mode||'').includes('FALLBACK')||String(f.mode||'').includes('RECOVERY')?'warn':'good'));
-  set('feedPrimaryCell','feedPrimary',p.configured===false?'NOT SET':`${p.ok?'ONLINE':String(p.status||'OFFLINE')}${Number.isFinite(pAge)?' · '+fmtAge(pAge):''}`,p.ok?'good':'bad');
+  const pStandby=!p.checked&&String(p.status||'').toUpperCase().includes('STANDBY');
+  set('feedPrimaryCell','feedPrimary',p.configured===false?'NOT SET':`${p.ok?'ONLINE':String(p.status||'OFFLINE')}${Number.isFinite(pAge)?' · '+fmtAge(pAge):''}`,p.ok?'good':pStandby?'warn':'bad');
   const fbText=b.configured===false&&!packMeta.directFallback?'NOT SET':(!b.checked&&!packMeta.directFallback?'STANDBY':`${(b.ok||packMeta.directFallback)?'ONLINE':String(b.status||'OFFLINE')}${Number.isFinite(bAge)?' · '+fmtAge(bAge):''}`);
   set('feedFallbackCell','feedFallback',fbText,(b.ok||packMeta.directFallback)?'good':(!b.checked?'warn':'bad'));
-  const primaryActive=st.active.includes('TWELVE')&&!st.mode.includes('RECOVERY')&&!st.mode.includes('FALLBACK');
-  const recoveryLabel=primaryActive
-    ? 'PRIMARY ACTIVE'
-    : st.mode.includes('RECOVERY')
-      ? `${st.recovery}/${st.recoveryRequired} · VERIFY PRIMARY`
-      : st.active.includes('MT5')
-        ? `MT5 ACTIVE · ${st.recovery}/${st.recoveryRequired}`
-        : 'STANDBY';
-  set('feedDivergenceCell','feedDivergence',recoveryLabel,st.mode.includes('RECOVERY')?'warn':st.blocked?'bad':'good');
-  set('feedStrategyCell','feedStrategy','PRIMARY ONLY → FAILOVER','good');
-  const note=$('#feedHealthNote');if(note)note.innerHTML=`<strong>${st.blocked?'FEED HOLD':'PRIMARY/FAILOVER READY'}</strong> · ${f.reason||packMeta.source||'Market pack'}${packMeta.directFallback?' · App ดึง MT5 M1 ตรงเฉพาะตอน Fallback เท่านั้น':''}`;
+  const sourceState=st.active.includes('MT5')?'MT5 HEAVY ACTIVE':st.active.includes('TWELVE')?'API ECO ACTIVE':'STANDBY';
+  set('feedDivergenceCell','feedDivergence',sourceState,st.blocked?'bad':'good');
+  set('feedStrategyCell','feedStrategy','AUTO · MT5 HEAVY → API ECO','good');
+  const note=$('#feedHealthNote');if(note)note.innerHTML=`<strong>${st.blocked?'FEED HOLD':'AUTO HYBRID READY'}</strong> · ${f.reason||packMeta.source||'Market pack'}${packMeta.directFallback?' · MT5 direct M1 refresh (same source only)':''}`;
 }
 
 function marketFreshness(){return marketFreshnessV361Raw()}
@@ -7777,7 +7772,7 @@ function renderCommand(){
     ticket.className='command-ticket '+(p.qualifiedPlan?'qualified':'rejected');
     if(!p.qualifiedPlan)action=`LOW QUALITY · DO NOT PLACE · ${(p.rejectionReasons||[]).join(' / ')||'รอ Setup ใหม่'}`;
     else if(!m.open)action='PLAN PREPARED · จด Pending/SL/TP ไว้ได้ แต่ตอนเปิดต้อง Revalidate Gap / ข่าว / ราคาใหม่';
-    else if(feedHealthStateV361().blocked)action='FEED HOLD · แผนยังเก็บไว้ได้ แต่ห้ามวาง Pending จน Twelve Data หรือ MT5 fallback กลับมาสด';
+    else if(feedHealthStateV361().blocked)action='FEED HOLD · แผนยังเก็บไว้ได้ แต่ห้ามวาง Pending จน MT5 หรือ Twelve Data ECO กลับมาสด';
     else if(n.lock)action='แผนผ่านคุณภาพ แต่ News Lock ห้ามวาง Pending ใหม่จนพ้น shock window';
     else if(g.locked)action='แผนผ่านคุณภาพ แต่ Risk Guardian ยังไม่อนุญาตเพิ่มความเสี่ยง';
     else if(marketFreshness().stale)action='แผนผ่านคุณภาพ แต่ต้อง Refresh market pack ก่อนวางจริง';
@@ -8144,13 +8139,13 @@ function renderAiCoreV37(){
   $('#brainCoreConfidence').textContent=hasModel?`LIVE AUTHORITY · ${Math.round(model)}%`:trainedModel?'SHADOW / REFERENCE ONLY':packPresent?'TRAINING BOOTSTRAP':'WAIT MODEL PACK';
   $('#brainCorePulse').classList.toggle('live',hasModel&&!fs.blocked&&m.open);
   const trainingCounts=mlBrain?.training?.counts||{},trainingMin=mlBrain?.training?.minimum||{};
-  const m15Now=Number(trainingCounts.primaryM15??trainingCounts.liveM15??0),m15Need=Number(trainingMin.M15||420);
+  const m15Now=Number(trainingCounts.trainingM15??trainingCounts.primaryM15??trainingCounts.liveM15??0),m15Need=Number(trainingMin.M15||420);
   $('#brainCoreHeadline').textContent=hasModel?`${String(mlBrain.status||'MODEL')} · ${fs.label} · ${m.open?m.session:'LAST SESSION'} · ${Number(mlBrain?.current?.qualifiedCount||0)}/${Number(mlBrain?.current?.candidateCount||12)} plans qualified`:trainedModel?st.note:`${st.note}${m15Now?` · M15 ${m15Now}/${m15Need}`:''}`;
   // Do not show “2/2 SWITCH BACK” after Twelve has already become active.
   const recoveryEl=$('#feedDivergence');
   if(recoveryEl){
     const primaryNow=fs.active.includes('TWELVE')&&!fs.mode.includes('RECOVERY')&&!fs.mode.includes('FALLBACK');
-    recoveryEl.textContent=primaryNow?'PRIMARY ACTIVE':fs.mode.includes('RECOVERY')?`${fs.recovery}/${fs.recoveryRequired} · VERIFY PRIMARY`:fs.active.includes('MT5')?`MT5 ACTIVE · ${fs.recovery}/${fs.recoveryRequired}`:'STANDBY';
+    recoveryEl.textContent=fs.active.includes('MT5')?'MT5 HEAVY ACTIVE':primaryNow?'API ECO ACTIVE':'STANDBY';
   }
 
   $('#brainModelHealth').textContent=trainedModel?`${Math.round(model)}/100`:'—';
@@ -8211,7 +8206,8 @@ function renderAiCoreV37(){
   if(evidence){
     evidence.textContent=`${shadowResolved.toLocaleString('en-US')} VERIFIED`;
     evidence.className=shadowResolved>=80?'good':shadowResolved>0?'warn':'';
-    $('#v43EvidenceSub').textContent=shadowResolved>=80?'threshold evidence ready':'ต้องการ ≥80 Primary outcomes ก่อน auto-threshold';
+    const trainFeed=String(mlBrain?.artifactProvenance?.trainingFeed||'').replace('MT5_ACADEMY','MT5').replace('TWELVE_DATA_PRIMARY','API');
+    $('#v43EvidenceSub').textContent=shadowResolved>=80?'threshold evidence ready':`ต้องการ ≥80 ${trainFeed||'same-source'} outcomes ก่อน auto-threshold`;
   }
 
   const decisionStrip=$('#brainDecisionStrip');

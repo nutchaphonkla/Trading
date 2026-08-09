@@ -3,11 +3,11 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const INPUT='xauusd-primary.json';
+const LEGACY_INPUT='xauusd-primary.json';
+const ROUTED_INPUT='xauusd-training.json';
 const OUTPUT='ai-history.json';
 const VERSION='V42.0';
 const ARTIFACT_SCHEMA='KAGE_AI_V42';
-const TRAINING_FEED='TWELVE_DATA_PRIMARY';
 const FEATURE_SCHEMA=['direction','regime','rsiBucket','structure','timeframe'];
 const FEATURE_SCHEMA_HASH='17e82bd347b6f345ad289df1';
 const LABEL_SCHEMA='FUTURE_CLOSE_DIRECTION_BY_TF_V42';
@@ -51,26 +51,34 @@ function analyzeTf(c,tf){
   return{candles:c.length,from:new Date(c[0].ts).toISOString(),to:new Date(c[n].ts).toISOString(),sampleCount,forwardBars:forward,recencyHalfLifeDays:HALF_LIFE_DAYS,latest:{bias,strength,upProbability,rsi:Number((RS[n]??50).toFixed(2)),adx:Number((AD[n]??0).toFixed(2)),structure:latestStructure,key:ks[0],matchLevel:match?.matchLevel||'NONE',effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),lowerBound:Number(((match?.lowerBound??.05)*100).toFixed(2)),upperBound:Number(((match?.upperBound??.95)*100).toFixed(2)),uncertaintyPts:Number((match?.uncertaintyPts??90).toFixed(2))},regimes,patterns:exact.slice(0,500).map(r=>({...r,upRate:Number(r.upRate.toFixed(4)),posteriorUpRate:Number(r.posteriorUpRate.toFixed(4)),lowerBound:Number(r.lowerBound.toFixed(4)),upperBound:Number(r.upperBound.toFixed(4)),avgReturnR:Number(r.avgReturnR.toFixed(4)),avgMfeR:Number(r.avgMfeR.toFixed(4)),avgMaeR:Number(r.avgMaeR.toFixed(4))}))};
 }
 function artifactSchema(){return{version:ARTIFACT_SCHEMA,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchemaHash:LABEL_SCHEMA_HASH}}
-function artifactProvenance(sourceFingerprint=null,dataWatermark=null){return{schemaVersion:ARTIFACT_SCHEMA,trainingSource:INPUT,trainingFeed:TRAINING_FEED,mergeFeeds:false,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchema:LABEL_SCHEMA,labelSchemaHash:LABEL_SCHEMA_HASH,sourceFingerprint,dataWatermark}}
-function fingerprint(data,watermark){const hash=crypto.createHash('sha256');hash.update(`${TRAINING_FEED}|${watermark}|`);for(const tf of ['M1','M5','M15','H1']){hash.update(`${tf}|`);for(const b of data[tf]||[])hash.update(`${b.ts},${b.open},${b.high},${b.low},${b.close};`)}return hash.digest('hex').slice(0,24)}
-function waiting(reason,extra={}){return{version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:'ONEMONTH-HISTORY-V42',symbol:'XAUUSD',generatedAt:new Date().toISOString(),ready:false,status:reason.startsWith('INVALID_')?'QUARANTINED':'WAIT_DATA',reason,artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(extra.sourceFingerprint||null,extra.dataWatermark||null),featureSchema:FEATURE_SCHEMA,timeframes:{},global:{bias:'NEUTRAL',upProbability:50,agreement:0,totalPatterns:0,uncertaintyPts:100,confidence:0},...extra}}
+function trainingIdentity(pack={}){
+  const feed=pack.feed||{},source=String(pack.source||'').toUpperCase(),active=String(feed.active||'').toUpperCase();
+  const trainingSource=String(feed.trainingSource||'')||((active==='TWELVE_DATA'&&source.includes('PRIMARY'))?LEGACY_INPUT:ROUTED_INPUT);
+  const inferred=active==='TWELVE_DATA'&&(source.includes('TWELVE')||source.includes('PRIMARY'))?'TWELVE_DATA_PRIMARY':active.includes('MT5')&&source.includes('MT5')?'MT5_ACADEMY':'';
+  const trainingFeed=String(feed.trainingFeed||inferred).toUpperCase();
+  const pairOk=(trainingSource===LEGACY_INPUT&&trainingFeed==='TWELVE_DATA_PRIMARY')||(trainingSource===ROUTED_INPUT&&['TWELVE_DATA_PRIMARY','MT5_ACADEMY'].includes(trainingFeed));
+  return{ok:pairOk&&trainingFeed===inferred&&feed.switching?.mergeFeeds===false,trainingSource,trainingFeed};
+}
+function artifactProvenance(sourceFingerprint=null,dataWatermark=null,identity={trainingSource:LEGACY_INPUT,trainingFeed:'TWELVE_DATA_PRIMARY'}){return{schemaVersion:ARTIFACT_SCHEMA,trainingSource:identity.trainingSource,trainingFeed:identity.trainingFeed,mergeFeeds:false,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchema:LABEL_SCHEMA,labelSchemaHash:LABEL_SCHEMA_HASH,sourceFingerprint,dataWatermark}}
+function fingerprint(data,watermark,trainingFeed){const hash=crypto.createHash('sha256');hash.update(`${trainingFeed}|${watermark}|`);for(const tf of ['M1','M5','M15','H1']){hash.update(`${tf}|`);for(const b of data[tf]||[])hash.update(`${b.ts},${b.open},${b.high},${b.low},${b.close};`)}return hash.digest('hex').slice(0,24)}
+function waiting(reason,extra={}){const identity=extra.identity||{trainingSource:LEGACY_INPUT,trainingFeed:'TWELVE_DATA_PRIMARY'};return{version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:'ONEMONTH-HISTORY-V42',symbol:'XAUUSD',generatedAt:new Date().toISOString(),ready:false,status:reason.startsWith('INVALID_')?'QUARANTINED':'WAIT_DATA',reason,artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(extra.sourceFingerprint||null,extra.dataWatermark||null,identity),featureSchema:FEATURE_SCHEMA,timeframes:{},global:{bias:'NEUTRAL',upProbability:50,agreement:0,totalPatterns:0,uncertaintyPts:100,confidence:0},...extra}}
 
 export function buildHistory(pack){
   if(!pack||typeof pack!=='object')return waiting('MISSING_PRIMARY_PACK');
-  const feed=pack.feed||{},source=String(pack.source||'').toUpperCase(),active=String(feed.active||'').toUpperCase(),watermark=Number(pack.closedBarWatermark||feed.closedBarWatermark||0);
-  if(active!=='TWELVE_DATA'||!source.includes('PRIMARY')||feed.switching?.mergeFeeds!==false)return waiting('INVALID_PRIMARY_TRAINING_FEED',{dataWatermark:watermark||null});
-  if(!(watermark>0))return waiting('INVALID_CLOSED_BAR_WATERMARK');
+  const feed=pack.feed||{},watermark=Number(pack.closedBarWatermark||feed.closedBarWatermark||0),identity=trainingIdentity(pack);
+  if(!identity.ok)return waiting('INVALID_TRAINING_FEED',{dataWatermark:watermark||null,identity});
+  if(!(watermark>0))return waiting('INVALID_CLOSED_BAR_WATERMARK',{identity});
   const raw=pack.timeframes||pack.data||pack,M1=closedBars(raw.M1||[],'M1',watermark),data={M1};
   for(const tf of ['M5','M15','H1']){const own=closedBars(raw[tf]||[],tf,watermark),derived=M1.length>=180?aggregate(M1,tf,watermark):[];data[tf]=own.length>=derived.length?own:derived}
-  const sourceFingerprint=fingerprint(data,watermark),timeframes={};
+  const sourceFingerprint=fingerprint(data,watermark,identity.trainingFeed),timeframes={};
   for(const tf of ['M1','M5','M15','H1']){const row=analyzeTf(data[tf]||[],tf);if(row)timeframes[tf]=row}
   const weights={H1:.36,M15:.34,M5:.20,M1:.10};let signed=0,wSum=0,totalCandles=0,totalPatterns=0,biasVotes=[],uncertaintyWeighted=0;
   for(const[tf,row]of Object.entries(timeframes)){const w=weights[tf]||.1,p=row.latest.upProbability;signed+=(p-50)*w;uncertaintyWeighted+=(row.latest.uncertaintyPts||90)*w;wSum+=w;totalCandles+=row.candles;totalPatterns+=row.patterns.length;biasVotes.push(row.latest.bias)}
   const upProbability=Math.round(clamp(50+(wSum?signed/wSum:0),5,95)),globalBias=upProbability>=55?'BUY':upProbability<=45?'SELL':'NEUTRAL',same=biasVotes.filter(x=>x===globalBias).length,agreement=biasVotes.length?Math.round(same/biasVotes.length*100):0,uncertainty=wSum?uncertaintyWeighted/wSum:90,confidence=Math.round(clamp(agreement*.55+(100-uncertainty)*.45,0,100));
   const coverageFrom=Object.values(timeframes).map(r=>Date.parse(r.from)).filter(Number.isFinite),coverageTo=Object.values(timeframes).map(r=>Date.parse(r.to)).filter(Number.isFinite),coverageDays=coverageFrom.length&&coverageTo.length?(Math.max(...coverageTo)-Math.min(...coverageFrom))/DAY:0,totalSamples=Object.values(timeframes).reduce((sum,row)=>sum+(Number(row.sampleCount)||0),0),ready=Object.keys(timeframes).length>=2&&totalSamples>=100;
-  return{version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:'ONEMONTH-HISTORY-V42',symbol:'XAUUSD',generatedAt:new Date().toISOString(),sourceGeneratedAt:pack.generatedAt||null,dataFeed:feed,sourceFingerprint,ready,status:ready?'READY':'WAIT_DATA',reason:ready?null:'INSUFFICIENT_CLOSED_HISTORY',artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(sourceFingerprint,watermark),featureSchema:FEATURE_SCHEMA,dataIntegrity:{closedBarsOnly:true,dataWatermark:watermark,mergeFeeds:false,counts:Object.fromEntries(Object.entries(data).map(([tf,rows])=>[tf,rows.length]))},coverageDays:Number(coverageDays.toFixed(1)),recency:{halfLifeDays:HALF_LIFE_DAYS},totalCandles,timeframes,global:{bias:globalBias,upProbability,agreement,totalPatterns,totalSamples,coverageDays:Number(coverageDays.toFixed(1)),uncertaintyPts:Number(uncertainty.toFixed(1)),confidence}};
+  return{version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:'ONEMONTH-HISTORY-V42',symbol:'XAUUSD',generatedAt:new Date().toISOString(),sourceGeneratedAt:pack.generatedAt||null,dataFeed:feed,sourceFingerprint,ready,status:ready?'READY':'WAIT_DATA',reason:ready?null:'INSUFFICIENT_CLOSED_HISTORY',artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(sourceFingerprint,watermark,identity),featureSchema:FEATURE_SCHEMA,dataIntegrity:{closedBarsOnly:true,dataWatermark:watermark,mergeFeeds:false,counts:Object.fromEntries(Object.entries(data).map(([tf,rows])=>[tf,rows.length]))},coverageDays:Number(coverageDays.toFixed(1)),recency:{halfLifeDays:HALF_LIFE_DAYS},totalCandles,timeframes,global:{bias:globalBias,upProbability,agreement,totalPatterns,totalSamples,coverageDays:Number(coverageDays.toFixed(1)),uncertaintyPts:Number(uncertainty.toFixed(1)),confidence}};
 }
 
-export function main(){let pack=null;try{pack=JSON.parse(fs.readFileSync(INPUT,'utf8'))}catch(_){}const out=buildHistory(pack);fs.writeFileSync(OUTPUT,JSON.stringify(out,null,2));console.log(`V42 history ${out.status}: ${out.global?.bias||'NEUTRAL'} ${out.global?.upProbability||50}% | ${out.totalCandles||0} candles | ${out.global?.totalPatterns||0} patterns`)}
+export function main(){const input=fs.existsSync(ROUTED_INPUT)?ROUTED_INPUT:LEGACY_INPUT;let pack=null;try{pack=JSON.parse(fs.readFileSync(input,'utf8'));if(pack?.feed&&!pack.feed.trainingSource&&input===ROUTED_INPUT)pack.feed.trainingSource=ROUTED_INPUT}catch(_){}const out=buildHistory(pack);fs.writeFileSync(OUTPUT,JSON.stringify(out,null,2));console.log(`V42 history ${out.status}: ${out.global?.bias||'NEUTRAL'} ${out.global?.upProbability||50}% | ${out.totalCandles||0} candles | ${out.global?.totalPatterns||0} patterns | ${out.artifactProvenance?.trainingFeed||'UNKNOWN'}`)}
 const invokedPath=process.argv[1]?path.resolve(process.argv[1]):'';
 if(invokedPath&&invokedPath===path.resolve(fileURLToPath(import.meta.url)))main();

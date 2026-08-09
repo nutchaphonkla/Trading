@@ -26,7 +26,8 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 ROOT = Path.cwd()
 SHADOW = ROOT / "ai-shadow-journal.json"
-PRIMARY = ROOT / "xauusd-primary.json"
+LEGACY_PRIMARY = ROOT / "xauusd-primary.json"
+TRAINING = ROOT / "xauusd-training.json"
 BRAIN = ROOT / "ai-ml-brain.json"
 OUT_SELF = ROOT / "ai-selfplay.json"
 OUT_THRESH = ROOT / "ai-thresholds.json"
@@ -75,13 +76,13 @@ def ts_ms(v) -> int:
     return int(x // 60000 * 60000)
 
 
-def primary_entry(e: dict) -> bool:
+def training_entry(e: dict, expected_kind: str = "PRIMARY") -> bool:
     creation = str(e.get("creationFeedKind") or e.get("feedSource") or "").upper()
     outcome = str(e.get("outcomeFeedKind") or "").upper()
-    creation_primary = creation == "PRIMARY" or "TWELVE" in creation
+    creation_kind = "PRIMARY" if creation == "PRIMARY" or "TWELVE" in creation else "FALLBACK" if creation == "FALLBACK" or "MT5" in creation else "UNKNOWN"
     return bool(
-        creation_primary
-        and outcome == "PRIMARY"
+        creation_kind == expected_kind
+        and outcome == expected_kind
         and e.get("provenanceStatus") == "VERIFIED"
         and e.get("modelArtifactSchema") == ARTIFACT_SCHEMA
         and e.get("labelSchema") == LABEL_SCHEMA
@@ -93,10 +94,15 @@ def primary_entry(e: dict) -> bool:
     )
 
 
-def completed_entries(entries: Iterable[dict]) -> List[dict]:
+def primary_entry(e: dict) -> bool:
+    # Backward-compatible V42 helper used by the existing regression test.
+    return training_entry(e, "PRIMARY")
+
+
+def completed_entries(entries: Iterable[dict], expected_kind: str = "PRIMARY") -> List[dict]:
     out = []
     for e in entries:
-        if not primary_entry(e):
+        if not training_entry(e, expected_kind):
             continue
         if e.get("status") != "COMPLETE":
             continue
@@ -317,7 +323,7 @@ def context_modifiers(rows: List[dict]) -> dict:
     return out
 
 
-def normalize_primary_bars(pack: dict) -> List[dict]:
+def normalize_training_bars(pack: dict) -> List[dict]:
     raw = (pack.get("timeframes") or pack.get("data") or {}).get("M1") or []
     out = []
     for x in raw:
@@ -386,8 +392,8 @@ def simulate(bars: List[dict], e: dict, entry: float, risk: float, rr: float) ->
     return {"filled": True, "result": "TIMEOUT", "resultR": float(mark), "mfeR": mfe, "maeR": mae}
 
 
-def counterfactual(rows: List[dict], bars: List[dict]) -> dict:
-    # Limit cost: newest 600 resolved primary shadow ideas that still exist in PRIMARY M1 history.
+def counterfactual(rows: List[dict], bars: List[dict], source_label: str = "TWELVE_DATA_PRIMARY_M1_ONLY") -> dict:
+    # Limit cost: newest 600 resolved same-source shadow ideas that still exist in the selected training M1 history.
     candidates = rows[-600:]
     variants = []
     for shift in [-0.10, 0.0, 0.10]:
@@ -433,7 +439,7 @@ def counterfactual(rows: List[dict], bars: List[dict]) -> dict:
     improvement = (f(best.get("avgR")) - f(baseline.get("avgR"))) if best and baseline else None
     return {
         "ready": bool(best and baseline and used >= 30),
-        "source": "TWELVE_DATA_PRIMARY_M1_ONLY",
+        "source": source_label,
         "ideasReplayed": used,
         "variantsTested": len(variants),
         "best": best,
@@ -494,25 +500,28 @@ def group_performance(rows: List[dict], field: str) -> dict:
 def main() -> None:
     shadow = load(SHADOW, {"entries": []})
     entries = shadow.get("entries") or []
-    primary_rows = completed_entries(entries)
     brain = load(BRAIN, {})
+    training_feed = str((brain.get("artifactProvenance") or {}).get("trainingFeed") or "TWELVE_DATA_PRIMARY").upper()
+    expected_kind = "FALLBACK" if training_feed == "MT5_ACADEMY" else "PRIMARY"
+    training_rows = completed_entries(entries, expected_kind)
     base = baseline_thresholds(brain)
-    recommended, evidence = search_thresholds(primary_rows, base)
-    modifiers = context_modifiers(primary_rows)
-    primary_pack = load(PRIMARY, {})
-    bars = normalize_primary_bars(primary_pack)
-    cf = counterfactual(primary_rows, bars) if bars else {"ready": False, "reason": "PRIMARY_M1_NOT_READY"}
-    au = autopsy(primary_rows)
+    recommended, evidence = search_thresholds(training_rows, base)
+    modifiers = context_modifiers(training_rows)
+    training_pack = load(TRAINING, {}) if TRAINING.exists() else load(LEGACY_PRIMARY, {})
+    bars = normalize_training_bars(training_pack)
+    source_label = "MT5_ACADEMY_M1_ONLY" if expected_kind == "FALLBACK" else "TWELVE_DATA_PRIMARY_M1_ONLY"
+    cf = counterfactual(training_rows, bars, source_label) if bars else {"ready": False, "reason": "TRAINING_M1_NOT_READY"}
+    au = autopsy(training_rows)
 
     # Chronological forward replay: last 30% is treated as unseen tail.
-    split = max(0, int(len(primary_rows) * 0.70))
-    tail = primary_rows[split:] if split else []
+    split = max(0, int(len(training_rows) * 0.70))
+    tail = training_rows[split:] if split else []
     replay_base = metrics([x for x in tail if rule_pass(x, base)]) if tail else metrics([])
     replay_new = metrics([x for x in tail if rule_pass(x, recommended)]) if tail else metrics([])
 
     previous_thresholds = load(OUT_THRESH, {})
     raw_activation = bool(evidence.get("activationReady"))
-    identity = evidence_identity(primary_rows, recommended)
+    identity = evidence_identity(training_rows, recommended)
     promotion = advance_promotion(previous_thresholds, raw_activation, identity)
     promotion_streak = promotion["promotionStreak"]
     trusted_activation = promotion["trusted"]
@@ -522,7 +531,8 @@ def main() -> None:
         "artifactSchema": ARTIFACT_SCHEMA,
         "labelSchema": LABEL_SCHEMA,
         "labelSchemaHash": LABEL_SCHEMA_HASH,
-        "source": "PRIMARY_SHADOW_OUTCOMES_ONLY",
+        "source": "TRAINING_SOURCE_SHADOW_OUTCOMES_ONLY",
+        "trainingFeed": training_feed,
         "trusted": trusted_activation,
         "activationReady": raw_activation,
         "promotionStreak": promotion_streak,
@@ -553,18 +563,21 @@ def main() -> None:
     self_pack = {
         "version": VERSION,
         "generatedAt": now(),
-        "ready": len(primary_rows) >= 10,
+        "ready": len(training_rows) >= 10,
         "mode": "SHADOW_SELF_PLAY",
         "dataIsolation": {
             "allShadowIdeas": int(summary.get("total") or len(entries)),
-            "primaryLearningOutcomes": len(primary_rows),
-            "fallbackUsedForPrimaryLearning": False,
+            "trainingLearningOutcomes": len(training_rows),
+            "primaryLearningOutcomes": len(training_rows),
+            "trainingFeed": training_feed,
+            "crossSourceMerge": False,
             "artifactSchema": ARTIFACT_SCHEMA,
             "labelSchema": LABEL_SCHEMA,
             "labelSchemaHash": LABEL_SCHEMA_HASH,
         },
         "shadow": summary,
-        "primaryResolved": metrics(primary_rows),
+        "primaryResolved": metrics(training_rows),
+        "trainingResolved": metrics(training_rows),
         "forwardReplay": {
             "chronological": True,
             "tailFraction": 0.30,
@@ -593,10 +606,10 @@ def main() -> None:
             "topCauses": au.get("topCauses", [])[:5],
         },
         "performance": {
-            "byType": group_performance(primary_rows, "type"),
-            "byRegime": group_performance(primary_rows, "regime"),
-            "bySession": group_performance(primary_rows, "session"),
-            "byVariant": group_performance(primary_rows, "variant"),
+            "byType": group_performance(training_rows, "type"),
+            "byRegime": group_performance(training_rows, "regime"),
+            "bySession": group_performance(training_rows, "session"),
+            "byVariant": group_performance(training_rows, "variant"),
         },
         "learningLoop": [
             "GENERATE_ALL_12_VIRTUAL_CANDIDATES",
@@ -612,7 +625,7 @@ def main() -> None:
     save(OUT_SELF, self_pack)
     print("V42 Self-Play Lab", {
         "shadow": summary.get("total", len(entries)),
-        "primaryResolved": len(primary_rows),
+        "trainingResolved": len(training_rows),
         "thresholdReady": threshold_pack["activationReady"],
         "counterfactualReady": bool(cf.get("ready")),
         "autopsyFailures": au.get("failures"),
