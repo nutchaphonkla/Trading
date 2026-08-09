@@ -38,7 +38,7 @@ jobs:
           node tests/shadow-feed-isolation-v42.test.mjs
           node tests/auto-hybrid-v44.test.mjs
 
-      - name: Auto route MT5 HEAVY or Twelve Data ECO
+      - name: Auto route live feed and training source independently
         env:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
           TV_FALLBACK_URL: ${{ secrets.TV_FALLBACK_URL }}
@@ -48,154 +48,101 @@ jobs:
       - name: Current-market shadow self-play
         run: node build-ai-shadow.mjs
 
-      - name: Verify V44 source isolation and closed bars
+      - name: Verify V44.1 decoupled routing and closed bars
         run: |
           node - <<'NODE'
           const fs = require('fs');
 
           const read = file =>
-            JSON.parse(
-              fs.readFileSync(file, 'utf8')
-            );
+            JSON.parse(fs.readFileSync(file, 'utf8'));
 
-          const health = read(
-            'feed-health.json'
-          );
+          const health = read('feed-health.json');
+          const activePack = read('xauusd.json');
+          const trainingPack = read('xauusd-training.json');
 
-          const activePack = read(
-            'xauusd.json'
-          );
+          console.log('V44.1 ROUTER', {
+            active: health.active,
+            liveMode: health.mode,
+            status: health.status,
+            training: health.training,
+            requests: health.efficiency,
+            reason: health.reason,
+          });
 
-          const trainingPack = read(
-            'xauusd-training.json'
-          );
-
-          console.log(
-            'V44 ROUTER',
-            {
-              active:
-                health.active,
-
-              mode:
-                health.mode,
-
-              status:
-                health.status,
-
-              training:
-                health.training,
-
-              requests:
-                health.efficiency,
-
-              reason:
-                health.reason,
-            }
-          );
-
-          if (
-            health.switching?.mergeFeeds
-            !== false
-          ) {
+          if (health.switching?.mergeFeeds !== false) {
             throw new Error(
-              'V44 policy violation: feed isolation must be explicit'
+              'V44.1 policy violation: feed isolation must be explicit'
             );
           }
 
-          const watermark =
-            Number(
-              activePack.closedBarWatermark ||
-              activePack.feed
-                ?.closedBarWatermark ||
-              0
-            );
+          const watermark = Number(
+            activePack.closedBarWatermark ||
+            activePack.feed?.closedBarWatermark ||
+            0
+          );
 
           if (!(watermark > 0)) {
             throw new Error(
-              'V44 policy violation: active closed-bar watermark missing'
+              'V44.1 policy violation: active closed-bar watermark missing'
             );
           }
 
-          const widths = {
-            M1: 60000,
-            M5: 300000,
-            M15: 900000,
-            H1: 3600000,
-          };
-
           for (
-            const [tf, width]
-            of Object.entries(widths)
+            const [tf, width] of Object.entries({
+              M1: 60000,
+              M5: 300000,
+              M15: 900000,
+              H1: 3600000,
+            })
           ) {
-            const bars =
-              activePack.timeframes?.[tf] ||
-              [];
-
-            const open =
-              bars.find(
-                bar =>
-                  Number(bar.ts) +
-                  width >
-                  watermark
-              );
+            const open = (
+              activePack.timeframes?.[tf] || []
+            ).find(
+              bar => Number(bar.ts) + width > watermark
+            );
 
             if (open) {
               throw new Error(
-                `V44 policy violation: ${tf} contains an unclosed bar at ${open.ts}`
+                `V44.1 policy violation: ${tf} contains an unclosed bar at ${open.ts}`
               );
             }
           }
 
-          const tfeed =
-            String(
-              trainingPack.feed
-                ?.trainingFeed ||
-              ''
-            ).toUpperCase();
+          const tfeed = String(
+            trainingPack.feed?.trainingFeed || ''
+          ).toUpperCase();
 
-          const tsource =
-            String(
-              trainingPack.feed
-                ?.trainingSource ||
-              ''
-            );
+          const tsource = String(
+            trainingPack.feed?.trainingSource || ''
+          );
 
-          const tactive =
-            String(
-              trainingPack.feed
-                ?.active ||
-              ''
-            ).toUpperCase();
+          const tactive = String(
+            trainingPack.feed?.active || ''
+          ).toUpperCase();
 
           const tmerge =
-            trainingPack.feed
-              ?.switching
-              ?.mergeFeeds;
+            trainingPack.feed?.switching?.mergeFeeds;
 
-          const allowed =
-            new Set([
-              'TWELVE_DATA_PRIMARY',
-              'MT5_ACADEMY',
-            ]);
+          const allowed = new Set([
+            'TWELVE_DATA_PRIMARY',
+            'MT5_ACADEMY',
+          ]);
 
-          if (
-            tsource !==
-            'xauusd-training.json'
-          ) {
+          if (tsource !== 'xauusd-training.json') {
             throw new Error(
-              `V44 training source path mismatch: ${tsource || 'MISSING'}`
+              `V44.1 training source path mismatch: ${tsource || 'MISSING'}`
             );
           }
 
           if (!allowed.has(tfeed)) {
             throw new Error(
-              `V44 training feed invalid: ${tfeed || 'MISSING'}`
+              `V44.1 training feed invalid: ${tfeed || 'MISSING'}`
             );
           }
 
           if (tmerge !== false) {
             throw new Error(
-              'V44 training pack may never merge source candles'
+              'V44.1 training pack may never merge source candles'
             );
           }
 
@@ -204,88 +151,104 @@ jobs:
             !tactive.includes('MT5')
           ) {
             throw new Error(
-              'V44 MT5 training provenance mismatch'
+              'V44.1 MT5 training provenance mismatch'
             );
           }
 
           if (
-            tfeed ===
-              'TWELVE_DATA_PRIMARY' &&
-            tactive !==
-              'TWELVE_DATA'
+            tfeed === 'TWELVE_DATA_PRIMARY' &&
+            tactive !== 'TWELVE_DATA'
           ) {
             throw new Error(
-              'V44 Twelve training provenance mismatch'
+              'V44.1 Twelve training provenance mismatch'
             );
           }
 
+          // Live กับ Training แยก Router กันตั้งแต่ V44.1
+          //
+          // ตัวอย่างที่ถูกต้อง:
+          //
+          // LIVE:
+          //   TWELVE ECO
+          //
+          // TRAINING:
+          //   MT5 HEAVY
+          //
+          // กรณี MT5 heartbeat ยัง online
+          // แต่แท่ง live ล่าสุด stale
+
           if (
-            health.active ===
-              'MT5_FALLBACK' &&
-            tfeed !==
-              'MT5_ACADEMY'
+            tfeed === 'MT5_ACADEMY' &&
+            health.fallback?.connected !== true
           ) {
             throw new Error(
-              'V44 active MT5 must route MT5 academy training'
+              'V44.1 MT5 HEAVY training requires a live MT5 heartbeat'
             );
           }
 
           if (
-            health.active ===
-              'TWELVE_DATA' &&
-            tfeed !==
-              'TWELVE_DATA_PRIMARY'
+            health.fallback?.connected !== true &&
+            health.primary?.ok === true &&
+            tfeed !== 'TWELVE_DATA_PRIMARY'
           ) {
             throw new Error(
-              'V44 active Twelve must route Twelve training'
+              'V44.1 MT5 offline must return training to Twelve Data PRIMARY'
             );
           }
 
-          const twelveRequests =
-            Number(
-              health.efficiency
-                ?.twelveRequestsThisRun ||
-              0
+          if (
+            health.active === 'MT5_FALLBACK' &&
+            health.fallback?.connected === true &&
+            tfeed !== 'MT5_ACADEMY'
+          ) {
+            throw new Error(
+              'V44.1 healthy MT5 live should also use MT5 academy training'
             );
+          }
 
           if (
-            health.mode ===
-              'MT5_HEAVY' &&
-            health.fallback
-              ?.connected === true &&
+            health.active === 'TWELVE_DATA' &&
+            health.fallback?.connected === true &&
+            tfeed === 'MT5_ACADEMY'
+          ) {
+            console.log(
+              'V44.1 DECOUPLED PASS: Twelve ECO live + MT5 HEAVY training'
+            );
+          }
+
+          const twelveRequests = Number(
+            health.efficiency?.twelveRequestsThisRun || 0
+          );
+
+          if (
+            health.active === 'MT5_FALLBACK' &&
+            health.fallback?.connected === true &&
+            health.fallback?.fresh === true &&
             twelveRequests !== 0
           ) {
             throw new Error(
-              `V44 ECO violation: healthy MT5 HEAVY run used ${twelveRequests} Twelve request(s)`
+              `V44.1 ECO violation: fresh MT5 live used ${twelveRequests} Twelve request(s)`
             );
           }
 
-          const files = [
-            'xauusd.json',
-            'xauusd-training.json',
-            'feed-health.json',
-            'ai-shadow-journal.json',
-          ];
-
-          for (const file of files) {
-            const text =
-              fs.readFileSync(
-                file,
-                'utf8'
-              );
+          for (
+            const file of [
+              'xauusd.json',
+              'xauusd-training.json',
+              'feed-health.json',
+              'ai-shadow-journal.json',
+            ]
+          ) {
+            const text = fs.readFileSync(file, 'utf8');
 
             if (!text.trim()) {
-              throw new Error(
-                `${file} is empty`
-              );
+              throw new Error(`${file} is empty`);
             }
 
             JSON.parse(text);
           }
 
-          console.log(
-            'V44 source isolation: PASS'
-          );
+          console.log('V44.1 routing/isolation: PASS');
           NODE
 
       - name: Commit V44 market router packs
@@ -326,69 +289,40 @@ jobs:
             echo "Publish attempt ${attempt}/5"
 
             git fetch origin "$BRANCH"
-
-            git reset --hard \
-              "origin/$BRANCH"
-
+            git reset --hard "origin/$BRANCH"
             git clean -fd
 
             STAGE=()
 
             for f in "${FILES[@]}"; do
               if [ -e "$SNAPSHOT/$f" ]; then
-                cp -p \
-                  "$SNAPSHOT/$f" \
-                  "$f"
-
+                cp -p "$SNAPSHOT/$f" "$f"
                 STAGE+=("$f")
               fi
             done
 
-            if [
-              "${#STAGE[@]}" -eq 0
-            ]; then
-              echo \
-                "No V44 market artifacts produced"
-
+            if [ "${#STAGE[@]}" -eq 0 ]; then
+              echo "No V44 market artifacts produced"
               exit 0
             fi
 
-            git add -- \
-              "${STAGE[@]}"
+            git add -- "${STAGE[@]}"
 
-            if \
-              git diff \
-                --cached \
-                --quiet
-            then
-              echo \
-                "Remote already contains these V44 market artifacts"
-
+            if git diff --cached --quiet; then
+              echo "Remote already contains these V44 market artifacts"
               exit 0
             fi
 
-            git commit \
-              -m \
-              "data: V44 auto-hybrid MT5/API router"
+            git commit -m "data: V44.1 decoupled live/training router"
 
-            if \
-              git push origin \
-                "HEAD:$BRANCH"
-            then
-              echo \
-                "V44 market artifacts published successfully"
-
+            if git push origin "HEAD:$BRANCH"; then
+              echo "V44.1 market artifacts published successfully"
               exit 0
             fi
 
-            echo \
-              "Remote changed while publishing. Retrying from latest branch..."
-
-            sleep \
-              $((attempt * 2))
+            echo "Remote changed while publishing. Retrying from latest branch..."
+            sleep $((attempt * 2))
           done
 
-          echo \
-            "ERROR: Could not publish V44 market artifacts after 5 attempts"
-
+          echo "ERROR: Could not publish V44.1 market artifacts after 5 attempts"
           exit 1
