@@ -10,8 +10,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-market-data-v44
-  cancel-in-progress: true
+  group: kage-v44-repo-writer
+  cancel-in-progress: false
 
 jobs:
   update:
@@ -33,6 +33,7 @@ jobs:
         run: |
           node --check update-data.mjs
           node --check build-ai-shadow.mjs
+
           node tests/pipeline-closed-bars-v42.test.mjs
           node tests/shadow-feed-isolation-v42.test.mjs
           node tests/auto-hybrid-v44.test.mjs
@@ -53,32 +54,61 @@ jobs:
           const fs = require('fs');
 
           const read = file =>
-            JSON.parse(fs.readFileSync(file, 'utf8'));
+            JSON.parse(
+              fs.readFileSync(file, 'utf8')
+            );
 
-          const health = read('feed-health.json');
-          const activePack = read('xauusd.json');
-          const trainingPack = read('xauusd-training.json');
+          const health = read(
+            'feed-health.json'
+          );
 
-          console.log('V44 ROUTER', {
-            active: health.active,
-            mode: health.mode,
-            status: health.status,
-            training: health.training,
-            requests: health.efficiency,
-            reason: health.reason,
-          });
+          const activePack = read(
+            'xauusd.json'
+          );
 
-          if (health.switching?.mergeFeeds !== false) {
+          const trainingPack = read(
+            'xauusd-training.json'
+          );
+
+          console.log(
+            'V44 ROUTER',
+            {
+              active:
+                health.active,
+
+              mode:
+                health.mode,
+
+              status:
+                health.status,
+
+              training:
+                health.training,
+
+              requests:
+                health.efficiency,
+
+              reason:
+                health.reason,
+            }
+          );
+
+          if (
+            health.switching?.mergeFeeds
+            !== false
+          ) {
             throw new Error(
               'V44 policy violation: feed isolation must be explicit'
             );
           }
 
-          const watermark = Number(
-            activePack.closedBarWatermark ||
-            activePack.feed?.closedBarWatermark ||
-            0
-          );
+          const watermark =
+            Number(
+              activePack.closedBarWatermark ||
+              activePack.feed
+                ?.closedBarWatermark ||
+              0
+            );
 
           if (!(watermark > 0)) {
             throw new Error(
@@ -86,20 +116,28 @@ jobs:
             );
           }
 
+          const widths = {
+            M1: 60000,
+            M5: 300000,
+            M15: 900000,
+            H1: 3600000,
+          };
+
           for (
-            const [tf, width] of Object.entries({
-              M1: 60000,
-              M5: 300000,
-              M15: 900000,
-              H1: 3600000,
-            })
+            const [tf, width]
+            of Object.entries(widths)
           ) {
-            const open = (
-              activePack.timeframes?.[tf] || []
-            ).find(
-              bar =>
-                Number(bar.ts) + width > watermark
-            );
+            const bars =
+              activePack.timeframes?.[tf] ||
+              [];
+
+            const open =
+              bars.find(
+                bar =>
+                  Number(bar.ts) +
+                  width >
+                  watermark
+              );
 
             if (open) {
               throw new Error(
@@ -108,27 +146,42 @@ jobs:
             }
           }
 
-          const tfeed = String(
-            trainingPack.feed?.trainingFeed || ''
-          ).toUpperCase();
+          const tfeed =
+            String(
+              trainingPack.feed
+                ?.trainingFeed ||
+              ''
+            ).toUpperCase();
 
-          const tsource = String(
-            trainingPack.feed?.trainingSource || ''
-          );
+          const tsource =
+            String(
+              trainingPack.feed
+                ?.trainingSource ||
+              ''
+            );
 
-          const tactive = String(
-            trainingPack.feed?.active || ''
-          ).toUpperCase();
+          const tactive =
+            String(
+              trainingPack.feed
+                ?.active ||
+              ''
+            ).toUpperCase();
 
           const tmerge =
-            trainingPack.feed?.switching?.mergeFeeds;
+            trainingPack.feed
+              ?.switching
+              ?.mergeFeeds;
 
-          const allowed = new Set([
-            'TWELVE_DATA_PRIMARY',
-            'MT5_ACADEMY',
-          ]);
+          const allowed =
+            new Set([
+              'TWELVE_DATA_PRIMARY',
+              'MT5_ACADEMY',
+            ]);
 
-          if (tsource !== 'xauusd-training.json') {
+          if (
+            tsource !==
+            'xauusd-training.json'
+          ) {
             throw new Error(
               `V44 training source path mismatch: ${tsource || 'MISSING'}`
             );
@@ -156,8 +209,10 @@ jobs:
           }
 
           if (
-            tfeed === 'TWELVE_DATA_PRIMARY' &&
-            tactive !== 'TWELVE_DATA'
+            tfeed ===
+              'TWELVE_DATA_PRIMARY' &&
+            tactive !==
+              'TWELVE_DATA'
           ) {
             throw new Error(
               'V44 Twelve training provenance mismatch'
@@ -165,8 +220,10 @@ jobs:
           }
 
           if (
-            health.active === 'MT5_FALLBACK' &&
-            tfeed !== 'MT5_ACADEMY'
+            health.active ===
+              'MT5_FALLBACK' &&
+            tfeed !==
+              'MT5_ACADEMY'
           ) {
             throw new Error(
               'V44 active MT5 must route MT5 academy training'
@@ -174,21 +231,28 @@ jobs:
           }
 
           if (
-            health.active === 'TWELVE_DATA' &&
-            tfeed !== 'TWELVE_DATA_PRIMARY'
+            health.active ===
+              'TWELVE_DATA' &&
+            tfeed !==
+              'TWELVE_DATA_PRIMARY'
           ) {
             throw new Error(
               'V44 active Twelve must route Twelve training'
             );
           }
 
-          const twelveRequests = Number(
-            health.efficiency?.twelveRequestsThisRun || 0
-          );
+          const twelveRequests =
+            Number(
+              health.efficiency
+                ?.twelveRequestsThisRun ||
+              0
+            );
 
           if (
-            health.mode === 'MT5_HEAVY' &&
-            health.fallback?.connected === true &&
+            health.mode ===
+              'MT5_HEAVY' &&
+            health.fallback
+              ?.connected === true &&
             twelveRequests !== 0
           ) {
             throw new Error(
@@ -196,16 +260,19 @@ jobs:
             );
           }
 
-          for (
-            const file of [
-              'xauusd.json',
-              'xauusd-training.json',
-              'feed-health.json',
-              'ai-shadow-journal.json',
-            ]
-          ) {
+          const files = [
+            'xauusd.json',
+            'xauusd-training.json',
+            'feed-health.json',
+            'ai-shadow-journal.json',
+          ];
+
+          for (const file of files) {
             const text =
-              fs.readFileSync(file, 'utf8');
+              fs.readFileSync(
+                file,
+                'utf8'
+              );
 
             if (!text.trim()) {
               throw new Error(
@@ -224,31 +291,104 @@ jobs:
       - name: Commit V44 market router packs
         shell: bash
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          for f in \
-            xauusd.json \
-            xauusd-primary.json \
-            xauusd-fallback.json \
-            xauusd-training.json \
-            news.json \
-            feed-health.json \
+          FILES=(
+            xauusd.json
+            xauusd-primary.json
+            xauusd-fallback.json
+            xauusd-training.json
+            news.json
+            feed-health.json
             ai-shadow-journal.json
-          do
+          )
+
+          SNAPSHOT="$(mktemp -d)"
+
+          cleanup() {
+            rm -rf "$SNAPSHOT"
+          }
+
+          trap cleanup EXIT
+
+          for f in "${FILES[@]}"; do
             if [ -e "$f" ]; then
-              git add "$f"
+              cp -p "$f" "$SNAPSHOT/$f"
             fi
           done
 
-          if git diff --cached --quiet; then
-            echo "No V44 market/router changes"
-            exit 0
-          fi
+          BRANCH="${GITHUB_REF_NAME}"
 
-          git commit -m "data: V44 auto-hybrid MT5/API router"
+          for attempt in 1 2 3 4 5; do
+            echo "Publish attempt ${attempt}/5"
 
-          git status --short
+            git fetch origin "$BRANCH"
 
-          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+            git reset --hard \
+              "origin/$BRANCH"
+
+            git clean -fd
+
+            STAGE=()
+
+            for f in "${FILES[@]}"; do
+              if [ -e "$SNAPSHOT/$f" ]; then
+                cp -p \
+                  "$SNAPSHOT/$f" \
+                  "$f"
+
+                STAGE+=("$f")
+              fi
+            done
+
+            if [
+              "${#STAGE[@]}" -eq 0
+            ]; then
+              echo \
+                "No V44 market artifacts produced"
+
+              exit 0
+            fi
+
+            git add -- \
+              "${STAGE[@]}"
+
+            if \
+              git diff \
+                --cached \
+                --quiet
+            then
+              echo \
+                "Remote already contains these V44 market artifacts"
+
+              exit 0
+            fi
+
+            git commit \
+              -m \
+              "data: V44 auto-hybrid MT5/API router"
+
+            if \
+              git push origin \
+                "HEAD:$BRANCH"
+            then
+              echo \
+                "V44 market artifacts published successfully"
+
+              exit 0
+            fi
+
+            echo \
+              "Remote changed while publishing. Retrying from latest branch..."
+
+            sleep \
+              $((attempt * 2))
+          done
+
+          echo \
+            "ERROR: Could not publish V44 market artifacts after 5 attempts"
+
+          exit 1
