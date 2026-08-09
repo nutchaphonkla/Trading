@@ -1,0 +1,43 @@
+{
+  "version": "V38.0 SELF-PLAY LAB",
+  "generatedAt": "2026-08-09T10:11:58.351616Z",
+  "source": "PRIMARY_SHADOW_OUTCOMES_ONLY",
+  "trusted": false,
+  "activationReady": false,
+  "promotionStreak": 0,
+  "requiredPromotionStreak": 2,
+  "baseline": {
+    "minPlanScore": 60.0,
+    "minTp1Probability": 25.5,
+    "minCleanWinProbability": 28,
+    "maxSlProbability": 48.0,
+    "minExpectedValueR": 0.18,
+    "minTp1SlEdgePts": 6.0,
+    "maxDisagreementPts": 18.0,
+    "maxOodScore": 55
+  },
+  "recommended": {
+    "minPlanScore": 60.0,
+    "minTp1Probability": 25.5,
+    "minCleanWinProbability": 28,
+    "maxSlProbability": 48.0,
+    "minExpectedValueR": 0.18,
+    "minTp1SlEdgePts": 6.0,
+    "maxDisagreementPts": 18.0,
+    "maxOodScore": 55
+  },
+  "contextModifiers": {
+    "orderType": {},
+    "regime": {},
+    "session": {}
+  },
+  "evidence": {
+    "ready": false,
+    "reason": "NEED_AT_LEAST_80_PRIMARY_SHADOW_OUTCOMES"
+  },
+  "policy": {
+    "autoApply": true,
+    "rule": "ml-train.py may use recommended thresholds only when activationReady=true AND trusted=true after two consecutive unseen-tail validation passes; context deltas are bounded.",
+    "fallback": "Use V37/V38 static guarded thresholds when evidence is insufficient."
+  }
+}

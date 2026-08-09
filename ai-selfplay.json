@@ -1,0 +1,92 @@
+{
+  "version": "V38.0 SELF-PLAY LAB",
+  "generatedAt": "2026-08-09T10:11:58.351941Z",
+  "ready": false,
+  "mode": "SHADOW_SELF_PLAY",
+  "dataIsolation": {
+    "allShadowIdeas": 4,
+    "primaryLearningOutcomes": 0,
+    "fallbackUsedForPrimaryLearning": false
+  },
+  "shadow": {
+    "total": 4,
+    "open": 2,
+    "resolved": 2,
+    "filled": 2,
+    "completed": 0,
+    "expired": 2,
+    "fillRate": 50,
+    "winRate": null,
+    "lossRate": null,
+    "avgR": null,
+    "avgMfeR": null,
+    "avgMaeR": null,
+    "rejectedTested": 0,
+    "rejectedWouldWinRate": null,
+    "byType": {},
+    "byVariant": {},
+    "byRegime": {},
+    "bySession": {}
+  },
+  "primaryResolved": {
+    "samples": 0,
+    "winRate": null,
+    "avgR": null,
+    "sumR": 0,
+    "maxDrawdownR": null,
+    "profitFactor": null
+  },
+  "forwardReplay": {
+    "chronological": true,
+    "tailFraction": 0.3,
+    "baselineGate": {
+      "samples": 0,
+      "winRate": null,
+      "avgR": null,
+      "sumR": 0,
+      "maxDrawdownR": null,
+      "profitFactor": null
+    },
+    "candidateGate": {
+      "samples": 0,
+      "winRate": null,
+      "avgR": null,
+      "sumR": 0,
+      "maxDrawdownR": null,
+      "profitFactor": null
+    },
+    "candidateActivationReady": false
+  },
+  "thresholdOptimizer": {
+    "ready": false,
+    "activationReady": false,
+    "validationAvgRImprovement": null
+  },
+  "counterfactual": {
+    "ready": false,
+    "ideasReplayed": 0,
+    "best": null,
+    "avgRImprovement": null
+  },
+  "autopsy": {
+    "ready": false,
+    "failures": 0,
+    "topCauses": []
+  },
+  "performance": {
+    "byType": {},
+    "byRegime": {},
+    "bySession": {},
+    "byVariant": {}
+  },
+  "learningLoop": [
+    "GENERATE_ALL_12_VIRTUAL_CANDIDATES",
+    "WAIT_FOR_FUTURE_M1_GROUND_TRUTH",
+    "FIRST_HIT_TP1_OR_SL",
+    "STORE_MFE_MAE_FILL_TIME",
+    "AUTOPSY_FAILURES",
+    "COUNTERFACTUAL_GEOMETRY_REPLAY",
+    "CHRONOLOGICAL_THRESHOLD_VALIDATION",
+    "GUARDED_PROMOTION_TO_NEXT_TRAIN"
+  ]
+}
