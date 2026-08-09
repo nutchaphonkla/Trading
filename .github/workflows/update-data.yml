@@ -33,6 +33,7 @@ jobs:
         run: |
           node --check update-data.mjs
           node --check build-ai-shadow.mjs
+
           node tests/pipeline-closed-bars-v42.test.mjs
           node tests/shadow-feed-isolation-v42.test.mjs
 
@@ -49,31 +50,127 @@ jobs:
       - name: Verify strict feed isolation
         run: |
           node - <<'NODE'
-          const fs=require('fs');
-          const h=JSON.parse(fs.readFileSync('feed-health.json','utf8'));
-          console.log('ACTIVE FEED:',h.active);
-          console.log('MODE:',h.mode);
-          console.log('STATUS:',h.status);
-          console.log('REASON:',h.reason);
-          console.log('PRIMARY:',h.primary?.status,h.primary?.error||'OK');
-          console.log('MT5:',h.fallback?.checked?h.fallback?.status:'STANDBY / NOT QUERIED');
-          console.log('RECOVERY:',`${h.switching?.primaryRecoveryStreak||0}/${h.switching?.primaryRecoveryRequired||2}`);
-          console.log('MERGE FEEDS:',h.switching?.mergeFeeds);
+          const fs = require('fs');
 
-          if(h.switching?.mergeFeeds===true)
-            throw new Error('V42 policy violation: feed merge is forbidden');
+          const h = JSON.parse(
+            fs.readFileSync(
+              'feed-health.json',
+              'utf8'
+            )
+          );
 
-          const pack=JSON.parse(fs.readFileSync('xauusd.json','utf8'));
-          const watermark=Number(pack.closedBarWatermark||pack.feed?.closedBarWatermark||0);
-          if(!(watermark>0)) throw new Error('V42 policy violation: active closed-bar watermark missing');
-          for(const [tf,width] of Object.entries({M1:60000,M5:300000,M15:900000,H1:3600000})){
-            const open=(pack.timeframes?.[tf]||[]).find(bar=>Number(bar.ts)+width>watermark);
-            if(open) throw new Error(`V42 policy violation: ${tf} contains an unclosed bar at ${open.ts}`);
+          console.log(
+            'ACTIVE FEED:',
+            h.active
+          );
+
+          console.log(
+            'MODE:',
+            h.mode
+          );
+
+          console.log(
+            'STATUS:',
+            h.status
+          );
+
+          console.log(
+            'REASON:',
+            h.reason
+          );
+
+          console.log(
+            'PRIMARY:',
+            h.primary?.status,
+            h.primary?.error || 'OK'
+          );
+
+          console.log(
+            'MT5:',
+            h.fallback?.checked
+              ? h.fallback?.status
+              : 'STANDBY / NOT QUERIED'
+          );
+
+          console.log(
+            'RECOVERY:',
+            `${h.switching?.primaryRecoveryStreak || 0}/${h.switching?.primaryRecoveryRequired || 2}`
+          );
+
+          console.log(
+            'MERGE FEEDS:',
+            h.switching?.mergeFeeds
+          );
+
+          if (
+            h.switching?.mergeFeeds === true
+          ) {
+            throw new Error(
+              'V42 policy violation: feed merge is forbidden'
+            );
           }
 
-          if(fs.existsSync('ai-shadow-journal.json')){
-            const s=JSON.parse(fs.readFileSync('ai-shadow-journal.json','utf8'));
-            console.log('SHADOW SELF-PLAY:',s.summary||{});
+          const pack = JSON.parse(
+            fs.readFileSync(
+              'xauusd.json',
+              'utf8'
+            )
+          );
+
+          const watermark = Number(
+            pack.closedBarWatermark ||
+            pack.feed?.closedBarWatermark ||
+            0
+          );
+
+          if (!(watermark > 0)) {
+            throw new Error(
+              'V42 policy violation: active closed-bar watermark missing'
+            );
+          }
+
+          for (
+            const [tf, width] of
+            Object.entries({
+              M1: 60000,
+              M5: 300000,
+              M15: 900000,
+              H1: 3600000
+            })
+          ) {
+            const open = (
+              pack.timeframes?.[tf] ||
+              []
+            ).find(
+              bar =>
+                Number(bar.ts) +
+                width >
+                watermark
+            );
+
+            if (open) {
+              throw new Error(
+                `V42 policy violation: ${tf} contains an unclosed bar at ${open.ts}`
+              );
+            }
+          }
+
+          if (
+            fs.existsSync(
+              'ai-shadow-journal.json'
+            )
+          ) {
+            const s = JSON.parse(
+              fs.readFileSync(
+                'ai-shadow-journal.json',
+                'utf8'
+              )
+            );
+
+            console.log(
+              'SHADOW SELF-PLAY:',
+              s.summary || {}
+            );
           }
           NODE
 
