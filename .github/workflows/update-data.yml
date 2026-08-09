@@ -2,19 +2,15 @@ name: Update XAUUSD data pack
 
 on:
   workflow_dispatch:
-
   schedule:
-    # จันทร์-ศุกร์ ทุก 10 นาที
     - cron: "*/10 * * * 1-5"
-
-    # ช่วงตลาดเริ่มกลับมาเปิดวันอาทิตย์ UTC
     - cron: "*/10 21-23 * * 0"
 
 permissions:
   contents: write
 
 concurrency:
-  group: onemonth-market-data-v362
+  group: onemonth-market-data-v37
   cancel-in-progress: true
 
 jobs:
@@ -33,105 +29,58 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validate V36.2 primary failover updater
+      - name: Validate V37 updater
         run: node --check update-data.mjs
 
-      - name: Update XAUUSD primary or fallback pack
+      - name: Update PRIMARY or isolated MT5 fallback
         env:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
           TV_FALLBACK_URL: ${{ secrets.TV_FALLBACK_URL }}
           TV_FALLBACK_TOKEN: ${{ secrets.TV_FALLBACK_TOKEN }}
         run: node update-data.mjs
 
-      - name: Print active feed
+      - name: Verify strict feed isolation
         run: |
           node - <<'NODE'
-          const fs = require("fs");
+          const fs=require('fs');
+          const h=JSON.parse(fs.readFileSync('feed-health.json','utf8'));
 
-          if (!fs.existsSync("feed-health.json")) {
-            throw new Error("feed-health.json missing");
-          }
+          console.log('ACTIVE FEED:',h.active);
+          console.log('MODE:',h.mode);
+          console.log('STATUS:',h.status);
+          console.log('REASON:',h.reason);
+          console.log('PRIMARY:',h.primary?.status,h.primary?.error||'OK');
+          console.log('MT5:',h.fallback?.checked?h.fallback?.status:'STANDBY / NOT QUERIED');
+          console.log('RECOVERY:',`${h.switching?.primaryRecoveryStreak||0}/${h.switching?.primaryRecoveryRequired||2}`);
+          console.log('MERGE FEEDS:',h.switching?.mergeFeeds);
 
-          const h = JSON.parse(
-            fs.readFileSync("feed-health.json", "utf8")
-          );
-
-          console.log("====================================");
-          console.log("ONEMONTH V36.2 FEED HEALTH");
-          console.log("====================================");
-
-          console.log(
-            "ACTIVE FEED:",
-            h.active || "UNKNOWN"
-          );
-
-          console.log(
-            "MODE:",
-            h.mode || "UNKNOWN"
-          );
-
-          console.log(
-            "STATUS:",
-            h.status || "UNKNOWN"
-          );
-
-          console.log(
-            "REASON:",
-            h.reason || "-"
-          );
-
-          console.log(
-            "PRIMARY:",
-            h.primary?.status || "UNKNOWN",
-            h.primary?.error || "OK"
-          );
-
-          console.log(
-            "MT5 FALLBACK:",
-            h.fallback?.checked
-              ? h.fallback?.status || "UNKNOWN"
-              : "STANDBY / NOT QUERIED"
-          );
-
-          console.log(
-            "PRIMARY RECOVERY:",
-            `${h.switching?.primaryRecoveryStreak || 0}/${h.switching?.primaryRecoveryRequired || 2}`
-          );
-
-          console.log(
-            "MERGE FEEDS:",
-            h.switching?.mergeFeeds === true
-              ? "ERROR - SHOULD BE FALSE"
-              : "FALSE"
-          );
-
-          if (h.switching?.mergeFeeds === true) {
-            throw new Error(
-              "V36.2 policy violation: feeds must never be merged"
-            );
-          }
-
-          console.log("====================================");
+          if(h.switching?.mergeFeeds===true)
+            throw new Error('V37 policy violation: feed merge is forbidden');
           NODE
 
-      - name: Commit market data and feed health
+      - name: Commit V37 market packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add \
+          for f in \
             xauusd.json \
+            xauusd-primary.json \
+            xauusd-fallback.json \
             news.json \
             feed-health.json
+          do
+            if [ -e "$f" ]; then
+              git add "$f"
+            fi
+          done
 
           if git diff --cached --quiet; then
             echo "No market-data changes"
             exit 0
           fi
 
-          git commit -m "data: update V36.2 primary failover pack"
-
+          git commit -m "data: V37 strict primary failover pack"
           git pull --rebase origin "${GITHUB_REF_NAME}"
-
           git push origin "HEAD:${GITHUB_REF_NAME}"
