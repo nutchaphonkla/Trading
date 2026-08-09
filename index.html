@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="KAGE CORE">
-<title>KAGE CORE · Shadow Intelligence V39</title>
+<title>KAGE CORE · Shadow Intelligence V39.2</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -4715,76 +4715,167 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 .v38-details{margin:0 14px 16px;border:1px solid rgba(67,171,184,.10);border-radius:16px;background:rgba(2,12,17,.58);overflow:hidden}.v38-details summary{list-style:none;cursor:pointer;padding:11px 12px;color:#77909b;font-size:6px;font-weight:950;letter-spacing:.13em;display:flex;justify-content:space-between}.v38-details summary::-webkit-details-marker{display:none}.v38-details summary span{color:#4e626d;font-weight:700;letter-spacing:.03em}.v38-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 10px 10px}.v38-detail-grid .brain-side-card{min-height:72px!important}.v38-detail-note{margin:0 10px 7px;padding:9px 10px;border:1px solid rgba(59,155,168,.09);border-radius:12px;color:#6f838e;font-size:6.2px;line-height:1.4}.v38-details>#brainLastUpdate{display:block;padding:3px 11px 11px;color:#4f626c;font-size:5.8px}.v38-hidden-runtime{display:none!important}
 @media(max-width:420px){.v38-head{padding:18px 14px 14px}.v38-head h3{font-size:24px}.v38-health-chip{display:none}.v38-source-row{padding:10px 10px 4px;gap:6px}.v38-source-card{padding:10px 8px;min-height:86px}.v38-source-card b{font-size:9.5px}.v38-source-card.price-card b{font-size:15px}.v38-core-zone{padding:16px 10px 10px}.v38-orbit{width:min(78vw,270px)!important}.v38-selfplay{margin-left:10px;margin-right:10px;padding:12px}.v38-selfplay-grid{gap:5px}.v38-selfplay-grid>div{padding:9px 6px}.v38-selfplay-grid b{font-size:12px}.v38-health-row{padding-left:10px;padding-right:10px;gap:5px}.v38-health-row .brain-side-card{padding:10px 8px!important}.v38-health-row .brain-side-card span{font-size:5.4px!important}.v38-health-row .brain-side-card b{font-size:10.5px!important}.v38-activity,.v38-details{margin-left:10px;margin-right:10px}.v38-detail-grid{grid-template-columns:1fr 1fr}.v38-detail-grid .brain-side-card:last-child{grid-column:1/-1}}
 </style>
-\n<style id="kage-core-v39-theme">
+\n<style id="kage-core-v39-theme">\n/* ==========================================================\n   KAGE CORE V39 — SHADOW INTELLIGENCE UI REFORGE\n   UI-only layer. V38 data/ML/self-play engine stays intact.\n   ========================================================== */\n:root{\n  --bg:#020408;--panel:#070c12;--panel2:#0a1119;--panel3:#050a10;\n  --line:rgba(145,196,225,.14);--line2:rgba(148,207,238,.24);\n  --text:#f2f6fa;--muted:#8493a3;--muted2:#526171;\n  --mint:#65f0d1;--cyan:#72dcff;--ice:#d9e7f3;--gold:#c9b377;\n  --red:#ff6481;--amber:#e9c779;--violet:#9aa7ff;\n  --shadow:0 24px 70px rgba(0,0,0,.45);--radius:22px;\n}\nhtml,body{background:#020408;color:var(--text)}\nbody{background:\n radial-gradient(circle at 82% -8%,rgba(72,173,224,.13),transparent 31%),\n radial-gradient(circle at -12% 27%,rgba(80,227,207,.06),transparent 26%),#020408}\nbody:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;opacity:.19;background-image:linear-gradient(rgba(125,202,236,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(125,202,236,.035) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,black,transparent 84%)}\nbody:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at center,transparent 34%,rgba(0,0,0,.42) 100%)}\n.app{max-width:860px;padding-top:calc(env(safe-area-inset-top) + 13px);padding-bottom:calc(116px + env(safe-area-inset-bottom))}\n.topbar{position:relative;margin-bottom:16px;padding:8px 2px 10px;border-bottom:1px solid rgba(130,199,230,.08)}\n.brand{gap:11px}.brandmark-premium{width:56px!important;height:56px!important;flex:0 0 56px!important;border-radius:17px!important;border:1px solid rgba(130,221,255,.34)!important;background:#02060a!important;box-shadow:0 0 0 1px rgba(255,255,255,.025),0 0 26px rgba(93,213,255,.12),0 15px 34px rgba(0,0,0,.42)!important}\n.brandmark-premium img{filter:saturate(.88) contrast(1.06)}\n.brandmark-premium:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,transparent 25%,rgba(255,255,255,.10) 45%,transparent 62%);transform:translateX(-120%);animation:kageSheen 6s ease-in-out infinite}\n@keyframes kageSheen{0%,72%{transform:translateX(-130%)}88%,100%{transform:translateX(130%)}}\n.brandcopy b{font-family:Georgia,"Times New Roman",serif;font-size:19px!important;letter-spacing:.11em!important;font-weight:650;color:#f5f7fa;text-shadow:0 0 22px rgba(128,221,255,.12)}\n.brandcopy small{font-size:6.5px!important;letter-spacing:.18em!important;color:#7595a8!important}.app-version-badge{color:#77e5ff!important;border-color:rgba(119,229,255,.18)!important;background:rgba(71,188,230,.05)!important}\n.market-pill,.offline-pill,.icon-btn{background:linear-gradient(180deg,rgba(11,20,29,.91),rgba(5,10,16,.94))!important;border-color:rgba(119,190,221,.16)!important;box-shadow:inset 0 1px rgba(255,255,255,.02)}\n.market-pill.live{color:#73efd2!important;border-color:rgba(101,240,209,.24)!important}.market-pill.live i{box-shadow:0 0 15px rgba(101,240,209,.7)!important}\n.icon-btn{color:#a9c7d7!important}.icon-btn:active{transform:scale(.94)}\n.card{position:relative;background:linear-gradient(145deg,rgba(9,17,25,.97),rgba(4,9,14,.98))!important;border:1px solid rgba(118,186,216,.13)!important;border-radius:22px!important;box-shadow:inset 0 1px rgba(255,255,255,.018),0 18px 55px rgba(0,0,0,.34)!important}\n.card:before{content:"";position:absolute;left:14px;top:-1px;width:42px;height:1px;background:linear-gradient(90deg,#75ddff,transparent);opacity:.42;pointer-events:none}\n.card:hover{border-color:rgba(118,207,239,.21)!important}\n.kicker{color:#7893a6!important;font-size:7px!important;letter-spacing:.18em!important}\n.section-head{margin-top:28px}.section-head h3,.page-intro h1{color:#eef4f8}.section-head:before{content:"";width:18px;height:1px;background:var(--cyan);box-shadow:0 0 10px rgba(114,220,255,.45);align-self:center;margin-right:-4px}\n.page-intro{position:relative;padding:16px 4px 12px}.page-intro h1{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.02em!important;font-weight:500!important}.page-intro p{max-width:620px}\n.primary,.gold-action,.bt-run,.kage-hero-action{background:linear-gradient(100deg,#79ebff,#68efd0)!important;color:#031017!important;border:0!important;box-shadow:0 10px 28px rgba(87,214,239,.12),inset 0 1px rgba(255,255,255,.42)}\n.primary:active,.gold-action:active,.bt-run:active,.kage-hero-action:active{transform:translateY(1px) scale(.99)}\n.secondary{background:#071019!important;border-color:rgba(124,188,218,.18)!important;color:#a7bac7!important}\n/* HOME — original AI/data widgets remain functional below the new brand hero. */\n.kage-command-hero{position:relative;min-height:304px;margin:0 0 13px;overflow:hidden;border-radius:28px;border:1px solid rgba(126,207,241,.25);background:linear-gradient(110deg,#061018 0%,#050a10 55%,#020509 100%);box-shadow:0 26px 70px rgba(0,0,0,.46),inset 0 1px rgba(255,255,255,.03)}\n.kage-command-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 42%,rgba(88,210,255,.14),transparent 29%),linear-gradient(90deg,rgba(5,12,18,.98) 0%,rgba(5,11,17,.87) 49%,rgba(2,5,9,.15) 78%);z-index:2}\n.kage-command-hero:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(173,228,251,.035),inset 0 -70px 100px rgba(0,0,0,.25);z-index:4;pointer-events:none}\n.kage-hero-art{position:absolute;right:-2%;top:-31%;width:61%;height:150%;object-fit:cover;object-position:center;opacity:.75;filter:grayscale(.14) contrast(1.05) brightness(.82);z-index:1;mask-image:linear-gradient(90deg,transparent 0%,black 23%,black 100%)}\n.kage-hero-gridline{position:absolute;inset:0;background-image:linear-gradient(rgba(102,207,243,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(102,207,243,.055) 1px,transparent 1px);background-size:27px 27px;opacity:.28;z-index:1}.kage-hero-vignette{position:absolute;inset:0;z-index:3;background:radial-gradient(circle at 86% 44%,transparent 0 17%,rgba(2,4,8,.3) 53%,transparent 74%)}\n.kage-hero-copy{position:relative;z-index:5;width:64%;padding:26px 24px 22px}.kage-eyebrow{display:flex;align-items:center;gap:8px;color:#87dffb;font-size:7px;font-weight:900;letter-spacing:.18em}.kage-eyebrow i{width:6px;height:6px;border-radius:50%;background:#68efd0;box-shadow:0 0 14px #68efd0}.kage-hero-copy h1{font-family:Georgia,"Times New Roman",serif;font-size:34px;line-height:1.0;letter-spacing:-.035em;font-weight:500;margin:15px 0 11px;color:#f5f7fb}.kage-hero-copy h1 span{color:#95eaff;text-shadow:0 0 25px rgba(102,219,255,.16)}.kage-hero-copy p{font-size:9px;color:#8da0ae;line-height:1.65;margin:0;max-width:470px}.kage-hero-status{display:flex;gap:7px;margin-top:18px}.kage-hero-status>span{min-width:88px;padding:9px 10px;border-radius:13px;background:rgba(4,11,17,.7);border:1px solid rgba(127,194,223,.13)}.kage-hero-status small{display:block;color:#557284;font-size:5.5px;font-weight:900;letter-spacing:.16em}.kage-hero-status b{display:block;margin-top:5px;font-size:9px;color:#cfe6f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kage-hero-action{margin-top:14px;height:43px;border-radius:13px;padding:0 14px;display:flex;align-items:center;gap:9px;font-size:8px;font-weight:950;letter-spacing:.09em}.kage-hero-action i{width:7px;height:7px;border:1px solid #031017;transform:rotate(45deg)}.kage-hero-action b{margin-left:auto;font-size:13px}.hero-grid{gap:8px}.metric-card{min-height:128px!important;padding:17px!important}.metric-card h2{font-size:27px!important}.mission{border-color:rgba(114,220,255,.15)!important}\n/* BRAIN / AI */\n.ai-hero{position:relative;overflow:hidden;background:linear-gradient(100deg,rgba(6,15,22,.98),rgba(3,8,13,.93))!important;border-color:rgba(112,210,243,.19)!important}.ai-hero:after{content:"";position:absolute;right:-70px;top:-125px;width:300px;height:300px;background:url('./kage-hero.webp?v=392') center/cover no-repeat;opacity:.15;filter:grayscale(1) contrast(1.15);mask-image:radial-gradient(circle,black 20%,transparent 72%);pointer-events:none}.ai-hero>*{position:relative;z-index:2}.ai-switch{background:#050c12!important;border-color:rgba(124,190,219,.15)!important}.ai-switch.on{color:#69efd0!important;background:rgba(61,211,184,.045)!important;border-color:rgba(101,240,209,.24)!important}.command-ticket,.final-ai-card,.guardian-card,.backtest-card{border-color:rgba(122,191,222,.13)!important}\n/* MARKET / AI CORE */\n.ai-core-card{background:radial-gradient(circle at 50% 30%,rgba(40,180,208,.07),transparent 30%),linear-gradient(180deg,#071019,#03080d)!important;border-color:rgba(121,214,249,.24)!important}.v38-orbit{filter:drop-shadow(0 0 28px rgba(93,219,244,.10))}.brain-core-center strong{font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important}.v38-source-card,.brain-side-card,.v38-selfplay,.v38-activity,.v38-details{background:linear-gradient(180deg,rgba(7,15,22,.87),rgba(4,9,14,.9))!important;border-color:rgba(121,190,220,.13)!important}.v38-decision{background:linear-gradient(90deg,rgba(7,17,24,.98),rgba(4,9,15,.98))!important}.v38-section-label,.v38-section-head span{letter-spacing:.18em!important}.v38-selfplay-grid>div{background:#050b11!important;border-color:rgba(123,187,216,.10)!important}\n/* NEWS / PLAN / STATS */\n.news-card,.best-window-card,.news-policy-card,.plan-summary,.roadmap-shell,.model-growth-card,.equity-card,.memory-list{overflow:hidden}.news-card:after,.best-window-card:after,.model-growth-card:after{content:"";position:absolute;right:-85px;top:-85px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(106,220,255,.06),transparent 68%);pointer-events:none}.news-policy-card{border-color:rgba(232,196,117,.16)!important}.daybox{border-color:rgba(121,188,217,.14)!important;background:#050c12!important}.plan-row.current .daybox{background:linear-gradient(135deg,#78e7ff,#65efd0)!important}.stats-grid{gap:8px}.stat{min-height:100px}.growth-grid>div,.governance-growth-grid>div{background:#050b11!important;border-color:rgba(121,188,217,.10)!important}\n/* Bottom navigation */\n.bottom-nav{height:78px!important;background:rgba(3,8,13,.91)!important;border-color:rgba(128,200,230,.18)!important;box-shadow:0 24px 64px rgba(0,0,0,.58),inset 0 1px rgba(255,255,255,.025)!important;backdrop-filter:blur(26px) saturate(130%)!important}.bottom-nav button{position:relative;color:#526574!important;font-size:6.6px!important;letter-spacing:.10em!important}.bottom-nav button svg{width:19px!important;height:19px!important}.bottom-nav button.active{background:linear-gradient(180deg,rgba(85,207,242,.08),rgba(48,127,152,.035))!important;color:#a9eaff!important;box-shadow:inset 0 0 0 1px rgba(121,220,255,.12)}.bottom-nav button.active:after{content:"";position:absolute;bottom:3px;width:22px;height:2px;border-radius:99px;background:#79e7ff;box-shadow:0 0 10px rgba(121,231,255,.72)}\n/* Intro / install / sheets */\n#installGate,#appIntro{background:radial-gradient(circle at 50% 20%,rgba(65,180,224,.10),transparent 28%),#020408!important}.install-title,.intro-title{font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important;letter-spacing:.04em!important}.intro-logo,.gate-logo{border-color:rgba(118,220,255,.27)!important;box-shadow:0 0 50px rgba(88,212,255,.11)!important}.sheet{background:linear-gradient(180deg,#081019,#04090e)!important;border-color:rgba(126,195,225,.18)!important}.modal{background:rgba(0,0,0,.75)!important}\n/* Scrollbar + interaction */\n::-webkit-scrollbar{width:0;height:0}.card,.kage-command-hero,.bottom-nav,.icon-btn,.primary,.secondary,.ai-switch{transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease}\n@media(max-width:600px){\n .app{padding-left:15px!important;padding-right:15px!important}.topbar{gap:8px}.brandmark-premium{width:50px!important;height:50px!important;flex-basis:50px!important}.brandcopy b{font-size:16px!important}.brandcopy small{font-size:5.8px!important}.app-version-badge{font-size:5.6px!important}.market-pill{max-width:107px;padding:0 9px!important}.market-pill span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kage-command-hero{min-height:325px}.kage-hero-art{right:-13%;top:-17%;width:76%;height:132%;opacity:.63}.kage-hero-copy{width:76%;padding:22px 18px 18px}.kage-hero-copy h1{font-size:31px}.kage-hero-copy p{max-width:280px}.kage-hero-status{gap:5px;flex-wrap:wrap}.kage-hero-status>span{min-width:82px;padding:8px}.kage-hero-action{max-width:245px}.hero-grid{grid-template-columns:1fr 1fr}.bottom-nav{width:calc(100% - 20px)!important}.bottom-nav button{padding:0 2px!important}\n}\n@media(max-width:390px){.brandcopy small{max-width:125px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.market-pill{display:none!important}.kage-command-hero{min-height:337px}.kage-hero-copy{width:82%}.kage-hero-art{right:-21%;width:84%;opacity:.56}.kage-hero-copy h1{font-size:29px}.kage-hero-status>span{min-width:76px}.bottom-nav button span{font-size:6px!important}}\n@media(prefers-reduced-motion:reduce){.brandmark-premium:after{animation:none!important}.card,.kage-command-hero{transition:none!important}}\n</style>\n
+
+<style id="kage-v392-artwork-theme">
 /* ==========================================================
-   KAGE CORE V39 — SHADOW INTELLIGENCE UI REFORGE
-   UI-only layer. V38 data/ML/self-play engine stays intact.
+   KAGE CORE V39.2 — ARTWORK REFORGE
+   Visual-only layer. V38 ML/Self-Play runtime remains untouched.
    ========================================================== */
 :root{
-  --bg:#020408;--panel:#070c12;--panel2:#0a1119;--panel3:#050a10;
-  --line:rgba(145,196,225,.14);--line2:rgba(148,207,238,.24);
-  --text:#f2f6fa;--muted:#8493a3;--muted2:#526171;
-  --mint:#65f0d1;--cyan:#72dcff;--ice:#d9e7f3;--gold:#c9b377;
-  --red:#ff6481;--amber:#e9c779;--violet:#9aa7ff;
-  --shadow:0 24px 70px rgba(0,0,0,.45);--radius:22px;
+  --kage-void:#010205;
+  --kage-ink:#03070b;
+  --kage-panel:rgba(5,11,16,.94);
+  --kage-panel2:rgba(7,15,22,.96);
+  --kage-cyan:#5ce8f5;
+  --kage-cyan2:#26cfe6;
+  --kage-mint:#5ce0c4;
+  --kage-gold:#d3ad68;
+  --kage-gold2:#8a6a38;
+  --kage-silver:#d7dee5;
+  --kage-muted:#788591;
+  --kage-red:#ff6680;
+  --kage-line:rgba(205,163,93,.30);
+  --kage-line-cyan:rgba(76,220,239,.26);
+  --kage-shadow:0 24px 60px rgba(0,0,0,.52);
 }
-html,body{background:#020408;color:var(--text)}
-body{background:
- radial-gradient(circle at 82% -8%,rgba(72,173,224,.13),transparent 31%),
- radial-gradient(circle at -12% 27%,rgba(80,227,207,.06),transparent 26%),#020408}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;opacity:.19;background-image:linear-gradient(rgba(125,202,236,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(125,202,236,.035) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,black,transparent 84%)}
-body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at center,transparent 34%,rgba(0,0,0,.42) 100%)}
-.app{max-width:860px;padding-top:calc(env(safe-area-inset-top) + 13px);padding-bottom:calc(116px + env(safe-area-inset-bottom))}
-.topbar{position:relative;margin-bottom:16px;padding:8px 2px 10px;border-bottom:1px solid rgba(130,199,230,.08)}
-.brand{gap:11px}.brandmark-premium{width:56px!important;height:56px!important;flex:0 0 56px!important;border-radius:17px!important;border:1px solid rgba(130,221,255,.34)!important;background:#02060a!important;box-shadow:0 0 0 1px rgba(255,255,255,.025),0 0 26px rgba(93,213,255,.12),0 15px 34px rgba(0,0,0,.42)!important}
-.brandmark-premium img{filter:saturate(.88) contrast(1.06)}
-.brandmark-premium:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,transparent 25%,rgba(255,255,255,.10) 45%,transparent 62%);transform:translateX(-120%);animation:kageSheen 6s ease-in-out infinite}
-@keyframes kageSheen{0%,72%{transform:translateX(-130%)}88%,100%{transform:translateX(130%)}}
-.brandcopy b{font-family:Georgia,"Times New Roman",serif;font-size:19px!important;letter-spacing:.11em!important;font-weight:650;color:#f5f7fa;text-shadow:0 0 22px rgba(128,221,255,.12)}
-.brandcopy small{font-size:6.5px!important;letter-spacing:.18em!important;color:#7595a8!important}.app-version-badge{color:#77e5ff!important;border-color:rgba(119,229,255,.18)!important;background:rgba(71,188,230,.05)!important}
-.market-pill,.offline-pill,.icon-btn{background:linear-gradient(180deg,rgba(11,20,29,.91),rgba(5,10,16,.94))!important;border-color:rgba(119,190,221,.16)!important;box-shadow:inset 0 1px rgba(255,255,255,.02)}
-.market-pill.live{color:#73efd2!important;border-color:rgba(101,240,209,.24)!important}.market-pill.live i{box-shadow:0 0 15px rgba(101,240,209,.7)!important}
-.icon-btn{color:#a9c7d7!important}.icon-btn:active{transform:scale(.94)}
-.card{position:relative;background:linear-gradient(145deg,rgba(9,17,25,.97),rgba(4,9,14,.98))!important;border:1px solid rgba(118,186,216,.13)!important;border-radius:22px!important;box-shadow:inset 0 1px rgba(255,255,255,.018),0 18px 55px rgba(0,0,0,.34)!important}
-.card:before{content:"";position:absolute;left:14px;top:-1px;width:42px;height:1px;background:linear-gradient(90deg,#75ddff,transparent);opacity:.42;pointer-events:none}
-.card:hover{border-color:rgba(118,207,239,.21)!important}
-.kicker{color:#7893a6!important;font-size:7px!important;letter-spacing:.18em!important}
-.section-head{margin-top:28px}.section-head h3,.page-intro h1{color:#eef4f8}.section-head:before{content:"";width:18px;height:1px;background:var(--cyan);box-shadow:0 0 10px rgba(114,220,255,.45);align-self:center;margin-right:-4px}
-.page-intro{position:relative;padding:16px 4px 12px}.page-intro h1{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.02em!important;font-weight:500!important}.page-intro p{max-width:620px}
-.primary,.gold-action,.bt-run,.kage-hero-action{background:linear-gradient(100deg,#79ebff,#68efd0)!important;color:#031017!important;border:0!important;box-shadow:0 10px 28px rgba(87,214,239,.12),inset 0 1px rgba(255,255,255,.42)}
-.primary:active,.gold-action:active,.bt-run:active,.kage-hero-action:active{transform:translateY(1px) scale(.99)}
-.secondary{background:#071019!important;border-color:rgba(124,188,218,.18)!important;color:#a7bac7!important}
-/* HOME — original AI/data widgets remain functional below the new brand hero. */
-.kage-command-hero{position:relative;min-height:304px;margin:0 0 13px;overflow:hidden;border-radius:28px;border:1px solid rgba(126,207,241,.25);background:linear-gradient(110deg,#061018 0%,#050a10 55%,#020509 100%);box-shadow:0 26px 70px rgba(0,0,0,.46),inset 0 1px rgba(255,255,255,.03)}
-.kage-command-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 42%,rgba(88,210,255,.14),transparent 29%),linear-gradient(90deg,rgba(5,12,18,.98) 0%,rgba(5,11,17,.87) 49%,rgba(2,5,9,.15) 78%);z-index:2}
-.kage-command-hero:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(173,228,251,.035),inset 0 -70px 100px rgba(0,0,0,.25);z-index:4;pointer-events:none}
-.kage-hero-art{position:absolute;right:-2%;top:-31%;width:61%;height:150%;object-fit:cover;object-position:center;opacity:.75;filter:grayscale(.14) contrast(1.05) brightness(.82);z-index:1;mask-image:linear-gradient(90deg,transparent 0%,black 23%,black 100%)}
-.kage-hero-gridline{position:absolute;inset:0;background-image:linear-gradient(rgba(102,207,243,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(102,207,243,.055) 1px,transparent 1px);background-size:27px 27px;opacity:.28;z-index:1}.kage-hero-vignette{position:absolute;inset:0;z-index:3;background:radial-gradient(circle at 86% 44%,transparent 0 17%,rgba(2,4,8,.3) 53%,transparent 74%)}
-.kage-hero-copy{position:relative;z-index:5;width:64%;padding:26px 24px 22px}.kage-eyebrow{display:flex;align-items:center;gap:8px;color:#87dffb;font-size:7px;font-weight:900;letter-spacing:.18em}.kage-eyebrow i{width:6px;height:6px;border-radius:50%;background:#68efd0;box-shadow:0 0 14px #68efd0}.kage-hero-copy h1{font-family:Georgia,"Times New Roman",serif;font-size:34px;line-height:1.0;letter-spacing:-.035em;font-weight:500;margin:15px 0 11px;color:#f5f7fb}.kage-hero-copy h1 span{color:#95eaff;text-shadow:0 0 25px rgba(102,219,255,.16)}.kage-hero-copy p{font-size:9px;color:#8da0ae;line-height:1.65;margin:0;max-width:470px}.kage-hero-status{display:flex;gap:7px;margin-top:18px}.kage-hero-status>span{min-width:88px;padding:9px 10px;border-radius:13px;background:rgba(4,11,17,.7);border:1px solid rgba(127,194,223,.13)}.kage-hero-status small{display:block;color:#557284;font-size:5.5px;font-weight:900;letter-spacing:.16em}.kage-hero-status b{display:block;margin-top:5px;font-size:9px;color:#cfe6f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kage-hero-action{margin-top:14px;height:43px;border-radius:13px;padding:0 14px;display:flex;align-items:center;gap:9px;font-size:8px;font-weight:950;letter-spacing:.09em}.kage-hero-action i{width:7px;height:7px;border:1px solid #031017;transform:rotate(45deg)}.kage-hero-action b{margin-left:auto;font-size:13px}.hero-grid{gap:8px}.metric-card{min-height:128px!important;padding:17px!important}.metric-card h2{font-size:27px!important}.mission{border-color:rgba(114,220,255,.15)!important}
-/* BRAIN / AI */
-.ai-hero{position:relative;overflow:hidden;background:linear-gradient(100deg,rgba(6,15,22,.98),rgba(3,8,13,.93))!important;border-color:rgba(112,210,243,.19)!important}.ai-hero:after{content:"";position:absolute;right:-70px;top:-125px;width:300px;height:300px;background:url('./kage-warden.webp?v=390') center/cover no-repeat;opacity:.15;filter:grayscale(1) contrast(1.15);mask-image:radial-gradient(circle,black 20%,transparent 72%);pointer-events:none}.ai-hero>*{position:relative;z-index:2}.ai-switch{background:#050c12!important;border-color:rgba(124,190,219,.15)!important}.ai-switch.on{color:#69efd0!important;background:rgba(61,211,184,.045)!important;border-color:rgba(101,240,209,.24)!important}.command-ticket,.final-ai-card,.guardian-card,.backtest-card{border-color:rgba(122,191,222,.13)!important}
-/* MARKET / AI CORE */
-.ai-core-card{background:radial-gradient(circle at 50% 30%,rgba(40,180,208,.07),transparent 30%),linear-gradient(180deg,#071019,#03080d)!important;border-color:rgba(121,214,249,.24)!important}.v38-orbit{filter:drop-shadow(0 0 28px rgba(93,219,244,.10))}.brain-core-center strong{font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important}.v38-source-card,.brain-side-card,.v38-selfplay,.v38-activity,.v38-details{background:linear-gradient(180deg,rgba(7,15,22,.87),rgba(4,9,14,.9))!important;border-color:rgba(121,190,220,.13)!important}.v38-decision{background:linear-gradient(90deg,rgba(7,17,24,.98),rgba(4,9,15,.98))!important}.v38-section-label,.v38-section-head span{letter-spacing:.18em!important}.v38-selfplay-grid>div{background:#050b11!important;border-color:rgba(123,187,216,.10)!important}
-/* NEWS / PLAN / STATS */
-.news-card,.best-window-card,.news-policy-card,.plan-summary,.roadmap-shell,.model-growth-card,.equity-card,.memory-list{overflow:hidden}.news-card:after,.best-window-card:after,.model-growth-card:after{content:"";position:absolute;right:-85px;top:-85px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(106,220,255,.06),transparent 68%);pointer-events:none}.news-policy-card{border-color:rgba(232,196,117,.16)!important}.daybox{border-color:rgba(121,188,217,.14)!important;background:#050c12!important}.plan-row.current .daybox{background:linear-gradient(135deg,#78e7ff,#65efd0)!important}.stats-grid{gap:8px}.stat{min-height:100px}.growth-grid>div,.governance-growth-grid>div{background:#050b11!important;border-color:rgba(121,188,217,.10)!important}
-/* Bottom navigation */
-.bottom-nav{height:78px!important;background:rgba(3,8,13,.91)!important;border-color:rgba(128,200,230,.18)!important;box-shadow:0 24px 64px rgba(0,0,0,.58),inset 0 1px rgba(255,255,255,.025)!important;backdrop-filter:blur(26px) saturate(130%)!important}.bottom-nav button{position:relative;color:#526574!important;font-size:6.6px!important;letter-spacing:.10em!important}.bottom-nav button svg{width:19px!important;height:19px!important}.bottom-nav button.active{background:linear-gradient(180deg,rgba(85,207,242,.08),rgba(48,127,152,.035))!important;color:#a9eaff!important;box-shadow:inset 0 0 0 1px rgba(121,220,255,.12)}.bottom-nav button.active:after{content:"";position:absolute;bottom:3px;width:22px;height:2px;border-radius:99px;background:#79e7ff;box-shadow:0 0 10px rgba(121,231,255,.72)}
-/* Intro / install / sheets */
-#installGate,#appIntro{background:radial-gradient(circle at 50% 20%,rgba(65,180,224,.10),transparent 28%),#020408!important}.install-title,.intro-title{font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important;letter-spacing:.04em!important}.intro-logo,.gate-logo{border-color:rgba(118,220,255,.27)!important;box-shadow:0 0 50px rgba(88,212,255,.11)!important}.sheet{background:linear-gradient(180deg,#081019,#04090e)!important;border-color:rgba(126,195,225,.18)!important}.modal{background:rgba(0,0,0,.75)!important}
-/* Scrollbar + interaction */
-::-webkit-scrollbar{width:0;height:0}.card,.kage-command-hero,.bottom-nav,.icon-btn,.primary,.secondary,.ai-switch{transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease}
-@media(max-width:600px){
- .app{padding-left:15px!important;padding-right:15px!important}.topbar{gap:8px}.brandmark-premium{width:50px!important;height:50px!important;flex-basis:50px!important}.brandcopy b{font-size:16px!important}.brandcopy small{font-size:5.8px!important}.app-version-badge{font-size:5.6px!important}.market-pill{max-width:107px;padding:0 9px!important}.market-pill span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kage-command-hero{min-height:325px}.kage-hero-art{right:-13%;top:-17%;width:76%;height:132%;opacity:.63}.kage-hero-copy{width:76%;padding:22px 18px 18px}.kage-hero-copy h1{font-size:31px}.kage-hero-copy p{max-width:280px}.kage-hero-status{gap:5px;flex-wrap:wrap}.kage-hero-status>span{min-width:82px;padding:8px}.kage-hero-action{max-width:245px}.hero-grid{grid-template-columns:1fr 1fr}.bottom-nav{width:calc(100% - 20px)!important}.bottom-nav button{padding:0 2px!important}
+html,body{background:#010205!important;color:#eaf2f5!important}
+body{
+  background:
+    radial-gradient(650px 440px at 82% 10%,rgba(34,184,210,.07),transparent 70%),
+    radial-gradient(520px 360px at 12% 32%,rgba(186,140,67,.035),transparent 72%),
+    linear-gradient(180deg,#010205 0%,#02060a 45%,#010205 100%)!important;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
 }
-@media(max-width:390px){.brandcopy small{max-width:125px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.market-pill{display:none!important}.kage-command-hero{min-height:337px}.kage-hero-copy{width:82%}.kage-hero-art{right:-21%;width:84%;opacity:.56}.kage-hero-copy h1{font-size:29px}.kage-hero-status>span{min-width:76px}.bottom-nav button span{font-size:6px!important}}
-@media(prefers-reduced-motion:reduce){.brandmark-premium:after{animation:none!important}.card,.kage-command-hero{transition:none!important}}
-</style>\n
+body:before{
+  content:""!important;position:fixed!important;inset:0!important;pointer-events:none!important;z-index:-2!important;
+  opacity:.5!important;
+  background-image:
+    linear-gradient(rgba(85,210,230,.016) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(85,210,230,.013) 1px,transparent 1px)!important;
+  background-size:52px 52px!important;
+  mask-image:linear-gradient(180deg,black,rgba(0,0,0,.25) 70%,transparent)!important;
+}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(90deg,rgba(0,0,0,.35),transparent 18%,transparent 82%,rgba(0,0,0,.38));}
+.app{max-width:820px!important;padding:0 16px 136px!important}
+main{position:relative}
+
+/* Typography */
+h1,h2,h3,.brandcopy>b,.kage-hero-copy h1,.v38-head h3,.page-intro h1,.section-head h3,.command-head h3{
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-weight:500!important;
+  letter-spacing:-.025em!important;
+}
+.kicker,.v38-section-label,.v38-section-head span,.brief-cell span,.brain-side-card span,.metric-card .kicker{
+  letter-spacing:.22em!important;text-transform:uppercase!important;
+}
+
+/* Global card / frame language */
+.card,.ai-core-card,.kage-command-hero,.roadmap-shell,.sheet{
+  border:1px solid var(--kage-line)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,rgba(7,15,22,.965),rgba(3,8,13,.985))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.025),var(--kage-shadow)!important;
+}
+.card:before,.ai-core-card:before{background:linear-gradient(90deg,transparent,rgba(211,173,104,.34),rgba(92,232,245,.21),transparent)!important}
+.card:after,.ai-core-card:after{content:"";position:absolute;inset:7px;pointer-events:none;border:1px solid rgba(89,213,230,.055);border-radius:9px}
+
+/* Header */
+.topbar{min-height:104px!important;padding:20px 2px 14px!important;margin-bottom:18px!important;background:transparent!important;border:0!important}
+.brand{gap:13px!important}
+.brandmark-premium{width:67px!important;height:67px!important;flex-basis:67px!important;border-radius:18px!important;border:1px solid rgba(211,173,104,.65)!important;background:#04080c!important;padding:3px!important;box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 0 26px rgba(75,215,235,.08)!important;overflow:hidden!important}
+.brandmark-premium img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:14px!important}
+.brandmark:after{background:linear-gradient(90deg,transparent,var(--kage-gold),transparent)!important}
+.brandcopy>b{font-size:27px!important;letter-spacing:.045em!important;background:linear-gradient(180deg,#fff,#aeb7c0 70%,#fff);-webkit-background-clip:text;background-clip:text;color:transparent!important;text-shadow:0 0 18px rgba(255,255,255,.05)}
+.brandcopy small{font-size:7.4px!important;color:#87929d!important;letter-spacing:.15em!important}
+.app-version-badge{color:var(--kage-cyan)!important;border-color:rgba(92,232,245,.18)!important;background:rgba(57,192,211,.05)!important}
+.market-pill{border-color:rgba(211,173,104,.26)!important;background:rgba(4,9,13,.75)!important;border-radius:14px!important}
+.icon-btn{border:1px solid rgba(211,173,104,.30)!important;border-radius:14px!important;background:linear-gradient(180deg,#081018,#03070c)!important;color:#c8d1d9!important}
+.icon-btn:active{transform:scale(.97)!important}
+
+/* Cinematic hero */
+.kage-command-hero{min-height:360px!important;padding:0!important;overflow:hidden!important;border-color:rgba(211,173,104,.48)!important;background:#020509!important;isolation:isolate!important}
+.kage-command-hero:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(1,4,7,.99) 0%,rgba(1,5,9,.95) 32%,rgba(1,5,9,.58) 61%,rgba(1,5,9,.14) 100%),linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.47));pointer-events:none}
+.kage-command-hero:after{content:"";position:absolute;inset:10px;z-index:3;border:1px solid rgba(85,220,238,.13);clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px);pointer-events:none}
+.kage-hero-art{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center right!important;opacity:.98!important;filter:saturate(.86) contrast(1.08) brightness(.88)!important;z-index:0!important}
+.kage-hero-vignette{display:none!important}.kage-hero-gridline{opacity:.25!important;z-index:2!important}
+.kage-hero-copy{position:relative!important;z-index:4!important;width:62%!important;min-height:360px!important;padding:42px 24px 26px 28px!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
+.kage-eyebrow{color:#82dce9!important;font-family:Georgia,"Times New Roman",serif!important;font-size:9px!important;letter-spacing:.15em!important}.kage-eyebrow i{background:var(--kage-cyan)!important;box-shadow:0 0 12px rgba(92,232,245,.6)!important}
+.kage-hero-copy h1{font-size:36px!important;line-height:1.02!important;color:#eef3f7!important;margin:17px 0 13px!important;text-shadow:0 2px 20px rgba(0,0,0,.6)!important}.kage-hero-copy h1 span{color:#bec8d0!important;font-size:.76em!important}
+.kage-hero-copy p{color:#8e99a4!important;line-height:1.72!important;font-size:10px!important;max-width:330px!important}
+.kage-hero-status{margin-top:14px!important}.kage-hero-status>span{border:1px solid rgba(211,173,104,.18)!important;background:rgba(2,8,12,.68)!important;border-radius:9px!important;backdrop-filter:blur(10px)!important}.kage-hero-status small{color:#657681!important}.kage-hero-status b{color:#d8e2e8!important}
+.kage-hero-action{margin-top:16px!important;max-width:280px!important;min-height:56px!important;border-radius:5px!important;border:1px solid rgba(92,232,245,.64)!important;background:linear-gradient(180deg,rgba(4,21,27,.92),rgba(2,10,14,.96))!important;color:#7decf5!important;font-family:Georgia,"Times New Roman",serif!important;letter-spacing:.08em!important;box-shadow:0 0 0 1px rgba(92,232,245,.08) inset,0 0 22px rgba(65,218,235,.11)!important;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px)!important}
+.kage-hero-action:before{content:"◇";font-size:20px;color:var(--kage-gold);margin-right:3px}.kage-hero-action i{display:none!important}
+
+/* Home modules */
+.hero-grid{gap:10px!important}.metric-card{min-height:120px!important;border-color:rgba(211,173,104,.20)!important}.metric-card h2{font-family:Georgia,"Times New Roman",serif!important;color:#eef4f6!important}.target-card h2{color:#e0bf7d!important}
+.mission{border-color:rgba(211,173,104,.31)!important}.mission h3{color:#d9e2e7!important}.target-main strong{color:#69e5ef!important;text-shadow:0 0 20px rgba(80,220,237,.12)!important}.ring{filter:drop-shadow(0 0 12px rgba(83,225,235,.09))}
+.system-brief{background:linear-gradient(180deg,rgba(4,12,18,.97),rgba(2,7,11,.99)),url('./kage-brain.webp') right center/58% auto no-repeat!important}
+.system-brief:after{background:linear-gradient(90deg,rgba(3,9,14,.2),rgba(3,9,14,.72))!important;border:0!important;inset:0!important}
+.system-brief>*{position:relative;z-index:2!important}
+
+/* AI execution page */
+#aiView .ai-hero{min-height:310px!important;padding:26px!important;overflow:hidden!important;background:linear-gradient(90deg,rgba(3,9,14,.99) 0%,rgba(3,9,14,.94) 46%,rgba(3,9,14,.30) 100%),url('./kage-brain.webp') center right/cover no-repeat!important;border-color:rgba(211,173,104,.38)!important}
+#aiView .ai-hero>*{position:relative;z-index:2!important}#aiView .ai-hero:after{content:"";position:absolute;inset:8px;border:1px solid rgba(92,232,245,.09);border-radius:8px!important;z-index:1!important}
+.ai-hero-top>div{max-width:66%!important}.ai-hero h2{font-size:32px!important;line-height:1.08!important}.ai-hero p{color:#87939d!important;max-width:380px!important}.ai-switch{background:rgba(3,8,12,.78)!important;border-color:rgba(211,173,104,.30)!important;backdrop-filter:blur(12px)!important}
+.gold-action{max-width:320px!important;border-radius:5px!important;color:#7eeaf3!important;background:linear-gradient(180deg,rgba(7,26,32,.97),rgba(2,10,14,.98))!important;border-color:rgba(88,228,241,.54)!important;box-shadow:0 0 18px rgba(76,222,238,.08)!important;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)!important}.gold-action-icon{color:var(--kage-gold)!important}.gold-action small{color:#6e7f89!important}
+.ai-quick{border-color:rgba(211,173,104,.18)!important}.ai-quick b{font-family:Georgia,"Times New Roman",serif!important}.command-card{border-color:rgba(92,232,245,.19)!important}
+
+/* Market / AI observatory */
+#marketView .page-intro{padding:10px 4px 16px!important}#marketView .page-intro h1{font-size:34px!important;color:#eaf0f4!important}#marketView .page-intro p{max-width:530px!important}
+.ai-core-v38{border-color:rgba(211,173,104,.44)!important;background:linear-gradient(180deg,rgba(3,9,14,.985),rgba(2,6,10,.995))!important;box-shadow:0 28px 80px rgba(0,0,0,.58)!important}
+.ai-core-v38:after{content:""!important;position:absolute!important;inset:0!important;border:0!important;border-radius:inherit!important;background:radial-gradient(500px 420px at 50% 40%,rgba(40,191,213,.055),transparent 72%);pointer-events:none!important}
+.v38-head{border-bottom:1px solid rgba(211,173,104,.16)!important;padding-bottom:18px!important}.v38-head h3{font-size:29px!important}.v38-kicker{color:#74dce9!important}.v38-refresh{border-color:rgba(211,173,104,.28)!important;background:#050b10!important;color:#76dfea!important}
+.v38-source-card{background:linear-gradient(180deg,#071017,#03080c)!important;border-color:rgba(211,173,104,.22)!important;border-radius:10px!important}.v38-source-card span{color:#75848d!important}.v38-source-card b{font-family:Georgia,"Times New Roman",serif!important}.v38-source-card.price-card{background:radial-gradient(circle at 70% 35%,rgba(62,216,232,.11),transparent 60%),linear-gradient(180deg,#071017,#03080c)!important}
+.v38-core-zone{position:relative!important;background:radial-gradient(circle at 50% 44%,rgba(57,209,226,.065),transparent 50%)!important;border:1px solid rgba(211,173,104,.12)!important;border-radius:12px!important;padding:24px 18px 20px!important}.v38-core-zone:after{content:"";position:absolute;right:-24px;bottom:0;width:230px;height:265px;background:url('./kage-portrait.webp') center bottom/cover no-repeat;opacity:.08;filter:grayscale(1) contrast(1.1);pointer-events:none;mask-image:linear-gradient(90deg,transparent,black 35%,black 75%,transparent)}
+.v38-core-copy{position:relative;z-index:2!important}.v38-core-copy b{font-family:Georgia,"Times New Roman",serif!important;color:#dfe7eb!important}.v38-section-label{color:#75ddeb!important}
+.v38-orbit{position:relative;z-index:2!important;filter:drop-shadow(0 0 22px rgba(60,215,230,.12))!important}.brain-orbit-track.outer{background:conic-gradient(from 220deg,var(--kage-cyan),var(--kage-mint),var(--kage-gold),var(--kage-cyan))!important}.brain-core-center strong{font-family:Georgia,"Times New Roman",serif!important;color:#e8edf0!important;text-shadow:0 0 26px rgba(76,218,235,.18)!important}.brain-core-center b{color:#6ee5ef!important}.brain-core-center small{color:#7f8d97!important}
+.v38-decision{border-color:rgba(211,173,104,.22)!important;background:linear-gradient(90deg,rgba(3,9,13,.98),rgba(8,19,25,.84))!important}.decision-copy b{font-family:Georgia,"Times New Roman",serif!important;font-size:20px!important}.decision-orb{border-color:rgba(92,232,245,.28)!important}.decision-orb i{box-shadow:0 0 18px currentColor!important}
+.v38-selfplay{border:1px solid rgba(211,173,104,.20)!important;border-radius:12px!important;background:linear-gradient(180deg,rgba(6,14,20,.92),rgba(3,8,12,.97))!important}.v38-selfplay:after{content:"";position:absolute;right:0;bottom:0;width:180px;height:150px;background:url('./kage-activity.webp') center/cover no-repeat;opacity:.045;pointer-events:none}.v38-selfplay>*{position:relative;z-index:2}.v38-selfplay-grid>div{border-color:rgba(92,232,245,.12)!important;background:#040a0f!important}.v38-selfplay-grid b{font-family:Georgia,"Times New Roman",serif!important}
+.v38-health-row .brain-side-card,.v38-detail-grid .brain-side-card{border-color:rgba(211,173,104,.18)!important;background:linear-gradient(180deg,#061018,#03080c)!important}.brain-side-card b{font-family:Georgia,"Times New Roman",serif!important}.brain-side-card:before{background:linear-gradient(var(--kage-cyan),var(--kage-gold))!important}
+.v38-activity{position:relative!important;overflow:hidden!important;border-color:rgba(211,173,104,.20)!important}.v38-activity:after{content:"";position:absolute;right:0;bottom:0;width:210px;height:100%;background:linear-gradient(90deg,transparent,rgba(2,7,11,.12)),url('./kage-activity.webp') center/cover no-repeat;opacity:.07;pointer-events:none}.v38-activity>*{position:relative;z-index:2}.v38-activity-row{border-color:rgba(93,215,232,.10)!important}.v38-activity-row .node{background:var(--kage-cyan)!important;box-shadow:0 0 13px rgba(92,232,245,.42)!important}
+.v38-details{border-color:rgba(211,173,104,.15)!important;background:#03090d!important}.v38-details summary{font-family:Georgia,"Times New Roman",serif!important}
+
+/* News / plan / archive */
+#newsView .page-intro,#planView .section-head:first-child,#statsView .section-head:first-child{border-bottom:1px solid rgba(211,173,104,.13);padding-bottom:14px}
+.news-card,.best-window-card,.plan-summary,.roadmap-shell,.model-growth-card,.equity-card{border-color:rgba(211,173,104,.22)!important}
+.status-chip,.badge{border-radius:5px!important}.roadmap-row{border-radius:8px!important}.roadmap-row.current{border-color:rgba(211,173,104,.55)!important;background:linear-gradient(90deg,rgba(188,138,62,.095),rgba(4,11,16,.98) 65%)!important}
+
+/* Buttons */
+.primary,.secondary,.doctor-action,.metric-edit,#jumpTodayBtn,#clearScanMemoryBtn,.ai-detail-toggle{border-radius:6px!important;letter-spacing:.12em!important}.primary{background:linear-gradient(180deg,#d7b66d,#9e7336)!important;color:#110d05!important;border:1px solid #e3c782!important;box-shadow:0 10px 28px rgba(175,124,42,.13)!important}.secondary,.doctor-action,.ai-detail-toggle{background:#050b10!important;border:1px solid rgba(92,232,245,.22)!important;color:#9fdde4!important}
+
+/* Bottom nav */
+.bottom-nav-six{height:86px!important;bottom:calc(9px + env(safe-area-inset-bottom))!important;border-radius:18px!important;border:1px solid rgba(211,173,104,.28)!important;background:linear-gradient(180deg,rgba(7,14,20,.965),rgba(3,7,11,.985))!important;box-shadow:0 -8px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.012) inset!important;overflow:hidden!important}
+.bottom-nav-six:before{content:"";position:absolute;left:7%;right:7%;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(211,173,104,.5),rgba(92,232,245,.32),transparent)}
+.bottom-nav-six button{border-radius:10px!important;color:#71808b!important;font-weight:800!important}.bottom-nav-six button svg{width:20px!important;height:20px!important;stroke-width:1.45!important}.bottom-nav-six button span{font-size:6.2px!important;letter-spacing:.12em!important}.bottom-nav-six button.active{color:#79e8f1!important;background:radial-gradient(circle at 50% 18%,rgba(66,211,229,.11),transparent 58%)!important;box-shadow:none!important}.bottom-nav-six button.active:after{content:"";position:absolute;bottom:8px;width:28px;height:2px;border-radius:4px;background:linear-gradient(90deg,var(--kage-gold),#f3d797);box-shadow:0 0 10px rgba(224,184,103,.28)}
+
+/* Modals */
+.modal{background:rgba(0,0,0,.77)!important}.sheet{border-color:rgba(211,173,104,.34)!important;background:linear-gradient(180deg,#071019,#020609)!important}.sheet h2{font-family:Georgia,"Times New Roman",serif!important;color:#e6edf1!important}.field input{border-color:rgba(211,173,104,.20)!important;background:#03080c!important;color:#eef5f7!important}
+
+/* Motion */
+@keyframes kagePulse{0%,100%{opacity:.42;transform:scale(.98)}50%{opacity:.82;transform:scale(1.02)}}
+.kage-command-hero:after,.v38-orbit{animation:kagePulse 5.5s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.kage-command-hero:after,.v38-orbit{animation:none!important}}
+
+/* Mobile tuning */
+@media(max-width:620px){
+  .app{padding-left:12px!important;padding-right:12px!important}.topbar{min-height:94px!important;padding-top:13px!important}.brandmark-premium{width:58px!important;height:58px!important;flex-basis:58px!important}.brandcopy>b{font-size:22px!important}.brandcopy small{font-size:6.2px!important}.app-version-badge{font-size:5.4px!important}.market-pill{display:none!important}
+  .kage-command-hero{min-height:350px!important}.kage-hero-copy{width:72%!important;min-height:350px!important;padding:34px 15px 25px 19px!important}.kage-hero-copy h1{font-size:31px!important}.kage-hero-copy p{font-size:9px!important;line-height:1.62!important}.kage-hero-art{object-position:64% center!important}.kage-hero-status{gap:5px!important}.kage-hero-status>span{min-width:76px!important;padding:8px 7px!important}.kage-hero-action{min-height:52px!important;max-width:250px!important;font-size:10px!important}
+  #aiView .ai-hero{min-height:330px!important;padding:20px!important;background-position:64% center!important}.ai-hero-top>div{max-width:72%!important}.ai-hero h2{font-size:28px!important}.ai-switch{position:absolute!important;right:15px!important;top:15px!important;z-index:3!important}.gold-action{max-width:260px!important}
+  .v38-source-row{grid-template-columns:1fr 1fr!important}.v38-source-card.price-card{grid-column:1/-1!important}.v38-core-zone{padding:20px 12px 16px!important}.v38-core-copy{text-align:center!important}.v38-core-zone:after{width:150px;height:210px;opacity:.055!important}.v38-selfplay-grid{grid-template-columns:1fr 1fr!important}.v38-health-row{grid-template-columns:1fr 1fr!important}.v38-health-row .brain-side-card:last-child{grid-column:1/-1!important}.v38-detail-grid{grid-template-columns:1fr!important}
+  .bottom-nav-six{width:calc(100% - 14px)!important;height:82px!important;padding:5px!important}.bottom-nav-six button span{font-size:5.5px!important;letter-spacing:.06em!important}
+}
+@media(max-width:390px){
+  .brandcopy>b{font-size:20px!important}.brandcopy small{max-width:145px!important}.kage-command-hero{min-height:355px!important}.kage-hero-copy{width:77%!important}.kage-hero-copy h1{font-size:29px!important}.kage-hero-status>span:nth-child(3){display:none!important}.v38-health-row{grid-template-columns:1fr!important}.v38-health-row .brain-side-card:last-child{grid-column:auto!important}.bottom-nav-six button span{font-size:5px!important}
+}
+</style>
+
 </head>
 <body>
 
 <div id="installGate" aria-live="polite">
   <div class="install-shell">
-    <div class="gate-logo"><img src="./icon-512.png?v=360" alt="KAGE CORE"></div>
+    <div class="gate-logo"><img src="./icon-512.png?v=392" alt="KAGE CORE"></div>
     <div class="install-kicker">KAGE CORE · PRIVATE SHADOW TERMINAL</div>
     <h1 class="install-title">ติดตั้ง KAGE CORE ก่อนใช้งาน</h1>
     <p class="install-copy">ระบบจะเปิด Trading Terminal เมื่อรันจากไอคอนบน Home Screen เท่านั้น เพื่อให้ Intro, Local Memory และการทำงานของแอปอยู่ในโหมด Standalone เต็มรูปแบบ</p>
@@ -4800,7 +4891,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
   <div class="intro-shell">
     <div class="intro-orbit">
       <div class="intro-ring"></div><div class="intro-ring r2"></div>
-      <div class="intro-logo"><img src="./icon-512.png?v=360" alt="KAGE CORE"></div>
+      <div class="intro-logo"><img src="./icon-512.png?v=392" alt="KAGE CORE"></div>
     </div>
     <div class="intro-kicker">XAUUSD · SHADOW INTELLIGENCE</div>
     <div class="intro-title">KAGE CORE</div>
@@ -4830,13 +4921,13 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
   <header class="topbar">
     <div class="brand">
       <div class="brandmark brandmark-premium" aria-label="KAGE CORE">
-        <img src="./icon-512.png?v=360" alt="KAGE CORE">
+        <img src="./icon-512.png?v=392" alt="KAGE CORE">
       </div>
       <div class="brandcopy">
         <b>KAGE CORE</b>
         <div class="brand-version-row">
           <small>XAUUSD · SHADOW INTELLIGENCE</small>
-          <span class="app-version-badge" id="headerAppVersion">—</span>
+          <span class="app-version-badge" id="headerAppVersion">V39.2</span>
         </div>
       </div>
     </div>
@@ -4853,18 +4944,18 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     <section class="view active" id="homeView">
       <article class="kage-command-hero" id="kageCommandHero">
         <div class="kage-hero-gridline" aria-hidden="true"></div>
-        <img class="kage-hero-art" src="./kage-warden.webp?v=390" alt="KAGE CORE shadow warden" loading="eager">
+        <img class="kage-hero-art" src="./kage-hero.webp?v=392" alt="KAGE CORE shadow warden" loading="eager">
         <div class="kage-hero-vignette" aria-hidden="true"></div>
         <div class="kage-hero-copy">
-          <div class="kage-eyebrow"><i></i> KAGE CORE // SHADOW INTELLIGENCE</div>
-          <h1>อ่านตลาดในเงา<br><span>รอเฉพาะจุดที่คม</span></h1>
-          <p>V38 Self‑Play Brain ทำงานเหมือนเดิม · V39 เปลี่ยนเฉพาะประสบการณ์ใช้งานให้สะอาด คม และอ่านสถานะได้เร็วขึ้น</p>
+          <div class="kage-eyebrow"><i></i> AI CORE ACTIVE // KAGE SHADOW PROTOCOL</div>
+          <h1>Shadow Decision Engine<br><span>คิดเหนือความผันผวน</span></h1>
+          <p>วิเคราะห์ XAUUSD ด้วย V38 Self‑Play Brain · รอเฉพาะแผนที่ผ่าน Quality Gate · ไม่ไล่ราคา</p>
           <div class="kage-hero-status">
             <span><small>DECISION</small><b id="kageHeroDecision">WAIT</b></span>
             <span><small>FEED</small><b id="kageHeroFeed">CHECK</b></span>
             <span><small>CORE</small><b id="kageHeroTrust">—</b></span>
           </div>
-          <button class="kage-hero-action" id="kageOpenBrain" type="button"><i></i><span>OPEN SHADOW BRAIN</span><b>→</b></button>
+          <button class="kage-hero-action" id="kageOpenBrain" type="button"><i></i><span>RUN SHADOW SCAN</span><b>→</b></button>
         </div>
       </article>
       <div class="hero-grid">
@@ -4965,8 +5056,8 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
       <article class="card ai-hero">
         <div class="ai-hero-top">
           <div>
-            <div class="v27-page-symbol ai-symbol">✦</div><div class="kicker">AI EXECUTION DESK</div>
-            <h2>อ่านทรงก่อน<br>วางจุดดักรอให้พร้อม</h2>
+            <div class="v27-page-symbol ai-symbol">✦</div><div class="kicker">KAGE EXECUTION DESK</div>
+            <h2>Shadow Plan Forge<br>คัดเฉพาะแผนที่มี Edge</h2>
             <p>อ่าน H1 / M15 / M5 + Historical + ML เพื่อเลือก BUY/SELL LIMIT หรือ STOP ที่คุ้มที่สุด แล้วรอราคาเข้าหาเรา ไม่ไล่ราคา</p>
           </div>
           <button class="ai-switch" id="aiSwitch"><i></i><span><b>ASSIST OFF</b><small>OPTIONAL LLM</small></span></button>
@@ -5379,9 +5470,9 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     <section class="view" id="marketView">
       <div class="page-intro ai-market-intro">
         <div>
-          <div class="kicker">KAGE CORE · SHADOW MARKET</div>
-          <h1>Shadow Intelligence</h1>
-          <p>ดูสถานะสมอง ML, Feed, Calibration, Drift และ Pending Engine จากข้อมูลจริงในระบบ · ตัดกราฟและปุ่ม Timeframe ที่ไม่จำเป็นออกแล้ว</p>
+          <div class="kicker">KAGE CORE · AI CORE OBSERVATORY</div>
+          <h1>AI Core Observatory</h1>
+          <p>ดูสมอง ML, Feed, Calibration, Drift, Self‑Play และ Pending Engine จากข้อมูลจริงในระบบ</p>
         </div>
         <span class="status-orb" id="marketPageStatus"><i></i><b>DATA</b></span>
       </div>
@@ -5555,7 +5646,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 
     <section class="view" id="newsView">
       <div class="page-intro">
-        <div><div class="v27-section-title"><span class="v27-page-symbol">≋</span><div><div class="kicker">MACRO EVENT INTELLIGENCE</div><h1>Macro Watch</h1></div></div><p>ข่าว USD ที่กระทบทอง · เวลาไทย · BEST WINDOW จะตัดช่วง NEWS LOCK อัตโนมัติ</p></div>
+        <div><div class="v27-section-title"><span class="v27-page-symbol">≋</span><div><div class="kicker">KAGE EVENT INTELLIGENCE</div><h1>Event Intelligence</h1></div></div><p>ข่าว USD ที่กระทบทอง · เวลาไทย · BEST WINDOW จะตัดช่วง NEWS LOCK อัตโนมัติ</p></div>
         <span class="status-orb news" id="newsPageStatus"><i></i><b>NEWS</b></span>
       </div>
       <article class="card news-card">
@@ -5590,7 +5681,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     </section>
 
     <section class="view" id="planView">
-      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▦</span><div><div class="kicker">CAPITAL ROADMAP</div><h3>30‑Day Campaign</h3></div></div></div><button id="jumpTodayBtn">TODAY</button></div>
+      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▦</span><div><div class="kicker">KAGE CAPITAL ROADMAP</div><h3>Capital Campaign</h3></div></div></div><button id="jumpTodayBtn">TODAY</button></div>
       <article class="card plan-summary">
         <div class="mission-head"><div><div class="kicker">PLAN PROGRESS</div><h3 id="planProgressText">0 / 30</h3></div><div class="badge" id="planPace">ON PLAN</div></div>
         <div class="progress"><i id="planProgressBar"></i></div>
@@ -5600,7 +5691,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     </section>
 
     <section class="view" id="statsView">
-      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▥</span><div><div class="kicker">ACCOUNT ANALYTICS</div><h3>Performance Archive</h3></div></div></div><span>REAL SESSIONS</span></div>
+      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▥</span><div><div class="kicker">KAGE MEMORY ARCHIVE</div><h3>Memory Archive</h3></div></div></div><span>REAL SESSIONS</span></div>
       <div class="stats-grid">
         <article class="card stat"><span>COMPLETED</span><b id="statCompleted">0</b></article>
         <article class="card stat"><span>HIT RATE</span><b id="statHitRate">—</b></article>
@@ -5646,12 +5737,12 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 </div>
 
 <nav class="bottom-nav bottom-nav-six">
-  <button class="active" data-nav="homeView"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>CORE</span></button>
-  <button data-nav="aiView"><svg viewBox="0 0 24 24"><path d="M8 9V7a4 4 0 0 1 8 0v2M6 9h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"/><path d="M9 13h.01M15 13h.01M9 16h6"/></svg><span>BRAIN</span></button>
+  <button class="active" data-nav="homeView"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>OVERVIEW</span></button>
+  <button data-nav="aiView"><svg viewBox="0 0 24 24"><path d="M8 9V7a4 4 0 0 1 8 0v2M6 9h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"/><path d="M9 13h.01M15 13h.01M9 16h6"/></svg><span>AI CORE</span></button>
   <button data-nav="marketView"><svg viewBox="0 0 24 24"><path d="M4 18V9M8 15V5M12 19V11M16 14V7M20 17V3"/><path d="M2 21h20"/></svg><span>MARKET</span></button>
-  <button data-nav="newsView"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>NEWS</span></button>
+  <button data-nav="newsView"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>INTEL</span></button>
   <button data-nav="planView"><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg><span>PLAN</span></button>
-  <button data-nav="statsView"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>STATS</span></button>
+  <button data-nav="statsView"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>ARCHIVE</span></button>
 </nav>
 
 <div class="modal hidden" id="planModal" aria-hidden="true">
@@ -8878,7 +8969,8 @@ if(appLaunch.isStandalone()){
 })();
 </script>
 
-\n<script id="kage-core-v39-runtime">
+
+<script id="kage-core-v39-runtime">
 (()=>{
   const $=(s)=>document.querySelector(s);
   const text=(s,f='—')=>($(s)?.textContent||f).trim();
@@ -8895,5 +8987,22 @@ if(appLaunch.isStandalone()){
   setTimeout(syncKageHero,250);
 })();
 </script>\n
+
+<script id="kage-v392-ui-script">
+(()=>{
+  const q=(s)=>document.querySelector(s);
+  const qq=(s)=>[...document.querySelectorAll(s)];
+  // Make labels consistent without touching runtime IDs.
+  const labels={homeView:'OVERVIEW',aiView:'AI CORE',marketView:'MARKET',newsView:'INTEL',planView:'PLAN',statsView:'ARCHIVE'};
+  qq('.bottom-nav [data-nav]').forEach(btn=>{const sp=btn.querySelector('span');if(sp&&labels[btn.dataset.nav])sp.textContent=labels[btn.dataset.nav];});
+  // Artwork-aware command routing.
+  const scan=q('#kageOpenBrain');
+  if(scan) scan.addEventListener('click',()=>{const ai=q('.bottom-nav [data-nav="aiView"]');if(ai)ai.click();setTimeout(()=>q('#analyzeBtn')?.scrollIntoView({behavior:'smooth',block:'center'}),90);});
+  // Keep the visual version label deterministic even before version.json returns.
+  const badge=q('#headerAppVersion'); if(badge&&!badge.textContent.trim())badge.textContent='V39.2';
+  document.documentElement.dataset.kageTheme='artwork-reforge';
+})();
+</script>
+
 </body>
 </html>
