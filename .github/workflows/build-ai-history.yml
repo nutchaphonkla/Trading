@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-learning-v35
+  group: onemonth-ai-learning-v36
   cancel-in-progress: true
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
 
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 24
 
     steps:
       - name: Checkout latest repository
@@ -67,13 +67,15 @@ jobs:
       - name: Champion challenger governance
         run: node build-ai-governance.mjs
 
-      - name: Train Python ML ensemble
+      - name: Train autonomous Python ML tournament
+        env:
+          ML_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: python ml-train.py
 
       - name: Journal deployed and ML pending plans
         run: node build-ai-journal.mjs
 
-      - name: Verify V35 brain packs
+      - name: Verify V36 autonomous brain packs
         run: |
           python - <<'PY'
           import json
@@ -121,6 +123,32 @@ jobs:
                           ml.get("current") or {}
                       ).get("primary") or {}
                   ).get("type"),
+                  "reference": (
+                      (
+                          ml.get("current") or {}
+                      ).get("reference") or {}
+                  ).get("type"),
+                  "qualified": (
+                      ml.get("current") or {}
+                  ).get("qualifiedCount"),
+                  "models": (
+                      (
+                          (
+                              (
+                                  ml.get("autoML") or {}
+                              ).get("heads") or {}
+                          ).get("tp1") or {}
+                      ).get("selection") or {}
+                  ).get("selectedModels"),
+                  "calibration": (
+                      (
+                          (
+                              (
+                                  ml.get("autoML") or {}
+                              ).get("heads") or {}
+                          ).get("tp1") or {}
+                      ).get("calibration") or {}
+                  ).get("selected"),
                   "tp1Auc": (
                       (
                           (
@@ -166,6 +194,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "ai: refresh V35 Python ML brain"
+          git commit -m "ai: refresh V36 autonomous ML plan brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
