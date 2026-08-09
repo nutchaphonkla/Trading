@@ -14,14 +14,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-v42
-  cancel-in-progress: true
+  group: onemonth-ai-v44
+  cancel-in-progress: false
 
 jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
 
     steps:
       - name: Checkout latest repository
@@ -56,13 +56,11 @@ jobs:
           import numpy
           import pandas
           import sklearn
-
           try:
               import xgboost
               xgb = xgboost.__version__
           except Exception as exc:
               xgb = f"optional-unavailable: {exc}"
-
           print("PYTHON", sys.executable, sys.version)
           print("NUMPY", numpy.__version__)
           print("PANDAS", pandas.__version__)
@@ -70,14 +68,16 @@ jobs:
           print("XGBOOST", xgb)
           PY
 
-      - name: Validate V42 brain source and safety fixtures
+      - name: Validate V44 learning and safety fixtures
         run: |
+          node --check update-data.mjs
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
           node --check build-ai-journal.mjs
           node --check build-ai-governance.mjs
           node --check build-ai-shadow.mjs
-
+          node --check adaptive-ai-v42.js
+          python -m py_compile ai_provenance_v42.py
           python -m py_compile selfplay-lab.py
           python -m py_compile ml-train.py
 
@@ -88,83 +88,84 @@ jobs:
           node tests/governance-provenance-v42.test.mjs
           node tests/journal-forward-only-v43.test.mjs
           node tests/market-hours-dst-v43.test.mjs
+          node tests/auto-hybrid-v44.test.mjs
+          node tests/adaptive-ai-v42.test.cjs
 
           python tests/test_selfplay_promotion_v42.py
           python tests/test_ml_provenance_v42.py
+          python tests/test_auto_hybrid_v44.py
 
-      - name: Verify PRIMARY training isolation
+      - name: Verify routed single-source training pack
         run: |
-          node - <<'NODE'
-          const fs=require('fs');
+          python - <<'PY'
+          import json
+          from pathlib import Path
 
-          if(!fs.existsSync('xauusd-primary.json')){
-            console.log(
-              'xauusd-primary.json not ready yet; Python brain may enter WAIT_DATA safely.'
-            );
-          }else{
-            const p=JSON.parse(
-              fs.readFileSync(
-                'xauusd-primary.json',
-                'utf8'
-              )
-            );
+          routed = Path('xauusd-training.json')
+          legacy = Path('xauusd-primary.json')
+          path = routed if routed.exists() else legacy
+          if not path.exists():
+              raise SystemExit('No training pack exists')
 
-            console.log(
-              'PRIMARY TRAIN PACK:',
-              p.feed?.active || p.source
-            );
+          pack = json.loads(path.read_text())
+          feed = pack.get('feed') or {}
+          switching = feed.get('switching') or {}
+          active = str(feed.get('active') or '').upper()
+          training_feed = str(feed.get('trainingFeed') or ('TWELVE_DATA_PRIMARY' if path.name == 'xauusd-primary.json' else '')).upper()
+          training_source = str(feed.get('trainingSource') or path.name)
+          watermark = int(pack.get('closedBarWatermark') or feed.get('closedBarWatermark') or 0)
+
+          if switching.get('mergeFeeds') is not False:
+              raise SystemExit('Feed merge forbidden')
+          if watermark <= 0:
+              raise SystemExit('Training watermark missing')
+
+          allowed = {
+              ('xauusd-primary.json', 'TWELVE_DATA_PRIMARY'),
+              ('xauusd-training.json', 'TWELVE_DATA_PRIMARY'),
+              ('xauusd-training.json', 'MT5_ACADEMY'),
           }
+          if (training_source, training_feed) not in allowed:
+              raise SystemExit(f'Invalid V44 training pair: {training_source} | {training_feed}')
+          if training_feed == 'MT5_ACADEMY' and 'MT5' not in active:
+              raise SystemExit('MT5 training feed/source mismatch')
+          if training_feed == 'TWELVE_DATA_PRIMARY' and active != 'TWELVE_DATA':
+              raise SystemExit('Twelve training feed/source mismatch')
 
-          if(fs.existsSync('feed-health.json')){
-            const h=JSON.parse(
-              fs.readFileSync(
-                'feed-health.json',
-                'utf8'
-              )
-            );
+          counts = {tf: len((pack.get('timeframes') or {}).get(tf) or []) for tf in ('M1','M5','M15','H1')}
+          print('V44 TRAIN PACK', {'file': path.name, 'trainingSource': training_source, 'trainingFeed': training_feed, 'active': active, 'counts': counts})
+          PY
 
-            if(h.switching?.mergeFeeds===true)
-              throw new Error('Feed merge forbidden');
-
-            console.log(
-              'LIVE ACTIVE:',
-              h.active,
-              h.mode,
-              h.status
-            );
-          }
-          NODE
-
-      - name: Resolve shadow ideas with newest future M1
+      - name: Resolve current shadow outcomes
         run: node build-ai-shadow.mjs
 
-      - name: Rebuild PRIMARY historical brain
+      - name: Rebuild routed historical brain
         run: node build-ai-history.mjs
 
-      - name: Train PRIMARY statistical challenger
+      - name: Train routed statistical challenger
         run: node build-ai-learning.mjs
 
       - name: Resolve deployed signal and plan outcomes
         run: node build-ai-journal.mjs
 
-      - name: Statistical champion challenger governance
+      - name: Champion challenger governance
         run: node build-ai-governance.mjs
 
-      - name: V42 self-play lab threshold counterfactual autopsy
+      - name: Source-aware self-play lab
         run: python selfplay-lab.py
 
-      - name: Train V42 Python autonomous self-play precision brain
+      - name: Train autonomous Python ML brain
         env:
           ML_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: python ml-train.py
 
-      - name: Capture all 12 V42 candidates for next forward test
+      - name: Capture current-source shadow candidates
         run: node build-ai-shadow.mjs
 
-      - name: Journal V42 qualified pending plans
+      - name: Journal qualified pending plans
         run: node build-ai-journal.mjs
 
-      - name: Verify V42 packs
+      - name: Verify V44 AI packs
         run: |
           python - <<'PY'
           import json
@@ -179,165 +180,76 @@ jobs:
               'ai-ml-brain.json',
               'ai-ml-candidate.json',
               'ai-ml-governance.json',
-              'ai-shadow-journal.json',
               'ai-selfplay.json',
               'ai-thresholds.json',
               'ai-counterfactual.json',
-              'ai-autopsy.json'
+              'ai-autopsy.json',
           ]
 
           for name in names:
               p = Path(name)
               if p.exists():
-                  json.loads(p.read_text())
+                  text = p.read_text()
+                  if not text.strip():
+                      raise SystemExit(f'{name} is empty')
+                  json.loads(text)
 
-          ml = (
-              json.loads(
-                  Path('ai-ml-brain.json').read_text()
-              )
-              if Path('ai-ml-brain.json').exists()
-              else {}
-          )
+          allowed = {
+              ('xauusd-primary.json', 'TWELVE_DATA_PRIMARY'),
+              ('xauusd-training.json', 'TWELVE_DATA_PRIMARY'),
+              ('xauusd-training.json', 'MT5_ACADEMY'),
+          }
 
-          history = (
-              json.loads(
-                  Path('ai-history.json').read_text()
-              )
-              if Path('ai-history.json').exists()
-              else {}
-          )
-
+          history = json.loads(Path('ai-history.json').read_text()) if Path('ai-history.json').exists() else {}
           if history.get('ready') is True:
-              provenance = history.get('artifactProvenance') or {}
+              p = history.get('artifactProvenance') or {}
               schema = history.get('artifactSchema') or {}
+              pair = (str(p.get('trainingSource') or ''), str(p.get('trainingFeed') or '').upper())
+              if p.get('schemaVersion') != 'KAGE_AI_V42':
+                  raise SystemExit('Ready history missing schema contract')
+              if pair not in allowed or p.get('mergeFeeds') is not False:
+                  raise SystemExit(f'Ready history violates source isolation: {pair}')
+              if p.get('featureSchemaHash') != '17e82bd347b6f345ad289df1' or schema.get('featureSchemaHash') != p.get('featureSchemaHash'):
+                  raise SystemExit('Ready history feature schema mismatch')
+              if p.get('labelSchemaHash') != 'fffe7703ec24c8cac8851daa' or schema.get('labelSchemaHash') != p.get('labelSchemaHash'):
+                  raise SystemExit('Ready history label schema mismatch')
+              if p.get('sourceFingerprint') != history.get('sourceFingerprint') or not p.get('dataWatermark'):
+                  raise SystemExit('Ready history provenance mismatch')
 
-              if provenance.get('schemaVersion') != 'KAGE_AI_V42':
-                  raise SystemExit(
-                      'V42 ready history missing schema contract'
-                  )
-
-              if (
-                  provenance.get('trainingSource') != 'xauusd-primary.json'
-                  or provenance.get('trainingFeed') != 'TWELVE_DATA_PRIMARY'
-                  or provenance.get('mergeFeeds') is not False
-              ):
-                  raise SystemExit(
-                      'V42 ready history violates training-feed isolation'
-                  )
-
-              if (
-                  provenance.get('featureSchemaHash')
-                  != '17e82bd347b6f345ad289df1'
-                  or schema.get('featureSchemaHash')
-                  != provenance.get('featureSchemaHash')
-              ):
-                  raise SystemExit(
-                      'V42 ready history feature schema mismatch'
-                  )
-
-              if (
-                  provenance.get('labelSchemaHash')
-                  != 'fffe7703ec24c8cac8851daa'
-                  or schema.get('labelSchemaHash')
-                  != provenance.get('labelSchemaHash')
-              ):
-                  raise SystemExit(
-                      'V42 ready history label schema mismatch'
-                  )
-
-              if (
-                  provenance.get('sourceFingerprint')
-                  != history.get('sourceFingerprint')
-                  or not provenance.get('dataWatermark')
-              ):
-                  raise SystemExit(
-                      'V42 ready history provenance mismatch'
-                  )
-
-          sp = ml.get('selfPlay') or {}
-
-          print(
-              'V42',
-              {
-                  'version': ml.get('version'),
-                  'ready': ml.get('ready'),
-                  'status': ml.get('status'),
-                  'health': (ml.get('modelHealth') or {}).get('score'),
-                  'trainingSource':
-                      (ml.get('dataIsolation') or {}).get('trainingSource'),
-                  'liveSource':
-                      (ml.get('dataIsolation') or {}).get('liveSource'),
-                  'mergeFeeds':
-                      (ml.get('dataIsolation') or {}).get('mergeFeeds'),
-                  'candidateCount':
-                      (ml.get('current') or {}).get('candidateCount'),
-                  'qualified':
-                      (ml.get('current') or {}).get('qualifiedCount'),
-                  'shadowTotal':
-                      (sp.get('shadow') or {}).get('total'),
-                  'shadowResolved':
-                      (sp.get('shadow') or {}).get('resolved'),
-                  'autoThreshold':
-                      (sp.get('thresholdOptimizer') or {}).get('active'),
-                  'counterfactualReady':
-                      (sp.get('counterfactual') or {}).get('ready'),
-                  'autopsyReady':
-                      (sp.get('autopsy') or {}).get('ready'),
-              }
-          )
-
-          if (
-              (ml.get('dataIsolation') or {}).get('mergeFeeds')
-              is True
-          ):
-              raise SystemExit(
-                  'V42 policy violation: mergeFeeds true'
-              )
+          ml = json.loads(Path('ai-ml-brain.json').read_text()) if Path('ai-ml-brain.json').exists() else {}
+          isolation = ml.get('dataIsolation') or {}
+          if isolation.get('mergeFeeds') is True:
+              raise SystemExit('V44 policy violation: ML mergeFeeds true')
 
           if ml.get('ready') is True:
-              provenance = ml.get('artifactProvenance') or {}
+              p = ml.get('artifactProvenance') or {}
               schema = ml.get('artifactSchema') or {}
-              candidates = (
-                  (ml.get('current') or {}).get('candidates') or []
-              )
+              current = ml.get('current') or {}
+              candidates = current.get('candidates') or []
+              pair = (str(p.get('trainingSource') or ''), str(p.get('trainingFeed') or '').upper())
 
-              if (
-                  provenance.get('schemaVersion')
-                  or schema.get('version')
-              ) != 'KAGE_AI_V42':
-                  raise SystemExit(
-                      'V42 ready artifact missing schema contract'
-                  )
+              if (p.get('schemaVersion') or schema.get('version')) != 'KAGE_AI_V42':
+                  raise SystemExit('Ready ML artifact missing schema contract')
+              if pair not in allowed or p.get('mergeFeeds') is not False:
+                  raise SystemExit(f'Ready ML artifact violates source isolation: {pair}')
+              for field in ('featureSchemaHash','labelSchemaHash','sourceFingerprint','dataWatermark'):
+                  if not p.get(field):
+                      raise SystemExit(f'Ready ML artifact missing {field}')
+              if len(candidates) != 12 or current.get('candidateCount') != 12:
+                  raise SystemExit('Ready ML artifact must contain exactly 12 candidates')
 
-              if (
-                  provenance.get('trainingFeed') != 'TWELVE_DATA_PRIMARY'
-                  or provenance.get('mergeFeeds') is not False
-              ):
-                  raise SystemExit(
-                      'V42 ready artifact violates training-feed isolation'
-                  )
-
-              for field in (
-                  'featureSchemaHash',
-                  'labelSchemaHash',
-                  'sourceFingerprint',
-                  'dataWatermark'
-              ):
-                  if not provenance.get(field):
-                      raise SystemExit(
-                          f'V42 ready artifact missing {field}'
-                      )
-
-              if (
-                  len(candidates) != 12
-                  or (ml.get('current') or {}).get('candidateCount') != 12
-              ):
-                  raise SystemExit(
-                      'V42 ready artifact must contain exactly 12 candidates'
-                  )
+          print('V44 AI PACKS', {
+              'historyReady': history.get('ready'),
+              'historyFeed': (history.get('artifactProvenance') or {}).get('trainingFeed'),
+              'mlReady': ml.get('ready'),
+              'mlStatus': ml.get('status'),
+              'mlFeed': (ml.get('artifactProvenance') or {}).get('trainingFeed'),
+              'trainingSource': isolation.get('trainingSource'),
+              'liveSource': isolation.get('liveSource'),
+          })
           PY
 
-      - name: Commit V42 brain and self-play packs
+      - name: Commit V44 AI packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -353,7 +265,6 @@ jobs:
             ai-ml-brain.json \
             ai-ml-candidate.json \
             ai-ml-governance.json \
-            ai-shadow-journal.json \
             ai-selfplay.json \
             ai-thresholds.json \
             ai-counterfactual.json \
@@ -365,10 +276,10 @@ jobs:
           done
 
           if git diff --cached --quiet; then
-            echo "No V42 brain changes"
+            echo "No V44 AI changes"
             exit 0
           fi
 
-          git commit -m "ai: refresh V42 self-play precision brain"
+          git commit -m "ai: V44 source-aware heavy self-play learning"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
