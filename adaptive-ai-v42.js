@@ -139,9 +139,19 @@
         if (touched) {
           filled = true;
           fillAt = candle.ts;
+          // A fill candle that also touches SL/TP has unknown intrabar ordering.
+          // Do not silently ignore that price action and label from a later candle;
+          // quarantine this replay so it cannot bias adaptive training.
+          const stopOnFill = side === 'BUY' ? candle.low <= sl : candle.high >= sl;
+          const targetOnFill = side === 'BUY' ? candle.high >= tp1 : candle.low <= tp1;
+          if (stopOnFill || targetOnFill) {
+            return {
+              replayed: true, resolved: false, outcome: null, outcomeFeed: null,
+              fillAt, fillPrice: entry, orderType, terminalAt: null, mfe: 0, mae: 0,
+              reason: 'AMBIGUOUS_FILL_CANDLE'
+            };
+          }
         }
-        // OHLC cannot prove whether Entry, SL or TP happened first inside the fill candle.
-        // Start scoring only from the following candle to avoid look-ahead labels.
         continue;
       }
       if (candle.ts <= fillAt) continue;
