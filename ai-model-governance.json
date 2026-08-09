@@ -20,9 +20,9 @@
     }
   ],
   "rollbacks": [],
-  "updatedAt": "2026-08-09T05:12:13.519Z",
-  "action": "PROMOTE_CHALLENGER",
-  "reason": "Challenger score 77.8 > champion 72.2",
+  "updatedAt": "2026-08-09T05:47:03.851Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:f132cde0",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V3.2",
@@ -40,18 +40,18 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:f132cde0",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:94fe7f7c",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V3.2",
-    "sourceFingerprint": "f132cde0",
-    "generatedAt": "2026-08-09T05:12:13.260Z",
-    "trainedThrough": "2026-08-09T05:00:00.000Z",
-    "score": 77.78,
-    "health": 80.6,
-    "samples": 4780,
-    "brier": 0.238,
-    "calibration": 5.94,
+    "sourceFingerprint": "94fe7f7c",
+    "generatedAt": "2026-08-09T05:47:03.726Z",
+    "trainedThrough": "2026-08-09T05:30:00.000Z",
+    "score": 77.89,
+    "health": 80.7,
+    "samples": 4782,
+    "brier": 0.2381,
+    "calibration": 5.84,
     "coverage": 100,
-    "drift": 0.1,
+    "drift": 0,
     "uncertainty": 14.64,
     "guard": "TRUSTED"
   },
@@ -72,11 +72,11 @@
     "guard": "LIMITED"
   },
   "deployedJournal": {
-    "samples": 0,
-    "hitRate": null,
-    "avgR": null,
-    "goodEntryRate": null,
-    "falseSignals": 0
+    "samples": 1,
+    "hitRate": 0,
+    "avgR": -0.0742,
+    "goodEntryRate": 0,
+    "falseSignals": 1
   },
   "deployedPlanJournal": {
     "samples": 0,
@@ -86,10 +86,10 @@
     "fillCount": 0
   },
   "decision": {
-    "promoted": true,
+    "promoted": false,
     "rolledBack": false,
     "candidateQualified": true,
-    "materiallyBetter": true,
+    "materiallyBetter": false,
     "freshNonInferior": false,
     "legacyMigration": false
   }
