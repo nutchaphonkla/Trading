@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="KAGE CORE">
-<title>KAGE CORE · Shadow Intelligence V40</title>
+<title>KAGE CORE · Monochrome Shadow Intelligence V41</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -4780,12 +4780,13 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 @media(prefers-reduced-motion:reduce){.brandmark-premium:after{animation:none!important}.card,.kage-command-hero{transition:none!important}}
 </style>
 <link rel="stylesheet" href="./kage-v40-full.css?v=402">
+<link rel="stylesheet" href="./kage-v41-monochrome.css?v=410">
 </head>
-<body class="v40-full">
+<body class="v40-full v41-mono">
 
 <div id="installGate" aria-live="polite">
   <div class="install-shell">
-    <div class="gate-logo"><img src="./icon-512.png?v=360" alt="KAGE CORE"></div>
+    <div class="gate-logo"><img src="./assets/kage-anime-avatar-v41.webp?v=410" alt="KAGE CORE monochrome anime warden"></div>
     <div class="install-kicker">KAGE CORE · PRIVATE SHADOW TERMINAL</div>
     <h1 class="install-title">ติดตั้ง KAGE CORE ก่อนใช้งาน</h1>
     <p class="install-copy">ระบบจะเปิด Trading Terminal เมื่อรันจากไอคอนบน Home Screen เท่านั้น เพื่อให้ Intro, Local Memory และการทำงานของแอปอยู่ในโหมด Standalone เต็มรูปแบบ</p>
@@ -4801,7 +4802,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
   <div class="intro-shell">
     <div class="intro-orbit">
       <div class="intro-ring"></div><div class="intro-ring r2"></div>
-      <div class="intro-logo"><img src="./icon-512.png?v=360" alt="KAGE CORE"></div>
+      <div class="intro-logo"><img src="./assets/kage-anime-avatar-v41.webp?v=410" alt="KAGE CORE monochrome anime warden"></div>
     </div>
     <div class="intro-kicker">XAUUSD · SHADOW INTELLIGENCE</div>
     <div class="intro-title">KAGE CORE</div>
@@ -4831,7 +4832,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
   <header class="topbar">
     <div class="brand">
       <div class="brandmark brandmark-premium" aria-label="KAGE CORE">
-        <img src="./icon-512.png?v=360" alt="KAGE CORE">
+        <img src="./assets/kage-anime-avatar-v41.webp?v=410" alt="KAGE CORE monochrome anime warden">
       </div>
       <div class="brandcopy">
         <b>KAGE CORE</b>
@@ -4854,7 +4855,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     <section class="view active" id="homeView">
       <article class="kage-command-hero" id="kageCommandHero">
         <div class="kage-hero-gridline" aria-hidden="true"></div>
-        <img class="kage-hero-art" src="./assets/kage-hero-v40.webp?v=402" alt="KAGE CORE shadow decision engine" loading="eager">
+        <img class="kage-hero-art" src="./assets/kage-anime-hero-v41.webp?v=410" alt="KAGE CORE monochrome anime shadow decision engine" loading="eager">
         <div class="kage-hero-vignette" aria-hidden="true"></div>
         <div class="kage-hero-copy">
           <div class="kage-eyebrow"><i></i> AI CORE ACTIVE // XAUUSD</div>
@@ -5534,9 +5535,8 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
         </div>
       </article>
 
-      <!-- Legacy runtime nodes keep the existing V37 data/AI engine compatible.
-           They are intentionally not part of the visible UX. -->
-      <div class="legacy-market-runtime" aria-hidden="true">
+      <!-- Original market diagnostics, chart and timeframe controls remain visible in V41. -->
+      <div class="legacy-market-runtime" aria-hidden="false">
         <b id="dataHealthTitle">—</b><b id="dataUpdated">—</b><b id="dataTfCount">0 / 4</b>
         <b id="feedStrategy">PRIMARY ONLY</b><div id="feedActiveCell"></div><div id="feedModeCell"></div>
         <div id="feedPrimaryCell"></div><div id="feedFallbackCell"></div><div id="feedDivergenceCell"></div><div id="feedStrategyCell"></div>
@@ -5919,7 +5919,7 @@ const BG_FRESH_OPEN_MS=60*60*1000;   // model may support live decisions for max
 const BG_LAST_SESSION_MS=72*60*60*1000;
 const V341_DATA_RETENTION_LABEL='M15 90D · H1 180D';
 
-const APP_VERSION='V40.2 KAGE CORE';
+const APP_VERSION='V41.0 KAGE CORE';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -6386,7 +6386,8 @@ let pendingPlanV35={state:'WAIT DATA',primary:null,backup:null,candidates:[],sou
 let aiDetailsOpen=storeGet(AI_DETAIL_KEY)==='1';
 let analysis=null;
 let tfResults={};
-let chartView={bars:72,offset:0,cross:null,drag:false,startX:0,startOffset:0,moved:false};
+const tfDefaultBars={M1:90,M5:84,M15:72,H1:64};
+let chartView={bars:tfDefaultBars.M15,offset:0,cross:null,drag:false,startX:0,startOffset:0,moved:false};
 
 let aiWaitStreak=0;
 const perfState={
@@ -8200,7 +8201,7 @@ function drawChartNow(){
   const canvas=$('#marketChart'),vd=visibleData(),data=vd.visible,empty=$('#chartEmpty');
   if(data.length<8){empty.classList.remove('hidden');return}else empty.classList.add('hidden');
   const rect=canvas.getBoundingClientRect();if(rect.width<20)return;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);
-  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const W=rect.width,H=rect.height,pad={l:9,r:58,t:11,b:28},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);ctx.fillStyle='#060a0e';ctx.fillRect(0,0,W,H);
+  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const W=rect.width,H=rect.height,pad={l:9,r:58,t:11,b:28},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);ctx.fillStyle='#030405';ctx.fillRect(0,0,W,H);
   const ranges=data.map(c=>c.high-c.low),med=median(ranges)||1,lows=data.map(c=>c.low).sort((a,b)=>a-b),highs=data.map(c=>c.high).sort((a,b)=>a-b);
   let lo=lows[Math.max(0,Math.floor(lows.length*.04))],hi=highs[Math.min(highs.length-1,Math.floor(highs.length*.96))],rg=Math.max(.02,hi-lo);lo-=rg*.10;hi+=rg*.10;rg=hi-lo;
   if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){
@@ -8212,20 +8213,20 @@ function drawChartNow(){
   for(let i=1;i<4;i++){const x=pad.l+pw*i/4;ctx.strokeStyle='rgba(158,173,188,.035)';ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke()}
   const warm=vd.src.slice(Math.max(0,vd.start-80),vd.start+data.length),off=vd.start-Math.max(0,vd.start-80),cl=warm.map(c=>c.close),e9=ema(cl,9).slice(off),e21=ema(cl,21).slice(off);
   const curve=(arr,col,w)=>{ctx.save();ctx.strokeStyle=col;ctx.lineWidth=w;ctx.lineJoin='round';ctx.beginPath();arr.forEach((v,i)=>{if(i>=data.length)return;const x=pad.l+step*i+step/2,yy=y(v);i?ctx.lineTo(x,yy):ctx.moveTo(x,yy)});ctx.stroke();ctx.restore()};
-  curve(e21,'rgba(226,189,104,.66)',1.35);curve(e9,'rgba(105,200,239,.82)',1.45);
+  curve(e21,'rgba(148,153,157,.72)',1.35);curve(e9,'rgba(238,240,240,.88)',1.45);
   if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){
-    const z1=y(Math.max(analysis.entryLow,analysis.entryHigh)),z2=y(Math.min(analysis.entryLow,analysis.entryHigh));ctx.fillStyle='rgba(105,200,239,.065)';ctx.fillRect(pad.l+pw*.28,Math.max(pad.t,z1),pw*.72,Math.max(2,Math.min(H-pad.b,z2)-Math.max(pad.t,z1)));
+    const z1=y(Math.max(analysis.entryLow,analysis.entryHigh)),z2=y(Math.min(analysis.entryLow,analysis.entryHigh));ctx.fillStyle='rgba(255,255,255,.055)';ctx.fillRect(pad.l+pw*.28,Math.max(pad.t,z1),pw*.72,Math.max(2,Math.min(H-pad.b,z2)-Math.max(pad.t,z1)));
   }
   data.forEach((c,i)=>{
-    const x=pad.l+step*i+step/2,up=c.close>=c.open,col=up?'#63d8ac':'#eb6a7d',hy=clamp(y(c.high),pad.t,H-pad.b),ly=clamp(y(c.low),pad.t,H-pad.b),oy=clamp(y(c.open),pad.t,H-pad.b),cy=clamp(y(c.close),pad.t,H-pad.b);
+    const x=pad.l+step*i+step/2,up=c.close>=c.open,col=up?'#dedfdf':'#707579',hy=clamp(y(c.high),pad.t,H-pad.b),ly=clamp(y(c.low),pad.t,H-pad.b),oy=clamp(y(c.open),pad.t,H-pad.b),cy=clamp(y(c.close),pad.t,H-pad.b);
     ctx.strokeStyle=col;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,hy);ctx.lineTo(x,ly);ctx.stroke();ctx.fillStyle=col;ctx.fillRect(x-bw/2,Math.min(oy,cy),bw,Math.max(2.2,Math.abs(oy-cy)));
     if(c.high>hi&&c.high-c.low>med*4){ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,pad.t+1);ctx.lineTo(x-3,pad.t+6);ctx.lineTo(x+3,pad.t+6);ctx.closePath();ctx.fill()}
     if(c.low<lo&&c.high-c.low>med*4){ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(x,H-pad.b-1);ctx.lineTo(x-3,H-pad.b-6);ctx.lineTo(x+3,H-pad.b-6);ctx.closePath();ctx.fill()}
   });
   const level=(p,label,col)=>{if(!Number.isFinite(p))return;const yy=y(p);if(yy<pad.t||yy>H-pad.b)return;ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle=col;ctx.beginPath();ctx.moveTo(pad.l+pw*.30,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.restore();ctx.fillStyle=col;ctx.font='700 7px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(label,pad.l+pw*.31,yy-4)};
-  if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){level(analysis.entryCenter,'ENTRY','#69c8ef');level(analysis.sl,'SL','#ff7385');level(analysis.tp1,'TP1','#6ee7c3');level(analysis.tp2,'TP2','rgba(110,231,195,.58)')}
+  if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){level(analysis.entryCenter,'ENTRY','#f4f4f1');level(analysis.sl,'SL','#777c80');level(analysis.tp1,'TP1','#d9dcde');level(analysis.tp2,'TP2','rgba(190,194,196,.7)')}
   const last=data.at(-1),prev=data.at(-2)||last,ly=y(last.close);ctx.save();ctx.setLineDash([2,4]);ctx.strokeStyle='rgba(220,229,236,.22)';ctx.beginPath();ctx.moveTo(pad.l,ly);ctx.lineTo(W-pad.r,ly);ctx.stroke();ctx.restore();
-  const tagCol=last.close>=prev.close?'#63d8ac':'#eb6a7d';ctx.fillStyle=tagCol;ctx.fillRect(W-pad.r+3,clamp(ly-9,pad.t,H-pad.b-18),pad.r-7,18);ctx.fillStyle='#06100d';ctx.font='700 8px ui-monospace,monospace';ctx.textAlign='center';ctx.fillText(last.close.toFixed(2),W-pad.r/2,clamp(ly+3,pad.t+12,H-pad.b-6));
+  const tagCol=last.close>=prev.close?'#dedfdf':'#707579';ctx.fillStyle=tagCol;ctx.fillRect(W-pad.r+3,clamp(ly-9,pad.t,H-pad.b-18),pad.r-7,18);ctx.fillStyle='#050505';ctx.font='700 8px ui-monospace,monospace';ctx.textAlign='center';ctx.fillText(last.close.toFixed(2),W-pad.r/2,clamp(ly+3,pad.t+12,H-pad.b-6));
   const labels=[0,Math.floor((data.length-1)/2),data.length-1];ctx.fillStyle='#5f6c79';ctx.font='7px -apple-system,sans-serif';labels.forEach((i,n)=>{ctx.textAlign=n===0?'left':n===2?'right':'center';ctx.fillText(candleTime(data[i]),n===0?pad.l:n===2?W-pad.r:pad.l+step*i+step/2,H-7)});
   if(Number.isInteger(chartView.cross)&&chartView.cross>=0&&chartView.cross<data.length){
     const i=chartView.cross,c=data[i],x=pad.l+step*i+step/2,yy=y(c.close);ctx.save();ctx.setLineDash([3,4]);ctx.strokeStyle='rgba(210,220,228,.25)';ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.restore();updateOhlc(c);
@@ -8263,6 +8264,14 @@ function sanitizedVisibleData(){
   }
   return{...vd,visible:clean}
 }
+function scheduleChartDraw(){
+  if(perfState.chartRaf)return;
+  perfState.chartRaf=requestAnimationFrame(()=>{
+    perfState.chartRaf=0;
+    if(activeView('marketView'))drawChart();
+  });
+}
+
 function drawChart(){
   if(!activeView('marketView'))return;
   const canvas=$('#marketChart'),vd=sanitizedVisibleData(),data=vd.visible,empty=$('#chartEmpty');
@@ -8272,7 +8281,7 @@ function drawChart(){
   canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);
   const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
   const W=rect.width,H=rect.height,pad={l:9,r:56,t:11,b:26},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
-  ctx.clearRect(0,0,W,H);ctx.fillStyle='#03080c';ctx.fillRect(0,0,W,H);
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#030405';ctx.fillRect(0,0,W,H);
 
   // Price scale uses only visible candles.
   const lows=data.map(c=>c.low),highs=data.map(c=>c.high);
@@ -8318,19 +8327,19 @@ function drawChart(){
     });
     if(started)ctx.stroke();ctx.restore()
   };
-  drawCurve(e21,'rgba(228,185,79,.68)',1.25);
-  drawCurve(e9,'rgba(99,199,240,.84)',1.35);
+  drawCurve(e21,'rgba(148,153,157,.72)',1.25);
+  drawCurve(e9,'rgba(238,240,240,.88)',1.35);
 
   if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){
     const z1=y(Math.max(analysis.entryLow,analysis.entryHigh)),z2=y(Math.min(analysis.entryLow,analysis.entryHigh));
     const top=Math.max(pad.t,Math.min(z1,z2)),bot=Math.min(H-pad.b,Math.max(z1,z2));
-    if(bot>top){ctx.fillStyle='rgba(99,199,240,.055)';ctx.fillRect(pad.l,top,pw,bot-top)}
+    if(bot>top){ctx.fillStyle='rgba(255,255,255,.05)';ctx.fillRect(pad.l,top,pw,bot-top)}
   }
 
   // Candles
   data.forEach((c,i)=>{
     const x=pad.l+step*i+step/2,up=c.close>=c.open;
-    const col=up?'#58d99f':'#ef6579';
+    const col=up?'#dedfdf':'#707579';
     let hy=clamp(y(c.high),pad.t,H-pad.b),ly=clamp(y(c.low),pad.t,H-pad.b);
     const oy=clamp(y(c.open),pad.t,H-pad.b),cy=clamp(y(c.close),pad.t,H-pad.b);
     if(ly<hy){const t=ly;ly=hy;hy=t}
@@ -8339,7 +8348,7 @@ function drawChart(){
     const top=Math.min(oy,cy),height=Math.max(2,Math.abs(oy-cy));
     ctx.fillStyle=col;ctx.fillRect(x-bodyW/2,top,bodyW,height);
     if(c.visualCapped){
-      ctx.fillStyle='rgba(240,200,108,.9)';
+      ctx.fillStyle='rgba(184,188,190,.9)';
       ctx.beginPath();ctx.arc(x,c.close>=c.open?hy+3:ly-3,1.7,0,Math.PI*2);ctx.fill()
     }
   });
@@ -8351,17 +8360,17 @@ function drawChart(){
     ctx.fillStyle=col;ctx.font='700 6.5px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(label,pad.l+4,yy-3)
   };
   if(analysis&&analysis.tf===currentTf&&analysis.market?.open&&analysis.side!=='WAIT'){
-    level(analysis.entryCenter,'ENTRY','#63c7f0');level(analysis.sl,'SL','#ff596e');
-    level(analysis.tp1,'TP1','#67e8c5');level(analysis.tp2,'TP2','rgba(103,232,197,.62)')
+    level(analysis.entryCenter,'ENTRY','#f4f4f1');level(analysis.sl,'SL','#777c80');
+    level(analysis.tp1,'TP1','#d9dcde');level(analysis.tp2,'TP2','rgba(190,194,196,.7)')
   }
 
   const last=data.at(-1),prev=data.at(-2)||last,ly=y(last.close);
   ctx.save();ctx.setLineDash([2,4]);ctx.strokeStyle='rgba(220,229,236,.20)';
   ctx.beginPath();ctx.moveTo(pad.l,ly);ctx.lineTo(W-pad.r,ly);ctx.stroke();ctx.restore();
-  const tagCol=last.close>=prev.close?'#58d99f':'#ef6579';
+  const tagCol=last.close>=prev.close?'#dedfdf':'#707579';
   const tagY=clamp(ly-8,pad.t,H-pad.b-16);
   ctx.fillStyle=tagCol;ctx.fillRect(W-pad.r+3,tagY,pad.r-7,16);
-  ctx.fillStyle='#06100d';ctx.font='700 7.5px ui-monospace,monospace';ctx.textAlign='center';
+  ctx.fillStyle='#050505';ctx.font='700 7.5px ui-monospace,monospace';ctx.textAlign='center';
   ctx.fillText(last.close.toFixed(2),W-pad.r/2,tagY+11);
 
   const labels=[0,Math.floor((data.length-1)/2),data.length-1];
@@ -8396,11 +8405,11 @@ $('#tfTabs').addEventListener('click',e=>{const b=e.target.closest('button[data-
 window.addEventListener('resize',()=>{requestAnimationFrame(drawChart);requestAnimationFrame(drawEquity)});
 
 function drawEquityNow(){
-  const c=$('#equityChart');if(!c||!validPlan(plan))return;const rows=plan.days.filter(d=>d.actual!=null),vals=[plan.start,...rows.map(d=>d.actual)],r=c.getBoundingClientRect();if(r.width<10)return;const dpr=Math.min(devicePixelRatio||1,2);c.width=r.width*dpr;c.height=r.height*dpr;const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,pad=16;ctx.clearRect(0,0,W,H);ctx.fillStyle='#080d12';ctx.fillRect(0,0,W,H);
+  const c=$('#equityChart');if(!c||!validPlan(plan))return;const rows=plan.days.filter(d=>d.actual!=null),vals=[plan.start,...rows.map(d=>d.actual)],r=c.getBoundingClientRect();if(r.width<10)return;const dpr=Math.min(devicePixelRatio||1,2);c.width=r.width*dpr;c.height=r.height*dpr;const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const W=r.width,H=r.height,pad=16;ctx.clearRect(0,0,W,H);ctx.fillStyle='#050607';ctx.fillRect(0,0,W,H);
   if(vals.length<2){ctx.fillStyle='#687685';ctx.font='9px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('บันทึก Session เพื่อสร้าง Equity Curve',W/2,H/2);return}
   let lo=Math.min(...vals),hi=Math.max(...vals),rg=Math.max(.01,hi-lo);lo-=rg*.15;hi+=rg*.15;rg=hi-lo;const x=i=>pad+(W-pad*2)*i/(vals.length-1),y=v=>pad+(hi-v)/rg*(H-pad*2);
   ctx.strokeStyle='rgba(158,173,188,.06)';for(let i=0;i<4;i++){const yy=pad+(H-pad*2)*i/3;ctx.beginPath();ctx.moveTo(pad,yy);ctx.lineTo(W-pad,yy);ctx.stroke()}
-  ctx.strokeStyle='#69c8ef';ctx.lineWidth=1.8;ctx.beginPath();vals.forEach((v,i)=>i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v)));ctx.stroke();ctx.fillStyle='#6ee7c3';vals.forEach((v,i)=>{ctx.beginPath();ctx.arc(x(i),y(v),2.3,0,Math.PI*2);ctx.fill()});
+  ctx.strokeStyle='#e2e4e4';ctx.lineWidth=1.8;ctx.beginPath();vals.forEach((v,i)=>i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v)));ctx.stroke();ctx.fillStyle='#979ca0';vals.forEach((v,i)=>{ctx.beginPath();ctx.arc(x(i),y(v),2.3,0,Math.PI*2);ctx.fill()});
 }
 
 function drawEquity(){
@@ -8780,7 +8789,7 @@ window.addEventListener('offline',()=>{renderFreshness();toast('ออฟไล�
 // V25.8: minimal no-cache Service Worker for PWA installability. It never caches HTML/data.
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=402',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=410',{updateViaCache:'none'})
       .catch(err=>console.warn('SW',err));
   });
 }

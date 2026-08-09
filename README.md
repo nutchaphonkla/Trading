@@ -1,6 +1,6 @@
-# KAGE CORE V40.2 · Full Redesign + Production Runtime
+# KAGE CORE V41.0 · Monochrome Anime Redesign + Production Runtime
 
-`index.html` keeps the complete, proven V39 production engine and applies the V40 Shadow Intelligence interface across every production view. The redesign is visual and structural only: existing storage keys, AI logic, market feeds, plan math and PWA behavior remain compatible.
+`index.html` keeps the complete, proven production engine and applies the V41 monochrome Shadow Intelligence interface across every production view. The redesign is presentation-first: existing storage keys, AI logic, market feeds, plan math and PWA behavior remain compatible.
 
 ## Preserved production features
 
@@ -12,11 +12,12 @@
 - Governed background brain, ML brain, champion/challenger governance and self-play artifacts
 - Twelve Data primary feed with isolated MT5 → Cloudflare Worker/D1 failover
 - Local storage compatibility for all existing V39 plan/settings/signal/history keys
-- V40.2 cache boundary and network-first service worker so installed apps do not receive mixed V39/V40 files
+- V41 cache boundary and network-first service worker so installed apps do not receive mixed-version files
 
-## V40.2 interface
+## V41.0 interface
 
-- Reference-matched black, cyan and gold KAGE CORE visual system
+- Graphite, black, white and silver anime visual system
+- Original generated hooded-character hero and avatar assets used consistently across launch, header and decision surfaces
 - Warden command banner, compact intelligence cards and circular AI core
 - Six production tabs: Overview, AI Market, Positions, Intel, Plan and History
 - Capital and target-profit controls remain editable and visible
@@ -25,7 +26,8 @@
 
 ## Runtime files
 
-- Main redesigned app: `index.html` with `kage-v40-full.css`
+- Main redesigned app: `index.html` with the compatibility layer `kage-v40-full.css` and V41 presentation layer `kage-v41-monochrome.css`
+- V41 artwork: `assets/kage-anime-hero-v41.webp` and `assets/kage-anime-avatar-v41.webp`
 - Exact pre-redesign production backup: `legacy-v39.html`
 - Older isolated experiment: `v40-preview.html` with `kage-v40.css` and `kage-v40.js`
 - Market/news packs: `xauusd.json`, `news.json`
