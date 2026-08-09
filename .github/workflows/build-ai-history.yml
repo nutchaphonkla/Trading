@@ -7,14 +7,16 @@ on:
     - cron: "23 * * * *"
 
   workflow_run:
-    workflows: ["Update XAUUSD data pack"]
-    types: [completed]
+    workflows:
+      - "Update XAUUSD data pack"
+    types:
+      - completed
 
 permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-learning-v36
+  group: onemonth-ai-learning-v362
   cancel-in-progress: true
 
 jobs:
@@ -47,7 +49,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-ml.txt
 
-      - name: Validate all AI builders
+      - name: Validate all V36.2 AI builders
         run: |
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
@@ -55,27 +57,104 @@ jobs:
           node --check build-ai-governance.mjs
           python -m py_compile ml-train.py
 
+      - name: Verify active market feed
+        run: |
+          node - <<'NODE'
+          const fs = require("fs");
+
+          if (!fs.existsSync("feed-health.json")) {
+            console.log(
+              "feed-health.json not found - historical brain can still rebuild"
+            );
+
+            process.exit(0);
+          }
+
+          const h = JSON.parse(
+            fs.readFileSync(
+              "feed-health.json",
+              "utf8"
+            )
+          );
+
+          console.log(
+            "ACTIVE FEED:",
+            h.active
+          );
+
+          console.log(
+            "MODE:",
+            h.mode
+          );
+
+          console.log(
+            "STATUS:",
+            h.status
+          );
+
+          console.log(
+            "REASON:",
+            h.reason
+          );
+
+          if (
+            h.switching?.mergeFeeds === true
+          ) {
+            throw new Error(
+              "Feed policy error: Twelve + MT5 must not be merged"
+            );
+          }
+          NODE
+
+      # ==================================================
+      # HISTORICAL BRAIN
+      # ==================================================
+
       - name: Rebuild rolling historical brain
         run: node build-ai-history.mjs
+
+      # ==================================================
+      # STATISTICAL CHALLENGER
+      # ==================================================
 
       - name: Train statistical challenger
         run: node build-ai-learning.mjs
 
+      # ==================================================
+      # OUTCOME JOURNAL
+      # ==================================================
+
       - name: Resolve old signal and pending outcomes
         run: node build-ai-journal.mjs
 
+      # ==================================================
+      # CHAMPION / CHALLENGER
+      # ==================================================
+
       - name: Champion challenger governance
         run: node build-ai-governance.mjs
+
+      # ==================================================
+      # PYTHON AUTOML
+      # ==================================================
 
       - name: Train autonomous Python ML tournament
         env:
           ML_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: python ml-train.py
 
+      # ==================================================
+      # JOURNAL NEW QUALIFIED PLANS
+      # ==================================================
+
       - name: Journal deployed and ML pending plans
         run: node build-ai-journal.mjs
 
-      - name: Verify V36 autonomous brain packs
+      # ==================================================
+      # VERIFY EVERYTHING
+      # ==================================================
+
+      - name: Verify V36.2 autonomous brain packs
         run: |
           python - <<'PY'
           import json
@@ -96,76 +175,213 @@ jobs:
               p = Path(name)
 
               if not p.exists():
-                  raise SystemExit(f"missing {name}")
+                  raise SystemExit(
+                      f"missing {name}"
+                  )
 
-              json.loads(p.read_text())
+              json.loads(
+                  p.read_text()
+              )
 
           ml = json.loads(
-              Path("ai-ml-brain.json").read_text()
+              Path(
+                  "ai-ml-brain.json"
+              ).read_text()
+          )
+
+          if Path(
+              "feed-health.json"
+          ).exists():
+
+              feed = json.loads(
+                  Path(
+                      "feed-health.json"
+                  ).read_text()
+              )
+
+          else:
+              feed = {}
+
+          print(
+              "FEED",
+              {
+                  "active":
+                      feed.get("active"),
+
+                  "mode":
+                      feed.get("mode"),
+
+                  "status":
+                      feed.get("status"),
+
+                  "reason":
+                      feed.get("reason"),
+              },
           )
 
           print(
               "PYTHON ML",
               {
-                  "ready": ml.get("ready"),
-                  "status": ml.get("status"),
-                  "health": (
-                      ml.get("modelHealth") or {}
-                  ).get("score"),
-                  "samples": (
-                      ml.get("training") or {}
-                  ).get("candidateSamples"),
-                  "filled": (
-                      ml.get("training") or {}
-                  ).get("filledSamples"),
-                  "primary": (
+                  "ready":
+                      ml.get("ready"),
+
+                  "status":
+                      ml.get("status"),
+
+                  "health":
                       (
-                          ml.get("current") or {}
-                      ).get("primary") or {}
-                  ).get("type"),
-                  "reference": (
+                          ml.get(
+                              "modelHealth"
+                          )
+                          or {}
+                      ).get("score"),
+
+                  "samples":
                       (
-                          ml.get("current") or {}
-                      ).get("reference") or {}
-                  ).get("type"),
-                  "qualified": (
-                      ml.get("current") or {}
-                  ).get("qualifiedCount"),
-                  "models": (
+                          ml.get(
+                              "training"
+                          )
+                          or {}
+                      ).get(
+                          "candidateSamples"
+                      ),
+
+                  "filled":
+                      (
+                          ml.get(
+                              "training"
+                          )
+                          or {}
+                      ).get(
+                          "filledSamples"
+                      ),
+
+                  "primary":
+                      (
+                          (
+                              ml.get(
+                                  "current"
+                              )
+                              or {}
+                          ).get(
+                              "primary"
+                          )
+                          or {}
+                      ).get("type"),
+
+                  "reference":
+                      (
+                          (
+                              ml.get(
+                                  "current"
+                              )
+                              or {}
+                          ).get(
+                              "reference"
+                          )
+                          or {}
+                      ).get("type"),
+
+                  "qualified":
+                      (
+                          ml.get(
+                              "current"
+                          )
+                          or {}
+                      ).get(
+                          "qualifiedCount"
+                      ),
+
+                  "models":
                       (
                           (
                               (
-                                  ml.get("autoML") or {}
-                              ).get("heads") or {}
-                          ).get("tp1") or {}
-                      ).get("selection") or {}
-                  ).get("selectedModels"),
-                  "calibration": (
+                                  (
+                                      ml.get(
+                                          "autoML"
+                                      )
+                                      or {}
+                                  ).get(
+                                      "heads"
+                                  )
+                                  or {}
+                              ).get(
+                                  "tp1"
+                              )
+                              or {}
+                          ).get(
+                              "selection"
+                          )
+                          or {}
+                      ).get(
+                          "selectedModels"
+                      ),
+
+                  "calibration":
                       (
                           (
                               (
-                                  ml.get("autoML") or {}
-                              ).get("heads") or {}
-                          ).get("tp1") or {}
-                      ).get("calibration") or {}
-                  ).get("selected"),
-                  "tp1Auc": (
+                                  (
+                                      ml.get(
+                                          "autoML"
+                                      )
+                                      or {}
+                                  ).get(
+                                      "heads"
+                                  )
+                                  or {}
+                              ).get(
+                                  "tp1"
+                              )
+                              or {}
+                          ).get(
+                              "calibration"
+                          )
+                          or {}
+                      ).get(
+                          "selected"
+                      ),
+
+                  "tp1Auc":
                       (
                           (
-                              ml.get("validation") or {}
-                          ).get("tp1") or {}
-                      ).get("auc")
-                  ),
-                  "tp1Brier": (
+                              (
+                                  ml.get(
+                                      "validation"
+                                  )
+                                  or {}
+                              ).get(
+                                  "tp1"
+                              )
+                              or {}
+                          ).get(
+                              "auc"
+                          )
+                      ),
+
+                  "tp1Brier":
                       (
                           (
-                              ml.get("validation") or {}
-                          ).get("tp1") or {}
-                      ).get("brier")
-                  ),
+                              (
+                                  ml.get(
+                                      "validation"
+                                  )
+                                  or {}
+                              ).get(
+                                  "tp1"
+                              )
+                              or {}
+                          ).get(
+                              "brier"
+                          )
+                      ),
               },
           )
           PY
+
+      # ==================================================
+      # COMMIT AI BRAIN
+      # ==================================================
 
       - name: Commit governed brains and ML packs
         shell: bash
@@ -190,10 +406,12 @@ jobs:
           done
 
           if git diff --cached --quiet; then
-            echo "No brain changes"
+            echo "No AI brain changes"
             exit 0
           fi
 
-          git commit -m "ai: refresh V36 autonomous ML plan brain"
+          git commit -m "ai: refresh V36.2 primary failover AutoML brain"
+
           git pull --rebase origin "${GITHUB_REF_NAME}"
+
           git push origin "HEAD:${GITHUB_REF_NAME}"
