@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="KAGE CORE">
-<title>KAGE CORE · Shadow Intelligence V39</title>
+<title>KAGE CORE · Shadow Intelligence V40</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -4715,7 +4715,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 .v38-details{margin:0 14px 16px;border:1px solid rgba(67,171,184,.10);border-radius:16px;background:rgba(2,12,17,.58);overflow:hidden}.v38-details summary{list-style:none;cursor:pointer;padding:11px 12px;color:#77909b;font-size:6px;font-weight:950;letter-spacing:.13em;display:flex;justify-content:space-between}.v38-details summary::-webkit-details-marker{display:none}.v38-details summary span{color:#4e626d;font-weight:700;letter-spacing:.03em}.v38-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 10px 10px}.v38-detail-grid .brain-side-card{min-height:72px!important}.v38-detail-note{margin:0 10px 7px;padding:9px 10px;border:1px solid rgba(59,155,168,.09);border-radius:12px;color:#6f838e;font-size:6.2px;line-height:1.4}.v38-details>#brainLastUpdate{display:block;padding:3px 11px 11px;color:#4f626c;font-size:5.8px}.v38-hidden-runtime{display:none!important}
 @media(max-width:420px){.v38-head{padding:18px 14px 14px}.v38-head h3{font-size:24px}.v38-health-chip{display:none}.v38-source-row{padding:10px 10px 4px;gap:6px}.v38-source-card{padding:10px 8px;min-height:86px}.v38-source-card b{font-size:9.5px}.v38-source-card.price-card b{font-size:15px}.v38-core-zone{padding:16px 10px 10px}.v38-orbit{width:min(78vw,270px)!important}.v38-selfplay{margin-left:10px;margin-right:10px;padding:12px}.v38-selfplay-grid{gap:5px}.v38-selfplay-grid>div{padding:9px 6px}.v38-selfplay-grid b{font-size:12px}.v38-health-row{padding-left:10px;padding-right:10px;gap:5px}.v38-health-row .brain-side-card{padding:10px 8px!important}.v38-health-row .brain-side-card span{font-size:5.4px!important}.v38-health-row .brain-side-card b{font-size:10.5px!important}.v38-activity,.v38-details{margin-left:10px;margin-right:10px}.v38-detail-grid{grid-template-columns:1fr 1fr}.v38-detail-grid .brain-side-card:last-child{grid-column:1/-1}}
 </style>
-\n<style id="kage-core-v39-theme">
+<style id="kage-core-v39-theme">
 /* ==========================================================
    KAGE CORE V39 — SHADOW INTELLIGENCE UI REFORGE
    UI-only layer. V38 data/ML/self-play engine stays intact.
@@ -4778,9 +4778,10 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 }
 @media(max-width:390px){.brandcopy small{max-width:125px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.market-pill{display:none!important}.kage-command-hero{min-height:337px}.kage-hero-copy{width:82%}.kage-hero-art{right:-21%;width:84%;opacity:.56}.kage-hero-copy h1{font-size:29px}.kage-hero-status>span{min-width:76px}.bottom-nav button span{font-size:6px!important}}
 @media(prefers-reduced-motion:reduce){.brandmark-premium:after{animation:none!important}.card,.kage-command-hero{transition:none!important}}
-</style>\n
+</style>
+<link rel="stylesheet" href="./kage-v40-full.css?v=402">
 </head>
-<body>
+<body class="v40-full">
 
 <div id="installGate" aria-live="polite">
   <div class="install-shell">
@@ -4853,18 +4854,18 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     <section class="view active" id="homeView">
       <article class="kage-command-hero" id="kageCommandHero">
         <div class="kage-hero-gridline" aria-hidden="true"></div>
-        <img class="kage-hero-art" src="./kage-warden.webp?v=390" alt="KAGE CORE shadow warden" loading="eager">
+        <img class="kage-hero-art" src="./assets/kage-hero-v40.webp?v=402" alt="KAGE CORE shadow decision engine" loading="eager">
         <div class="kage-hero-vignette" aria-hidden="true"></div>
         <div class="kage-hero-copy">
-          <div class="kage-eyebrow"><i></i> KAGE CORE // SHADOW INTELLIGENCE</div>
-          <h1>อ่านตลาดในเงา<br><span>รอเฉพาะจุดที่คม</span></h1>
-          <p>V38 Self‑Play Brain ทำงานเหมือนเดิม · V39 เปลี่ยนเฉพาะประสบการณ์ใช้งานให้สะอาด คม และอ่านสถานะได้เร็วขึ้น</p>
+          <div class="kage-eyebrow"><i></i> AI CORE ACTIVE // XAUUSD</div>
+          <h1>Shadow<br><span>Decision Engine</span></h1>
+          <p>คิดเหนือความผันผวน · ลงมือด้วยข้อมูล · ชนะด้วยวินัย</p>
           <div class="kage-hero-status">
             <span><small>DECISION</small><b id="kageHeroDecision">WAIT</b></span>
             <span><small>FEED</small><b id="kageHeroFeed">CHECK</b></span>
             <span><small>CORE</small><b id="kageHeroTrust">—</b></span>
           </div>
-          <button class="kage-hero-action" id="kageOpenBrain" type="button"><i></i><span>OPEN SHADOW BRAIN</span><b>→</b></button>
+          <button class="kage-hero-action" id="kageOpenBrain" type="button"><i></i><span>OPEN SHADOW SCAN</span><b>→</b></button>
         </div>
       </article>
       <div class="hero-grid">
@@ -4965,8 +4966,8 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
       <article class="card ai-hero">
         <div class="ai-hero-top">
           <div>
-            <div class="v27-page-symbol ai-symbol">✦</div><div class="kicker">AI EXECUTION DESK</div>
-            <h2>อ่านทรงก่อน<br>วางจุดดักรอให้พร้อม</h2>
+            <div class="v27-page-symbol ai-symbol">✦</div><div class="kicker">POSITIONS · LIVE DECISION</div>
+            <h2>Execution<br>Command Console</h2>
             <p>อ่าน H1 / M15 / M5 + Historical + ML เพื่อเลือก BUY/SELL LIMIT หรือ STOP ที่คุ้มที่สุด แล้วรอราคาเข้าหาเรา ไม่ไล่ราคา</p>
           </div>
           <button class="ai-switch" id="aiSwitch"><i></i><span><b>ASSIST OFF</b><small>OPTIONAL LLM</small></span></button>
@@ -5378,8 +5379,8 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     <section class="view" id="marketView">
       <div class="page-intro ai-market-intro">
         <div>
-          <div class="kicker">KAGE CORE · SHADOW MARKET</div>
-          <h1>Shadow Intelligence</h1>
+          <div class="kicker">KAGE CORE · AI MARKET</div>
+          <h1>AI Market Core</h1>
           <p>ดูสถานะสมอง ML, Feed, Calibration, Drift และ Pending Engine จากข้อมูลจริงในระบบ · ตัดกราฟและปุ่ม Timeframe ที่ไม่จำเป็นออกแล้ว</p>
         </div>
         <span class="status-orb" id="marketPageStatus"><i></i><b>DATA</b></span>
@@ -5554,7 +5555,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 
     <section class="view" id="newsView">
       <div class="page-intro">
-        <div><div class="v27-section-title"><span class="v27-page-symbol">≋</span><div><div class="kicker">MACRO EVENT INTELLIGENCE</div><h1>Macro Watch</h1></div></div><p>ข่าว USD ที่กระทบทอง · เวลาไทย · BEST WINDOW จะตัดช่วง NEWS LOCK อัตโนมัติ</p></div>
+        <div><div class="v27-section-title"><span class="v27-page-symbol">≋</span><div><div class="kicker">EVENT INTELLIGENCE</div><h1>Market Intel</h1></div></div><p>ข่าว USD ที่กระทบทอง · เวลาไทย · BEST WINDOW จะตัดช่วง NEWS LOCK อัตโนมัติ</p></div>
         <span class="status-orb news" id="newsPageStatus"><i></i><b>NEWS</b></span>
       </div>
       <article class="card news-card">
@@ -5589,7 +5590,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     </section>
 
     <section class="view" id="planView">
-      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▦</span><div><div class="kicker">CAPITAL ROADMAP</div><h3>30‑Day Campaign</h3></div></div></div><button id="jumpTodayBtn">TODAY</button></div>
+      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▦</span><div><div class="kicker">CAPITAL CAMPAIGN</div><h3>30‑Day Plan</h3></div></div></div><button id="jumpTodayBtn">TODAY</button></div>
       <article class="card plan-summary">
         <div class="mission-head"><div><div class="kicker">PLAN PROGRESS</div><h3 id="planProgressText">0 / 30</h3></div><div class="badge" id="planPace">ON PLAN</div></div>
         <div class="progress"><i id="planProgressBar"></i></div>
@@ -5599,7 +5600,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
     </section>
 
     <section class="view" id="statsView">
-      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▥</span><div><div class="kicker">ACCOUNT ANALYTICS</div><h3>Performance Archive</h3></div></div></div><span>REAL SESSIONS</span></div>
+      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▥</span><div><div class="kicker">MEMORY ARCHIVE</div><h3>Performance History</h3></div></div></div><span>REAL SESSIONS</span></div>
       <div class="stats-grid">
         <article class="card stat"><span>COMPLETED</span><b id="statCompleted">0</b></article>
         <article class="card stat"><span>HIT RATE</span><b id="statHitRate">—</b></article>
@@ -5645,12 +5646,12 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 </div>
 
 <nav class="bottom-nav bottom-nav-six">
-  <button class="active" data-nav="homeView"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>CORE</span></button>
-  <button data-nav="aiView"><svg viewBox="0 0 24 24"><path d="M8 9V7a4 4 0 0 1 8 0v2M6 9h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"/><path d="M9 13h.01M15 13h.01M9 16h6"/></svg><span>BRAIN</span></button>
-  <button data-nav="marketView"><svg viewBox="0 0 24 24"><path d="M4 18V9M8 15V5M12 19V11M16 14V7M20 17V3"/><path d="M2 21h20"/></svg><span>MARKET</span></button>
-  <button data-nav="newsView"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>NEWS</span></button>
+  <button class="active" data-nav="homeView"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>OVERVIEW</span></button>
+  <button data-nav="marketView"><svg viewBox="0 0 24 24"><path d="M4 18V9M8 15V5M12 19V11M16 14V7M20 17V3"/><path d="M2 21h20"/></svg><span>AI MARKET</span></button>
+  <button data-nav="aiView"><svg viewBox="0 0 24 24"><path d="M8 9V7a4 4 0 0 1 8 0v2M6 9h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"/><path d="M9 13h.01M15 13h.01M9 16h6"/></svg><span>POSITIONS</span></button>
+  <button data-nav="newsView"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>INTEL</span></button>
   <button data-nav="planView"><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg><span>PLAN</span></button>
-  <button data-nav="statsView"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>STATS</span></button>
+  <button data-nav="statsView"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg><span>HISTORY</span></button>
 </nav>
 
 <div class="modal hidden" id="planModal" aria-hidden="true">
@@ -5918,7 +5919,7 @@ const BG_FRESH_OPEN_MS=60*60*1000;   // model may support live decisions for max
 const BG_LAST_SESSION_MS=72*60*60*1000;
 const V341_DATA_RETENTION_LABEL='M15 90D · H1 180D';
 
-const APP_VERSION='V39 KAGE CORE';
+const APP_VERSION='V40.2 KAGE CORE';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -8779,7 +8780,7 @@ window.addEventListener('offline',()=>{renderFreshness();toast('ออฟไล�
 // V25.8: minimal no-cache Service Worker for PWA installability. It never caches HTML/data.
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=330',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=402',{updateViaCache:'none'})
       .catch(err=>console.warn('SW',err));
   });
 }
@@ -8877,7 +8878,7 @@ if(appLaunch.isStandalone()){
 })();
 </script>
 
-\n<script id="kage-core-v39-runtime">
+<script id="kage-core-v39-runtime">
 (()=>{
   const $=(s)=>document.querySelector(s);
   const text=(s,f='—')=>($(s)?.textContent||f).trim();
@@ -8893,6 +8894,6 @@ if(appLaunch.isStandalone()){
   setInterval(syncKageHero,1200);
   setTimeout(syncKageHero,250);
 })();
-</script>\n
+</script>
 </body>
 </html>
