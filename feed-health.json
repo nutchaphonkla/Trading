@@ -1,15 +1,15 @@
 {
-  "version": "V42",
-  "generatedAt": "2026-08-09T19:57:56.892Z",
+  "version": "V44",
+  "generatedAt": "2026-08-09T21:13:18.485Z",
   "symbol": "XAU/USD",
-  "marketLikelyOpen": false,
+  "marketLikelyOpen": true,
   "active": "TWELVE_DATA",
-  "mode": "LAST_SESSION",
-  "status": "LAST_SESSION",
-  "reason": "Market closed; Twelve last session",
-  "latestM1Ts": 1786305360000,
-  "latestM1AgeMs": 116892,
-  "closedBarWatermark": 1786305420000,
+  "mode": "API_ECO",
+  "status": "LIVE",
+  "reason": "MT5 offline: switched automatically to Twelve Data API ECO mode",
+  "latestM1Ts": 1786309860000,
+  "latestM1AgeMs": 138476,
+  "closedBarWatermark": 1786309920000,
   "primary": {
     "provider": "Twelve Data",
     "configured": true,
@@ -18,49 +18,83 @@
     "fresh": true,
     "status": "ONLINE",
     "httpStatus": 200,
-    "latestTs": 1786305360000,
-    "ageMs": 116729,
-    "closedBarWatermark": 1786305471708,
+    "latestTs": 1786309860000,
+    "ageMs": 134697,
+    "closedBarWatermark": 1786309989687,
     "droppedOpenBars": 0,
     "credits": {
       "api-credits-used": "1",
       "api-credits-left": "7"
     },
-    "fetchedAt": "2026-08-09T19:57:56.729Z",
+    "fetchedAt": "2026-08-09T21:13:14.697Z",
     "error": null
   },
   "fallback": {
     "provider": "MT5 -> Cloudflare Worker/D1",
     "configured": true,
-    "checked": false,
-    "ok": false,
+    "checked": true,
+    "connected": true,
+    "ok": true,
     "fresh": false,
     "publicFeedUrl": "https://onemonth-tv-feed.nutchaphonsit.workers.dev/public-feed",
-    "status": "STANDBY",
+    "status": "STALE",
+    "httpStatus": 200,
+    "latestTs": 1786136160000,
+    "ageMs": 173834199,
+    "count": 10000,
+    "closedBarWatermark": 1786309989175,
+    "droppedOpenBars": 0,
+    "fetchedAt": "2026-08-09T21:13:14.199Z",
+    "heartbeat": {
+      "connected": true,
+      "status": "ok",
+      "bars": 60000,
+      "receiveAgeMs": 7072,
+      "candleAgeMs": 173832928,
+      "latestTs": 1786136160000,
+      "checkedAt": "2026-08-09T21:13:12.956Z"
+    },
     "error": null
   },
+  "training": {
+    "file": "xauusd-training.json",
+    "feed": "TWELVE_DATA_PRIMARY",
+    "mode": "ECO",
+    "counts": {
+      "M1": 5106,
+      "M5": 1021,
+      "M15": 340,
+      "H1": 85
+    }
+  },
   "switching": {
-    "policy": "PRIMARY_ONLY_THEN_ISOLATED_FAILOVER",
+    "policy": "MT5_FIRST_THEN_TWELVE_API_ECO",
     "mergeFeeds": false,
-    "primaryRecoveryStreak": 2,
-    "primaryRecoveryRequired": 2,
-    "note": "Only one live feed is selected. Primary and fallback histories are stored separately. No price averaging or simultaneous source merge."
+    "note": "MT5 heartbeat online => MT5 live + heavy historical training and zero Twelve request. MT5 offline => Twelve Data ECO. Histories remain isolated."
   },
   "isolation": {
     "primaryFile": "xauusd-primary.json",
     "fallbackFile": "xauusd-fallback.json",
+    "trainingFile": "xauusd-training.json",
     "activeFile": "xauusd.json",
-    "trainingRecommendation": "Train ML on PRIMARY file; score current ACTIVE file."
+    "rule": "Exactly one source supplies active/training views at a time. No cross-source candle merge."
   },
   "efficiency": {
     "twelveRequestsThisRun": 1,
-    "fallbackRequestsThisRun": 0,
-    "strategy": "Twelve M1 PRIMARY. MT5 queried only during failure/recovery/closed-session fallback.",
-    "primaryTrainingRetentionDays": {
+    "mt5RequestsThisRun": 5,
+    "mt5HistoryPagesThisRun": 3,
+    "strategy": "MT5-first auto router; Twelve Data is credit-saving ECO fallback only.",
+    "primaryRetentionDays": {
       "M1": 30,
       "M5": 90,
       "M15": 180,
       "H1": 365
+    },
+    "mt5RetentionDays": {
+      "M1": 180,
+      "M5": 240,
+      "M15": 365,
+      "H1": 730
     },
     "activeAppRetentionDays": {
       "M1": 7,
