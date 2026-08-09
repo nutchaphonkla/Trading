@@ -14,14 +14,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-v37
+  group: onemonth-ai-v38
   cancel-in-progress: true
 
 jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
 
     steps:
       - name: Checkout latest repository
@@ -46,12 +46,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-ml.txt
 
-      - name: Validate V37 brain source
+      - name: Validate V38 brain source
         run: |
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
           node --check build-ai-journal.mjs
           node --check build-ai-governance.mjs
+          node --check build-ai-shadow.mjs
+          python -m py_compile selfplay-lab.py
           python -m py_compile ml-train.py
 
       - name: Verify PRIMARY training isolation
@@ -76,33 +78,42 @@ jobs:
           }
           NODE
 
+      - name: Resolve shadow ideas with newest future M1
+        run: node build-ai-shadow.mjs
+
       - name: Rebuild PRIMARY historical brain
         run: node build-ai-history.mjs
 
       - name: Train PRIMARY statistical challenger
         run: node build-ai-learning.mjs
 
-      - name: Resolve active-feed outcomes
+      - name: Resolve deployed signal and plan outcomes
         run: node build-ai-journal.mjs
 
       - name: Statistical champion challenger governance
         run: node build-ai-governance.mjs
 
-      - name: Train V37 Python autonomous precision brain
+      - name: V38 self-play lab threshold counterfactual autopsy
+        run: python selfplay-lab.py
+
+      - name: Train V38 Python autonomous self-play precision brain
         env:
           ML_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: python ml-train.py
 
-      - name: Journal V37 qualified pending plans
+      - name: Capture all 12 V38 candidates for next forward test
+        run: node build-ai-shadow.mjs
+
+      - name: Journal V38 qualified pending plans
         run: node build-ai-journal.mjs
 
-      - name: Verify V37 packs
+      - name: Verify V38 packs
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          for name in [
+          names = [
               'ai-history.json',
               'ai-learning.json',
               'ai-learning-candidate.json',
@@ -110,10 +121,16 @@ jobs:
               'ai-outcome-journal.json',
               'ai-ml-brain.json',
               'ai-ml-candidate.json',
-              'ai-ml-governance.json'
-          ]:
-              p=Path(name)
+              'ai-ml-governance.json',
+              'ai-shadow-journal.json',
+              'ai-selfplay.json',
+              'ai-thresholds.json',
+              'ai-counterfactual.json',
+              'ai-autopsy.json'
+          ]
 
+          for name in names:
+              p=Path(name)
               if p.exists():
                   json.loads(p.read_text())
 
@@ -121,7 +138,9 @@ jobs:
               Path('ai-ml-brain.json').read_text()
           ) if Path('ai-ml-brain.json').exists() else {}
 
-          print('V37',{
+          sp=ml.get('selfPlay') or {}
+
+          print('V38',{
               'version':ml.get('version'),
               'ready':ml.get('ready'),
               'status':ml.get('status'),
@@ -131,15 +150,18 @@ jobs:
               'mergeFeeds':(ml.get('dataIsolation') or {}).get('mergeFeeds'),
               'candidateCount':(ml.get('current') or {}).get('candidateCount'),
               'qualified':(ml.get('current') or {}).get('qualifiedCount'),
-              'regime':(ml.get('current') or {}).get('regime'),
-              'session':(ml.get('current') or {}).get('session'),
+              'shadowTotal':(sp.get('shadow') or {}).get('total'),
+              'shadowResolved':(sp.get('shadow') or {}).get('resolved'),
+              'autoThreshold':(sp.get('thresholdOptimizer') or {}).get('active'),
+              'counterfactualReady':(sp.get('counterfactual') or {}).get('ready'),
+              'autopsyReady':(sp.get('autopsy') or {}).get('ready'),
           })
 
           if (ml.get('dataIsolation') or {}).get('mergeFeeds') is True:
-              raise SystemExit('V37 policy violation: mergeFeeds true')
+              raise SystemExit('V38 policy violation: mergeFeeds true')
           PY
 
-      - name: Commit V37 brain packs
+      - name: Commit V38 brain and self-play packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -154,7 +176,12 @@ jobs:
             ai-outcome-journal.json \
             ai-ml-brain.json \
             ai-ml-candidate.json \
-            ai-ml-governance.json
+            ai-ml-governance.json \
+            ai-shadow-journal.json \
+            ai-selfplay.json \
+            ai-thresholds.json \
+            ai-counterfactual.json \
+            ai-autopsy.json
           do
             if [ -e "$f" ]; then
               git add "$f"
@@ -162,10 +189,10 @@ jobs:
           done
 
           if git diff --cached --quiet; then
-            echo "No AI brain changes"
+            echo "No V38 brain changes"
             exit 0
           fi
 
-          git commit -m "ai: refresh V37 autonomous precision brain"
+          git commit -m "ai: refresh V38 self-play precision brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
