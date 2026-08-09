@@ -2,12 +2,10 @@ import fs from 'node:fs';
 
 const INPUT='xauusd.json';
 const OUTPUT='ai-history.json';
-const VERSION='3.0';
-const ENGINE='ONEMONTH-HISTORY-GUARD-V3';
 const TF_MS={M1:60000,M5:300000,M15:900000,H1:3600000};
 const FWD={M1:15,M5:8,M15:4,H1:2};
 const STRIDE={M1:12,M5:5,M15:3,H1:1};
-const HALF_LIFE_DAYS=60;
+const HALF_LIFE_DAYS=45;
 const PRIOR=12;
 const DAY=86400000;
 const Z90=1.645;
@@ -43,8 +41,9 @@ function analyzeTf(c,tf){
 }
 function fingerprint(pack){const t=pack.timeframes||pack.data||pack||{},rows=['M1','M5','M15','H1'].map(tf=>{const a=t[tf]||[];return`${tf}:${a.length}:${a[0]?.ts||a[0]?.datetime||''}:${a.at(-1)?.ts||a.at(-1)?.datetime||''}`}).join('|');let h=2166136261;for(let i=0;i<rows.length;i++){h^=rows.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16)}
 if(!fs.existsSync(INPUT)){console.error(`Missing ${INPUT}`);process.exit(1)}
-const pack=JSON.parse(fs.readFileSync(INPUT,'utf8')),sourceFingerprint=fingerprint(pack),raw=pack.timeframes||pack.data||pack||{};try{if(fs.existsSync(OUTPUT)){const prev=JSON.parse(fs.readFileSync(OUTPUT,'utf8'));if(prev?.engine===ENGINE&&prev?.sourceFingerprint===sourceFingerprint){console.log(`No new market data: ${OUTPUT} already built from ${sourceFingerprint}`);process.exit(0)}}}catch(_){}const M1=clean(raw.M1||[]),data={M1};for(const tf of ['M5','M15','H1']){const own=clean(raw[tf]||[]);data[tf]=M1.length>=180?aggregate(M1,tf):own}
+const pack=JSON.parse(fs.readFileSync(INPUT,'utf8')),raw=pack.timeframes||pack.data||pack||{},M1=clean(raw.M1||[]),data={M1};for(const tf of ['M5','M15','H1']){const own=clean(raw[tf]||[]);const derived=M1.length>=180?aggregate(M1,tf):[];data[tf]=own.length>=derived.length?own:derived}
 const timeframes={};for(const tf of ['M1','M5','M15','H1']){const r=analyzeTf(data[tf]||[],tf);if(r)timeframes[tf]=r}
-const weights={H1:.36,M15:.34,M5:.20,M1:.10};let signed=0,wSum=0,totalCandles=0,totalPatterns=0,totalSamples=0,biasVotes=[],uncertaintyWeighted=0;for(const[tf,row]of Object.entries(timeframes)){const w=weights[tf]||.1,p=row.latest.upProbability;signed+=(p-50)*w;uncertaintyWeighted+=(row.latest.uncertaintyPts||90)*w;wSum+=w;totalCandles+=row.candles;totalPatterns+=row.patterns.length;totalSamples+=Number(row.sampleCount)||0;biasVotes.push(row.latest.bias)}const upProbability=Math.round(clamp(50+(wSum?signed/wSum:0),5,95)),globalBias=upProbability>=55?'BUY':upProbability<=45?'SELL':'NEUTRAL',same=biasVotes.filter(x=>x===globalBias).length,agreement=biasVotes.length?Math.round(same/biasVotes.length*100):0,uncertainty=wSum?uncertaintyWeighted/wSum:90,sampleDepth=clamp(Math.log10(totalSamples+1)/3*100,0,100),confidence=Math.round(clamp(agreement*.40+(100-uncertainty)*.35+sampleDepth*.25,0,100));
-const out={version:VERSION,engine:ENGINE,symbol:'XAUUSD',generatedAt:new Date().toISOString(),sourceGeneratedAt:pack.generatedAt||null,sourceFingerprint,ready:Object.keys(timeframes).length>=2,recency:{halfLifeDays:HALF_LIFE_DAYS},totalCandles,totalSamples,timeframes,global:{bias:globalBias,upProbability,agreement,totalPatterns,totalSamples,uncertaintyPts:Number(uncertainty.toFixed(1)),sampleDepth:Number(sampleDepth.toFixed(1)),confidence}};
+const weights={H1:.36,M15:.34,M5:.20,M1:.10};let signed=0,wSum=0,totalCandles=0,totalPatterns=0,biasVotes=[],uncertaintyWeighted=0;for(const[tf,row]of Object.entries(timeframes)){const w=weights[tf]||.1,p=row.latest.upProbability;signed+=(p-50)*w;uncertaintyWeighted+=(row.latest.uncertaintyPts||90)*w;wSum+=w;totalCandles+=row.candles;totalPatterns+=row.patterns.length;biasVotes.push(row.latest.bias)}const upProbability=Math.round(clamp(50+(wSum?signed/wSum:0),5,95)),globalBias=upProbability>=55?'BUY':upProbability<=45?'SELL':'NEUTRAL',same=biasVotes.filter(x=>x===globalBias).length,agreement=biasVotes.length?Math.round(same/biasVotes.length*100):0,uncertainty=wSum?uncertaintyWeighted/wSum:90,confidence=Math.round(clamp(agreement*.55+(100-uncertainty)*.45,0,100));
+const coverageFrom=Object.values(timeframes).map(r=>Date.parse(r.from)).filter(Number.isFinite),coverageTo=Object.values(timeframes).map(r=>Date.parse(r.to)).filter(Number.isFinite),coverageDays=coverageFrom.length&&coverageTo.length?(Math.max(...coverageTo)-Math.min(...coverageFrom))/DAY:0;
+const out={version:'2.1',engine:'ONEMONTH-HISTORY-V2.1',symbol:'XAUUSD',generatedAt:new Date().toISOString(),sourceGeneratedAt:pack.generatedAt||null,sourceFingerprint:fingerprint(pack),ready:Object.keys(timeframes).length>=2,coverageDays:Number(coverageDays.toFixed(1)),recency:{halfLifeDays:HALF_LIFE_DAYS},totalCandles,timeframes,global:{bias:globalBias,upProbability,agreement,totalPatterns,coverageDays:Number(coverageDays.toFixed(1)),uncertaintyPts:Number(uncertainty.toFixed(1)),confidence}};
 fs.writeFileSync(OUTPUT,JSON.stringify(out,null,2));console.log(`Built ${OUTPUT}: ${globalBias} ${upProbability}% | confidence ${confidence} | ${totalCandles} candles | ${totalPatterns} patterns`);

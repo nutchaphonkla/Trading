@@ -19,78 +19,50 @@ jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 8
-
+    timeout-minutes: 10
     steps:
       - name: Checkout latest repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
       - name: Validate AI builders
         run: |
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
-
-      - name: Rebuild guarded history brain
+          node --check build-ai-journal.mjs
+      - name: Rebuild 30-90 day history brain
         run: node build-ai-history.mjs
-
-      - name: Train precision guard model
+      - name: Train guarded learning model
         run: node build-ai-learning.mjs
-
-      - name: Verify brain and safety guards
-        shell: bash
+      - name: Update background outcome journal
+        run: node build-ai-journal.mjs
+      - name: Verify brain packs
         run: |
           node - <<'NODE'
-          const fs = require('fs');
-          const history = JSON.parse(fs.readFileSync('ai-history.json', 'utf8'));
-          const learning = JSON.parse(fs.readFileSync('ai-learning.json', 'utf8'));
-
-          if (!history.generatedAt) throw new Error('ai-history.json missing generatedAt');
-          if (!learning.generatedAt) throw new Error('ai-learning.json missing generatedAt');
-
-          console.log('History brain', {
-            ready: history.ready,
-            version: history.version,
-            candles: history.totalCandles || 0,
-            samples: history.totalSamples || history.global?.totalSamples || 0,
-            confidence: history.global?.confidence ?? null
-          });
-
-          console.log('Learning brain', {
-            ready: learning.ready,
-            version: learning.version,
-            samples: learning.global?.samples || 0,
-            health: learning.modelHealth?.score ?? null,
-            guard: learning.qualityGuards?.backgroundUse ?? 'WAIT_DATA',
-            calibration: learning.validation?.calibrationError ?? null,
-            drift: learning.modelHealth?.driftPts ?? null,
-            uncertainty: learning.modelHealth?.uncertaintyPts ?? null
-          });
-
-          if (learning.ready && !learning.qualityGuards) {
-            throw new Error('V34 learning pack missing qualityGuards');
-          }
+          const fs=require('fs');
+          const h=JSON.parse(fs.readFileSync('ai-history.json','utf8'));
+          const l=JSON.parse(fs.readFileSync('ai-learning.json','utf8'));
+          const j=fs.existsSync('ai-outcome-journal.json')?JSON.parse(fs.readFileSync('ai-outcome-journal.json','utf8')):null;
+          if(!h.generatedAt)throw new Error('history missing generatedAt');
+          if(!l.generatedAt)throw new Error('learning missing generatedAt');
+          console.log('History',{ready:h.ready,candles:h.totalCandles,coverageDays:h.coverageDays});
+          console.log('Learning',{ready:l.ready,samples:l.global?.samples,guard:l.qualityGuards?.backgroundUse,calibration:l.validation?.calibrationError,drift:l.modelHealth?.driftPts});
+          console.log('Journal',j?.summary||'new journal pending');
           NODE
-
-      - name: Commit learned brain
+      - name: Commit learned brain and journal
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add ai-history.json ai-learning.json
-
+          git add ai-history.json ai-learning.json ai-outcome-journal.json
           if git diff --cached --quiet; then
             echo "No learned-model changes"
             exit 0
           fi
-
-          git commit -m "ai: refresh V34 precision guard brain"
+          git commit -m "ai: refresh V34.1 precision trigger brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

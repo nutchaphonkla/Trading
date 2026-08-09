@@ -3,32 +3,45 @@ name: Update XAUUSD data pack
 on:
   workflow_dispatch:
   schedule:
-    # 4 snapshots/day on weekdays. Frontend uses these before spending live API credits.
-    - cron: '10 1,7,13,20 * * 1-5'
+    - cron: "*/10 * * * 1-5"
+    - cron: "*/10 22-23 * * 0"
 
 permissions:
   contents: write
 
+concurrency:
+  group: onemonth-market-data
+  cancel-in-progress: true
+
 jobs:
-  update-data:
+  update:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          node-version: '20'
-      - name: Build XAUUSD + news data packs
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate updater
+        run: node --check update-data.mjs
+      - name: Update rolling XAUUSD + news pack
         env:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
-        run: node scripts/update-data.mjs
-      - name: Commit changed packs
+        run: node update-data.mjs
+      - name: Commit data pack
+        shell: bash
         run: |
-          git config user.name "one-month-data-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add data/xauusd.json data/news.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add xauusd.json news.json
           if git diff --cached --quiet; then
-            echo "No data changes"
+            echo "No market-data changes"
             exit 0
           fi
-          git commit -m "data: refresh XAUUSD pack"
-          git push
+          git commit -m "data: update rolling XAUUSD history"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

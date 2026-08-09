@@ -1,3 +1,4 @@
-/* OneMonth OS V34 - installable, intentionally no runtime cache */
+const CACHE='onemonth-v341-shell';
 self.addEventListener('install',()=>self.skipWaiting());
-self.addEventListener('activate',event=>{event.waitUntil((async()=>{if('caches' in self){for(const k of await caches.keys())await caches.delete(k)}await self.clients.claim()})())});
+self.addEventListener('activate',e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE)await caches.delete(k);await self.clients.claim()})()));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request,{cache:'no-store'}).catch(()=>caches.match(e.request))) });

@@ -2,8 +2,8 @@ import fs from 'node:fs';
 
 const INPUT='xauusd.json';
 const OUTPUT='ai-learning.json';
-const VERSION='3.0';
-const ENGINE='ONEMONTH-PRECISION-GUARD-V3';
+const VERSION='3.1';
+const ENGINE='ONEMONTH-PRECISION-TRIGGER-V3.1';
 const HALF_LIFE_DAYS=38;
 const PRIOR_STRENGTH=12;
 const Z90=1.645;
@@ -14,7 +14,7 @@ const median=a=>{const x=a.filter(Number.isFinite).slice().sort((p,q)=>p-q);if(!
 const safeDiv=(a,b,f=0)=>b?a/b:f;
 
 function fingerprintPack(pack){
-  const t=pack.timeframes||pack.data||pack||{},parts=['M1','M5','M15','H1'].map(tf=>{const a=Array.isArray(t[tf])?t[tf]:[];const first=a[0]||{},last=a.at(-1)||{};return`${tf}:${a.length}:${first.ts||first.datetime||''}:${last.ts||last.datetime||''}:${last.close||''}`}).join('|')+'|'+String(pack.generatedAt||'');
+  const t=pack.timeframes||pack.data||pack||{},parts=['M1','M5','M15','H1'].map(tf=>{const a=Array.isArray(t[tf])?t[tf]:[];const first=a[0]||{},last=a.at(-1)||{};return`${tf}:${a.length}:${first.ts||first.datetime||''}:${first.close||''}:${last.ts||last.datetime||''}:${last.close||''}`}).join('|');
   let h=2166136261;for(let i=0;i<parts.length;i++){h^=parts.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16);
 }
 function normalize(v){
