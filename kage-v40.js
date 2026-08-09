@@ -849,9 +849,8 @@
       })
     };
 
-    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=401').then(registration => registration.update()).catch(() => {}), { once: true });
-    }
+    // V40 is preserved as a preview page only. The production V39 runtime owns
+    // the root service worker, so this preview must never replace that registration.
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });

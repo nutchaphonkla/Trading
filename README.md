@@ -1,36 +1,26 @@
-# KAGE CORE V40.1 · Shadow Intelligence
+# KAGE CORE V39 · Full Production Runtime
 
-Mobile-first six-screen UX/UI system for XAUUSD decision support, rebuilt from the KAGE CORE visual reference.
+`index.html` is the complete V39 single-file production app restored from the last production revision before the V40 visual experiment, plus two null-safety guards that prevent Shadow Scan from crashing when a timeframe has insufficient data.
 
-## V40 interface
+## Production features
 
-- Overview / Shadow Scan
-- AI Market / animated Core Score
-- Positions / live decision console
-- Intel / news radar and market windows
-- Plan / 30-day capital campaign
-- History / memory archive
-- Responsive dark-glass UI, inline SVG icon system, PWA shell and local market-feed preview
-- Original generated hero artwork at `assets/kage-hero-v40.png` with an optimized WebP runtime copy
+- Standalone/PWA install gate and the full KAGE CORE intro loader
+- Home mission, 30-day capital plan, session close and adaptive risk guardian
+- AI execution desk, pending-order command center, Entry Zone, SL, TP1, TP2 and RR/EV
+- H1/M15/M5/M1 market analysis, chart controls, signal lifecycle and confirmation gates
+- News radar, plan/history/stats views, outcome memory, backtest and learning controls
+- Governed background brain, ML brain, champion/challenger governance and self-play artifacts
+- Twelve Data primary feed with isolated MT5 → Cloudflare Worker/D1 failover
+- Local storage compatibility for all existing V39 plan/settings/signal/history keys
+- Minimal no-cache service worker so installed apps do not receive mixed HTML/data builds
 
-## V40.1 functional bridge
+## Runtime files
 
-- Capital + desired-profit inputs create the same 30-day plan format used by V39 (`onemonth_os_plan_v15`)
-- Session closing balance updates the adaptive roadmap and risk guardian
-- Positions shows AI Entry Zone, Stop Loss, TP1, TP2, RR and lot guide
-- Governed ML data comes from `ai-ml-brain.json`, `ai-learning.json`, `ai-model-governance.json` and the real outcome journal
-- Rejected candidates still show their price map as **REFERENCE ONLY**; only a candidate that passes model, plan, market/news and risk gates can display READY
-- AI Market and History no longer use hard-coded health, sample-count or hit-rate placeholders
-- Runtime JSON uses network-first service-worker handling with an offline fallback
+- Main app: `index.html`
+- Exact production backup: `legacy-v39.html`
+- Optional visual experiment: `v40-preview.html` with `kage-v40.css` and `kage-v40.js`
+- Market/news packs: `xauusd.json`, `news.json`
+- AI packs: `ai-history.json`, `ai-learning.json`, `ai-model-governance.json`, `ai-ml-brain.json` and outcome/self-play journals
+- Cloudflare/MT5 bridge: `cloudflare-worker.js`, `OneMonth_Feed_Bridge.mq5`
 
-The previous production page is preserved as `legacy-v39.html`.
-
-## Legacy runtime notes
-
-Runtime ของหน้าเว็บใช้ `app.js` ไฟล์เดียวแบบ non-module เพื่อลดปัญหา import/cache บน GitHub Pages/iPhone Safari.
-
-อัปไฟล์ root เหล่านี้ทับของเดิม: `index.html`, `app.css`, `app.js`, `xauusd.json`, `news.json`, `update-data.mjs`.
-
-GitHub Action ต้องอยู่ `.github/workflows/update-data.yml`.
-
-หลัง Commit ให้เปิด Pages URL แล้วรีเฟรชใหม่ หรือปิดแท็บเดิมแล้วเปิดใหม่. `index.html` ใช้ `?v=12.1.3` เพื่อบังคับโหลด CSS/JS ใหม่.
+The V40 preview does not register a service worker and cannot replace the production PWA runtime.
