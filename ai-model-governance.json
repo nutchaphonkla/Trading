@@ -9,13 +9,53 @@
       "candidateScore": 72.22,
       "championScore": 71.45,
       "reason": "Migrate legacy champion into V34.3 governance (72.2 vs 71.5)"
+    },
+    {
+      "at": "2026-08-09T05:12:13.519Z",
+      "from": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:59aaf0e6",
+      "to": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:f132cde0",
+      "candidateScore": 77.78,
+      "championScore": 72.22,
+      "reason": "Challenger score 77.8 > champion 72.2"
     }
   ],
   "rollbacks": [],
-  "updatedAt": "2026-08-09T04:45:02.745Z",
-  "action": "KEEP_CHAMPION",
-  "reason": "Champion remains stronger or challenger not proven",
+  "updatedAt": "2026-08-09T05:12:13.519Z",
+  "action": "PROMOTE_CHALLENGER",
+  "reason": "Challenger score 77.8 > champion 72.2",
   "champion": {
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:f132cde0",
+    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V3.2",
+    "sourceFingerprint": "f132cde0",
+    "generatedAt": "2026-08-09T05:12:13.260Z",
+    "trainedThrough": "2026-08-09T05:00:00.000Z",
+    "score": 77.78,
+    "health": 80.6,
+    "samples": 4780,
+    "brier": 0.238,
+    "calibration": 5.94,
+    "coverage": 100,
+    "drift": 0.1,
+    "uncertainty": 14.64,
+    "guard": "TRUSTED"
+  },
+  "challenger": {
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:f132cde0",
+    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V3.2",
+    "sourceFingerprint": "f132cde0",
+    "generatedAt": "2026-08-09T05:12:13.260Z",
+    "trainedThrough": "2026-08-09T05:00:00.000Z",
+    "score": 77.78,
+    "health": 80.6,
+    "samples": 4780,
+    "brier": 0.238,
+    "calibration": 5.94,
+    "coverage": 100,
+    "drift": 0.1,
+    "uncertainty": 14.64,
+    "guard": "TRUSTED"
+  },
+  "previous": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:59aaf0e6",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V3.2",
     "sourceFingerprint": "59aaf0e6",
@@ -29,38 +69,6 @@
     "coverage": 100,
     "drift": 0,
     "uncertainty": 35.55,
-    "guard": "LIMITED"
-  },
-  "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:7820f3f3",
-    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V3.2",
-    "sourceFingerprint": "7820f3f3",
-    "generatedAt": "2026-08-09T04:45:02.601Z",
-    "trainedThrough": "2026-08-09T04:30:00.000Z",
-    "score": 72.22,
-    "health": 73.1,
-    "samples": 4778,
-    "brier": 0.238,
-    "calibration": 5.91,
-    "coverage": 100,
-    "drift": 0,
-    "uncertainty": 35.55,
-    "guard": "LIMITED"
-  },
-  "previous": {
-    "modelId": "ONEMONTH-PRECISION-TRIGGER-V3.1:90a3d735",
-    "engine": "ONEMONTH-PRECISION-TRIGGER-V3.1",
-    "sourceFingerprint": "90a3d735",
-    "generatedAt": "2026-08-09T03:56:24.326Z",
-    "trainedThrough": "2026-08-09T03:45:00.000Z",
-    "score": 71.45,
-    "health": 72.1,
-    "samples": 4775,
-    "brier": 0.2379,
-    "calibration": 5.91,
-    "coverage": 100,
-    "drift": 0.2,
-    "uncertainty": 38.29,
     "guard": "LIMITED"
   },
   "deployedJournal": {
@@ -78,10 +86,10 @@
     "fillCount": 0
   },
   "decision": {
-    "promoted": false,
+    "promoted": true,
     "rolledBack": false,
     "candidateQualified": true,
-    "materiallyBetter": false,
+    "materiallyBetter": true,
     "freshNonInferior": false,
     "legacyMigration": false
   }
