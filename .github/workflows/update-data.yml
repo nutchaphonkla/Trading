@@ -10,13 +10,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-market-data-v42
+  group: onemonth-market-data-v44
   cancel-in-progress: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -29,152 +29,91 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validate V42 data and shadow engines
+      - name: Validate V44 auto-hybrid data engines
         run: |
           node --check update-data.mjs
           node --check build-ai-shadow.mjs
-
           node tests/pipeline-closed-bars-v42.test.mjs
           node tests/shadow-feed-isolation-v42.test.mjs
+          node tests/auto-hybrid-v44.test.mjs
 
-      - name: Update PRIMARY or isolated MT5 fallback
+      - name: Auto route MT5 HEAVY or Twelve Data ECO
         env:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
           TV_FALLBACK_URL: ${{ secrets.TV_FALLBACK_URL }}
           TV_FALLBACK_TOKEN: ${{ secrets.TV_FALLBACK_TOKEN }}
         run: node update-data.mjs
 
-      - name: Shadow self-play forward test
+      - name: Current-market shadow self-play
         run: node build-ai-shadow.mjs
 
-      - name: Verify strict feed isolation
+      - name: Verify V44 source isolation and closed bars
         run: |
           node - <<'NODE'
-          const fs=require('fs');
+          const fs = require('fs');
 
-          const h=JSON.parse(
-            fs.readFileSync(
-              'feed-health.json',
-              'utf8'
-            )
-          );
+          const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
+          const health = read('feed-health.json');
+          const activePack = read('xauusd.json');
+          const trainingPack = read('xauusd-training.json');
 
-          console.log(
-            'ACTIVE FEED:',
-            h.active
-          );
+          console.log('V44 ROUTER', {
+            active: health.active,
+            mode: health.mode,
+            status: health.status,
+            training: health.training,
+            requests: health.efficiency,
+            reason: health.reason,
+          });
 
-          console.log(
-            'MODE:',
-            h.mode
-          );
+          if (health.switching?.mergeFeeds !== false)
+            throw new Error('V44 policy violation: feed isolation must be explicit');
 
-          console.log(
-            'STATUS:',
-            h.status
-          );
+          const watermark = Number(activePack.closedBarWatermark || activePack.feed?.closedBarWatermark || 0);
+          if (!(watermark > 0))
+            throw new Error('V44 policy violation: active closed-bar watermark missing');
 
-          console.log(
-            'REASON:',
-            h.reason
-          );
-
-          console.log(
-            'PRIMARY:',
-            h.primary?.status,
-            h.primary?.error || 'OK'
-          );
-
-          console.log(
-            'MT5:',
-            h.fallback?.checked
-              ? h.fallback?.status
-              : 'STANDBY / NOT QUERIED'
-          );
-
-          console.log(
-            'RECOVERY:',
-            `${h.switching?.primaryRecoveryStreak || 0}/${h.switching?.primaryRecoveryRequired || 2}`
-          );
-
-          console.log(
-            'MERGE FEEDS:',
-            h.switching?.mergeFeeds
-          );
-
-          if (
-            h.switching?.mergeFeeds === true
-          ) {
-            throw new Error(
-              'V42 policy violation: feed merge is forbidden'
-            );
+          for (const [tf, width] of Object.entries({M1:60000,M5:300000,M15:900000,H1:3600000})) {
+            const open = (activePack.timeframes?.[tf] || []).find(bar => Number(bar.ts) + width > watermark);
+            if (open) throw new Error(`V44 policy violation: ${tf} contains an unclosed bar at ${open.ts}`);
           }
 
-          const pack=JSON.parse(
-            fs.readFileSync(
-              'xauusd.json',
-              'utf8'
-            )
-          );
+          const tfeed = String(trainingPack.feed?.trainingFeed || '').toUpperCase();
+          const tsource = String(trainingPack.feed?.trainingSource || '');
+          const tactive = String(trainingPack.feed?.active || '').toUpperCase();
+          const tmerge = trainingPack.feed?.switching?.mergeFeeds;
+          const allowed = new Set(['TWELVE_DATA_PRIMARY', 'MT5_ACADEMY']);
 
-          const watermark=Number(
-            pack.closedBarWatermark ||
-            pack.feed?.closedBarWatermark ||
-            0
-          );
+          if (tsource !== 'xauusd-training.json')
+            throw new Error(`V44 training source path mismatch: ${tsource || 'MISSING'}`);
+          if (!allowed.has(tfeed))
+            throw new Error(`V44 training feed invalid: ${tfeed || 'MISSING'}`);
+          if (tmerge !== false)
+            throw new Error('V44 training pack may never merge source candles');
+          if (tfeed === 'MT5_ACADEMY' && !tactive.includes('MT5'))
+            throw new Error('V44 MT5 training provenance mismatch');
+          if (tfeed === 'TWELVE_DATA_PRIMARY' && tactive !== 'TWELVE_DATA')
+            throw new Error('V44 Twelve training provenance mismatch');
 
-          if (!(watermark > 0)) {
-            throw new Error(
-              'V42 policy violation: active closed-bar watermark missing'
-            );
+          if (health.active === 'MT5_FALLBACK' && tfeed !== 'MT5_ACADEMY')
+            throw new Error('V44 active MT5 must route MT5 academy training');
+          if (health.active === 'TWELVE_DATA' && tfeed !== 'TWELVE_DATA_PRIMARY')
+            throw new Error('V44 active Twelve must route Twelve training');
+
+          const twelveRequests = Number(health.efficiency?.twelveRequestsThisRun || 0);
+          if (health.mode === 'MT5_HEAVY' && health.fallback?.connected === true && twelveRequests !== 0)
+            throw new Error(`V44 ECO violation: healthy MT5 HEAVY run used ${twelveRequests} Twelve request(s)`);
+
+          for (const file of ['xauusd.json','xauusd-training.json','feed-health.json','ai-shadow-journal.json']) {
+            const text = fs.readFileSync(file, 'utf8');
+            if (!text.trim()) throw new Error(`${file} is empty`);
+            JSON.parse(text);
           }
 
-          for (
-            const [tf,width] of
-            Object.entries({
-              M1:60000,
-              M5:300000,
-              M15:900000,
-              H1:3600000
-            })
-          ) {
-            const open=(
-              pack.timeframes?.[tf] ||
-              []
-            ).find(
-              bar =>
-                Number(bar.ts) +
-                width >
-                watermark
-            );
-
-            if (open) {
-              throw new Error(
-                `V42 policy violation: ${tf} contains an unclosed bar at ${open.ts}`
-              );
-            }
-          }
-
-          if (
-            fs.existsSync(
-              'ai-shadow-journal.json'
-            )
-          ) {
-            const s=JSON.parse(
-              fs.readFileSync(
-                'ai-shadow-journal.json',
-                'utf8'
-              )
-            );
-
-            console.log(
-              'SHADOW SELF-PLAY:',
-              s.summary || {}
-            );
-          }
+          console.log('V44 source isolation: PASS');
           NODE
 
-      - name: Commit V42 market and self-play packs
+      - name: Commit V44 market router packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -184,6 +123,7 @@ jobs:
             xauusd.json \
             xauusd-primary.json \
             xauusd-fallback.json \
+            xauusd-training.json \
             news.json \
             feed-health.json \
             ai-shadow-journal.json
@@ -194,10 +134,10 @@ jobs:
           done
 
           if git diff --cached --quiet; then
-            echo "No market/self-play changes"
+            echo "No V44 market/router changes"
             exit 0
           fi
 
-          git commit -m "data: V42 market + shadow self-play"
+          git commit -m "data: V44 auto-hybrid MT5/API router"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
