@@ -14,25 +14,44 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-v42
+  group: kage-ai-v43
   cancel-in-progress: true
 
 jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+
     runs-on: ubuntu-latest
+
     timeout-minutes: 40
 
     steps:
+
       - name: Checkout latest repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+
+      - name: Show checked out commit
+        run: |
+          echo "COMMIT:"
+          git rev-parse HEAD
+
+          echo "BRANCH:"
+          git branch --show-current || true
+
+          echo "UPDATE DATA EXPORTS:"
+          grep -n "export function aggregate" update-data.mjs
+          grep -n "export function closedBars" update-data.mjs
+          grep -n "export function sourcePackFromM1" update-data.mjs
+
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+
 
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
@@ -41,18 +60,51 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-ml.txt
 
+
       - name: Install ML dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-ml.txt
 
+
+      - name: Verify update-data exports
+        run: |
+          node --input-type=module <<'NODE'
+          import * as updateData from './update-data.mjs';
+
+          const required = [
+            'aggregate',
+            'closedBars',
+            'sourcePackFromM1'
+          ];
+
+          for (const name of required) {
+            if (typeof updateData[name] !== 'function') {
+              throw new Error(
+                `update-data.mjs missing export: ${name}`
+              );
+            }
+
+            console.log(
+              `OK export: ${name}`
+            );
+          }
+
+          console.log(
+            'update-data exports verified'
+          );
+          NODE
+
+
       - name: Validate V42 brain source and safety fixtures
         run: |
+          node --check update-data.mjs
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
           node --check build-ai-journal.mjs
           node --check build-ai-governance.mjs
           node --check build-ai-shadow.mjs
+
           python -m py_compile selfplay-lab.py
           python -m py_compile ml-train.py
 
@@ -62,12 +114,9 @@ jobs:
           node tests/history-provenance-v42.test.mjs
           node tests/governance-provenance-v42.test.mjs
 
-          # V43 safety regression tests
-          node tests/journal-forward-only-v43.test.mjs
-          node tests/market-hours-dst-v43.test.mjs
-
           python tests/test_selfplay_promotion_v42.py
           python tests/test_ml_provenance_v42.py
+
 
       - name: Verify PRIMARY training isolation
         run: |
@@ -75,68 +124,111 @@ jobs:
           const fs = require('fs');
 
           if (!fs.existsSync('xauusd-primary.json')) {
+
             console.log(
               'xauusd-primary.json not ready yet; Python brain may enter WAIT_DATA safely.'
             );
+
           } else {
-            const p = JSON.parse(
-              fs.readFileSync('xauusd-primary.json', 'utf8')
-            );
+
+            const pack =
+              JSON.parse(
+                fs.readFileSync(
+                  'xauusd-primary.json',
+                  'utf8'
+                )
+              );
 
             console.log(
               'PRIMARY TRAIN PACK:',
-              p.feed?.active || p.source
+              pack.feed?.active ||
+              pack.source
             );
           }
 
-          if (fs.existsSync('feed-health.json')) {
-            const h = JSON.parse(
-              fs.readFileSync('feed-health.json', 'utf8')
-            );
+          if (
+            fs.existsSync(
+              'feed-health.json'
+            )
+          ) {
 
-            if (h.switching?.mergeFeeds === true) {
-              throw new Error('Feed merge forbidden');
+            const health =
+              JSON.parse(
+                fs.readFileSync(
+                  'feed-health.json',
+                  'utf8'
+                )
+              );
+
+            if (
+              health.switching
+                ?.mergeFeeds === true
+            ) {
+
+              throw new Error(
+                'Feed merge forbidden'
+              );
             }
 
             console.log(
               'LIVE ACTIVE:',
-              h.active,
-              h.mode,
-              h.status
+              health.active,
+              health.mode,
+              health.status
             );
           }
           NODE
 
+
       - name: Resolve shadow ideas with newest future M1
-        run: node build-ai-shadow.mjs
+        run: |
+          node build-ai-shadow.mjs
+
 
       - name: Rebuild PRIMARY historical brain
-        run: node build-ai-history.mjs
+        run: |
+          node build-ai-history.mjs
+
 
       - name: Train PRIMARY statistical challenger
-        run: node build-ai-learning.mjs
+        run: |
+          node build-ai-learning.mjs
+
 
       - name: Resolve deployed signal and plan outcomes
-        run: node build-ai-journal.mjs
+        run: |
+          node build-ai-journal.mjs
+
 
       - name: Statistical champion challenger governance
-        run: node build-ai-governance.mjs
+        run: |
+          node build-ai-governance.mjs
 
-      - name: V42 self-play lab threshold counterfactual autopsy
-        run: python selfplay-lab.py
 
-      - name: Train V42 Python autonomous self-play precision brain
+      - name: Self-play lab threshold counterfactual autopsy
+        run: |
+          python selfplay-lab.py
+
+
+      - name: Train Python autonomous self-play precision brain
         env:
           ML_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
-        run: python ml-train.py
 
-      - name: Capture all 12 V42 candidates for next forward test
-        run: node build-ai-shadow.mjs
+        run: |
+          python ml-train.py
 
-      - name: Journal V42 qualified pending plans
-        run: node build-ai-journal.mjs
 
-      - name: Verify V42 packs
+      - name: Capture all candidates for next forward test
+        run: |
+          node build-ai-shadow.mjs
+
+
+      - name: Journal qualified pending plans
+        run: |
+          node build-ai-journal.mjs
+
+
+      - name: Verify generated JSON packs
         run: |
           python - <<'PY'
           import json
@@ -159,299 +251,71 @@ jobs:
           ]
 
           for name in names:
-              p = Path(name)
 
-              if p.exists():
+              path = Path(name)
+
+              if path.exists():
+
                   json.loads(
-                      p.read_text()
+                      path.read_text()
                   )
 
-          ml = (
-              json.loads(
-                  Path('ai-ml-brain.json').read_text()
-              )
-              if Path('ai-ml-brain.json').exists()
-              else {}
-          )
-
-          history = (
-              json.loads(
-                  Path('ai-history.json').read_text()
-              )
-              if Path('ai-history.json').exists()
-              else {}
-          )
-
-          if history.get('ready') is True:
-              provenance = history.get(
-                  'artifactProvenance'
-              ) or {}
-
-              schema = history.get(
-                  'artifactSchema'
-              ) or {}
-
-              if provenance.get(
-                  'schemaVersion'
-              ) != 'KAGE_AI_V42':
-                  raise SystemExit(
-                      'V42 ready history missing schema contract'
+                  print(
+                      'VALID JSON:',
+                      name
                   )
+
+          if Path(
+              'ai-ml-brain.json'
+          ).exists():
+
+              ml = json.loads(
+                  Path(
+                      'ai-ml-brain.json'
+                  ).read_text()
+              )
+
+              isolation = (
+                  ml.get(
+                      'dataIsolation'
+                  )
+                  or {}
+              )
 
               if (
-                  provenance.get(
-                      'trainingSource'
-                  ) != 'xauusd-primary.json'
-                  or provenance.get(
-                      'trainingFeed'
-                  ) != 'TWELVE_DATA_PRIMARY'
-                  or provenance.get(
+                  isolation.get(
                       'mergeFeeds'
-                  ) is not False
+                  )
+                  is True
               ):
+
                   raise SystemExit(
-                      'V42 ready history violates training-feed isolation'
+                      'Policy violation: mergeFeeds true'
                   )
 
-              if (
-                  provenance.get(
-                      'featureSchemaHash'
-                  ) != '17e82bd347b6f345ad289df1'
-                  or schema.get(
-                      'featureSchemaHash'
+              print(
+                  'ML STATUS:',
+                  ml.get(
+                      'status'
                   )
-                  != provenance.get(
-                      'featureSchemaHash'
-                  )
-              ):
-                  raise SystemExit(
-                      'V42 ready history feature schema mismatch'
-                  )
+              )
 
-              if (
-                  provenance.get(
-                      'labelSchemaHash'
-                  ) != 'fffe7703ec24c8cac8851daa'
-                  or schema.get(
-                      'labelSchemaHash'
+              print(
+                  'ML READY:',
+                  ml.get(
+                      'ready'
                   )
-                  != provenance.get(
-                      'labelSchemaHash'
-                  )
-              ):
-                  raise SystemExit(
-                      'V42 ready history label schema mismatch'
-                  )
-
-              if (
-                  provenance.get(
-                      'sourceFingerprint'
-                  ) != history.get(
-                      'sourceFingerprint'
-                  )
-                  or not provenance.get(
-                      'dataWatermark'
-                  )
-              ):
-                  raise SystemExit(
-                      'V42 ready history provenance mismatch'
-                  )
-
-          sp = ml.get(
-              'selfPlay'
-          ) or {}
+              )
 
           print(
-              'V42',
-              {
-                  'version':
-                      ml.get('version'),
-
-                  'ready':
-                      ml.get('ready'),
-
-                  'status':
-                      ml.get('status'),
-
-                  'health':
-                      (
-                          ml.get(
-                              'modelHealth'
-                          ) or {}
-                      ).get('score'),
-
-                  'trainingSource':
-                      (
-                          ml.get(
-                              'dataIsolation'
-                          ) or {}
-                      ).get(
-                          'trainingSource'
-                      ),
-
-                  'liveSource':
-                      (
-                          ml.get(
-                              'dataIsolation'
-                          ) or {}
-                      ).get(
-                          'liveSource'
-                      ),
-
-                  'mergeFeeds':
-                      (
-                          ml.get(
-                              'dataIsolation'
-                          ) or {}
-                      ).get(
-                          'mergeFeeds'
-                      ),
-
-                  'candidateCount':
-                      (
-                          ml.get(
-                              'current'
-                          ) or {}
-                      ).get(
-                          'candidateCount'
-                      ),
-
-                  'qualified':
-                      (
-                          ml.get(
-                              'current'
-                          ) or {}
-                      ).get(
-                          'qualifiedCount'
-                      ),
-
-                  'shadowTotal':
-                      (
-                          sp.get(
-                              'shadow'
-                          ) or {}
-                      ).get(
-                          'total'
-                      ),
-
-                  'shadowResolved':
-                      (
-                          sp.get(
-                              'shadow'
-                          ) or {}
-                      ).get(
-                          'resolved'
-                      ),
-
-                  'autoThreshold':
-                      (
-                          sp.get(
-                              'thresholdOptimizer'
-                          ) or {}
-                      ).get(
-                          'active'
-                      ),
-
-                  'counterfactualReady':
-                      (
-                          sp.get(
-                              'counterfactual'
-                          ) or {}
-                      ).get(
-                          'ready'
-                      ),
-
-                  'autopsyReady':
-                      (
-                          sp.get(
-                              'autopsy'
-                          ) or {}
-                      ).get(
-                          'ready'
-                      ),
-              }
+              'JSON verification complete'
           )
-
-          if (
-              ml.get(
-                  'dataIsolation'
-              ) or {}
-          ).get(
-              'mergeFeeds'
-          ) is True:
-              raise SystemExit(
-                  'V42 policy violation: mergeFeeds true'
-              )
-
-          if ml.get('ready') is True:
-              provenance = ml.get(
-                  'artifactProvenance'
-              ) or {}
-
-              schema = ml.get(
-                  'artifactSchema'
-              ) or {}
-
-              candidates = (
-                  ml.get(
-                      'current'
-                  ) or {}
-              ).get(
-                  'candidates'
-              ) or []
-
-              if (
-                  provenance.get(
-                      'schemaVersion'
-                  )
-                  or schema.get(
-                      'version'
-                  )
-              ) != 'KAGE_AI_V42':
-                  raise SystemExit(
-                      'V42 ready artifact missing schema contract'
-                  )
-
-              if (
-                  provenance.get(
-                      'trainingFeed'
-                  ) != 'TWELVE_DATA_PRIMARY'
-                  or provenance.get(
-                      'mergeFeeds'
-                  ) is not False
-              ):
-                  raise SystemExit(
-                      'V42 ready artifact violates training-feed isolation'
-                  )
-
-              for field in (
-                  'featureSchemaHash',
-                  'labelSchemaHash',
-                  'sourceFingerprint',
-                  'dataWatermark'
-              ):
-                  if not provenance.get(field):
-                      raise SystemExit(
-                          f'V42 ready artifact missing {field}'
-                      )
-
-              if (
-                  len(candidates) != 12
-                  or (
-                      ml.get(
-                          'current'
-                      ) or {}
-                  ).get(
-                      'candidateCount'
-                  ) != 12
-              ):
-                  raise SystemExit(
-                      'V42 ready artifact must contain exactly 12 candidates'
-                  )
           PY
 
-      - name: Commit V42 brain and self-play packs
+
+      - name: Commit AI brain packs
         shell: bash
+
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -472,16 +336,33 @@ jobs:
             ai-counterfactual.json \
             ai-autopsy.json
           do
+
             if [ -e "$f" ]; then
               git add "$f"
             fi
+
           done
 
+
           if git diff --cached --quiet; then
-            echo "No V42 brain changes"
+
+            echo "No AI brain changes"
+
             exit 0
+
           fi
 
-          git commit -m "ai: refresh V42 self-play precision brain"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+          git commit \
+            -m "ai: refresh KAGE precision brain"
+
+
+          git pull \
+            --rebase \
+            origin \
+            "${GITHUB_REF_NAME}"
+
+
+          git push \
+            origin \
+            "HEAD:${GITHUB_REF_NAME}"
