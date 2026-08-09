@@ -1,6 +1,21 @@
 import fs from 'node:fs';
 
 const PACK='xauusd.json',LEARNING='ai-learning.json',ML='ai-ml-brain.json',OUTPUT='ai-outcome-journal.json';
+function writeJsonAtomic(file,value){
+  const text=JSON.stringify(value,null,2);
+  if(typeof text!=='string'||text.length<2)throw new Error(`Refusing to write invalid JSON: ${file}`);
+  JSON.parse(text);
+  const tmp=`${file}.tmp-${process.pid}-${Date.now()}`;
+  try{
+    fs.writeFileSync(tmp,text,{encoding:'utf8',flag:'w'});
+    const verify=fs.readFileSync(tmp,'utf8');
+    if(!verify.trim())throw new Error(`Atomic JSON temp file is empty: ${file}`);
+    JSON.parse(verify);
+    fs.renameSync(tmp,file);
+  }finally{
+    try{if(fs.existsSync(tmp))fs.unlinkSync(tmp)}catch(_){}
+  }
+}
 const VERSION='V43.0',ENGINE='KAGE-PENDING-ENTRY-JOURNAL-V43-FORWARD-ONLY-AUTOML';
 const num=v=>{const n=Number(v);return Number.isFinite(n)?n:NaN};
 const n=v=>Number.isFinite(Number(v))?Number(v):0;
@@ -65,8 +80,8 @@ if(recordNewEvidence)for(const p of mlPlans){p.feedSource=feedSource;p.observedA
 resolvePlanEntries(journal.planEntries,candles);
 
 journal.entries=journal.entries.slice(-5000);journal.planEntries=journal.planEntries.slice(-5000);journal.version=VERSION;journal.forwardOnly={enabled:true,marketOpenRequired:true,maxObservationAgeMin:45,recordingAllowed:recordNewEvidence,observationAgeMs:observationAge};journal.engine=ENGINE;journal.updatedAt=new Date().toISOString();journal.sourceFingerprint=fp;journal.currentFeed=feedSource;journal.summary=summarize(journal.entries);journal.planSummary=planSummary(journal.planEntries);journal.feedPlanStats=groupStats(journal.planEntries,e=>e.feedSource);journal.mlPlanSummary=planSummary(journal.planEntries.filter(e=>e.modelRole==='ML_QUALIFIED'));journal.deployedSummary=summarize(journal.entries.filter(e=>e.modelId===deployedModelId));journal.deployedPlanSummary=planSummary(journal.planEntries.filter(e=>e.modelId===deployedModelId));
-fs.writeFileSync(OUTPUT,JSON.stringify(journal,null,2));
+writeJsonAtomic(OUTPUT,journal);
 learning.backgroundJournal={...journal.deployedSummary,globalJournal:{total:journal.summary.total,verified30m:journal.summary.verified30m},source:'ai-outcome-journal.json',deployedModelId};
 learning.pendingPlanJournal={...journal.deployedPlanSummary,globalJournal:{total:journal.planSummary.total,filled:journal.planSummary.filled},source:'ai-outcome-journal.json',deployedModelId};
-fs.writeFileSync(LEARNING,JSON.stringify(learning,null,2));
+writeJsonAtomic(LEARNING,learning);
 console.log(`Journal: signal ${journal.summary.total} | pending plans ${journal.planSummary.total} | fills ${journal.planSummary.filled} | plan 30m ${journal.planSummary.hitRate30==null?'—':journal.planSummary.hitRate30.toFixed(1)+'%'} | good entry ${journal.planSummary.goodEntryRate==null?'—':journal.planSummary.goodEntryRate.toFixed(1)+'%'}`);

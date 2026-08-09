@@ -1,259 +1,34 @@
-KAGE CORE ONE-SHOT REPAIR TEST REPORT
-=====================================
-Generated UTC: 2026-08-09T19:43:59Z
+KAGE PIPELINE FINAL STABLE FIX
 
-[Runtime]
-v22.16.0
-Python 3.13.5
-numpy 2.3.5
-pandas 2.2.3
-sklearn 1.8.0
-xgboost 3.1.3
+แก้รอบสุดท้าย:
+- build-ai-journal.mjs ใช้ atomic JSON write ป้องกันไฟล์ถูก truncate/ว่าง
+- journal-forward-only-v43.test.mjs เปลี่ยนเป็น synthetic fixture ไม่อิงไฟล์ live ใน repo
+- ML workflow ติดตั้ง/ตรวจ numpy pandas sklearn xgboost ก่อน test
+- selfplay-lab.py รองรับ advance_promotion test
+- Node export contracts ที่ test ต้องใช้ครบ
 
-[Static syntax]
-PASS node --check update-data.mjs
-PASS node --check build-ai-history.mjs
-PASS node --check build-ai-learning.mjs
-PASS node --check build-ai-journal.mjs
-PASS node --check build-ai-governance.mjs
-PASS node --check build-ai-shadow.mjs
-PASS python compile
+ผลทดสอบบนสำเนา Trading-main จริง:
+- pipeline closed-bar V42: PASS
+- shadow feed isolation V42: PASS
+- learning closed-bar V42: PASS
+- history provenance V42: PASS
+- governance provenance V42: PASS
+- journal-forward-only V43: PASS
+- market-hours DST V43: PASS
+- self-play promotion: 5/5 PASS
+- ML provenance: 3/3 PASS
+- journal stress: 30/30 PASS
+- YAML parse: PASS ทั้ง 2 workflows
+- real builder chain: PASS
+- generated JSON packs: parse PASS
 
-[Tests]
-pipeline closed-bar V42: all tests passed
-shadow feed isolation V42: all tests passed
-learning closed-bar V42: all tests passed
-history provenance V42: all tests passed
-Governance QUARANTINE_NO_DEPLOYABLE_MODEL: No deployable V42 artifact: VERSION_NOT_V42, SCHEMA_VERSION_MISMATCH, TRAINING_SOURCE_MISMATCH, TRAINING_FEED_MISMATCH, FEED_ISOLATION_NOT_EXPLICIT, FEATURE_SCHEMA_HASH_MISMATCH, LABEL_SCHEMA_MISMATCH, LABEL_SCHEMA_HASH_MISMATCH, SOURCE_FINGERPRINT_MISMATCH, DATA_WATERMARK_MISSING
-Champion {
-  modelId: 'ONEMONTH-GOVERNED-CHALLENGER-V42:fixture-source',
-  engine: 'ONEMONTH-GOVERNED-CHALLENGER-V42',
-  sourceFingerprint: 'fixture-source',
-  dataWatermark: null,
-  generatedAt: '2026-08-10T00:00:00.000Z',
-  trainedThrough: null,
-  ready: false,
-  status: 'QUARANTINED',
-  schemaCompatible: false,
-  compatibilityReasons: [
-    'VERSION_NOT_V42',
-    'SCHEMA_VERSION_MISMATCH',
-    'TRAINING_SOURCE_MISMATCH',
-    'TRAINING_FEED_MISMATCH',
-    'FEED_ISOLATION_NOT_EXPLICIT',
-    'FEATURE_SCHEMA_HASH_MISMATCH',
-    'LABEL_SCHEMA_MISMATCH',
-    'LABEL_SCHEMA_HASH_MISMATCH',
-    'SOURCE_FINGERPRINT_MISMATCH',
-    'DATA_WATERMARK_MISSING'
-  ],
-  score: 0,
-  health: 75,
-  samples: 300,
-  brier: 0.2,
-  calibration: 8,
-  coverage: 70,
-  drift: 4,
-  uncertainty: 12,
-  guard: 'QUARANTINED'
-}
-Challenger {
-  modelId: 'ONEMONTH-GOVERNED-CHALLENGER-V42:fixture-source',
-  engine: 'ONEMONTH-GOVERNED-CHALLENGER-V42',
-  sourceFingerprint: 'fixture-source',
-  dataWatermark: null,
-  generatedAt: '2026-08-10T00:00:00.000Z',
-  trainedThrough: null,
-  ready: true,
-  status: 'READY',
-  schemaCompatible: false,
-  compatibilityReasons: [
-    'VERSION_NOT_V42',
-    'SCHEMA_VERSION_MISMATCH',
-    'TRAINING_SOURCE_MISMATCH',
-    'TRAINING_FEED_MISMATCH',
-    'FEED_ISOLATION_NOT_EXPLICIT',
-    'FEATURE_SCHEMA_HASH_MISMATCH',
-    'LABEL_SCHEMA_MISMATCH',
-    'LABEL_SCHEMA_HASH_MISMATCH',
-    'SOURCE_FINGERPRINT_MISMATCH',
-    'DATA_WATERMARK_MISSING'
-  ],
-  score: 0,
-  health: 75,
-  samples: 300,
-  brier: 0.2,
-  calibration: 8,
-  coverage: 70,
-  drift: 4,
-  uncertainty: 12,
-  guard: 'TRUSTED'
-}
-Governance PROMOTE_CHALLENGER: Challenger score 72.4 > champion 0.0
-Champion {
-  modelId: 'ONEMONTH-GOVERNED-CHALLENGER-V42:fixture-source',
-  engine: 'ONEMONTH-GOVERNED-CHALLENGER-V42',
-  sourceFingerprint: 'fixture-source',
-  dataWatermark: 1000,
-  generatedAt: '2026-08-10T00:00:00.000Z',
-  trainedThrough: null,
-  ready: true,
-  status: 'READY',
-  schemaCompatible: true,
-  compatibilityReasons: [],
-  score: 72.41,
-  health: 75,
-  samples: 300,
-  brier: 0.2,
-  calibration: 8,
-  coverage: 70,
-  drift: 4,
-  uncertainty: 12,
-  guard: 'TRUSTED'
-}
-Challenger {
-  modelId: 'ONEMONTH-GOVERNED-CHALLENGER-V42:fixture-source',
-  engine: 'ONEMONTH-GOVERNED-CHALLENGER-V42',
-  sourceFingerprint: 'fixture-source',
-  dataWatermark: 1000,
-  generatedAt: '2026-08-10T00:00:00.000Z',
-  trainedThrough: null,
-  ready: true,
-  status: 'READY',
-  schemaCompatible: true,
-  compatibilityReasons: [],
-  score: 72.41,
-  health: 75,
-  samples: 300,
-  brier: 0.2,
-  calibration: 8,
-  coverage: 70,
-  drift: 4,
-  uncertainty: 12,
-  guard: 'TRUSTED'
-}
-Governance KEEP_IDENTICAL_EVIDENCE: Challenger has the same source fingerprint and watermark as champion
-Champion {
-  modelId: 'ONEMONTH-GOVERNED-CHALLENGER-V42:fixture-source',
-  engine: 'ONEMONTH-GOVERNED-CHALLENGER-V42',
-  sourceFingerprint: 'fixture-source',
-  dataWatermark: 1000,
-  generatedAt: '2026-08-10T00:00:00.000Z',
-  trainedThrough: null,
-  ready: true,
-  status: 'READY',
-  schemaCompatible: true,
-  compatibilityReasons: [],
-  score: 72.41,
-  health: 75,
-  samples: 300,
-  brier: 0.2,
-  calibration: 8,
-  coverage: 70,
-  drift: 4,
-  uncertainty: 12,
-  guard: 'TRUSTED'
-}
-Challenger {
-  modelId: 'ONEMONTH-GOVERNED-CHALLENGER-V42:fixture-source',
-  engine: 'ONEMONTH-GOVERNED-CHALLENGER-V42',
-  sourceFingerprint: 'fixture-source',
-  dataWatermark: 1000,
-  generatedAt: '2026-08-10T00:00:00.000Z',
-  trainedThrough: null,
-  ready: true,
-  status: 'READY',
-  schemaCompatible: true,
-  compatibilityReasons: [],
-  score: 72.41,
-  health: 75,
-  samples: 300,
-  brier: 0.2,
-  calibration: 8,
-  coverage: 70,
-  drift: 4,
-  uncertainty: 12,
-  guard: 'TRUSTED'
-}
-governance provenance V42: all tests passed
-journal-forward-only-v43: all tests passed
-market-hours-dst-v43: all tests passed
-self-play promotion V42: 5 tests passed
-self-play promotion V42: 5 tests passed
-self-play promotion also passes with site-packages disabled (no numpy dependency at module import)
-ML provenance V42: 3 tests passed
-adaptive-ai-v42: all tests passed
+หมายเหตุ:
+ML WAIT_DATA: PRIMARY_TRAINING_PACK_NOT_READY เป็นสถานะปกติเมื่อ M15 ยังไม่ถึงขั้นต่ำ ไม่ใช่ workflow error.
 
-[Pipeline smoke run]
-V42 Shadow Self-Play {
-  created: 0,
-  captureState: 'MODEL_PROVENANCE_BLOCK',
-  total: 4,
-  resolved: 4,
-  completed: 2,
-  rejectedTested: 2,
-  rejectedWouldWinRate: 0,
-  feed: 'TWELVE_DATA'
-}
-V42 history READY: NEUTRAL 47% | 7155 candles | 49 patterns
-No new market data: ai-learning-candidate.json already trained on be4b34ffb2df5ef058c5373d
-Journal: signal 5 | pending plans 10 | fills 3 | plan 30m 66.7% | good entry 33.3%
-Governance KEEP_IDENTICAL_EVIDENCE: Challenger has the same source fingerprint and watermark as champion
-Champion {
-  modelId: 'ONEMONTH-GOVERNED-CHALLENGER-V42:be4b34ffb2df5ef058c5373d',
-  engine: 'ONEMONTH-GOVERNED-CHALLENGER-V42',
-  sourceFingerprint: 'be4b34ffb2df5ef058c5373d',
-  dataWatermark: 1786299060000,
-  generatedAt: '2026-08-09T18:12:58.236Z',
-  trainedThrough: '2026-08-09T17:45:00.000Z',
-  ready: true,
-  status: 'READY',
-  schemaCompatible: true,
-  compatibilityReasons: [],
-  score: 72.74,
-  health: 72.1,
-  samples: 146,
-  brier: 0.2466,
-  calibration: 2.71,
-  coverage: 100,
-  drift: 7.2,
-  uncertainty: 23.52,
-  guard: 'TRUSTED'
-}
-Challenger {
-  modelId: 'ONEMONTH-GOVERNED-CHALLENGER-V42:be4b34ffb2df5ef058c5373d',
-  engine: 'ONEMONTH-GOVERNED-CHALLENGER-V42',
-  sourceFingerprint: 'be4b34ffb2df5ef058c5373d',
-  dataWatermark: 1786299060000,
-  generatedAt: '2026-08-09T18:12:58.236Z',
-  trainedThrough: '2026-08-09T17:45:00.000Z',
-  ready: true,
-  status: 'READY',
-  schemaCompatible: true,
-  compatibilityReasons: [],
-  score: 72.74,
-  health: 72.1,
-  samples: 146,
-  brier: 0.2466,
-  calibration: 2.71,
-  coverage: 100,
-  drift: 7.2,
-  uncertainty: 23.52,
-  guard: 'TRUSTED'
-}
-V42 Self-Play Lab {'shadow': 4, 'primaryResolved': 0, 'thresholdReady': False, 'counterfactualReady': False, 'autopsyFailures': 0}
-ML WAIT_DATA: PRIMARY_TRAINING_PACK_NOT_READY {'liveActive': 'TWELVE_DATA', 'liveM1': 5576, 'liveM15': 371, 'primaryM1': 5576, 'primaryM5': 1115, 'primaryM15': 371, 'primaryH1': 93, 'primaryPack': True, 'rule': 'V42 trains only on xauusd-primary.json; active MT5 fallback is inference-only'}
-V42 Shadow Self-Play {
-  created: 0,
-  captureState: 'MODEL_PROVENANCE_BLOCK',
-  total: 4,
-  resolved: 4,
-  completed: 2,
-  rejectedTested: 2,
-  rejectedWouldWinRate: 0,
-  feed: 'TWELVE_DATA'
-}
-Journal: signal 5 | pending plans 10 | fills 3 | plan 30m 66.7% | good entry 33.3%
-
-RESULT: ALL VALIDATION TESTS AND PIPELINE SMOKE STEPS EXITED 0
-Expected current model state may be WAIT_DATA while PRIMARY M15 < 420.
+วิธีใช้:
+1) แตก ZIP
+2) อัปโหลดไฟล์ทั้งหมดทับ path เดิมใน repo โดยรักษาโฟลเดอร์ .github/workflows และ tests
+3) Commit ครั้งเดียว
+4) Run "Update XAUUSD data pack"
+5) ถ้าเขียว Run "AI Background Learning"
+6) อย่ากด Re-run failed jobs ของ commit เก่า
