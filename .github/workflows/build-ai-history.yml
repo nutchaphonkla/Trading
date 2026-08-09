@@ -56,11 +56,13 @@ jobs:
           import numpy
           import pandas
           import sklearn
+
           try:
               import xgboost
               xgb = xgboost.__version__
           except Exception as exc:
               xgb = f"optional-unavailable: {exc}"
+
           print("PYTHON", sys.executable, sys.version)
           print("NUMPY", numpy.__version__)
           print("PANDAS", pandas.__version__)
@@ -77,6 +79,7 @@ jobs:
           node --check build-ai-governance.mjs
           node --check build-ai-shadow.mjs
           node --check adaptive-ai-v42.js
+
           python -m py_compile ai_provenance_v42.py
           python -m py_compile selfplay-lab.py
           python -m py_compile ml-train.py
@@ -103,37 +106,144 @@ jobs:
 
           routed = Path('xauusd-training.json')
           legacy = Path('xauusd-primary.json')
+
           path = routed if routed.exists() else legacy
+
           if not path.exists():
-              raise SystemExit('No training pack exists')
+              raise SystemExit(
+                  'No training pack exists'
+              )
 
-          pack = json.loads(path.read_text())
+          pack = json.loads(
+              path.read_text()
+          )
+
           feed = pack.get('feed') or {}
-          switching = feed.get('switching') or {}
-          active = str(feed.get('active') or '').upper()
-          training_feed = str(feed.get('trainingFeed') or ('TWELVE_DATA_PRIMARY' if path.name == 'xauusd-primary.json' else '')).upper()
-          training_source = str(feed.get('trainingSource') or path.name)
-          watermark = int(pack.get('closedBarWatermark') or feed.get('closedBarWatermark') or 0)
+          switching = (
+              feed.get('switching') or {}
+          )
 
-          if switching.get('mergeFeeds') is not False:
-              raise SystemExit('Feed merge forbidden')
+          active = str(
+              feed.get('active') or ''
+          ).upper()
+
+          training_feed = str(
+              feed.get('trainingFeed') or (
+                  'TWELVE_DATA_PRIMARY'
+                  if path.name ==
+                  'xauusd-primary.json'
+                  else ''
+              )
+          ).upper()
+
+          training_source = str(
+              feed.get(
+                  'trainingSource'
+              ) or path.name
+          )
+
+          watermark = int(
+              pack.get(
+                  'closedBarWatermark'
+              )
+              or feed.get(
+                  'closedBarWatermark'
+              )
+              or 0
+          )
+
+          if (
+              switching.get(
+                  'mergeFeeds'
+              )
+              is not False
+          ):
+              raise SystemExit(
+                  'Feed merge forbidden'
+              )
+
           if watermark <= 0:
-              raise SystemExit('Training watermark missing')
+              raise SystemExit(
+                  'Training watermark missing'
+              )
 
           allowed = {
-              ('xauusd-primary.json', 'TWELVE_DATA_PRIMARY'),
-              ('xauusd-training.json', 'TWELVE_DATA_PRIMARY'),
-              ('xauusd-training.json', 'MT5_ACADEMY'),
+              (
+                  'xauusd-primary.json',
+                  'TWELVE_DATA_PRIMARY'
+              ),
+              (
+                  'xauusd-training.json',
+                  'TWELVE_DATA_PRIMARY'
+              ),
+              (
+                  'xauusd-training.json',
+                  'MT5_ACADEMY'
+              ),
           }
-          if (training_source, training_feed) not in allowed:
-              raise SystemExit(f'Invalid V44 training pair: {training_source} | {training_feed}')
-          if training_feed == 'MT5_ACADEMY' and 'MT5' not in active:
-              raise SystemExit('MT5 training feed/source mismatch')
-          if training_feed == 'TWELVE_DATA_PRIMARY' and active != 'TWELVE_DATA':
-              raise SystemExit('Twelve training feed/source mismatch')
 
-          counts = {tf: len((pack.get('timeframes') or {}).get(tf) or []) for tf in ('M1','M5','M15','H1')}
-          print('V44 TRAIN PACK', {'file': path.name, 'trainingSource': training_source, 'trainingFeed': training_feed, 'active': active, 'counts': counts})
+          if (
+              training_source,
+              training_feed
+          ) not in allowed:
+              raise SystemExit(
+                  f'Invalid V44 training pair: '
+                  f'{training_source} | '
+                  f'{training_feed}'
+              )
+
+          if (
+              training_feed ==
+              'MT5_ACADEMY'
+              and
+              'MT5' not in active
+          ):
+              raise SystemExit(
+                  'MT5 training feed/source mismatch'
+              )
+
+          if (
+              training_feed ==
+              'TWELVE_DATA_PRIMARY'
+              and
+              active !=
+              'TWELVE_DATA'
+          ):
+              raise SystemExit(
+                  'Twelve training feed/source mismatch'
+              )
+
+          counts = {
+              tf: len(
+                  (
+                      pack.get(
+                          'timeframes'
+                      ) or {}
+                  ).get(tf) or []
+              )
+              for tf in (
+                  'M1',
+                  'M5',
+                  'M15',
+                  'H1'
+              )
+          }
+
+          print(
+              'V44 TRAIN PACK',
+              {
+                  'file':
+                      path.name,
+                  'trainingSource':
+                      training_source,
+                  'trainingFeed':
+                      training_feed,
+                  'active':
+                      active,
+                  'counts':
+                      counts,
+              }
+          )
           PY
 
       - name: Resolve current shadow outcomes
@@ -188,65 +298,307 @@ jobs:
 
           for name in names:
               p = Path(name)
+
               if p.exists():
                   text = p.read_text()
+
                   if not text.strip():
-                      raise SystemExit(f'{name} is empty')
+                      raise SystemExit(
+                          f'{name} is empty'
+                      )
+
                   json.loads(text)
 
           allowed = {
-              ('xauusd-primary.json', 'TWELVE_DATA_PRIMARY'),
-              ('xauusd-training.json', 'TWELVE_DATA_PRIMARY'),
-              ('xauusd-training.json', 'MT5_ACADEMY'),
+              (
+                  'xauusd-primary.json',
+                  'TWELVE_DATA_PRIMARY'
+              ),
+              (
+                  'xauusd-training.json',
+                  'TWELVE_DATA_PRIMARY'
+              ),
+              (
+                  'xauusd-training.json',
+                  'MT5_ACADEMY'
+              ),
           }
 
-          history = json.loads(Path('ai-history.json').read_text()) if Path('ai-history.json').exists() else {}
-          if history.get('ready') is True:
-              p = history.get('artifactProvenance') or {}
-              schema = history.get('artifactSchema') or {}
-              pair = (str(p.get('trainingSource') or ''), str(p.get('trainingFeed') or '').upper())
-              if p.get('schemaVersion') != 'KAGE_AI_V42':
-                  raise SystemExit('Ready history missing schema contract')
-              if pair not in allowed or p.get('mergeFeeds') is not False:
-                  raise SystemExit(f'Ready history violates source isolation: {pair}')
-              if p.get('featureSchemaHash') != '17e82bd347b6f345ad289df1' or schema.get('featureSchemaHash') != p.get('featureSchemaHash'):
-                  raise SystemExit('Ready history feature schema mismatch')
-              if p.get('labelSchemaHash') != 'fffe7703ec24c8cac8851daa' or schema.get('labelSchemaHash') != p.get('labelSchemaHash'):
-                  raise SystemExit('Ready history label schema mismatch')
-              if p.get('sourceFingerprint') != history.get('sourceFingerprint') or not p.get('dataWatermark'):
-                  raise SystemExit('Ready history provenance mismatch')
+          history = (
+              json.loads(
+                  Path(
+                      'ai-history.json'
+                  ).read_text()
+              )
+              if Path(
+                  'ai-history.json'
+              ).exists()
+              else {}
+          )
 
-          ml = json.loads(Path('ai-ml-brain.json').read_text()) if Path('ai-ml-brain.json').exists() else {}
-          isolation = ml.get('dataIsolation') or {}
-          if isolation.get('mergeFeeds') is True:
-              raise SystemExit('V44 policy violation: ML mergeFeeds true')
+          if history.get('ready') is True:
+              p = (
+                  history.get(
+                      'artifactProvenance'
+                  ) or {}
+              )
+
+              schema = (
+                  history.get(
+                      'artifactSchema'
+                  ) or {}
+              )
+
+              pair = (
+                  str(
+                      p.get(
+                          'trainingSource'
+                      ) or ''
+                  ),
+                  str(
+                      p.get(
+                          'trainingFeed'
+                      ) or ''
+                  ).upper(),
+              )
+
+              if (
+                  p.get(
+                      'schemaVersion'
+                  )
+                  !=
+                  'KAGE_AI_V42'
+              ):
+                  raise SystemExit(
+                      'Ready history missing schema contract'
+                  )
+
+              if (
+                  pair not in allowed
+                  or
+                  p.get(
+                      'mergeFeeds'
+                  )
+                  is not False
+              ):
+                  raise SystemExit(
+                      f'Ready history violates source isolation: {pair}'
+                  )
+
+              if (
+                  p.get(
+                      'featureSchemaHash'
+                  )
+                  !=
+                  '17e82bd347b6f345ad289df1'
+                  or
+                  schema.get(
+                      'featureSchemaHash'
+                  )
+                  !=
+                  p.get(
+                      'featureSchemaHash'
+                  )
+              ):
+                  raise SystemExit(
+                      'Ready history feature schema mismatch'
+                  )
+
+              if (
+                  p.get(
+                      'labelSchemaHash'
+                  )
+                  !=
+                  'fffe7703ec24c8cac8851daa'
+                  or
+                  schema.get(
+                      'labelSchemaHash'
+                  )
+                  !=
+                  p.get(
+                      'labelSchemaHash'
+                  )
+              ):
+                  raise SystemExit(
+                      'Ready history label schema mismatch'
+                  )
+
+              if (
+                  p.get(
+                      'sourceFingerprint'
+                  )
+                  !=
+                  history.get(
+                      'sourceFingerprint'
+                  )
+                  or
+                  not p.get(
+                      'dataWatermark'
+                  )
+              ):
+                  raise SystemExit(
+                      'Ready history provenance mismatch'
+                  )
+
+          ml = (
+              json.loads(
+                  Path(
+                      'ai-ml-brain.json'
+                  ).read_text()
+              )
+              if Path(
+                  'ai-ml-brain.json'
+              ).exists()
+              else {}
+          )
+
+          isolation = (
+              ml.get(
+                  'dataIsolation'
+              ) or {}
+          )
+
+          if (
+              isolation.get(
+                  'mergeFeeds'
+              )
+              is True
+          ):
+              raise SystemExit(
+                  'V44 policy violation: ML mergeFeeds true'
+              )
 
           if ml.get('ready') is True:
-              p = ml.get('artifactProvenance') or {}
-              schema = ml.get('artifactSchema') or {}
-              current = ml.get('current') or {}
-              candidates = current.get('candidates') or []
-              pair = (str(p.get('trainingSource') or ''), str(p.get('trainingFeed') or '').upper())
+              p = (
+                  ml.get(
+                      'artifactProvenance'
+                  ) or {}
+              )
 
-              if (p.get('schemaVersion') or schema.get('version')) != 'KAGE_AI_V42':
-                  raise SystemExit('Ready ML artifact missing schema contract')
-              if pair not in allowed or p.get('mergeFeeds') is not False:
-                  raise SystemExit(f'Ready ML artifact violates source isolation: {pair}')
-              for field in ('featureSchemaHash','labelSchemaHash','sourceFingerprint','dataWatermark'):
+              schema = (
+                  ml.get(
+                      'artifactSchema'
+                  ) or {}
+              )
+
+              current = (
+                  ml.get(
+                      'current'
+                  ) or {}
+              )
+
+              candidates = (
+                  current.get(
+                      'candidates'
+                  ) or []
+              )
+
+              pair = (
+                  str(
+                      p.get(
+                          'trainingSource'
+                      ) or ''
+                  ),
+                  str(
+                      p.get(
+                          'trainingFeed'
+                      ) or ''
+                  ).upper(),
+              )
+
+              if (
+                  (
+                      p.get(
+                          'schemaVersion'
+                      )
+                      or
+                      schema.get(
+                          'version'
+                      )
+                  )
+                  !=
+                  'KAGE_AI_V42'
+              ):
+                  raise SystemExit(
+                      'Ready ML artifact missing schema contract'
+                  )
+
+              if (
+                  pair not in allowed
+                  or
+                  p.get(
+                      'mergeFeeds'
+                  )
+                  is not False
+              ):
+                  raise SystemExit(
+                      f'Ready ML artifact violates source isolation: {pair}'
+                  )
+
+              for field in (
+                  'featureSchemaHash',
+                  'labelSchemaHash',
+                  'sourceFingerprint',
+                  'dataWatermark'
+              ):
                   if not p.get(field):
-                      raise SystemExit(f'Ready ML artifact missing {field}')
-              if len(candidates) != 12 or current.get('candidateCount') != 12:
-                  raise SystemExit('Ready ML artifact must contain exactly 12 candidates')
+                      raise SystemExit(
+                          f'Ready ML artifact missing {field}'
+                      )
 
-          print('V44 AI PACKS', {
-              'historyReady': history.get('ready'),
-              'historyFeed': (history.get('artifactProvenance') or {}).get('trainingFeed'),
-              'mlReady': ml.get('ready'),
-              'mlStatus': ml.get('status'),
-              'mlFeed': (ml.get('artifactProvenance') or {}).get('trainingFeed'),
-              'trainingSource': isolation.get('trainingSource'),
-              'liveSource': isolation.get('liveSource'),
-          })
+              if (
+                  len(candidates) != 12
+                  or
+                  current.get(
+                      'candidateCount'
+                  )
+                  != 12
+              ):
+                  raise SystemExit(
+                      'Ready ML artifact must contain exactly 12 candidates'
+                  )
+
+          print(
+              'V44 AI PACKS',
+              {
+                  'historyReady':
+                      history.get(
+                          'ready'
+                      ),
+                  'historyFeed':
+                      (
+                          history.get(
+                              'artifactProvenance'
+                          ) or {}
+                      ).get(
+                          'trainingFeed'
+                      ),
+                  'mlReady':
+                      ml.get(
+                          'ready'
+                      ),
+                  'mlStatus':
+                      ml.get(
+                          'status'
+                      ),
+                  'mlFeed':
+                      (
+                          ml.get(
+                              'artifactProvenance'
+                          ) or {}
+                      ).get(
+                          'trainingFeed'
+                      ),
+                  'trainingSource':
+                      isolation.get(
+                          'trainingSource'
+                      ),
+                  'liveSource':
+                      isolation.get(
+                          'liveSource'
+                      ),
+              }
+          )
           PY
 
       - name: Commit V44 AI packs
@@ -281,5 +633,8 @@ jobs:
           fi
 
           git commit -m "ai: V44 source-aware heavy self-play learning"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
+
+          git status --short
+
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
