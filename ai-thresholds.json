@@ -1,0 +1,54 @@
+{
+  "version": "V42.0 SELF-PLAY LAB",
+  "generatedAt": "2026-08-09T19:58:41.040966Z",
+  "artifactSchema": "KAGE_AI_V42",
+  "labelSchema": "M1_FIRST_HIT_V42",
+  "labelSchemaHash": "7c9ff5daadb124444d716c94",
+  "source": "PRIMARY_SHADOW_OUTCOMES_ONLY",
+  "trusted": false,
+  "activationReady": false,
+  "promotionStreak": 0,
+  "requiredPromotionStreak": 2,
+  "candidateHash": "e0c98cc0a15ba26e07a1980e",
+  "evidenceHash": "4f53cda18c2baa0c0354bb5f",
+  "evidenceRows": 0,
+  "evidenceCohorts": 0,
+  "evidenceWatermark": 0,
+  "promotionAdvanced": false,
+  "promotionReason": "ACTIVATION_GUARD_FAILED",
+  "newCohortsSincePass": 0,
+  "baseline": {
+    "minPlanScore": 64,
+    "minTp1Probability": 30,
+    "minCleanWinProbability": 28,
+    "maxSlProbability": 42,
+    "minExpectedValueR": 0.16,
+    "minTp1SlEdgePts": 6,
+    "maxDisagreementPts": 17,
+    "maxOodScore": 55
+  },
+  "recommended": {
+    "minPlanScore": 64,
+    "minTp1Probability": 30,
+    "minCleanWinProbability": 28,
+    "maxSlProbability": 42,
+    "minExpectedValueR": 0.16,
+    "minTp1SlEdgePts": 6,
+    "maxDisagreementPts": 17,
+    "maxOodScore": 55
+  },
+  "contextModifiers": {
+    "orderType": {},
+    "regime": {},
+    "session": {}
+  },
+  "evidence": {
+    "ready": false,
+    "reason": "NEED_AT_LEAST_80_PRIMARY_SHADOW_OUTCOMES"
+  },
+  "policy": {
+    "autoApply": true,
+    "rule": "ml-train.py may use recommended thresholds only after two distinct chronological evidence passes with at least 4 new decision cohorts; identical workflow reruns never advance promotion.",
+    "fallback": "Use V42 static guarded thresholds when evidence is insufficient."
+  }
+}
