@@ -2,10 +2,8 @@ name: AI Background Learning
 
 on:
   workflow_dispatch:
-
   schedule:
     - cron: "23 * * * *"
-
   workflow_run:
     workflows:
       - "Update XAUUSD data pack"
@@ -22,7 +20,6 @@ concurrency:
 jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
-
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -31,6 +28,102 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
+
+      - name: Hard sync latest V44 data snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          echo "AI checkout: $(git rev-parse HEAD)"
+
+      - name: Lock routed training source for this run
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          health = json.loads(Path('feed-health.json').read_text())
+          pack = json.loads(Path('xauusd-training.json').read_text())
+          model = (
+              json.loads(Path('ai-ml-brain.json').read_text())
+              if Path('ai-ml-brain.json').exists()
+              else {}
+          )
+
+          expected = str(
+              (health.get('training') or {}).get('feed') or ''
+          ).upper()
+
+          actual = str(
+              (pack.get('feed') or {}).get('trainingFeed') or ''
+          ).upper()
+
+          model_feed = str(
+              (model.get('artifactProvenance') or {}).get('trainingFeed') or ''
+          ).upper()
+
+          counts = {
+              tf: len((pack.get('timeframes') or {}).get(tf) or [])
+              for tf in ('M1', 'M5', 'M15', 'H1')
+          }
+
+          print('ROUTER TRAINING:', expected)
+          print('PACK TRAINING:', actual)
+          print('MODEL TRAINING:', model_feed or 'NONE')
+          print('TRAINING COUNTS:', counts)
+
+          if expected not in {
+              'MT5_ACADEMY',
+              'TWELVE_DATA_PRIMARY'
+          }:
+              raise SystemExit(
+                  f'Invalid router training feed: {expected or "MISSING"}'
+              )
+
+          if actual != expected:
+              raise SystemExit(
+                  f'Stale training pack: router={expected} pack={actual}'
+              )
+
+          if (
+              expected == 'MT5_ACADEMY'
+              and (
+                  counts['M1'] < 1800
+                  or counts['M15'] < 420
+              )
+          ):
+              raise SystemExit(
+                  f'MT5 academy archive unexpectedly short: {counts}'
+              )
+
+          force = (
+              '1'
+              if model_feed != actual
+              else '0'
+          )
+
+          with open(
+              Path(os.environ['GITHUB_ENV']),
+              'a',
+              encoding='utf-8'
+          ) as f:
+              f.write(
+                  f'KAGE_TRAINING_FEED={actual}\n'
+              )
+              f.write(
+                  f'KAGE_FORCE_SOURCE_HANDOFF={force}\n'
+              )
+
+          print(
+              'SOURCE HANDOFF FORCE:',
+              force
+          )
+          PY
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -48,16 +141,8 @@ jobs:
         run: |
           python -V
           python -m pip --version
-
-          python -m pip install \
-            --upgrade \
-            pip \
-            setuptools \
-            wheel
-
-          python -m pip install \
-            -r requirements-ml.txt
-
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install -r requirements-ml.txt
           python -m pip check
 
       - name: Verify ML Python runtime
@@ -72,36 +157,13 @@ jobs:
               import xgboost
               xgb = xgboost.__version__
           except Exception as exc:
-              xgb = (
-                  "optional-unavailable: "
-                  + str(exc)
-              )
+              xgb = f"optional-unavailable: {exc}"
 
-          print(
-              "PYTHON",
-              sys.executable,
-              sys.version
-          )
-
-          print(
-              "NUMPY",
-              numpy.__version__
-          )
-
-          print(
-              "PANDAS",
-              pandas.__version__
-          )
-
-          print(
-              "SKLEARN",
-              sklearn.__version__
-          )
-
-          print(
-              "XGBOOST",
-              xgb
-          )
+          print("PYTHON", sys.executable, sys.version)
+          print("NUMPY", numpy.__version__)
+          print("PANDAS", pandas.__version__)
+          print("SKLEARN", sklearn.__version__)
+          print("XGBOOST", xgb)
           PY
 
       - name: Validate V44 learning and safety fixtures
@@ -138,13 +200,8 @@ jobs:
           import json
           from pathlib import Path
 
-          routed = Path(
-              'xauusd-training.json'
-          )
-
-          legacy = Path(
-              'xauusd-primary.json'
-          )
+          routed = Path('xauusd-training.json')
+          legacy = Path('xauusd-primary.json')
 
           path = (
               routed
@@ -177,9 +234,7 @@ jobs:
           ).upper()
 
           training_feed = str(
-              feed.get(
-                  'trainingFeed'
-              )
+              feed.get('trainingFeed')
               or (
                   'TWELVE_DATA_PRIMARY'
                   if path.name ==
@@ -189,28 +244,17 @@ jobs:
           ).upper()
 
           training_source = str(
-              feed.get(
-                  'trainingSource'
-              )
+              feed.get('trainingSource')
               or path.name
           )
 
           watermark = int(
-              pack.get(
-                  'closedBarWatermark'
-              )
-              or feed.get(
-                  'closedBarWatermark'
-              )
+              pack.get('closedBarWatermark')
+              or feed.get('closedBarWatermark')
               or 0
           )
 
-          if (
-              switching.get(
-                  'mergeFeeds'
-              )
-              is not False
-          ):
+          if switching.get('mergeFeeds') is not False:
               raise SystemExit(
                   'Feed merge forbidden'
               )
@@ -235,48 +279,38 @@ jobs:
               ),
           }
 
-          pair = (
+          if (
               training_source,
               training_feed
-          )
-
-          if pair not in allowed:
+          ) not in allowed:
               raise SystemExit(
-                  'Invalid V44 training pair: '
-                  + str(pair)
+                  f'Invalid V44 training pair: '
+                  f'{training_source} | '
+                  f'{training_feed}'
               )
 
           if (
-              training_feed ==
-              'MT5_ACADEMY'
-              and
-              'MT5' not in active
+              training_feed == 'MT5_ACADEMY'
+              and 'MT5' not in active
           ):
               raise SystemExit(
                   'MT5 training feed/source mismatch'
               )
 
           if (
-              training_feed ==
-              'TWELVE_DATA_PRIMARY'
-              and
-              active !=
-              'TWELVE_DATA'
+              training_feed == 'TWELVE_DATA_PRIMARY'
+              and active != 'TWELVE_DATA'
           ):
               raise SystemExit(
                   'Twelve training feed/source mismatch'
               )
 
-          timeframes = (
-              pack.get(
-                  'timeframes'
-              )
-              or {}
-          )
-
           counts = {
               tf: len(
-                  timeframes.get(tf)
+                  (
+                      pack.get('timeframes')
+                      or {}
+                  ).get(tf)
                   or []
               )
               for tf in (
@@ -292,16 +326,12 @@ jobs:
               {
                   'file':
                       path.name,
-
                   'trainingSource':
                       training_source,
-
                   'trainingFeed':
                       training_feed,
-
                   'active':
                       active,
-
                   'counts':
                       counts,
               }
@@ -309,42 +339,133 @@ jobs:
           PY
 
       - name: Resolve current shadow outcomes
-        run: |
-          node build-ai-shadow.mjs
+        run: node build-ai-shadow.mjs
 
       - name: Rebuild routed historical brain
-        run: |
-          node build-ai-history.mjs
+        run: node build-ai-history.mjs
 
       - name: Train routed statistical challenger
-        run: |
-          node build-ai-learning.mjs
+        run: node build-ai-learning.mjs
 
       - name: Resolve deployed signal and plan outcomes
-        run: |
-          node build-ai-journal.mjs
+        run: node build-ai-journal.mjs
 
       - name: Champion challenger governance
-        run: |
-          node build-ai-governance.mjs
+        run: node build-ai-governance.mjs
 
       - name: Source-aware self-play lab
-        run: |
-          python selfplay-lab.py
+        run: python selfplay-lab.py
 
       - name: Train autonomous Python ML brain
-        env:
-          ML_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+        shell: bash
         run: |
-          python ml-train.py
+          set -euo pipefail
+
+          FORCE=0
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            FORCE=1
+          fi
+
+          if [ "${KAGE_FORCE_SOURCE_HANDOFF:-0}" = "1" ]; then
+            FORCE=1
+          fi
+
+          echo \
+            "ML_FORCE=${FORCE} | routed feed=${KAGE_TRAINING_FEED:-UNKNOWN}"
+
+          ML_FORCE="$FORCE" \
+            python ml-train.py
+
+      - name: Verify ML consumed routed training source
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          health = json.loads(
+              Path('feed-health.json').read_text()
+          )
+
+          pack = json.loads(
+              Path('xauusd-training.json').read_text()
+          )
+
+          model = json.loads(
+              Path('ai-ml-brain.json').read_text()
+          )
+
+          expected = str(
+              (health.get('training') or {}).get('feed') or ''
+          ).upper()
+
+          pack_feed = str(
+              (pack.get('feed') or {}).get('trainingFeed') or ''
+          ).upper()
+
+          prov = (
+              model.get('artifactProvenance')
+              or {}
+          )
+
+          model_feed = str(
+              prov.get('trainingFeed')
+              or ''
+          ).upper()
+
+          model_source = str(
+              prov.get('trainingSource')
+              or ''
+          )
+
+          print('EXPECTED:', expected)
+          print('PACK:', pack_feed)
+          print(
+              'MODEL:',
+              model_feed,
+              model_source
+          )
+          print(
+              'MODEL STATUS:',
+              model.get('status'),
+              'READY:',
+              model.get('ready')
+          )
+
+          if expected != pack_feed:
+              raise SystemExit(
+                  f'Router/pack mismatch: '
+                  f'{expected} != {pack_feed}'
+              )
+
+          if (
+              model_feed != expected
+              or model_source !=
+              'xauusd-training.json'
+          ):
+              raise SystemExit(
+                  'ML did not consume current routed pack: '
+                  f'expected={expected} '
+                  f'actual={model_feed} '
+                  f'source={model_source}'
+              )
+
+          if (
+              expected == 'MT5_ACADEMY'
+              and model.get('reason') ==
+              'TRAINING_PACK_NOT_READY'
+          ):
+              raise SystemExit(
+                  'Stale API bootstrap artifact survived '
+                  'MT5 academy training'
+              )
+          PY
 
       - name: Capture current-source shadow candidates
-        run: |
-          node build-ai-shadow.mjs
+        run: node build-ai-shadow.mjs
 
       - name: Journal qualified pending plans
-        run: |
-          node build-ai-journal.mjs
+        run: node build-ai-journal.mjs
 
       - name: Verify V44 AI packs
         run: |
@@ -370,18 +491,15 @@ jobs:
           for name in names:
               p = Path(name)
 
-              if not p.exists():
-                  continue
+              if p.exists():
+                  text = p.read_text()
 
-              text = p.read_text()
+                  if not text.strip():
+                      raise SystemExit(
+                          f'{name} is empty'
+                      )
 
-              if not text.strip():
-                  raise SystemExit(
-                      name +
-                      ' is empty'
-                  )
-
-              json.loads(text)
+                  json.loads(text)
 
           allowed = {
               (
@@ -398,23 +516,20 @@ jobs:
               ),
           }
 
-          history_path = Path(
-              'ai-history.json'
-          )
-
           history = (
               json.loads(
-                  history_path.read_text()
+                  Path(
+                      'ai-history.json'
+                  ).read_text()
               )
-              if history_path.exists()
+              if Path(
+                  'ai-history.json'
+              ).exists()
               else {}
           )
 
-          if (
-              history.get('ready')
-              is True
-          ):
-              provenance = (
+          if history.get('ready') is True:
+              p = (
                   history.get(
                       'artifactProvenance'
                   )
@@ -430,13 +545,13 @@ jobs:
 
               pair = (
                   str(
-                      provenance.get(
+                      p.get(
                           'trainingSource'
                       )
                       or ''
                   ),
                   str(
-                      provenance.get(
+                      p.get(
                           'trainingFeed'
                       )
                       or ''
@@ -444,11 +559,8 @@ jobs:
               )
 
               if (
-                  provenance.get(
-                      'schemaVersion'
-                  )
-                  !=
-                  'KAGE_AI_V42'
+                  p.get('schemaVersion')
+                  != 'KAGE_AI_V42'
               ):
                   raise SystemExit(
                       'Ready history missing schema contract'
@@ -456,119 +568,84 @@ jobs:
 
               if (
                   pair not in allowed
-                  or
-                  provenance.get(
-                      'mergeFeeds'
-                  )
+                  or p.get('mergeFeeds')
                   is not False
               ):
                   raise SystemExit(
-                      'Ready history violates source isolation: '
-                      + str(pair)
+                      f'Ready history violates '
+                      f'source isolation: {pair}'
                   )
 
               if (
-                  provenance.get(
-                      'featureSchemaHash'
-                  )
+                  p.get('featureSchemaHash')
                   !=
                   '17e82bd347b6f345ad289df1'
-              ):
-                  raise SystemExit(
-                      'Ready history feature schema hash mismatch'
-                  )
-
-              if (
-                  schema.get(
+                  or schema.get(
                       'featureSchemaHash'
                   )
-                  !=
-                  provenance.get(
+                  != p.get(
                       'featureSchemaHash'
                   )
               ):
                   raise SystemExit(
-                      'Ready history feature schema contract mismatch'
+                      'Ready history feature schema mismatch'
                   )
 
               if (
-                  provenance.get(
-                      'labelSchemaHash'
-                  )
+                  p.get('labelSchemaHash')
                   !=
                   'fffe7703ec24c8cac8851daa'
-              ):
-                  raise SystemExit(
-                      'Ready history label schema hash mismatch'
-                  )
-
-              if (
-                  schema.get(
+                  or schema.get(
                       'labelSchemaHash'
                   )
-                  !=
-                  provenance.get(
+                  != p.get(
                       'labelSchemaHash'
                   )
               ):
                   raise SystemExit(
-                      'Ready history label schema contract mismatch'
+                      'Ready history label schema mismatch'
                   )
 
               if (
-                  provenance.get(
+                  p.get('sourceFingerprint')
+                  != history.get(
                       'sourceFingerprint'
                   )
-                  !=
-                  history.get(
-                      'sourceFingerprint'
+                  or not p.get(
+                      'dataWatermark'
                   )
               ):
                   raise SystemExit(
-                      'Ready history source fingerprint mismatch'
+                      'Ready history provenance mismatch'
                   )
-
-              if not provenance.get(
-                  'dataWatermark'
-              ):
-                  raise SystemExit(
-                      'Ready history data watermark missing'
-                  )
-
-          ml_path = Path(
-              'ai-ml-brain.json'
-          )
 
           ml = (
               json.loads(
-                  ml_path.read_text()
+                  Path(
+                      'ai-ml-brain.json'
+                  ).read_text()
               )
-              if ml_path.exists()
+              if Path(
+                  'ai-ml-brain.json'
+              ).exists()
               else {}
           )
 
           isolation = (
-              ml.get(
-                  'dataIsolation'
-              )
+              ml.get('dataIsolation')
               or {}
           )
 
           if (
-              isolation.get(
-                  'mergeFeeds'
-              )
+              isolation.get('mergeFeeds')
               is True
           ):
               raise SystemExit(
                   'V44 policy violation: ML mergeFeeds true'
               )
 
-          if (
-              ml.get('ready')
-              is True
-          ):
-              provenance = (
+          if ml.get('ready') is True:
+              p = (
                   ml.get(
                       'artifactProvenance'
                   )
@@ -583,48 +660,36 @@ jobs:
               )
 
               current = (
-                  ml.get(
-                      'current'
-                  )
+                  ml.get('current')
                   or {}
               )
 
               candidates = (
-                  current.get(
-                      'candidates'
-                  )
+                  current.get('candidates')
                   or []
               )
 
               pair = (
                   str(
-                      provenance.get(
+                      p.get(
                           'trainingSource'
                       )
                       or ''
                   ),
                   str(
-                      provenance.get(
+                      p.get(
                           'trainingFeed'
                       )
                       or ''
                   ).upper(),
               )
 
-              schema_version = (
-                  provenance.get(
-                      'schemaVersion'
-                  )
-                  or
-                  schema.get(
-                      'version'
-                  )
-              )
-
               if (
-                  schema_version
-                  !=
-                  'KAGE_AI_V42'
+                  (
+                      p.get('schemaVersion')
+                      or schema.get('version')
+                  )
+                  != 'KAGE_AI_V42'
               ):
                   raise SystemExit(
                       'Ready ML artifact missing schema contract'
@@ -632,59 +697,41 @@ jobs:
 
               if (
                   pair not in allowed
-                  or
-                  provenance.get(
-                      'mergeFeeds'
-                  )
+                  or p.get('mergeFeeds')
                   is not False
               ):
                   raise SystemExit(
-                      'Ready ML artifact violates source isolation: '
-                      + str(pair)
+                      f'Ready ML artifact violates '
+                      f'source isolation: {pair}'
                   )
 
-              required = (
+              for field in (
                   'featureSchemaHash',
                   'labelSchemaHash',
                   'sourceFingerprint',
                   'dataWatermark'
-              )
-
-              for field in required:
-                  if not provenance.get(
-                      field
-                  ):
+              ):
+                  if not p.get(field):
                       raise SystemExit(
-                          'Ready ML artifact missing '
-                          + field
+                          f'Ready ML artifact missing {field}'
                       )
 
               if (
-                  len(candidates)
-                  != 12
-              ):
-                  raise SystemExit(
-                      'Ready ML artifact must contain exactly 12 candidates'
-                  )
-
-              if (
-                  current.get(
+                  len(candidates) != 12
+                  or current.get(
                       'candidateCount'
-                  )
-                  != 12
+                  ) != 12
               ):
                   raise SystemExit(
-                      'Ready ML candidateCount must equal 12'
+                      'Ready ML artifact must contain '
+                      'exactly 12 candidates'
                   )
 
           print(
               'V44 AI PACKS',
               {
                   'historyReady':
-                      history.get(
-                          'ready'
-                      ),
-
+                      history.get('ready'),
                   'historyFeed':
                       (
                           history.get(
@@ -694,17 +741,10 @@ jobs:
                       ).get(
                           'trainingFeed'
                       ),
-
                   'mlReady':
-                      ml.get(
-                          'ready'
-                      ),
-
+                      ml.get('ready'),
                   'mlStatus':
-                      ml.get(
-                          'status'
-                      ),
-
+                      ml.get('status'),
                   'mlFeed':
                       (
                           ml.get(
@@ -714,12 +754,10 @@ jobs:
                       ).get(
                           'trainingFeed'
                       ),
-
                   'trainingSource':
                       isolation.get(
                           'trainingSource'
                       ),
-
                   'liveSource':
                       isolation.get(
                           'liveSource'
@@ -730,6 +768,8 @@ jobs:
 
       - name: Commit V44 AI packs
         shell: bash
+        env:
+          TARGET_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
 
@@ -746,6 +786,7 @@ jobs:
             ai-ml-brain.json
             ai-ml-candidate.json
             ai-ml-governance.json
+            ai-shadow-journal.json
             ai-selfplay.json
             ai-thresholds.json
             ai-counterfactual.json
@@ -754,11 +795,9 @@ jobs:
 
           SNAPSHOT="$(mktemp -d)"
 
-          cleanup() {
-            rm -rf "$SNAPSHOT"
-          }
-
-          trap cleanup EXIT
+          trap \
+            'rm -rf "$SNAPSHOT"' \
+            EXIT
 
           for f in "${FILES[@]}"; do
             if [ -e "$f" ]; then
@@ -768,11 +807,11 @@ jobs:
             fi
           done
 
-          BRANCH="${GITHUB_REF_NAME}"
+          BRANCH="${TARGET_BRANCH:-main}"
 
           for attempt in 1 2 3 4 5; do
             echo \
-              "Publish attempt ${attempt}/5"
+              "Publish attempt ${attempt}/5 -> ${BRANCH}"
 
             git fetch \
               origin \
@@ -826,7 +865,8 @@ jobs:
               "ai: V44 source-aware heavy self-play learning"
 
             if \
-              git push origin \
+              git push \
+                origin \
                 "HEAD:$BRANCH"
             then
               echo \
@@ -836,7 +876,7 @@ jobs:
             fi
 
             echo \
-              "Remote changed while publishing. Retrying from latest branch..."
+              "Remote changed while publishing; rebuilding commit from latest ${BRANCH}"
 
             sleep \
               $((attempt * 2))
