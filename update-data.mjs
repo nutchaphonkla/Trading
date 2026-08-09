@@ -6,7 +6,7 @@ const TWELVE_API_KEY = process.env.TWELVE_DATA_API_KEY || '';
 const FALLBACK_URL = (process.env.TV_FALLBACK_URL || '').replace(/\/$/, '');
 const FALLBACK_TOKEN = process.env.TV_FALLBACK_TOKEN || '';
 
-const VERSION = 'V37';
+const VERSION = 'V38';
 const SYMBOL = 'XAU/USD';
 const DAY = 86_400_000;
 const MINUTE = 60_000;
@@ -253,4 +253,4 @@ await fs.writeFile(path.join(ROOT,'xauusd.json'),JSON.stringify(activePack));
 await fs.writeFile(path.join(ROOT,'feed-health.json'),JSON.stringify(health,null,2));
 await fs.writeFile(path.join(ROOT,'news.json'),JSON.stringify(await fetchNews()));
 
-console.log('V37 STRICT PRIMARY -> ISOLATED FAILOVER',{active,mode,status:overallStatus,reason,primary:{ok:primary.ok,fresh:primary.fresh,error:primary.error},fallback:{checked:fallback.checked,ok:fallback.ok,fresh:fallback.fresh,error:fallback.error},mergeFeeds:false,activeCandles:Object.fromEntries(Object.entries(activePack.timeframes||{}).map(([k,a])=>[k,a.length])),primaryCandles:Object.fromEntries(Object.entries(primaryPack?.timeframes||{}).map(([k,a])=>[k,a.length])),fallbackCandles:Object.fromEntries(Object.entries(fallbackPack?.timeframes||{}).map(([k,a])=>[k,a.length]))});
+console.log('V38 STRICT PRIMARY -> ISOLATED FAILOVER',{active,mode,status:overallStatus,reason,primary:{ok:primary.ok,fresh:primary.fresh,error:primary.error},fallback:{checked:fallback.checked,ok:fallback.ok,fresh:fallback.fresh,error:fallback.error},mergeFeeds:false,activeCandles:Object.fromEntries(Object.entries(activePack.timeframes||{}).map(([k,a])=>[k,a.length])),primaryCandles:Object.fromEntries(Object.entries(primaryPack?.timeframes||{}).map(([k,a])=>[k,a.length])),fallbackCandles:Object.fromEntries(Object.entries(fallbackPack?.timeframes||{}).map(([k,a])=>[k,a.length]))});

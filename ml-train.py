@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OneMonth OS V37 Autonomous Precision Brain.
+"""OneMonth OS V38 Autonomous Self-Play Precision Brain.
 
 Design goals:
 - Train on Twelve Data PRIMARY history only when an isolated primary pack exists.
@@ -53,9 +53,14 @@ OUT_PATH = ROOT / "ai-ml-brain.json"
 CANDIDATE_PATH = ROOT / "ai-ml-candidate.json"
 GOV_PATH = ROOT / "ai-ml-governance.json"
 JOURNAL_PATH = ROOT / "ai-outcome-journal.json"
+SHADOW_PATH = ROOT / "ai-shadow-journal.json"
+SELFPLAY_PATH = ROOT / "ai-selfplay.json"
+THRESHOLD_PATH = ROOT / "ai-thresholds.json"
+COUNTERFACTUAL_PATH = ROOT / "ai-counterfactual.json"
+AUTOPSY_PATH = ROOT / "ai-autopsy.json"
 
-VERSION = "V37 AUTONOMOUS PRECISION BRAIN"
-SEED = 3709
+VERSION = "V38 AUTONOMOUS SELF-PLAY PRECISION BRAIN"
+SEED = 3809
 RNG = np.random.default_rng(SEED)
 MIN_M15 = 420
 MIN_M1 = 1800
@@ -1531,15 +1536,54 @@ def main() -> None:
     min_edge = 6.0
     max_disagreement = 17.0
 
+    # V38 guarded self-play threshold optimizer. Only PRIMARY Twelve shadow outcomes
+    # can promote these values, and selfplay-lab.py validates them on an unseen
+    # chronological tail before activationReady becomes true.
+    threshold_pack = load_json(THRESHOLD_PATH)
+    auto_threshold_active = bool(threshold_pack.get("activationReady") and threshold_pack.get("trusted"))
+    if auto_threshold_active:
+        rec = threshold_pack.get("recommended") or {}
+        min_plan_score = float(np.clip(safe_num(rec.get("minPlanScore"), min_plan_score), 56, 78))
+        min_tp1 = float(np.clip(safe_num(rec.get("minTp1Probability"), min_tp1), 22, 65))
+        max_sl = float(np.clip(safe_num(rec.get("maxSlProbability"), max_sl), 22, 50))
+        min_clean = float(np.clip(safe_num(rec.get("minCleanWinProbability"), min_clean), 18, 55))
+        min_ev = float(np.clip(safe_num(rec.get("minExpectedValueR"), min_ev), -0.02, 0.40))
+        min_edge = float(np.clip(safe_num(rec.get("minTp1SlEdgePts"), min_edge), 3, 14))
+        max_disagreement = float(np.clip(safe_num(rec.get("maxDisagreementPts"), max_disagreement), 10, 22))
+
+    mods = threshold_pack.get("contextModifiers") or {}
+    def context_delta(section, key, field):
+        try:
+            return safe_num(((mods.get(section) or {}).get(str(key)) or {}).get(field), 0.0)
+        except Exception:
+            return 0.0
+
     market_open = bool((live_pack.get("feed") or {}).get("marketLikelyOpen", True))
     for c in final_rows:
+        score_delta = (
+            context_delta("orderType", c.get("type"), "minPlanScoreDelta") +
+            context_delta("regime", c.get("regime"), "minPlanScoreDelta") +
+            context_delta("session", c.get("session"), "minPlanScoreDelta")
+        ) / 3.0
+        tp_delta = (
+            context_delta("orderType", c.get("type"), "minTp1ProbabilityDelta") +
+            context_delta("regime", c.get("regime"), "minTp1ProbabilityDelta") +
+            context_delta("session", c.get("session"), "minTp1ProbabilityDelta")
+        ) / 3.0
+        # Context specialists only make small bounded adjustments and only after
+        # the global shadow threshold pack has passed promotion guards.
+        if not auto_threshold_active:
+            score_delta = tp_delta = 0.0
+        cand_min_score = float(np.clip(min_plan_score + np.clip(score_delta, -4, 5), 55, 82))
+        cand_min_tp1 = float(np.clip(min_tp1 + np.clip(tp_delta, -3, 4), 20, 68))
+
         reasons = []
         if status != "TRUSTED": reasons.append("MODEL_NOT_TRUSTED")
         if market_open and news_guard.get("lock"): reasons.append("NEWS_LOCK")
         if ood_score > 55: reasons.append("OOD_REGIME_SHIFT")
-        if c["score"] < min_plan_score: reasons.append("LOW_PLAN_SCORE")
+        if c["score"] < cand_min_score: reasons.append("LOW_PLAN_SCORE")
         if c["evR"] < min_ev: reasons.append("LOW_EXPECTED_VALUE")
-        if c["pTp1"] < min_tp1: reasons.append("LOW_TP1_PROBABILITY")
+        if c["pTp1"] < cand_min_tp1: reasons.append("LOW_TP1_PROBABILITY")
         if c["pCleanWin"] < min_clean: reasons.append("LOW_CLEAN_WIN_PROBABILITY")
         if c["pSl"] > max_sl: reasons.append("SL_PROBABILITY_HIGH")
         if c["pTp1"] - c["pSl"] < min_edge: reasons.append("WEAK_TP1_SL_EDGE")
@@ -1557,11 +1601,13 @@ def main() -> None:
             grade = "REJECT"
         c["qualityGate"] = {
             "passed": passed, "grade": grade, "reasons": reasons,
+            "thresholdSource": "SELF_PLAY_AUTO" if auto_threshold_active else "STATIC_GUARDED",
+            "contextAdjustment": {"scoreDelta": round(float(score_delta), 2), "tp1Delta": round(float(tp_delta), 2)},
             "thresholds": {
-                "minPlanScore": round(min_plan_score, 1), "minTp1Probability": round(min_tp1, 1),
-                "minCleanWinProbability": min_clean, "maxSlProbability": round(max_sl, 1),
-                "minExpectedValueR": min_ev, "minTp1SlEdgePts": min_edge,
-                "maxDisagreementPts": max_disagreement, "maxOodScore": 55,
+                "minPlanScore": round(cand_min_score, 1), "minTp1Probability": round(cand_min_tp1, 1),
+                "minCleanWinProbability": round(min_clean, 1), "maxSlProbability": round(max_sl, 1),
+                "minExpectedValueR": round(min_ev, 3), "minTp1SlEdgePts": round(min_edge, 1),
+                "maxDisagreementPts": round(max_disagreement, 1), "maxOodScore": 55,
             },
         }
 
@@ -1589,12 +1635,17 @@ def main() -> None:
     source_live = str((live_pack.get("feed") or {}).get("active") or live_pack.get("source") or "UNKNOWN")
     latest_ts = int(live_anchor.iloc[-1]["ts"])
 
+    selfplay_pack = load_json(SELFPLAY_PATH)
+    counterfactual_pack = load_json(COUNTERFACTUAL_PATH)
+    autopsy_pack = load_json(AUTOPSY_PATH)
+    shadow_pack = load_json(SHADOW_PATH)
+
     pack_out = {
         "version": VERSION,
         "generatedAt": utc_now(),
         "ready": True,
         "status": status,
-        "engine": "V37 M1 FIRST-HIT / XGB+HGB+TREES / CALIBRATION / CONTEXT EXPERTS / OOD / DYNAMIC GEOMETRY",
+        "engine": "V38 M1 FIRST-HIT / XGB+HGB+TREES / SHADOW SELF-PLAY / AUTO THRESHOLD / AUTOPSY / COUNTERFACTUAL",
         "sourceFingerprint": fp,
         "dataIsolation": {
             "trainingSource": train_source,
@@ -1653,6 +1704,30 @@ def main() -> None:
             "candidates": final_rows, "primary": qualified[0] if qualified else None, "backup": backup,
             "reference": reference, "qualifiedCount": len(qualified), "candidateCount": len(final_rows),
         },
+        "selfPlay": {
+            "mode": "SHADOW_FORWARD_LEARNING",
+            "ready": bool(selfplay_pack.get("ready")),
+            "shadow": shadow_pack.get("summary") or selfplay_pack.get("shadow") or {},
+            "primaryResolved": selfplay_pack.get("primaryResolved") or {},
+            "forwardReplay": selfplay_pack.get("forwardReplay") or {},
+            "thresholdOptimizer": {
+                **(selfplay_pack.get("thresholdOptimizer") or {}),
+                "active": auto_threshold_active,
+                "source": "PRIMARY_TWELVE_SHADOW_ONLY",
+            },
+            "counterfactual": {
+                "ready": bool(counterfactual_pack.get("ready")),
+                "ideasReplayed": counterfactual_pack.get("ideasReplayed"),
+                "best": counterfactual_pack.get("best"),
+                "avgRImprovement": counterfactual_pack.get("avgRImprovement"),
+            },
+            "autopsy": {
+                "ready": bool(autopsy_pack.get("ready")),
+                "failures": autopsy_pack.get("failures"),
+                "topCauses": (autopsy_pack.get("topCauses") or [])[:5],
+            },
+            "rule": "AI ideas become learning evidence only after future M1 ground truth resolves them. Rejected plans are shadow-tested but never treated as wins without observed outcomes.",
+        },
         "policy": {
             "mlCanOverrideTechnical": bool(status == "TRUSTED" and health >= 60 and ood_score <= 32 and not news_guard.get("lock")),
             "minimumPlanScore": round(min_plan_score, 1), "minimumTp1Probability": round(min_tp1, 1),
@@ -1661,6 +1736,8 @@ def main() -> None:
             "maximumDisagreementPts": max_disagreement, "maximumOodScore": 55,
             "hardCandidateGate": True, "noTradeBrain": True, "newsLock": bool(news_guard.get("lock")),
             "executionCostModel": "CONSERVATIVE_ESTIMATE_NOT_BID_ASK",
+            "thresholdSource": "SELF_PLAY_AUTO" if auto_threshold_active else "STATIC_GUARDED",
+            "selfPlayAutoThresholdActive": auto_threshold_active,
             "note": "A healthy model may reject every plan. Qualified plans still require live feed, gap, broker spread/slippage and risk revalidation.",
         },
     }
@@ -1668,7 +1745,7 @@ def main() -> None:
     write_json(CANDIDATE_PATH, pack_out)
     write_json(OUT_PATH, pack_out)
     write_json(GOV_PATH, gov)
-    print("V37 brain ready", {
+    print("V38 brain ready", {
         "status": status, "health": round(health, 1), "samples": len(ds), "filled": int(filled_mask.sum()),
         "auc": primary_metrics.get("auc"), "brier": primary_metrics.get("brier"), "ece": primary_metrics.get("ece"),
         "ood": round(ood_score, 1), "liveFeed": source_live, "qualified": len(qualified),

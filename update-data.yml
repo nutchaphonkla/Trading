@@ -10,13 +10,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-market-data-v37
+  group: onemonth-market-data-v38
   cancel-in-progress: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -29,8 +29,10 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validate V37 updater
-        run: node --check update-data.mjs
+      - name: Validate V38 data and shadow engines
+        run: |
+          node --check update-data.mjs
+          node --check build-ai-shadow.mjs
 
       - name: Update PRIMARY or isolated MT5 fallback
         env:
@@ -38,6 +40,9 @@ jobs:
           TV_FALLBACK_URL: ${{ secrets.TV_FALLBACK_URL }}
           TV_FALLBACK_TOKEN: ${{ secrets.TV_FALLBACK_TOKEN }}
         run: node update-data.mjs
+
+      - name: Shadow self-play forward test
+        run: node build-ai-shadow.mjs
 
       - name: Verify strict feed isolation
         run: |
@@ -52,10 +57,14 @@ jobs:
           console.log('MT5:',h.fallback?.checked?h.fallback?.status:'STANDBY / NOT QUERIED');
           console.log('RECOVERY:',`${h.switching?.primaryRecoveryStreak||0}/${h.switching?.primaryRecoveryRequired||2}`);
           console.log('MERGE FEEDS:',h.switching?.mergeFeeds);
-          if(h.switching?.mergeFeeds===true) throw new Error('V37 policy violation: feed merge is forbidden');
+          if(h.switching?.mergeFeeds===true) throw new Error('V38 policy violation: feed merge is forbidden');
+          if(fs.existsSync('ai-shadow-journal.json')){
+            const s=JSON.parse(fs.readFileSync('ai-shadow-journal.json','utf8'));
+            console.log('SHADOW SELF-PLAY:',s.summary||{});
+          }
           NODE
 
-      - name: Commit V37 market packs
+      - name: Commit V38 market and self-play packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -66,7 +75,8 @@ jobs:
             xauusd-primary.json \
             xauusd-fallback.json \
             news.json \
-            feed-health.json
+            feed-health.json \
+            ai-shadow-journal.json
           do
             if [ -e "$f" ]; then
               git add "$f"
@@ -74,10 +84,10 @@ jobs:
           done
 
           if git diff --cached --quiet; then
-            echo "No market-data changes"
+            echo "No market/self-play changes"
             exit 0
           fi
 
-          git commit -m "data: V37 strict primary failover pack"
+          git commit -m "data: V38 market + shadow self-play"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

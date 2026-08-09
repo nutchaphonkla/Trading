@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V37 Autonomous Precision Brain</title>
+<title>OneMonth OS V38 Self-Play Precision Brain</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -4696,6 +4696,25 @@ body{font-variant-numeric:tabular-nums!important}
 body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 
 </style>
+
+<style>
+/* ================================================================
+   V38 CLEAN SELF-PLAY COCKPIT — MOBILE FIRST
+   ================================================================ */
+.ai-core-v38{position:relative;overflow:hidden!important;border-radius:27px!important;padding:0!important;background:linear-gradient(180deg,#06131a 0%,#020c11 100%)!important}
+.ai-core-v38 .ai-core-gridfx,.ai-core-v38 .ai-core-scanfx,.ai-core-v38 .ai-source-strip,.ai-core-v38 .ai-cockpit-label,.ai-core-v38 .ai-brain-stage,.ai-core-v38 .ai-activity-panel,.ai-core-v38 .ai-metric-rack,.ai-core-v38 .ai-context-head,.ai-core-v38 .ai-context-grid{display:none!important}
+.v38-mesh{position:absolute;inset:0;pointer-events:none;opacity:.42;background:radial-gradient(500px 300px at 50% 23%,rgba(24,221,215,.095),transparent 63%),linear-gradient(rgba(69,190,202,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(69,190,202,.025) 1px,transparent 1px);background-size:auto,30px 30px,30px 30px;mask-image:linear-gradient(#000 0 68%,transparent 96%)}
+.v38-beam{position:absolute;left:12%;right:12%;top:0;height:1px;background:linear-gradient(90deg,transparent,#3adce2,transparent);box-shadow:0 0 20px rgba(58,220,226,.45);opacity:.55}
+.v38-head{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 42px;gap:10px;padding:21px 20px 16px;border-bottom:1px solid rgba(74,193,207,.12)}
+.v38-head>div{min-width:0}.v38-kicker{display:flex;align-items:center;gap:7px;color:#7ca0ae!important}.v38-kicker i{width:6px;height:6px;border-radius:50%;background:#46dfcf;box-shadow:0 0 12px #46dfcf}.v38-head h3{margin:5px 0 5px;font-size:28px;letter-spacing:-.045em;color:#f4f8f9}.v38-head p{margin:0;color:#71838f;font-size:9px;line-height:1.45;white-space:normal}.v38-refresh{grid-column:2;grid-row:1/3;width:42px;height:42px;align-self:center;border:1px solid rgba(57,204,216,.18);border-radius:14px;background:rgba(5,22,29,.85);display:grid;place-items:center}.v38-refresh svg{width:17px;height:17px;fill:none;stroke:#50d7e2;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.v38-health-chip{position:absolute;right:72px;top:23px;transform:scale(.88);transform-origin:right top}
+.v38-source-row{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 14px 5px}.v38-source-card{min-width:0;padding:12px 11px;border:1px solid rgba(70,188,202,.13);border-radius:16px;background:linear-gradient(160deg,rgba(7,26,34,.91),rgba(3,14,19,.89));box-shadow:inset 0 1px rgba(255,255,255,.02)}.v38-source-card span{display:block;color:#667c88;font-size:6px;font-weight:950;letter-spacing:.15em}.v38-source-card b{display:block;margin-top:7px;color:#e6eef0;font-size:11px;line-height:1.1;white-space:normal}.v38-source-card small{display:block;margin-top:4px;color:#5c707c;font-size:6.4px;line-height:1.3}.v38-source-card em{display:block;margin-top:6px;color:#5ccfc9;font-size:5.8px;font-style:normal;font-weight:850;letter-spacing:.05em}.v38-source-card.price-card{background:radial-gradient(circle at 90% 12%,rgba(52,220,214,.12),transparent 42%),linear-gradient(160deg,rgba(7,34,40,.95),rgba(3,16,21,.9));border-color:rgba(67,211,213,.22)}.v38-source-card.price-card b{font-size:17px;color:#54dfd4;letter-spacing:-.03em}
+.v38-core-zone{position:relative;padding:19px 14px 13px;display:flex;flex-direction:column;align-items:center}.v38-core-copy{text-align:center;margin-bottom:7px}.v38-core-copy .v38-section-label{color:#7d929e;font-size:6.4px;font-weight:950;letter-spacing:.18em}.v38-core-copy b{display:block;margin-top:4px;color:#dfe9eb;font-size:9px}.v38-core-copy small{display:block;margin-top:3px;color:#566b77;font-size:6.5px}.v38-orbit{width:min(76vw,278px)!important;margin:4px auto 8px!important;filter:drop-shadow(0 0 28px rgba(44,219,217,.17))!important}.v38-decision{width:100%;margin:4px 0 0!important;padding:12px 13px!important;border-radius:16px!important}.v38-decision .decision-copy b{font-size:13px!important}.v38-decision .decision-copy small{font-size:7px!important}
+.v38-selfplay{position:relative;margin:2px 14px 11px;padding:14px;border:1px solid rgba(61,200,205,.16);border-radius:20px;background:radial-gradient(360px 180px at 100% 0%,rgba(42,196,215,.07),transparent 65%),rgba(4,18,24,.72)}.v38-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.v38-section-head>div{min-width:0}.v38-section-head span{display:block;color:#6c8894;font-size:6.3px;font-weight:950;letter-spacing:.15em}.v38-section-head b{display:block;margin-top:4px;color:#dce6e9;font-size:9px;white-space:normal}.v38-section-head>em{font-style:normal;font-size:6px;font-weight:950;letter-spacing:.1em;color:#e0ba62;border:1px solid rgba(224,186,98,.18);padding:5px 7px;border-radius:999px}.v38-section-head>em.good{color:#56ddba;border-color:rgba(86,221,186,.22);background:rgba(28,116,96,.08)}.v38-selfplay-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}.v38-selfplay-grid>div{min-width:0;padding:10px 8px;border:1px solid rgba(74,178,191,.10);border-radius:13px;background:rgba(3,13,18,.58)}.v38-selfplay-grid span{display:block;color:#5f7480;font-size:5.4px;font-weight:900;letter-spacing:.09em}.v38-selfplay-grid b{display:block;margin-top:5px;color:#58ddd1;font-size:13px;line-height:1}.v38-selfplay-grid small{display:block;margin-top:5px;color:#526773;font-size:5.4px;line-height:1.25}.v38-learning-line{display:flex;gap:8px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(64,177,190,.09)}.v38-learning-line i{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#4adeb4;box-shadow:0 0 12px rgba(74,222,180,.7)}.v38-learning-line span{color:#7d909b;font-size:6.5px;line-height:1.35}
+.v38-health-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 14px 11px}.v38-health-row .brain-side-card{min-height:78px!important;padding:11px 10px!important}.v38-health-row .brain-side-card b{font-size:12px!important}.v38-health-row .brain-side-card small{font-size:6px!important}
+.v38-activity{margin:0 14px 11px;border:1px solid rgba(66,181,194,.13);border-radius:18px;overflow:hidden;background:rgba(3,14,19,.64)}.v38-section-head.compact{padding:11px 12px;border-bottom:1px solid rgba(69,179,191,.10)}.v38-section-head.compact strong{display:flex;align-items:center;gap:6px;color:#e2bd67;font-size:6px;letter-spacing:.1em}.v38-section-head.compact strong.good{color:#55dbb7}.v38-section-head.compact strong i{width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}.v38-activity-row{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid rgba(68,170,183,.07)}.v38-activity-row:last-child{border-bottom:0}.v38-activity-row .node{width:6px;height:6px;border-radius:50%;background:#38cad4;box-shadow:0 0 10px rgba(56,202,212,.6)}.v38-activity-row div{min-width:0}.v38-activity-row b{display:block;color:#dbe5e8;font-size:8px}.v38-activity-row small{display:block;margin-top:3px;color:#617580;font-size:6.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v38-activity-row em{font-style:normal;font-size:5.7px;font-weight:950;letter-spacing:.08em;color:#dbb75f}.v38-activity-row em.good{color:#50ddb4}.v38-activity-row em.warn{color:#e1b85f}.v38-activity-row em.bad{color:#ed6b7b}
+.v38-details{margin:0 14px 16px;border:1px solid rgba(67,171,184,.10);border-radius:16px;background:rgba(2,12,17,.58);overflow:hidden}.v38-details summary{list-style:none;cursor:pointer;padding:11px 12px;color:#77909b;font-size:6px;font-weight:950;letter-spacing:.13em;display:flex;justify-content:space-between}.v38-details summary::-webkit-details-marker{display:none}.v38-details summary span{color:#4e626d;font-weight:700;letter-spacing:.03em}.v38-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 10px 10px}.v38-detail-grid .brain-side-card{min-height:72px!important}.v38-detail-note{margin:0 10px 7px;padding:9px 10px;border:1px solid rgba(59,155,168,.09);border-radius:12px;color:#6f838e;font-size:6.2px;line-height:1.4}.v38-details>#brainLastUpdate{display:block;padding:3px 11px 11px;color:#4f626c;font-size:5.8px}.v38-hidden-runtime{display:none!important}
+@media(max-width:420px){.v38-head{padding:18px 14px 14px}.v38-head h3{font-size:24px}.v38-health-chip{display:none}.v38-source-row{padding:10px 10px 4px;gap:6px}.v38-source-card{padding:10px 8px;min-height:86px}.v38-source-card b{font-size:9.5px}.v38-source-card.price-card b{font-size:15px}.v38-core-zone{padding:16px 10px 10px}.v38-orbit{width:min(78vw,270px)!important}.v38-selfplay{margin-left:10px;margin-right:10px;padding:12px}.v38-selfplay-grid{gap:5px}.v38-selfplay-grid>div{padding:9px 6px}.v38-selfplay-grid b{font-size:12px}.v38-health-row{padding-left:10px;padding-right:10px;gap:5px}.v38-health-row .brain-side-card{padding:10px 8px!important}.v38-health-row .brain-side-card span{font-size:5.4px!important}.v38-health-row .brain-side-card b{font-size:10.5px!important}.v38-activity,.v38-details{margin-left:10px;margin-right:10px}.v38-detail-grid{grid-template-columns:1fr 1fr}.v38-detail-grid .brain-side-card:last-child{grid-column:1/-1}}
+</style>
 </head>
 <body>
 
@@ -4925,7 +4944,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 
       <article class="card final-ai-card" id="pendingPlanCard">
         <div class="final-ai-head">
-          <div><div class="kicker">PENDING PLAN ENGINE V37</div><h3>อ่านทรงก่อน · ดักรอราคา</h3></div>
+          <div><div class="kicker">PENDING PLAN ENGINE V38</div><h3>อ่านทรงก่อน · ดักรอราคา</h3></div>
           <span class="final-ai-badge" id="pendingPlanState">WAIT DATA</span>
         </div>
         <div class="final-grid">
@@ -5280,7 +5299,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
     <section class="view" id="marketView">
       <div class="page-intro ai-market-intro">
         <div>
-          <div class="kicker">V37 AUTONOMOUS MARKET BRAIN</div>
+          <div class="kicker">V38 SELF-PLAY MARKET BRAIN</div>
           <h1>AI Intelligence</h1>
           <p>ดูสถานะสมอง ML, Feed, Calibration, Drift และ Pending Engine จากข้อมูลจริงในระบบ · ตัดกราฟและปุ่ม Timeframe ที่ไม่จำเป็นออกแล้ว</p>
         </div>
@@ -5288,78 +5307,50 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
       </div>
 
 
-      <article class="card ai-core-card ai-core-premium">
-        <div class="ai-core-gridfx" aria-hidden="true"></div>
-        <div class="ai-core-scanfx" aria-hidden="true"></div>
+      <article class="card ai-core-card ai-core-premium ai-core-v38">
+        <div class="v38-mesh" aria-hidden="true"></div>
+        <div class="v38-beam" aria-hidden="true"></div>
 
-        <div class="ai-core-topbar">
-          <div class="ai-core-titleblock">
-            <div class="kicker ai-core-kicker"><i></i> AI INTELLIGENCE CORE</div>
-            <h3>V37 Precision Brain</h3>
+        <header class="v38-head">
+          <div>
+            <div class="kicker v38-kicker"><i></i> AUTONOMOUS INTELLIGENCE</div>
+            <h3>V38 Self‑Play Brain</h3>
             <p id="brainCoreHeadline">กำลังตรวจ Model Pack และ Market Feed</p>
           </div>
-          <div class="ai-core-actions">
-            <span class="status-chip" id="dataHealthChip">NO DATA</span>
-            <button id="marketRefreshBtn" aria-label="Refresh market intelligence">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5M6.1 9a7 7 0 0 1 11.6-2.4L20 9M4 15l2.3 2.4A7 7 0 0 0 18 15"/></svg>
-              <span>REFRESH</span>
-            </button>
+          <button id="marketRefreshBtn" class="v38-refresh" aria-label="Refresh market intelligence">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5M6.1 9a7 7 0 0 1 11.6-2.4L20 9M4 15l2.3 2.4A7 7 0 0 0 18 15"/></svg>
+          </button>
+          <span class="status-chip v38-health-chip" id="dataHealthChip">NO DATA</span>
+        </header>
+
+        <div class="v38-source-row">
+          <div class="v38-source-card">
+            <span>FEED</span>
+            <b id="feedActive">—</b>
+            <small id="feedPrimary">—</small>
+            <em id="brainFeedState">CHECKING</em>
+          </div>
+          <div class="v38-source-card">
+            <span>MARKET</span>
+            <b id="feedMode">—</b>
+            <small id="feedFallback">—</small>
+            <em id="feedDivergence">—</em>
+          </div>
+          <div class="v38-source-card price-card">
+            <span>XAUUSD</span>
+            <b id="dataLastPrice">—</b>
+            <small id="dataAge">—</small>
           </div>
         </div>
 
-        <div class="ai-source-strip">
-          <div class="ai-source-cell source-feed">
-            <span class="source-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 0 1 14 0M8 12a4 4 0 0 1 8 0M12 12v7M9.5 19h5"/></svg>
-            </span>
-            <div><span>ACTIVE FEED</span><b id="feedActive">—</b><small id="feedPrimary">—</small></div>
-          </div>
-          <div class="ai-source-cell source-mode">
-            <span class="source-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>
-            </span>
-            <div><span>MARKET MODE</span><b id="feedMode">—</b><small id="feedFallback">—</small></div>
-          </div>
-          <div class="ai-source-cell source-recovery">
-            <span class="source-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>
-            </span>
-            <div><span>FAILOVER STATE</span><b id="feedDivergence">—</b><small id="brainFeedState">CHECKING</small></div>
-          </div>
-          <div class="ai-source-cell primary source-price">
-            <span class="source-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l5-5 3 3 7-8M16 8h3v3"/></svg>
-            </span>
-            <div><span>XAUUSD</span><b id="dataLastPrice">—</b><small id="dataAge">—</small></div>
-          </div>
-        </div>
-
-        <div class="ai-cockpit-label">
-          <span>AUTONOMOUS DECISION ENGINE</span>
-          <i></i>
-          <small>MODEL · FEED · CALIBRATION · DRIFT · UNCERTAINTY</small>
-        </div>
-
-        <div class="ai-brain-stage">
-          <div class="ai-brain-side left">
-            <div class="brain-side-card" data-card="model">
-              <span>MODEL HEALTH</span>
-              <b id="brainModelHealth">—</b>
-              <small id="brainModelHealthSub">Python ML</small>
-            </div>
-            <div class="brain-side-card" data-card="calibration">
-              <span>CALIBRATION</span>
-              <b id="brainCalibration">—</b>
-              <small id="brainCalibrationSub">Probability fit</small>
-            </div>
-            <div class="brain-side-card" data-card="drift">
-              <span>DRIFT WATCH</span>
-              <b id="brainDrift">—</b>
-              <small id="brainDriftSub">Distribution shift</small>
-            </div>
+        <section class="v38-core-zone">
+          <div class="v38-core-copy">
+            <span class="v38-section-label">SYSTEM TRUST</span>
+            <b>Decision intelligence, not a win-rate promise.</b>
+            <small>รวม Model Health · Feed · Calibration · Drift · Uncertainty</small>
           </div>
 
-          <div class="ai-brain-orbit" id="brainCoreRing" style="--brain-score:0">
+          <div class="ai-brain-orbit v38-orbit" id="brainCoreRing" style="--brain-score:0">
             <div class="brain-orbit-glow"></div>
             <div class="brain-orbit-halo halo-a"></div>
             <div class="brain-orbit-halo halo-b"></div>
@@ -5372,118 +5363,94 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
               <span>AI CORE HEALTH</span>
               <strong id="brainCoreScore">—</strong>
               <b id="brainCoreState">WAIT DATA</b>
-              <small id="brainCoreConfidence">V37 MODEL</small>
+              <small id="brainCoreConfidence">V38 MODEL</small>
               <i id="brainCorePulse"></i>
             </div>
           </div>
 
-          <div class="ai-brain-side right">
-            <div class="brain-side-card" data-card="learning">
-              <span>BACKGROUND BRAIN</span>
-              <b id="brainLearningState">—</b>
-              <small id="brainLearningSub">Background brain</small>
+          <div class="ai-decision-strip v38-decision" id="brainDecisionStrip">
+            <div class="decision-orb"><i></i></div>
+            <div class="decision-copy">
+              <span>LIVE DECISION</span>
+              <b id="brainDecisionText">WAIT DATA</b>
+              <small id="brainDecisionSub">กำลังอ่าน Pending Engine</small>
             </div>
-            <div class="brain-side-card" data-card="plan">
-              <span>PLAN ENGINE</span>
-              <b id="brainPlanQuality">—</b>
-              <small id="brainPlanSub">Pending ranking</small>
+            <em id="brainDecisionBadge">WAIT</em>
+          </div>
+        </section>
+
+        <section class="v38-selfplay">
+          <div class="v38-section-head">
+            <div>
+              <span>SHADOW SELF‑PLAY LAB</span>
+              <b>AI ทดลองทุก Candidate โดยไม่ใช้เงินจริง</b>
             </div>
-            <div class="brain-side-card" data-card="memory">
-              <span>OUTCOME MEMORY</span>
-              <b id="brainMemory">—</b>
-              <small id="brainMemorySub">Outcome journal</small>
-            </div>
+            <em id="spState">LEARNING</em>
           </div>
-        </div>
+          <div class="v38-selfplay-grid">
+            <div><span>IDEAS</span><b id="spIdeas">0</b><small>virtual plans</small></div>
+            <div><span>RESOLVED</span><b id="spResolved">0</b><small>future M1 truth</small></div>
+            <div><span>REJECT TEST</span><b id="spRejected">0</b><small>เรียนจากไม้ที่ไม่เข้า</small></div>
+            <div><span>THRESHOLD</span><b id="spThreshold">STATIC</b><small id="spThresholdSub">รอหลักฐาน</small></div>
+          </div>
+          <div class="v38-learning-line">
+            <i></i><span id="spLearningLine">Prediction → Future M1 → First Hit → Autopsy → Relearn</span>
+          </div>
+        </section>
 
-        <div class="ai-decision-strip" id="brainDecisionStrip">
-          <div class="decision-orb"><i></i></div>
-          <div class="decision-copy">
-            <span>LIVE DECISION STATE</span>
-            <b id="brainDecisionText">WAIT DATA</b>
-            <small id="brainDecisionSub">กำลังอ่าน Pending Engine</small>
+        <section class="v38-health-row">
+          <div class="brain-side-card" data-card="model">
+            <span>MODEL HEALTH</span><b id="brainModelHealth">—</b><small id="brainModelHealthSub">Python ML</small>
           </div>
-          <em id="brainDecisionBadge">WAIT</em>
-        </div>
+          <div class="brain-side-card" data-card="calibration">
+            <span>CALIBRATION</span><b id="brainCalibration">—</b><small id="brainCalibrationSub">Probability fit</small>
+          </div>
+          <div class="brain-side-card" data-card="drift">
+            <span>DRIFT WATCH</span><b id="brainDrift">—</b><small id="brainDriftSub">Distribution shift</small>
+          </div>
+        </section>
 
-        <div class="ai-activity-panel">
-          <div class="ai-activity-head">
-            <span>AI SYSTEM ACTIVITY</span>
-            <b id="brainSystemNominal"><i></i> CHECKING</b>
+        <section class="v38-activity">
+          <div class="v38-section-head compact">
+            <div><span>AI ACTIVITY</span><b>สิ่งที่สมองกำลังทำจริง</b></div>
+            <strong id="brainSystemNominal"><i></i> CHECKING</strong>
           </div>
-          <div class="ai-activity-row">
-            <span class="activity-icon">
-              <svg viewBox="0 0 24 24"><path d="M3 12h3l2-5 4 10 3-7 2 2h4"/></svg>
-            </span>
-            <div><b>Market feed</b><small id="brainFeedActivity">กำลังตรวจแหล่งข้อมูล</small></div>
-            <em id="brainFeedBadge">WAIT</em>
+          <div class="v38-activity-row">
+            <i class="node"></i><div><b>Market feed</b><small id="brainFeedActivity">กำลังตรวจแหล่งข้อมูล</small></div><em id="brainFeedBadge">WAIT</em>
           </div>
-          <div class="ai-activity-row">
-            <span class="activity-icon">
-              <svg viewBox="0 0 24 24"><path d="M9 4h6v3h3v10h-3v3H9v-3H6V7h3zM9 10h6M9 14h6"/></svg>
-            </span>
-            <div><b>Python AutoML</b><small id="brainModelActivity">รอ ai-ml-brain.json</small></div>
-            <em id="brainModelBadge">WAIT</em>
+          <div class="v38-activity-row">
+            <i class="node"></i><div><b>Python model + quality gate</b><small id="brainModelActivity">รอ ai-ml-brain.json</small></div><em id="brainModelBadge">WAIT</em>
           </div>
-          <div class="ai-activity-row">
-            <span class="activity-icon">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-            </span>
-            <div><b>Pending plan ranking</b><small id="brainPlanActivity">รอ Market Analysis</small></div>
-            <em id="brainPlanBadge">WAIT</em>
+          <div class="v38-activity-row">
+            <i class="node"></i><div><b>Self‑play learning</b><small id="brainLearningActivity">กำลังอ่าน Shadow Outcomes</small></div><em id="brainLearningBadge">WAIT</em>
           </div>
-          <div class="ai-activity-row">
-            <span class="activity-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-2.7 7.8-7 10-4.3-2.2-7-5.5-7-10V6zM9 12l2 2 4-5"/></svg>
-            </span>
-            <div><b>Calibration & drift guard</b><small id="brainGuardActivity">กำลังตรวจ Model Guard</small></div>
-            <em id="brainGuardBadge">WAIT</em>
-          </div>
-          <div class="ai-activity-row">
-            <span class="activity-icon">
-              <svg viewBox="0 0 24 24"><path d="M7 8a5 5 0 0 1 10 0v8a5 5 0 0 1-10 0zM12 3v18M7 10H4M20 10h-3M7 15H4M20 15h-3"/></svg>
-            </span>
-            <div><b>Learning & outcomes</b><small id="brainLearningActivity">กำลังอ่าน Outcome Memory</small></div>
-            <em id="brainLearningBadge">WAIT</em>
-          </div>
-        </div>
+        </section>
 
-        <div class="ai-metric-rack">
-          <div class="ai-metric">
-            <div class="metric-ring" id="metricModel" style="--v:0"><b id="metricModelValue">—</b></div>
-            <span>MODEL</span><small id="metricModelLabel">WAIT</small>
+        <details class="v38-details">
+          <summary>MODEL DETAILS <span>ดูรายละเอียดเพิ่ม</span></summary>
+          <div class="v38-detail-grid">
+            <div class="brain-side-card" data-card="learning"><span>BACKGROUND BRAIN</span><b id="brainLearningState">—</b><small id="brainLearningSub">Background brain</small></div>
+            <div class="brain-side-card" data-card="plan"><span>PLAN ENGINE</span><b id="brainPlanQuality">—</b><small id="brainPlanSub">Pending ranking</small></div>
+            <div class="brain-side-card" data-card="memory"><span>OUTCOME MEMORY</span><b id="brainMemory">—</b><small id="brainMemorySub">Outcome journal</small></div>
           </div>
-          <div class="ai-metric">
-            <div class="metric-ring" id="metricFeed" style="--v:0"><b id="metricFeedValue">—</b></div>
-            <span>FEED</span><small id="metricFeedLabel">WAIT</small>
-          </div>
-          <div class="ai-metric">
-            <div class="metric-ring" id="metricCal" style="--v:0"><b id="metricCalValue">—</b></div>
-            <span>CAL</span><small id="metricCalLabel">WAIT</small>
-          </div>
-          <div class="ai-metric">
-            <div class="metric-ring" id="metricDrift" style="--v:0"><b id="metricDriftValue">—</b></div>
-            <span>DRIFT</span><small id="metricDriftLabel">WAIT</small>
-          </div>
-          <div class="ai-metric">
-            <div class="metric-ring" id="metricGuard" style="--v:0"><b id="metricGuardValue">—</b></div>
-            <span>GUARD</span><small id="metricGuardLabel">WAIT</small>
-          </div>
-          <div class="ai-metric">
-            <div class="metric-ring" id="metricPlan" style="--v:0"><b id="metricPlanValue">—</b></div>
-            <span>PLAN</span><small id="metricPlanLabel">NO PLAN</small>
-          </div>
-        </div>
+          <div class="v38-detail-note" id="spAutopsy">Autopsy —</div>
+          <div class="v38-detail-note" id="spCounterfactual">Counterfactual —</div>
+          <small id="brainLastUpdate">Last update —</small>
+        </details>
 
-        <div class="ai-context-head">
-          <div><span>MARKET CONTEXT USED BY AI</span><small id="brainLastUpdate">Last update —</small></div>
+        <!-- Runtime compatibility nodes. Kept hidden so the V37/V38 engine can
+             update legacy metrics without making the mobile UX noisy. -->
+        <div class="v38-hidden-runtime" aria-hidden="true">
+          <div id="brainPlanActivity"></div><em id="brainPlanBadge"></em>
+          <div id="brainGuardActivity"></div><em id="brainGuardBadge"></em>
+          <div id="metricModel"><b id="metricModelValue"></b><small id="metricModelLabel"></small></div>
+          <div id="metricFeed"><b id="metricFeedValue"></b><small id="metricFeedLabel"></small></div>
+          <div id="metricCal"><b id="metricCalValue"></b><small id="metricCalLabel"></small></div>
+          <div id="metricDrift"><b id="metricDriftValue"></b><small id="metricDriftLabel"></small></div>
+          <div id="metricGuard"><b id="metricGuardValue"></b><small id="metricGuardLabel"></small></div>
+          <div id="metricPlan"><b id="metricPlanValue"></b><small id="metricPlanLabel"></small></div>
+          <b id="marketH1Trend">—</b><b id="marketM15Struct">—</b><b id="marketRegime">—</b><b id="marketVolatility">—</b>
           <span class="status-chip" id="marketIntelChip">WAIT</span>
-        </div>
-        <div class="ai-context-grid">
-          <div><span>H1 BIAS</span><b id="marketH1Trend">—</b></div>
-          <div><span>M15 STRUCTURE</span><b id="marketM15Struct">—</b></div>
-          <div><span>REGIME</span><b id="marketRegime">—</b></div>
-          <div><span>VOLATILITY</span><b id="marketVolatility">—</b></div>
         </div>
       </article>
 
@@ -5872,7 +5839,7 @@ const BG_FRESH_OPEN_MS=60*60*1000;   // model may support live decisions for max
 const BG_LAST_SESSION_MS=72*60*60*1000;
 const V341_DATA_RETENTION_LABEL='M15 90D · H1 180D';
 
-const APP_VERSION='V37 AUTONOMOUS PRECISION BRAIN';
+const APP_VERSION='V38 SELF-PLAY PRECISION BRAIN';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -6160,7 +6127,7 @@ function mlBrainStateV35(){
   if(!m.open&&age<=BG_LAST_SESSION_MS)return{status:'LAST SESSION',tone:trusted?'good':'warn',trusted,note:`ML จาก Session ล่าสุด · Health ${score.toFixed(0)}/100 · Revalidate ตอนตลาดเปิด`};
   if(!m.open&&age>BG_LAST_SESSION_MS)return{status:'STALE',tone:'bad',trusted:false,note:'ML เก่ากว่า 72 ชั่วโมง · ใช้ Technical/History เป็น Reference จนกว่าจะมี market pack ใหม่'};
   if(!trusted)return{status:'QUARANTINED',tone:'bad',trusted:false,note:`ML ถูกจำกัดน้ำหนัก · Health ${score.toFixed(0)} · Drift ${drift.toFixed(1)} · Uncertainty ${unc.toFixed(1)}`};
-  return{status:'TRUSTED',tone:'good',trusted:true,note:`Python V37 ผ่าน M1 First-Hit + Purged Walk-Forward + Calibration + OOD · Health ${score.toFixed(0)}/100`};
+  return{status:'TRUSTED',tone:'good',trusted:true,note:`Python V38 ผ่าน First-Hit + Shadow Self-Play + Purged Walk-Forward + Calibration + OOD · Health ${score.toFixed(0)}/100`};
 }
 function technicalPendingCandidatesV35(a){
   const h1=tfResults.H1,m15=tfResults.M15,m5=tfResults.M5;
@@ -6315,7 +6282,7 @@ function renderFreshness(){
   $('#freshnessTitle').textContent=!f.marketOpen?(f.lastSession?'LAST SESSION DATA':'OLD SESSION DATA'):(f.stale?'STALE DATA · ENTRY DISABLED':'DATA FRESH');
   $('#freshnessText').textContent=!f.marketOpen
     ? (f.lastSession?'ตลาดปิด · ยอมรับ Session ล่าสุดได้สูงสุด 72 ชม. เพื่อสร้าง Pending Plan Reference และต้อง Revalidate ตอนเปิด':'ข้อมูล Session ล่าสุดเกิน 72 ชม. · รอ market pack ใหม่')
-    : (f.stale?'แท่งล่าสุด '+fmtAge(f.candleAge)+' · V37 เก็บ Plan เป็น Reference แต่ Feed Guard ห้ามวางจริง':'แท่งล่าสุด '+fmtAge(f.candleAge)+' · '+feedHealthStateV361().label+' · ผ่าน Execution Freshness Gate');
+    : (f.stale?'แท่งล่าสุด '+fmtAge(f.candleAge)+' · V38 เก็บ Plan เป็น Reference แต่ Feed Guard ห้ามวางจริง':'แท่งล่าสุด '+fmtAge(f.candleAge)+' · '+feedHealthStateV361().label+' · ผ่าน Execution Freshness Gate');
   const off=$('#offlinePill');if(off)off.classList.toggle('show',!navigator.onLine);
 }
 
@@ -7991,7 +7958,7 @@ function renderAiCoreV37(){
   $('#brainCoreState').textContent=coreState;
   $('#brainCoreConfidence').textContent=hasModel?`MODEL TRUST ${Math.round(model)}%`:'WAIT MODEL PACK';
   $('#brainCorePulse').classList.toggle('live',hasModel&&!fs.blocked);
-  $('#brainCoreHeadline').textContent=hasModel?`${String(mlBrain.status||'MODEL')} · ${fs.label} · ${m.open?m.session:'LAST SESSION'} · ${Number(mlBrain?.current?.qualifiedCount||0)}/${Number(mlBrain?.current?.candidateCount||12)} plans qualified`:'กำลังรอ Python V37 Model Pack จาก GitHub Actions';
+  $('#brainCoreHeadline').textContent=hasModel?`${String(mlBrain.status||'MODEL')} · ${fs.label} · ${m.open?m.session:'LAST SESSION'} · ${Number(mlBrain?.current?.qualifiedCount||0)}/${Number(mlBrain?.current?.candidateCount||12)} plans qualified`:'กำลังรอ Python V38 Model Pack จาก GitHub Actions';
   // Do not show “2/2 SWITCH BACK” after Twelve has already become active.
   const recoveryEl=$('#feedDivergence');
   if(recoveryEl){
@@ -8019,7 +7986,7 @@ function renderAiCoreV37(){
   const sys=$('#brainSystemNominal');sys.className=nominal?'good':fs.blocked?'warn':'';sys.innerHTML=`<i></i> ${nominal?'SYSTEM READY':fs.blocked?'FEED HOLD':'LIMITED'}`;
   $('#brainFeedActivity').textContent=`${fs.label} · ${fs.reason||packMeta.source||'market pack'}`;
   $('#brainFeedBadge').textContent=fs.blocked?'HOLD':'READY';$('#brainFeedBadge').className=fs.blocked?'warn':'good';
-  $('#brainModelActivity').textContent=hasModel?`V37 ${String(mlBrain.status||'MODEL')} · Health ${Math.round(model)}/100`:'รอ ai-ml-brain.json จาก GitHub Actions';
+  $('#brainModelActivity').textContent=hasModel?`V38 ${String(mlBrain.status||'MODEL')} · Health ${Math.round(model)}/100`:'รอ ai-ml-brain.json จาก GitHub Actions';
   $('#brainModelBadge').textContent=hasModel?(st.trusted?'TRUSTED':'LIMITED'):'WAIT';$('#brainModelBadge').className=hasModel?(st.trusted?'good':'warn'):'';
   const qualified=Number(mlBrain?.current?.qualifiedCount||0),candidates=Number(mlBrain?.current?.candidateCount||12);
   $('#brainPlanActivity').textContent=plan?`${qualified}/${candidates} qualified · ${prettyOrderV35(plan.type)} · score ${Math.round(planScore)}`:`0/${candidates} qualified · No quality plan`;
@@ -8027,6 +7994,7 @@ function renderAiCoreV37(){
   $('#brainGuardActivity').textContent=`${calName} · ECE ${Number.isFinite(ece)?(ece*100).toFixed(1)+' pts':'—'} · Drift ${Number.isFinite(driftPts)?driftPts.toFixed(1)+' pts':'—'}`;
   $('#brainGuardBadge').textContent=driftPts<=12?'LOW':driftPts<=28?'WATCH':'GUARD';$('#brainGuardBadge').className=driftPts<=12?'good':driftPts<=28?'warn':'bad';
   $('#brainLearningActivity').textContent=learningState.active?`${learningState.phase||'LEARNING'} · ${learningState.note||''}`:`${localLearning} · ${outcomeMemory.length} outcomes · Model ${mlBrain.generatedAt?dtBangkok(mlBrain.generatedAt,true):'not trained'}`;
+  if(mlBrain?.selfPlay?.shadow){const s=mlBrain.selfPlay.shadow;$('#brainLearningActivity').textContent=`Shadow ${Number(s.total||0).toLocaleString('en-US')} ideas · ${Number(s.resolved||s.completed||0).toLocaleString('en-US')} resolved · future M1 truth`; }
   $('#brainLearningBadge').textContent=learningState.active?'LEARNING':hasModel?'READY':'WAIT';$('#brainLearningBadge').className=learningState.active||hasModel?'good':'';
 
   // Premium cockpit tones + a truthful live decision state.
@@ -8071,6 +8039,19 @@ function renderAiCoreV37(){
   metric('metricDrift',drift,Number.isFinite(driftPts)?`${driftPts.toFixed(1)} PTS`:'WAIT');
   metric('metricGuard',guard,Number.isFinite(uncertaintyPts)?`±${(uncertaintyPts/2).toFixed(1)} PTS`:'WAIT');
   metric('metricPlan',planScore,plan?(plan.qualifiedPlan?'QUALIFIED':'REFERENCE'):'NO PLAN');
+  const sp=mlBrain?.selfPlay||{},sh=sp.shadow||{},thr=sp.thresholdOptimizer||{},cf=sp.counterfactual||{},au=sp.autopsy||{};
+  const spIdeas=Number(sh.total||0),spResolved=Number(sh.resolved||sh.completed||0),spReject=Number(sh.rejectedTested||0);
+  const setTxt=(id,v)=>{const el=$('#'+id);if(el)el.textContent=v};
+  setTxt('spIdeas',spIdeas.toLocaleString('en-US'));
+  setTxt('spResolved',spResolved.toLocaleString('en-US'));
+  setTxt('spRejected',spReject.toLocaleString('en-US'));
+  const thresholdActive=!!thr.active,thresholdReady=!!thr.activationReady;
+  setTxt('spThreshold',thresholdActive?'AUTO':thresholdReady?'READY':'STATIC');
+  setTxt('spThresholdSub',thresholdActive?'validated shadow gate':thresholdReady?'พร้อม promote รอบถัดไป':'รอ resolved outcomes');
+  const spState=$('#spState');if(spState){spState.textContent=spResolved>0?'LEARNING':hasModel?'ARMED':'WAIT';spState.className=spResolved>0?'good':''}
+  setTxt('spLearningLine',spResolved>0?`${spResolved.toLocaleString('en-US')} outcomes · Future M1 ground truth · ${spReject.toLocaleString('en-US')} rejected ideas tested`:'Prediction → Future M1 → First Hit → Autopsy → Relearn');
+  setTxt('spAutopsy',au.ready?`AUTOPSY · ${Number(au.failures||0)} failures · ${(au.topCauses||[]).slice(0,2).map(x=>x.cause).join(' · ')||'learning'}`:'AUTOPSY · รอผลแพ้จริงเพิ่ม');
+  setTxt('spCounterfactual',cf.ready?`COUNTERFACTUAL · ${Number(cf.ideasReplayed||0).toLocaleString('en-US')} ideas replayed · ΔEV ${Number(cf.avgRImprovement||0)>=0?'+':''}${Number(cf.avgRImprovement||0).toFixed(2)}R`:'COUNTERFACTUAL · รอ Primary outcomes เพิ่ม');
   $('#brainLastUpdate').textContent=`Last update ${packMeta.generatedAt?dtBangkok(packMeta.generatedAt,true):(mlBrain.generatedAt?dtBangkok(mlBrain.generatedAt,true):'—')}`;
 }
 
