@@ -95,14 +95,14 @@ jobs:
       - name: Verify PRIMARY training isolation
         run: |
           node - <<'NODE'
-          const fs = require('fs');
+          const fs=require('fs');
 
-          if (!fs.existsSync('xauusd-primary.json')) {
+          if(!fs.existsSync('xauusd-primary.json')){
             console.log(
               'xauusd-primary.json not ready yet; Python brain may enter WAIT_DATA safely.'
             );
-          } else {
-            const p = JSON.parse(
+          }else{
+            const p=JSON.parse(
               fs.readFileSync(
                 'xauusd-primary.json',
                 'utf8'
@@ -115,25 +115,16 @@ jobs:
             );
           }
 
-          if (
-            fs.existsSync(
-              'feed-health.json'
-            )
-          ) {
-            const h = JSON.parse(
+          if(fs.existsSync('feed-health.json')){
+            const h=JSON.parse(
               fs.readFileSync(
                 'feed-health.json',
                 'utf8'
               )
             );
 
-            if (
-              h.switching?.mergeFeeds === true
-            ) {
-              throw new Error(
-                'Feed merge forbidden'
-              );
-            }
+            if(h.switching?.mergeFeeds===true)
+              throw new Error('Feed merge forbidden');
 
             console.log(
               'LIVE ACTIVE:',
@@ -197,272 +188,106 @@ jobs:
 
           for name in names:
               p = Path(name)
-
               if p.exists():
-                  json.loads(
-                      p.read_text()
-                  )
+                  json.loads(p.read_text())
 
           ml = (
               json.loads(
-                  Path(
-                      'ai-ml-brain.json'
-                  ).read_text()
+                  Path('ai-ml-brain.json').read_text()
               )
-              if Path(
-                  'ai-ml-brain.json'
-              ).exists()
+              if Path('ai-ml-brain.json').exists()
               else {}
           )
 
           history = (
               json.loads(
-                  Path(
-                      'ai-history.json'
-                  ).read_text()
+                  Path('ai-history.json').read_text()
               )
-              if Path(
-                  'ai-history.json'
-              ).exists()
+              if Path('ai-history.json').exists()
               else {}
           )
 
           if history.get('ready') is True:
-              provenance = (
-                  history.get(
-                      'artifactProvenance'
-                  )
-                  or {}
-              )
+              provenance = history.get('artifactProvenance') or {}
+              schema = history.get('artifactSchema') or {}
 
-              schema = (
-                  history.get(
-                      'artifactSchema'
-                  )
-                  or {}
-              )
-
-              if (
-                  provenance.get(
-                      'schemaVersion'
-                  )
-                  != 'KAGE_AI_V42'
-              ):
+              if provenance.get('schemaVersion') != 'KAGE_AI_V42':
                   raise SystemExit(
                       'V42 ready history missing schema contract'
                   )
 
               if (
-                  provenance.get(
-                      'trainingSource'
-                  )
-                  != 'xauusd-primary.json'
-                  or provenance.get(
-                      'trainingFeed'
-                  )
-                  != 'TWELVE_DATA_PRIMARY'
-                  or provenance.get(
-                      'mergeFeeds'
-                  )
-                  is not False
+                  provenance.get('trainingSource') != 'xauusd-primary.json'
+                  or provenance.get('trainingFeed') != 'TWELVE_DATA_PRIMARY'
+                  or provenance.get('mergeFeeds') is not False
               ):
                   raise SystemExit(
                       'V42 ready history violates training-feed isolation'
                   )
 
               if (
-                  provenance.get(
-                      'featureSchemaHash'
-                  )
+                  provenance.get('featureSchemaHash')
                   != '17e82bd347b6f345ad289df1'
-                  or schema.get(
-                      'featureSchemaHash'
-                  )
-                  != provenance.get(
-                      'featureSchemaHash'
-                  )
+                  or schema.get('featureSchemaHash')
+                  != provenance.get('featureSchemaHash')
               ):
                   raise SystemExit(
                       'V42 ready history feature schema mismatch'
                   )
 
               if (
-                  provenance.get(
-                      'labelSchemaHash'
-                  )
+                  provenance.get('labelSchemaHash')
                   != 'fffe7703ec24c8cac8851daa'
-                  or schema.get(
-                      'labelSchemaHash'
-                  )
-                  != provenance.get(
-                      'labelSchemaHash'
-                  )
+                  or schema.get('labelSchemaHash')
+                  != provenance.get('labelSchemaHash')
               ):
                   raise SystemExit(
                       'V42 ready history label schema mismatch'
                   )
 
               if (
-                  provenance.get(
-                      'sourceFingerprint'
-                  )
-                  != history.get(
-                      'sourceFingerprint'
-                  )
-                  or not provenance.get(
-                      'dataWatermark'
-                  )
+                  provenance.get('sourceFingerprint')
+                  != history.get('sourceFingerprint')
+                  or not provenance.get('dataWatermark')
               ):
                   raise SystemExit(
                       'V42 ready history provenance mismatch'
                   )
 
-          sp = (
-              ml.get(
-                  'selfPlay'
-              )
-              or {}
-          )
+          sp = ml.get('selfPlay') or {}
 
           print(
               'V42',
               {
-                  'version':
-                      ml.get(
-                          'version'
-                      ),
-
-                  'ready':
-                      ml.get(
-                          'ready'
-                      ),
-
-                  'status':
-                      ml.get(
-                          'status'
-                      ),
-
-                  'health':
-                      (
-                          ml.get(
-                              'modelHealth'
-                          )
-                          or {}
-                      ).get(
-                          'score'
-                      ),
-
+                  'version': ml.get('version'),
+                  'ready': ml.get('ready'),
+                  'status': ml.get('status'),
+                  'health': (ml.get('modelHealth') or {}).get('score'),
                   'trainingSource':
-                      (
-                          ml.get(
-                              'dataIsolation'
-                          )
-                          or {}
-                      ).get(
-                          'trainingSource'
-                      ),
-
+                      (ml.get('dataIsolation') or {}).get('trainingSource'),
                   'liveSource':
-                      (
-                          ml.get(
-                              'dataIsolation'
-                          )
-                          or {}
-                      ).get(
-                          'liveSource'
-                      ),
-
+                      (ml.get('dataIsolation') or {}).get('liveSource'),
                   'mergeFeeds':
-                      (
-                          ml.get(
-                              'dataIsolation'
-                          )
-                          or {}
-                      ).get(
-                          'mergeFeeds'
-                      ),
-
+                      (ml.get('dataIsolation') or {}).get('mergeFeeds'),
                   'candidateCount':
-                      (
-                          ml.get(
-                              'current'
-                          )
-                          or {}
-                      ).get(
-                          'candidateCount'
-                      ),
-
+                      (ml.get('current') or {}).get('candidateCount'),
                   'qualified':
-                      (
-                          ml.get(
-                              'current'
-                          )
-                          or {}
-                      ).get(
-                          'qualifiedCount'
-                      ),
-
+                      (ml.get('current') or {}).get('qualifiedCount'),
                   'shadowTotal':
-                      (
-                          sp.get(
-                              'shadow'
-                          )
-                          or {}
-                      ).get(
-                          'total'
-                      ),
-
+                      (sp.get('shadow') or {}).get('total'),
                   'shadowResolved':
-                      (
-                          sp.get(
-                              'shadow'
-                          )
-                          or {}
-                      ).get(
-                          'resolved'
-                      ),
-
+                      (sp.get('shadow') or {}).get('resolved'),
                   'autoThreshold':
-                      (
-                          sp.get(
-                              'thresholdOptimizer'
-                          )
-                          or {}
-                      ).get(
-                          'active'
-                      ),
-
+                      (sp.get('thresholdOptimizer') or {}).get('active'),
                   'counterfactualReady':
-                      (
-                          sp.get(
-                              'counterfactual'
-                          )
-                          or {}
-                      ).get(
-                          'ready'
-                      ),
-
+                      (sp.get('counterfactual') or {}).get('ready'),
                   'autopsyReady':
-                      (
-                          sp.get(
-                              'autopsy'
-                          )
-                          or {}
-                      ).get(
-                          'ready'
-                      )
+                      (sp.get('autopsy') or {}).get('ready'),
               }
           )
 
           if (
-              (
-                  ml.get(
-                      'dataIsolation'
-                  )
-                  or {}
-              ).get(
-                  'mergeFeeds'
-              )
+              (ml.get('dataIsolation') or {}).get('mergeFeeds')
               is True
           ):
               raise SystemExit(
@@ -470,56 +295,23 @@ jobs:
               )
 
           if ml.get('ready') is True:
-              provenance = (
-                  ml.get(
-                      'artifactProvenance'
-                  )
-                  or {}
-              )
-
-              schema = (
-                  ml.get(
-                      'artifactSchema'
-                  )
-                  or {}
-              )
-
+              provenance = ml.get('artifactProvenance') or {}
+              schema = ml.get('artifactSchema') or {}
               candidates = (
-                  (
-                      ml.get(
-                          'current'
-                      )
-                      or {}
-                  ).get(
-                      'candidates'
-                  )
-                  or []
+                  (ml.get('current') or {}).get('candidates') or []
               )
 
               if (
-                  (
-                      provenance.get(
-                          'schemaVersion'
-                      )
-                      or schema.get(
-                          'version'
-                      )
-                  )
-                  != 'KAGE_AI_V42'
-              ):
+                  provenance.get('schemaVersion')
+                  or schema.get('version')
+              ) != 'KAGE_AI_V42':
                   raise SystemExit(
                       'V42 ready artifact missing schema contract'
                   )
 
               if (
-                  provenance.get(
-                      'trainingFeed'
-                  )
-                  != 'TWELVE_DATA_PRIMARY'
-                  or provenance.get(
-                      'mergeFeeds'
-                  )
-                  is not False
+                  provenance.get('trainingFeed') != 'TWELVE_DATA_PRIMARY'
+                  or provenance.get('mergeFeeds') is not False
               ):
                   raise SystemExit(
                       'V42 ready artifact violates training-feed isolation'
@@ -538,15 +330,7 @@ jobs:
 
               if (
                   len(candidates) != 12
-                  or (
-                      ml.get(
-                          'current'
-                      )
-                      or {}
-                  ).get(
-                      'candidateCount'
-                  )
-                  != 12
+                  or (ml.get('current') or {}).get('candidateCount') != 12
               ):
                   raise SystemExit(
                       'V42 ready artifact must contain exactly 12 candidates'
