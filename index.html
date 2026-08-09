@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#01070b">
+<meta name="theme-color" content="#020408">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V38 Self-Play Precision Brain</title>
+<meta name="apple-mobile-web-app-title" content="KAGE CORE">
+<title>KAGE CORE · Shadow Intelligence V39</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="application-name" content="OneMonth OS">
-<meta name="apple-mobile-web-app-title" content="OneMonth OS">
+<meta name="application-name" content="KAGE CORE">
+<meta name="apple-mobile-web-app-title" content="KAGE CORE">
 
 
-<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=360">
-<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png?v=340">
+<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=390">
+<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png?v=390">
 <meta name="format-detection" content="telephone=no">
 
 <style>
@@ -4715,20 +4715,84 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 .v38-details{margin:0 14px 16px;border:1px solid rgba(67,171,184,.10);border-radius:16px;background:rgba(2,12,17,.58);overflow:hidden}.v38-details summary{list-style:none;cursor:pointer;padding:11px 12px;color:#77909b;font-size:6px;font-weight:950;letter-spacing:.13em;display:flex;justify-content:space-between}.v38-details summary::-webkit-details-marker{display:none}.v38-details summary span{color:#4e626d;font-weight:700;letter-spacing:.03em}.v38-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 10px 10px}.v38-detail-grid .brain-side-card{min-height:72px!important}.v38-detail-note{margin:0 10px 7px;padding:9px 10px;border:1px solid rgba(59,155,168,.09);border-radius:12px;color:#6f838e;font-size:6.2px;line-height:1.4}.v38-details>#brainLastUpdate{display:block;padding:3px 11px 11px;color:#4f626c;font-size:5.8px}.v38-hidden-runtime{display:none!important}
 @media(max-width:420px){.v38-head{padding:18px 14px 14px}.v38-head h3{font-size:24px}.v38-health-chip{display:none}.v38-source-row{padding:10px 10px 4px;gap:6px}.v38-source-card{padding:10px 8px;min-height:86px}.v38-source-card b{font-size:9.5px}.v38-source-card.price-card b{font-size:15px}.v38-core-zone{padding:16px 10px 10px}.v38-orbit{width:min(78vw,270px)!important}.v38-selfplay{margin-left:10px;margin-right:10px;padding:12px}.v38-selfplay-grid{gap:5px}.v38-selfplay-grid>div{padding:9px 6px}.v38-selfplay-grid b{font-size:12px}.v38-health-row{padding-left:10px;padding-right:10px;gap:5px}.v38-health-row .brain-side-card{padding:10px 8px!important}.v38-health-row .brain-side-card span{font-size:5.4px!important}.v38-health-row .brain-side-card b{font-size:10.5px!important}.v38-activity,.v38-details{margin-left:10px;margin-right:10px}.v38-detail-grid{grid-template-columns:1fr 1fr}.v38-detail-grid .brain-side-card:last-child{grid-column:1/-1}}
 </style>
+\n<style id="kage-core-v39-theme">
+/* ==========================================================
+   KAGE CORE V39 — SHADOW INTELLIGENCE UI REFORGE
+   UI-only layer. V38 data/ML/self-play engine stays intact.
+   ========================================================== */
+:root{
+  --bg:#020408;--panel:#070c12;--panel2:#0a1119;--panel3:#050a10;
+  --line:rgba(145,196,225,.14);--line2:rgba(148,207,238,.24);
+  --text:#f2f6fa;--muted:#8493a3;--muted2:#526171;
+  --mint:#65f0d1;--cyan:#72dcff;--ice:#d9e7f3;--gold:#c9b377;
+  --red:#ff6481;--amber:#e9c779;--violet:#9aa7ff;
+  --shadow:0 24px 70px rgba(0,0,0,.45);--radius:22px;
+}
+html,body{background:#020408;color:var(--text)}
+body{background:
+ radial-gradient(circle at 82% -8%,rgba(72,173,224,.13),transparent 31%),
+ radial-gradient(circle at -12% 27%,rgba(80,227,207,.06),transparent 26%),#020408}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;opacity:.19;background-image:linear-gradient(rgba(125,202,236,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(125,202,236,.035) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,black,transparent 84%)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at center,transparent 34%,rgba(0,0,0,.42) 100%)}
+.app{max-width:860px;padding-top:calc(env(safe-area-inset-top) + 13px);padding-bottom:calc(116px + env(safe-area-inset-bottom))}
+.topbar{position:relative;margin-bottom:16px;padding:8px 2px 10px;border-bottom:1px solid rgba(130,199,230,.08)}
+.brand{gap:11px}.brandmark-premium{width:56px!important;height:56px!important;flex:0 0 56px!important;border-radius:17px!important;border:1px solid rgba(130,221,255,.34)!important;background:#02060a!important;box-shadow:0 0 0 1px rgba(255,255,255,.025),0 0 26px rgba(93,213,255,.12),0 15px 34px rgba(0,0,0,.42)!important}
+.brandmark-premium img{filter:saturate(.88) contrast(1.06)}
+.brandmark-premium:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,transparent 25%,rgba(255,255,255,.10) 45%,transparent 62%);transform:translateX(-120%);animation:kageSheen 6s ease-in-out infinite}
+@keyframes kageSheen{0%,72%{transform:translateX(-130%)}88%,100%{transform:translateX(130%)}}
+.brandcopy b{font-family:Georgia,"Times New Roman",serif;font-size:19px!important;letter-spacing:.11em!important;font-weight:650;color:#f5f7fa;text-shadow:0 0 22px rgba(128,221,255,.12)}
+.brandcopy small{font-size:6.5px!important;letter-spacing:.18em!important;color:#7595a8!important}.app-version-badge{color:#77e5ff!important;border-color:rgba(119,229,255,.18)!important;background:rgba(71,188,230,.05)!important}
+.market-pill,.offline-pill,.icon-btn{background:linear-gradient(180deg,rgba(11,20,29,.91),rgba(5,10,16,.94))!important;border-color:rgba(119,190,221,.16)!important;box-shadow:inset 0 1px rgba(255,255,255,.02)}
+.market-pill.live{color:#73efd2!important;border-color:rgba(101,240,209,.24)!important}.market-pill.live i{box-shadow:0 0 15px rgba(101,240,209,.7)!important}
+.icon-btn{color:#a9c7d7!important}.icon-btn:active{transform:scale(.94)}
+.card{position:relative;background:linear-gradient(145deg,rgba(9,17,25,.97),rgba(4,9,14,.98))!important;border:1px solid rgba(118,186,216,.13)!important;border-radius:22px!important;box-shadow:inset 0 1px rgba(255,255,255,.018),0 18px 55px rgba(0,0,0,.34)!important}
+.card:before{content:"";position:absolute;left:14px;top:-1px;width:42px;height:1px;background:linear-gradient(90deg,#75ddff,transparent);opacity:.42;pointer-events:none}
+.card:hover{border-color:rgba(118,207,239,.21)!important}
+.kicker{color:#7893a6!important;font-size:7px!important;letter-spacing:.18em!important}
+.section-head{margin-top:28px}.section-head h3,.page-intro h1{color:#eef4f8}.section-head:before{content:"";width:18px;height:1px;background:var(--cyan);box-shadow:0 0 10px rgba(114,220,255,.45);align-self:center;margin-right:-4px}
+.page-intro{position:relative;padding:16px 4px 12px}.page-intro h1{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.02em!important;font-weight:500!important}.page-intro p{max-width:620px}
+.primary,.gold-action,.bt-run,.kage-hero-action{background:linear-gradient(100deg,#79ebff,#68efd0)!important;color:#031017!important;border:0!important;box-shadow:0 10px 28px rgba(87,214,239,.12),inset 0 1px rgba(255,255,255,.42)}
+.primary:active,.gold-action:active,.bt-run:active,.kage-hero-action:active{transform:translateY(1px) scale(.99)}
+.secondary{background:#071019!important;border-color:rgba(124,188,218,.18)!important;color:#a7bac7!important}
+/* HOME — original AI/data widgets remain functional below the new brand hero. */
+.kage-command-hero{position:relative;min-height:304px;margin:0 0 13px;overflow:hidden;border-radius:28px;border:1px solid rgba(126,207,241,.25);background:linear-gradient(110deg,#061018 0%,#050a10 55%,#020509 100%);box-shadow:0 26px 70px rgba(0,0,0,.46),inset 0 1px rgba(255,255,255,.03)}
+.kage-command-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 42%,rgba(88,210,255,.14),transparent 29%),linear-gradient(90deg,rgba(5,12,18,.98) 0%,rgba(5,11,17,.87) 49%,rgba(2,5,9,.15) 78%);z-index:2}
+.kage-command-hero:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(173,228,251,.035),inset 0 -70px 100px rgba(0,0,0,.25);z-index:4;pointer-events:none}
+.kage-hero-art{position:absolute;right:-2%;top:-31%;width:61%;height:150%;object-fit:cover;object-position:center;opacity:.75;filter:grayscale(.14) contrast(1.05) brightness(.82);z-index:1;mask-image:linear-gradient(90deg,transparent 0%,black 23%,black 100%)}
+.kage-hero-gridline{position:absolute;inset:0;background-image:linear-gradient(rgba(102,207,243,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(102,207,243,.055) 1px,transparent 1px);background-size:27px 27px;opacity:.28;z-index:1}.kage-hero-vignette{position:absolute;inset:0;z-index:3;background:radial-gradient(circle at 86% 44%,transparent 0 17%,rgba(2,4,8,.3) 53%,transparent 74%)}
+.kage-hero-copy{position:relative;z-index:5;width:64%;padding:26px 24px 22px}.kage-eyebrow{display:flex;align-items:center;gap:8px;color:#87dffb;font-size:7px;font-weight:900;letter-spacing:.18em}.kage-eyebrow i{width:6px;height:6px;border-radius:50%;background:#68efd0;box-shadow:0 0 14px #68efd0}.kage-hero-copy h1{font-family:Georgia,"Times New Roman",serif;font-size:34px;line-height:1.0;letter-spacing:-.035em;font-weight:500;margin:15px 0 11px;color:#f5f7fb}.kage-hero-copy h1 span{color:#95eaff;text-shadow:0 0 25px rgba(102,219,255,.16)}.kage-hero-copy p{font-size:9px;color:#8da0ae;line-height:1.65;margin:0;max-width:470px}.kage-hero-status{display:flex;gap:7px;margin-top:18px}.kage-hero-status>span{min-width:88px;padding:9px 10px;border-radius:13px;background:rgba(4,11,17,.7);border:1px solid rgba(127,194,223,.13)}.kage-hero-status small{display:block;color:#557284;font-size:5.5px;font-weight:900;letter-spacing:.16em}.kage-hero-status b{display:block;margin-top:5px;font-size:9px;color:#cfe6f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kage-hero-action{margin-top:14px;height:43px;border-radius:13px;padding:0 14px;display:flex;align-items:center;gap:9px;font-size:8px;font-weight:950;letter-spacing:.09em}.kage-hero-action i{width:7px;height:7px;border:1px solid #031017;transform:rotate(45deg)}.kage-hero-action b{margin-left:auto;font-size:13px}.hero-grid{gap:8px}.metric-card{min-height:128px!important;padding:17px!important}.metric-card h2{font-size:27px!important}.mission{border-color:rgba(114,220,255,.15)!important}
+/* BRAIN / AI */
+.ai-hero{position:relative;overflow:hidden;background:linear-gradient(100deg,rgba(6,15,22,.98),rgba(3,8,13,.93))!important;border-color:rgba(112,210,243,.19)!important}.ai-hero:after{content:"";position:absolute;right:-70px;top:-125px;width:300px;height:300px;background:url('./kage-warden.webp?v=390') center/cover no-repeat;opacity:.15;filter:grayscale(1) contrast(1.15);mask-image:radial-gradient(circle,black 20%,transparent 72%);pointer-events:none}.ai-hero>*{position:relative;z-index:2}.ai-switch{background:#050c12!important;border-color:rgba(124,190,219,.15)!important}.ai-switch.on{color:#69efd0!important;background:rgba(61,211,184,.045)!important;border-color:rgba(101,240,209,.24)!important}.command-ticket,.final-ai-card,.guardian-card,.backtest-card{border-color:rgba(122,191,222,.13)!important}
+/* MARKET / AI CORE */
+.ai-core-card{background:radial-gradient(circle at 50% 30%,rgba(40,180,208,.07),transparent 30%),linear-gradient(180deg,#071019,#03080d)!important;border-color:rgba(121,214,249,.24)!important}.v38-orbit{filter:drop-shadow(0 0 28px rgba(93,219,244,.10))}.brain-core-center strong{font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important}.v38-source-card,.brain-side-card,.v38-selfplay,.v38-activity,.v38-details{background:linear-gradient(180deg,rgba(7,15,22,.87),rgba(4,9,14,.9))!important;border-color:rgba(121,190,220,.13)!important}.v38-decision{background:linear-gradient(90deg,rgba(7,17,24,.98),rgba(4,9,15,.98))!important}.v38-section-label,.v38-section-head span{letter-spacing:.18em!important}.v38-selfplay-grid>div{background:#050b11!important;border-color:rgba(123,187,216,.10)!important}
+/* NEWS / PLAN / STATS */
+.news-card,.best-window-card,.news-policy-card,.plan-summary,.roadmap-shell,.model-growth-card,.equity-card,.memory-list{overflow:hidden}.news-card:after,.best-window-card:after,.model-growth-card:after{content:"";position:absolute;right:-85px;top:-85px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(106,220,255,.06),transparent 68%);pointer-events:none}.news-policy-card{border-color:rgba(232,196,117,.16)!important}.daybox{border-color:rgba(121,188,217,.14)!important;background:#050c12!important}.plan-row.current .daybox{background:linear-gradient(135deg,#78e7ff,#65efd0)!important}.stats-grid{gap:8px}.stat{min-height:100px}.growth-grid>div,.governance-growth-grid>div{background:#050b11!important;border-color:rgba(121,188,217,.10)!important}
+/* Bottom navigation */
+.bottom-nav{height:78px!important;background:rgba(3,8,13,.91)!important;border-color:rgba(128,200,230,.18)!important;box-shadow:0 24px 64px rgba(0,0,0,.58),inset 0 1px rgba(255,255,255,.025)!important;backdrop-filter:blur(26px) saturate(130%)!important}.bottom-nav button{position:relative;color:#526574!important;font-size:6.6px!important;letter-spacing:.10em!important}.bottom-nav button svg{width:19px!important;height:19px!important}.bottom-nav button.active{background:linear-gradient(180deg,rgba(85,207,242,.08),rgba(48,127,152,.035))!important;color:#a9eaff!important;box-shadow:inset 0 0 0 1px rgba(121,220,255,.12)}.bottom-nav button.active:after{content:"";position:absolute;bottom:3px;width:22px;height:2px;border-radius:99px;background:#79e7ff;box-shadow:0 0 10px rgba(121,231,255,.72)}
+/* Intro / install / sheets */
+#installGate,#appIntro{background:radial-gradient(circle at 50% 20%,rgba(65,180,224,.10),transparent 28%),#020408!important}.install-title,.intro-title{font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important;letter-spacing:.04em!important}.intro-logo,.gate-logo{border-color:rgba(118,220,255,.27)!important;box-shadow:0 0 50px rgba(88,212,255,.11)!important}.sheet{background:linear-gradient(180deg,#081019,#04090e)!important;border-color:rgba(126,195,225,.18)!important}.modal{background:rgba(0,0,0,.75)!important}
+/* Scrollbar + interaction */
+::-webkit-scrollbar{width:0;height:0}.card,.kage-command-hero,.bottom-nav,.icon-btn,.primary,.secondary,.ai-switch{transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease}
+@media(max-width:600px){
+ .app{padding-left:15px!important;padding-right:15px!important}.topbar{gap:8px}.brandmark-premium{width:50px!important;height:50px!important;flex-basis:50px!important}.brandcopy b{font-size:16px!important}.brandcopy small{font-size:5.8px!important}.app-version-badge{font-size:5.6px!important}.market-pill{max-width:107px;padding:0 9px!important}.market-pill span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kage-command-hero{min-height:325px}.kage-hero-art{right:-13%;top:-17%;width:76%;height:132%;opacity:.63}.kage-hero-copy{width:76%;padding:22px 18px 18px}.kage-hero-copy h1{font-size:31px}.kage-hero-copy p{max-width:280px}.kage-hero-status{gap:5px;flex-wrap:wrap}.kage-hero-status>span{min-width:82px;padding:8px}.kage-hero-action{max-width:245px}.hero-grid{grid-template-columns:1fr 1fr}.bottom-nav{width:calc(100% - 20px)!important}.bottom-nav button{padding:0 2px!important}
+}
+@media(max-width:390px){.brandcopy small{max-width:125px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.market-pill{display:none!important}.kage-command-hero{min-height:337px}.kage-hero-copy{width:82%}.kage-hero-art{right:-21%;width:84%;opacity:.56}.kage-hero-copy h1{font-size:29px}.kage-hero-status>span{min-width:76px}.bottom-nav button span{font-size:6px!important}}
+@media(prefers-reduced-motion:reduce){.brandmark-premium:after{animation:none!important}.card,.kage-command-hero{transition:none!important}}
+</style>\n
 </head>
 <body>
 
 <div id="installGate" aria-live="polite">
   <div class="install-shell">
-    <div class="gate-logo"><img src="./icon-512.png?v=360" alt="OneMonth OS"></div>
-    <div class="install-kicker">ONEMONTH OS · PRIVATE TERMINAL</div>
-    <h1 class="install-title">ติดตั้ง OneMonth OS ก่อนใช้งาน</h1>
+    <div class="gate-logo"><img src="./icon-512.png?v=360" alt="KAGE CORE"></div>
+    <div class="install-kicker">KAGE CORE · PRIVATE SHADOW TERMINAL</div>
+    <h1 class="install-title">ติดตั้ง KAGE CORE ก่อนใช้งาน</h1>
     <p class="install-copy">ระบบจะเปิด Trading Terminal เมื่อรันจากไอคอนบน Home Screen เท่านั้น เพื่อให้ Intro, Local Memory และการทำงานของแอปอยู่ในโหมด Standalone เต็มรูปแบบ</p>
     <div class="install-device" id="installDevice">DETECTING DEVICE…</div>
     <div class="install-steps" id="installSteps"></div>
-    <button class="install-action" id="nativeInstallBtn" style="display:none">INSTALL ONEMONTH OS</button>
+    <button class="install-action" id="nativeInstallBtn" style="display:none">INSTALL KAGE CORE</button>
     <button class="install-action secondary" id="recheckInstallBtn">ติดตั้งแล้ว · ตรวจอีกครั้ง</button>
-    <div class="install-hint">iPhone ไม่อนุญาตให้เว็บไซต์กด Add to Home Screen แทนผู้ใช้โดยอัตโนมัติ · หลังติดตั้งแล้วให้เปิด OneMonth OS จากไอคอนบนหน้าจอหลัก</div>
+    <div class="install-hint">iPhone ไม่อนุญาตให้เว็บไซต์กด Add to Home Screen แทนผู้ใช้โดยอัตโนมัติ · หลังติดตั้งแล้วให้เปิด KAGE CORE จากไอคอนบนหน้าจอหลัก</div>
   </div>
 </div>
 
@@ -4736,11 +4800,11 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
   <div class="intro-shell">
     <div class="intro-orbit">
       <div class="intro-ring"></div><div class="intro-ring r2"></div>
-      <div class="intro-logo"><img src="./icon-512.png?v=360" alt="OneMonth OS"></div>
+      <div class="intro-logo"><img src="./icon-512.png?v=360" alt="KAGE CORE"></div>
     </div>
-    <div class="intro-kicker">XAUUSD · FINAL INTELLIGENCE</div>
-    <div class="intro-title">ONEMONTH OS</div>
-    <div class="intro-sub">PRECISION EXECUTION TERMINAL</div>
+    <div class="intro-kicker">XAUUSD · SHADOW INTELLIGENCE</div>
+    <div class="intro-title">KAGE CORE</div>
+    <div class="intro-sub">AUTONOMOUS PRECISION TERMINAL</div>
     <div class="intro-status" id="introStatus">INITIALIZING SECURE WORKSPACE</div>
     <div class="intro-bar"><i id="introBar"></i></div>
     <div class="intro-meta"><span id="introPhase">LOCAL CORE</span><span id="introPercent">4%</span></div>
@@ -4765,13 +4829,13 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 <div class="app">
   <header class="topbar">
     <div class="brand">
-      <div class="brandmark brandmark-premium" aria-label="OneMonth OS">
-        <img src="./icon-512.png?v=360" alt="OneMonth OS">
+      <div class="brandmark brandmark-premium" aria-label="KAGE CORE">
+        <img src="./icon-512.png?v=360" alt="KAGE CORE">
       </div>
       <div class="brandcopy">
-        <b>ONEMONTH OS</b>
+        <b>KAGE CORE</b>
         <div class="brand-version-row">
-          <small>XAUUSD · SESSION INTELLIGENCE</small>
+          <small>XAUUSD · SHADOW INTELLIGENCE</small>
           <span class="app-version-badge" id="headerAppVersion">—</span>
         </div>
       </div>
@@ -4787,6 +4851,22 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 
   <main>
     <section class="view active" id="homeView">
+      <article class="kage-command-hero" id="kageCommandHero">
+        <div class="kage-hero-gridline" aria-hidden="true"></div>
+        <img class="kage-hero-art" src="./kage-warden.webp?v=390" alt="KAGE CORE shadow warden" loading="eager">
+        <div class="kage-hero-vignette" aria-hidden="true"></div>
+        <div class="kage-hero-copy">
+          <div class="kage-eyebrow"><i></i> KAGE CORE // SHADOW INTELLIGENCE</div>
+          <h1>อ่านตลาดในเงา<br><span>รอเฉพาะจุดที่คม</span></h1>
+          <p>V38 Self‑Play Brain ทำงานเหมือนเดิม · V39 เปลี่ยนเฉพาะประสบการณ์ใช้งานให้สะอาด คม และอ่านสถานะได้เร็วขึ้น</p>
+          <div class="kage-hero-status">
+            <span><small>DECISION</small><b id="kageHeroDecision">WAIT</b></span>
+            <span><small>FEED</small><b id="kageHeroFeed">CHECK</b></span>
+            <span><small>CORE</small><b id="kageHeroTrust">—</b></span>
+          </div>
+          <button class="kage-hero-action" id="kageOpenBrain" type="button"><i></i><span>OPEN SHADOW BRAIN</span><b>→</b></button>
+        </div>
+      </article>
       <div class="hero-grid">
         <article class="card metric-card balance-card">
           <div class="metric-icon" aria-hidden="true">
@@ -4889,12 +4969,12 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
             <h2>อ่านทรงก่อน<br>วางจุดดักรอให้พร้อม</h2>
             <p>อ่าน H1 / M15 / M5 + Historical + ML เพื่อเลือก BUY/SELL LIMIT หรือ STOP ที่คุ้มที่สุด แล้วรอราคาเข้าหาเรา ไม่ไล่ราคา</p>
           </div>
-          <button class="ai-switch" id="aiSwitch"><i></i><span><b>AI OFF</b><small>0 CREDIT</small></span></button>
+          <button class="ai-switch" id="aiSwitch"><i></i><span><b>ASSIST OFF</b><small>OPTIONAL LLM</small></span></button>
         </div>
         <div class="ai-scan-row">
           <button class="gold-action" id="analyzeBtn">
             <span class="gold-action-icon">✦</span>
-            <span><b>RUN PRECISION MARKET SCAN</b><small>Live · History · Learning · Entry Quality · Risk</small></span>
+            <span><b>RUN SHADOW SCAN</b><small>Live · History · Learning · Entry Quality · Risk</small></span>
           </button>
         </div>
         <div class="ai-core-toolbar">
@@ -5299,8 +5379,8 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
     <section class="view" id="marketView">
       <div class="page-intro ai-market-intro">
         <div>
-          <div class="kicker">V38 SELF-PLAY MARKET BRAIN</div>
-          <h1>AI Intelligence</h1>
+          <div class="kicker">KAGE CORE · SHADOW MARKET</div>
+          <h1>Shadow Intelligence</h1>
           <p>ดูสถานะสมอง ML, Feed, Calibration, Drift และ Pending Engine จากข้อมูลจริงในระบบ · ตัดกราฟและปุ่ม Timeframe ที่ไม่จำเป็นออกแล้ว</p>
         </div>
         <span class="status-orb" id="marketPageStatus"><i></i><b>DATA</b></span>
@@ -5314,7 +5394,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
         <header class="v38-head">
           <div>
             <div class="kicker v38-kicker"><i></i> AUTONOMOUS INTELLIGENCE</div>
-            <h3>V38 Self‑Play Brain</h3>
+            <h3>Self‑Play Precision Brain</h3>
             <p id="brainCoreHeadline">กำลังตรวจ Model Pack และ Market Feed</p>
           </div>
           <button id="marketRefreshBtn" class="v38-refresh" aria-label="Refresh market intelligence">
@@ -5363,7 +5443,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
               <span>AI CORE HEALTH</span>
               <strong id="brainCoreScore">—</strong>
               <b id="brainCoreState">WAIT DATA</b>
-              <small id="brainCoreConfidence">V38 MODEL</small>
+              <small id="brainCoreConfidence">AUTO ML</small>
               <i id="brainCorePulse"></i>
             </div>
           </div>
@@ -5475,7 +5555,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 
     <section class="view" id="newsView">
       <div class="page-intro">
-        <div><div class="v27-section-title"><span class="v27-page-symbol">≋</span><div><div class="kicker">MACRO EVENT INTELLIGENCE</div><h1>Gold News Radar</h1></div></div><p>ข่าว USD ที่กระทบทอง · เวลาไทย · BEST WINDOW จะตัดช่วง NEWS LOCK อัตโนมัติ</p></div>
+        <div><div class="v27-section-title"><span class="v27-page-symbol">≋</span><div><div class="kicker">MACRO EVENT INTELLIGENCE</div><h1>Macro Watch</h1></div></div><p>ข่าว USD ที่กระทบทอง · เวลาไทย · BEST WINDOW จะตัดช่วง NEWS LOCK อัตโนมัติ</p></div>
         <span class="status-orb news" id="newsPageStatus"><i></i><b>NEWS</b></span>
       </div>
       <article class="card news-card">
@@ -5510,7 +5590,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
     </section>
 
     <section class="view" id="planView">
-      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▦</span><div><div class="kicker">CAPITAL ROADMAP</div><h3>30‑Day Plan</h3></div></div></div><button id="jumpTodayBtn">TODAY</button></div>
+      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▦</span><div><div class="kicker">CAPITAL ROADMAP</div><h3>30‑Day Campaign</h3></div></div></div><button id="jumpTodayBtn">TODAY</button></div>
       <article class="card plan-summary">
         <div class="mission-head"><div><div class="kicker">PLAN PROGRESS</div><h3 id="planProgressText">0 / 30</h3></div><div class="badge" id="planPace">ON PLAN</div></div>
         <div class="progress"><i id="planProgressBar"></i></div>
@@ -5520,7 +5600,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
     </section>
 
     <section class="view" id="statsView">
-      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▥</span><div><div class="kicker">ACCOUNT ANALYTICS</div><h3>Performance</h3></div></div></div><span>REAL SESSIONS</span></div>
+      <div class="section-head"><div><div class="v27-section-title"><span class="v27-page-symbol">▥</span><div><div class="kicker">ACCOUNT ANALYTICS</div><h3>Performance Archive</h3></div></div></div><span>REAL SESSIONS</span></div>
       <div class="stats-grid">
         <article class="card stat"><span>COMPLETED</span><b id="statCompleted">0</b></article>
         <article class="card stat"><span>HIT RATE</span><b id="statHitRate">—</b></article>
@@ -5566,8 +5646,8 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 </div>
 
 <nav class="bottom-nav bottom-nav-six">
-  <button class="active" data-nav="homeView"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>HOME</span></button>
-  <button data-nav="aiView"><svg viewBox="0 0 24 24"><path d="M8 9V7a4 4 0 0 1 8 0v2M6 9h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"/><path d="M9 13h.01M15 13h.01M9 16h6"/></svg><span>AI</span></button>
+  <button class="active" data-nav="homeView"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>CORE</span></button>
+  <button data-nav="aiView"><svg viewBox="0 0 24 24"><path d="M8 9V7a4 4 0 0 1 8 0v2M6 9h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Z"/><path d="M9 13h.01M15 13h.01M9 16h6"/></svg><span>BRAIN</span></button>
   <button data-nav="marketView"><svg viewBox="0 0 24 24"><path d="M4 18V9M8 15V5M12 19V11M16 14V7M20 17V3"/><path d="M2 21h20"/></svg><span>MARKET</span></button>
   <button data-nav="newsView"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>NEWS</span></button>
   <button data-nav="planView"><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/></svg><span>PLAN</span></button>
@@ -5580,7 +5660,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
     <h2 id="planModalTitle">เริ่มแผนใหม่</h2>
     <div class="first-run-copy">
       ตั้งค่าเพียงครั้งแรก: ใส่ <b>Balance ปัจจุบัน</b> และ <b>เป้าหมายสิ้นเดือน</b>
-      จากนั้น OneMonth OS จะสร้าง 30-Day Roadmap, Daily Target, Max Loss และ Lot Guide ให้อัตโนมัติ
+      จากนั้น KAGE CORE จะสร้าง 30-Day Roadmap, Daily Target, Max Loss และ Lot Guide ให้อัตโนมัติ
     </div>
     <p>ใส่ทุนเริ่มต้นและเป้าหมาย 30 วัน ระบบจะคำนวณเป้ารายวันและ Max Loss ให้อัตโนมัติ</p>
     <div class="form-grid">
@@ -5597,7 +5677,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
 <div class="modal hidden" id="settingsModal" aria-hidden="true">
   <div class="sheet">
     <div class="grabber"></div>
-    <h2>OneMonth OS</h2>
+    <h2>KAGE CORE</h2>
     <p>Single‑file runtime · ข้อมูลแผนเก็บในเครื่องนี้ ส่วนกราฟจะอ่าน `xauusd.json` ที่อยู่ root ของ GitHub</p>
     <div class="form-grid">
       <div class="field"><label>MIN LOT</label><input id="minLotInput" inputmode="decimal" value="0.01"></div>
@@ -5689,19 +5769,19 @@ const appLaunch={
         <div class="install-step"><i>1</i><div><b>เปิดด้วย Safari</b><span>ถ้าอยู่ใน Browser อื่น ให้เปิดหน้านี้ด้วย Safari ก่อน</span></div></div>
         <div class="install-step"><i>2</i><div><b>กดปุ่ม Share</b><span>ไอคอนสี่เหลี่ยมมีลูกศรชี้ขึ้นใน Safari</span></div></div>
         <div class="install-step"><i>3</i><div><b>Add to Home Screen</b><span>เลือก “เพิ่มไปยังหน้าจอโฮม” แล้วกด Add</span></div></div>
-        <div class="install-step"><i>4</i><div><b>เปิดจากไอคอน OneMonth OS</b><span>ระบบจะเข้า Standalone Mode และเริ่ม Intro อัตโนมัติ</span></div></div>`;
+        <div class="install-step"><i>4</i><div><b>เปิดจากไอคอน KAGE CORE</b><span>ระบบจะเข้า Standalone Mode และเริ่ม Intro อัตโนมัติ</span></div></div>`;
       native.style.display='none';
     }else if(this.isAndroid){
       device.textContent='ANDROID · PWA SUPPORTED';
       steps.innerHTML=`
-        <div class="install-step"><i>1</i><div><b>ติดตั้ง OneMonth OS</b><span>กดปุ่ม Install ด้านล่าง</span></div></div>
+        <div class="install-step"><i>1</i><div><b>ติดตั้ง KAGE CORE</b><span>กดปุ่ม Install ด้านล่าง</span></div></div>
         <div class="install-step"><i>2</i><div><b>เปิดจากไอคอน</b><span>หลังติดตั้งให้เปิดแอปจาก Home Screen</span></div></div>`;
       native.style.display=this.deferredInstallPrompt?'block':'none';
     }else{
       device.textContent='DESKTOP BROWSER';
       steps.innerHTML=`
         <div class="install-step"><i>1</i><div><b>Install App / Create Shortcut</b><span>ใช้เมนู Browser เพื่อติดตั้ง PWA</span></div></div>
-        <div class="install-step"><i>2</i><div><b>เปิดแบบ Standalone</b><span>จากนั้นเปิด OneMonth OS จากไอคอนที่ติดตั้ง</span></div></div>`;
+        <div class="install-step"><i>2</i><div><b>เปิดแบบ Standalone</b><span>จากนั้นเปิด KAGE CORE จากไอคอนที่ติดตั้ง</span></div></div>`;
       native.style.display=this.deferredInstallPrompt?'block':'none';
     }
   },
@@ -5714,7 +5794,7 @@ const appLaunch={
     __introStartedAt=performance.now();
     document.body.classList.add('intro-active');
     $('#appIntro')?.classList.add('show');
-    this.setIntro(6,'กำลังเริ่ม OneMonth OS…','SECURE CORE');
+    this.setIntro(6,'กำลังปลุก KAGE CORE…','SHADOW CORE');
   },
   finishIntro(){
     this.setIntro(100,'TERMINAL READY','READY');
@@ -5790,7 +5870,7 @@ const bootUI = {
     if(nt && note) nt.textContent=note;
   },
   hide(){
-    this.set(100,'พร้อมใช้งาน','OneMonth OS พร้อมแล้ว');
+    this.set(100,'พร้อมใช้งาน','KAGE CORE พร้อมแล้ว');
     revealAppNow('SYSTEM READY');
   }
 };
@@ -5839,7 +5919,7 @@ const BG_FRESH_OPEN_MS=60*60*1000;   // model may support live decisions for max
 const BG_LAST_SESSION_MS=72*60*60*1000;
 const V341_DATA_RETENTION_LABEL='M15 90D · H1 180D';
 
-const APP_VERSION='V38 SELF-PLAY PRECISION BRAIN';
+const APP_VERSION='V39 KAGE CORE';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -8056,7 +8136,7 @@ function renderAiCoreV37(){
 }
 
 function renderAiUi(){
-  $('#aiSwitch').classList.toggle('on',aiOn);$('#aiSwitch b').textContent=aiOn?'AI LIVE':'AI OFF';$('#aiSwitch small').textContent=aiOn?'ML + LOCAL':'0 CREDIT';
+  $('#aiSwitch').classList.toggle('on',aiOn);$('#aiSwitch b').textContent=aiOn?'ASSIST ON':'ASSIST OFF';$('#aiSwitch small').textContent=aiOn?'OPTIONAL LLM':'PYTHON ML ALWAYS ON';
   pendingPlanV35=pendingPlansV35(analysis);const pp=pendingPlanV35.primary,plot=lotForPendingV35(pp);
   if(!analysis){
     $('#bestTf').textContent='—';$('#direction').textContent='WAIT';$('#confidence').textContent='Confidence —';$('#suggestedLot').textContent='—';$('#maxLot').textContent='Max —';$('#signalSide').textContent='WAIT';$('#signalReason').textContent='ยังไม่ได้วิเคราะห์';$('#signalStatus').textContent='IDLE';
@@ -8398,7 +8478,7 @@ async function analyze(){
     console.error('Analyze failed',err);
     toast('Analyze error · ลอง Refresh Data');
   }finally{
-    btn.textContent='RUN PRECISION MARKET SCAN';btn.disabled=false;
+    btn.textContent='RUN SHADOW SCAN';btn.disabled=false;
     btn.classList.remove('action-pending');setBusy(false)
   }
 }
@@ -8511,7 +8591,7 @@ function openPlanSetup(required=false){
   const modal=$('#planModal');
   if(!modal)return;
   modal.dataset.required=required?'1':'0';
-  $('#planModalTitle').textContent=required?'เริ่มต้น OneMonth OS':(exists?'แก้ไขแผน':'เริ่มแผนใหม่');
+  $('#planModalTitle').textContent=required?'เริ่มต้น KAGE CORE':(exists?'แก้ไขแผน':'เริ่มแผนใหม่');
   $('#planStartInput').value=exists?plan.start:10;
   $('#planTargetInput').value=exists?plan.target:300;
   $('#savePlanBtn').textContent=required?'START 30-DAY PLAN':(exists?'SAVE CHANGES':'CREATE PLAN');
@@ -8753,7 +8833,7 @@ $('#recheckInstallBtn')?.addEventListener('click',()=>{
     return;
   }
   appLaunch.renderInstallGate();
-  toast('ยังเปิดผ่าน Browser อยู่ · หลังติดตั้งให้เปิดจากไอคอน OneMonth OS');
+  toast('ยังเปิดผ่าน Browser อยู่ · หลังติดตั้งให้เปิดจากไอคอน KAGE CORE');
 });
 
 if(appLaunch.isStandalone()){
@@ -8798,5 +8878,22 @@ if(appLaunch.isStandalone()){
 })();
 </script>
 
+\n<script id="kage-core-v39-runtime">
+(()=>{
+  const $=(s)=>document.querySelector(s);
+  const text=(s,f='—')=>($(s)?.textContent||f).trim();
+  function syncKageHero(){
+    const d=$('#kageHeroDecision'),f=$('#kageHeroFeed'),t=$('#kageHeroTrust');
+    if(d)d.textContent=text('#brainDecisionText',text('#direction','WAIT')).replace(/\s+/g,' ').slice(0,20);
+    if(f)f.textContent=text('#feedActive',text('#marketText','CHECK')).replace(/TWELVE DATA/i,'TWELVE').slice(0,16);
+    if(t){const score=text('#brainCoreScore','—');t.textContent=score==='—'?'READY':score+'/100';}
+  }
+  const open=$('#kageOpenBrain');
+  if(open)open.addEventListener('click',()=>{const btn=document.querySelector('.bottom-nav [data-nav="aiView"]');if(btn)btn.click();});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncKageHero()});
+  setInterval(syncKageHero,1200);
+  setTimeout(syncKageHero,250);
+})();
+</script>\n
 </body>
 </html>
