@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const INPUT='xauusd.json';
+const INPUT='xauusd-primary.json';
 const OUTPUT='ai-learning-candidate.json';
 const VERSION='3.2';
 const ENGINE='ONEMONTH-GOVERNED-CHALLENGER-V3.2';
@@ -78,7 +78,7 @@ function walkForward(samples){
   const m=metrics(preds),testTotal=folds.reduce((s,x)=>s+x.testSamples,0);return{mode:'EXPANDING_WINDOW_4_FOLD',folds,samples:preds.length,coverage:testTotal?preds.length/testTotal*100:0,hitRate:m.hitRate,brier:m.brier,calibrationError:m.calibrationError,logLoss:m.logLoss};
 }
 
-if(!fs.existsSync(INPUT)){console.error('Missing xauusd.json');process.exit(1)}
+if(!fs.existsSync(INPUT)){console.log('V37 PRIMARY training waiting: missing xauusd-primary.json');process.exit(0)}
 const pack=JSON.parse(fs.readFileSync(INPUT,'utf8')),raw=pack.timeframes||pack.data||pack||{},sourceFingerprint=fingerprintPack(pack);
 try{if(fs.existsSync(OUTPUT)){const prev=JSON.parse(fs.readFileSync(OUTPUT,'utf8'));if(prev?.engine===ENGINE&&prev?.sourceFingerprint===sourceFingerprint){console.log(`No new market data: ${OUTPUT} already trained on ${sourceFingerprint}`);process.exit(0)}}}catch(_){}
 const m1=clean(raw.M1||[]),directM5=clean(raw.M5||[]),directM15=clean(raw.M15||[]);

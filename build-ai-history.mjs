@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const INPUT='xauusd.json';
+const INPUT='xauusd-primary.json';
 const OUTPUT='ai-history.json';
 const TF_MS={M1:60000,M5:300000,M15:900000,H1:3600000};
 const FWD={M1:15,M5:8,M15:4,H1:2};
@@ -40,7 +40,7 @@ function analyzeTf(c,tf){
   return{candles:c.length,from:new Date(c[0].ts).toISOString(),to:new Date(c[n].ts).toISOString(),sampleCount,forwardBars:forward,recencyHalfLifeDays:HALF_LIFE_DAYS,latest:{bias,strength,upProbability,rsi:Number((RS[n]??50).toFixed(2)),adx:Number((AD[n]??0).toFixed(2)),structure:latestStructure,key:ks[0],matchLevel:match?.matchLevel||'NONE',effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),lowerBound:Number(((match?.lowerBound??.05)*100).toFixed(2)),upperBound:Number(((match?.upperBound??.95)*100).toFixed(2)),uncertaintyPts:Number((match?.uncertaintyPts??90).toFixed(2))},regimes,patterns:exact.slice(0,500).map(r=>({...r,upRate:Number(r.upRate.toFixed(4)),posteriorUpRate:Number(r.posteriorUpRate.toFixed(4)),lowerBound:Number(r.lowerBound.toFixed(4)),upperBound:Number(r.upperBound.toFixed(4)),avgReturnR:Number(r.avgReturnR.toFixed(4)),avgMfeR:Number(r.avgMfeR.toFixed(4)),avgMaeR:Number(r.avgMaeR.toFixed(4))}))};
 }
 function fingerprint(pack){const t=pack.timeframes||pack.data||pack||{},rows=['M1','M5','M15','H1'].map(tf=>{const a=t[tf]||[];return`${tf}:${a.length}:${a[0]?.ts||a[0]?.datetime||''}:${a.at(-1)?.ts||a.at(-1)?.datetime||''}`}).join('|');let h=2166136261;for(let i=0;i<rows.length;i++){h^=rows.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16)}
-if(!fs.existsSync(INPUT)){console.error(`Missing ${INPUT}`);process.exit(1)}
+if(!fs.existsSync(INPUT)){console.log(`V37 PRIMARY training waiting: missing ${INPUT}`);process.exit(0)}
 const pack=JSON.parse(fs.readFileSync(INPUT,'utf8')),raw=pack.timeframes||pack.data||pack||{},M1=clean(raw.M1||[]),data={M1};for(const tf of ['M5','M15','H1']){const own=clean(raw[tf]||[]);const derived=M1.length>=180?aggregate(M1,tf):[];data[tf]=own.length>=derived.length?own:derived}
 const timeframes={};for(const tf of ['M1','M5','M15','H1']){const r=analyzeTf(data[tf]||[],tf);if(r)timeframes[tf]=r}
 const weights={H1:.36,M15:.34,M5:.20,M1:.10};let signed=0,wSum=0,totalCandles=0,totalPatterns=0,biasVotes=[],uncertaintyWeighted=0;for(const[tf,row]of Object.entries(timeframes)){const w=weights[tf]||.1,p=row.latest.upProbability;signed+=(p-50)*w;uncertaintyWeighted+=(row.latest.uncertaintyPts||90)*w;wSum+=w;totalCandles+=row.candles;totalPatterns+=row.patterns.length;biasVotes.push(row.latest.bias)}const upProbability=Math.round(clamp(50+(wSum?signed/wSum:0),5,95)),globalBias=upProbability>=55?'BUY':upProbability<=45?'SELL':'NEUTRAL',same=biasVotes.filter(x=>x===globalBias).length,agreement=biasVotes.length?Math.round(same/biasVotes.length*100):0,uncertainty=wSum?uncertaintyWeighted/wSum:90,confidence=Math.round(clamp(agreement*.55+(100-uncertainty)*.45,0,100));

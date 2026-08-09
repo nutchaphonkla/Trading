@@ -1,0 +1,19 @@
+V37 CLOUDFLARE WORKER
+
+1. Open existing Worker: onemonth-tv-feed
+2. Replace Worker code with cloudflare-worker.js
+3. Keep binding: DB -> D1 database onemonth-tv-feed
+4. Keep encrypted Secret: WEBHOOK_TOKEN
+5. Deploy
+6. Existing bars table is reused. Do NOT add runtime CREATE TABLE code.
+
+Protected endpoints:
+POST /mt5-webhook
+POST /mt5-batch
+GET  /feed
+GET  /health
+
+Public market-data endpoint:
+GET /public-feed
+
+The /tv-webhook alias remains only for backward compatibility; V37 uses MT5.

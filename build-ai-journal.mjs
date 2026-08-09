@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
 const PACK='xauusd.json',LEARNING='ai-learning.json',ML='ai-ml-brain.json',OUTPUT='ai-outcome-journal.json';
-const VERSION='1.5',ENGINE='ONEMONTH-PENDING-ENTRY-JOURNAL-V36.1-MULTIFEED-AUTOML';
+const VERSION='2.0',ENGINE='ONEMONTH-PENDING-ENTRY-JOURNAL-V37-FIRST-HIT-AUTOML';
 const num=v=>{const n=Number(v);return Number.isFinite(n)?n:NaN};
 const n=v=>Number.isFinite(Number(v))?Number(v):0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
