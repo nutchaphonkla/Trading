@@ -19,50 +19,76 @@ jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - name: Checkout latest repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+
       - name: Validate AI builders
         run: |
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
           node --check build-ai-journal.mjs
-      - name: Rebuild 30-90 day history brain
+          node --check build-ai-governance.mjs
+
+      - name: Rebuild rolling history brain
         run: node build-ai-history.mjs
-      - name: Train guarded learning model
+
+      - name: Train challenger model
         run: node build-ai-learning.mjs
-      - name: Update background outcome journal
+
+      - name: Resolve deployed model outcomes
         run: node build-ai-journal.mjs
-      - name: Verify brain packs
+
+      - name: Champion challenger governance
+        run: node build-ai-governance.mjs
+
+      - name: Journal newly deployed champion
+        run: node build-ai-journal.mjs
+
+      - name: Verify governed brain packs
         run: |
           node - <<'NODE'
           const fs=require('fs');
           const h=JSON.parse(fs.readFileSync('ai-history.json','utf8'));
           const l=JSON.parse(fs.readFileSync('ai-learning.json','utf8'));
+          const c=JSON.parse(fs.readFileSync('ai-learning-candidate.json','utf8'));
+          const g=JSON.parse(fs.readFileSync('ai-model-governance.json','utf8'));
           const j=fs.existsSync('ai-outcome-journal.json')?JSON.parse(fs.readFileSync('ai-outcome-journal.json','utf8')):null;
           if(!h.generatedAt)throw new Error('history missing generatedAt');
-          if(!l.generatedAt)throw new Error('learning missing generatedAt');
+          if(!l.generatedAt)throw new Error('champion missing generatedAt');
+          if(!c.generatedAt)throw new Error('challenger missing generatedAt');
+          if(!g.updatedAt)throw new Error('governance missing updatedAt');
           console.log('History',{ready:h.ready,candles:h.totalCandles,coverageDays:h.coverageDays});
-          console.log('Learning',{ready:l.ready,samples:l.global?.samples,guard:l.qualityGuards?.backgroundUse,calibration:l.validation?.calibrationError,drift:l.modelHealth?.driftPts});
-          console.log('Journal',j?.summary||'new journal pending');
+          console.log('Champion',{id:l.modelId,engine:l.engine,samples:l.global?.samples,health:l.modelHealth?.score});
+          console.log('Challenger',{id:c.modelId||c.sourceFingerprint,samples:c.global?.samples,health:c.modelHealth?.score});
+          console.log('Governance',{action:g.action,champion:g.champion?.score,challenger:g.challenger?.score,reason:g.reason});
+          console.log('Journal',j?.summary||'journal pending');
+          console.log('Pending plan journal',j?.planSummary||'pending-plan journal learning');
           NODE
-      - name: Commit learned brain and journal
+
+      - name: Commit governed brain and journal
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ai-history.json ai-learning.json ai-outcome-journal.json
+
+          for f in ai-history.json ai-learning.json ai-learning-candidate.json ai-learning-previous.json ai-model-governance.json ai-outcome-journal.json; do
+            if [ -e "$f" ]; then git add "$f"; fi
+          done
+
           if git diff --cached --quiet; then
-            echo "No learned-model changes"
+            echo "No governed-model changes"
             exit 0
           fi
-          git commit -m "ai: refresh V34.1 precision trigger brain"
+
+          git commit -m "ai: refresh V34.3 pending-plan brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

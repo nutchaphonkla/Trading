@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 
 const INPUT='xauusd.json';
-const OUTPUT='ai-learning.json';
-const VERSION='3.1';
-const ENGINE='ONEMONTH-PRECISION-TRIGGER-V3.1';
+const OUTPUT='ai-learning-candidate.json';
+const VERSION='3.2';
+const ENGINE='ONEMONTH-GOVERNED-CHALLENGER-V3.2';
 const HALF_LIFE_DAYS=38;
 const PRIOR_STRENGTH=12;
 const Z90=1.645;
@@ -132,12 +132,13 @@ const hardQuarantine=validation.calibrationError>30||driftPts>28||validation.cov
 const backgroundUse=hardQuarantine?'QUARANTINED':healthScore>=68&&![calibrationState,driftState,sampleState,uncertaintyState,coverageState,brierState].includes('BLOCK')?'TRUSTED':healthScore>=42?'LIMITED':'LIVE_ONLY';
 const reliability=clamp((healthScore/100)*.72+Math.log10(total+1)/4*.28,0,1);
 const out={
-  version:VERSION,engine:ENGINE,status:'READY',generatedAt:new Date().toISOString(),sourceFingerprint,trainedThrough:new Date(latestTs).toISOString(),sourceGeneratedAt:pack.generatedAt||null,ready:true,
+  version:VERSION,engine:ENGINE,role:'CHALLENGER',status:'READY',generatedAt:new Date().toISOString(),sourceFingerprint,trainedThrough:new Date(latestTs).toISOString(),sourceGeneratedAt:pack.generatedAt||null,ready:true,
   recency:{halfLifeDays:HALF_LIFE_DAYS,minimumWeight:.20,weightedHitRate:Number(weightedHit.toFixed(2)),recentCut:new Date(recentCut).toISOString(),recentHitRate:Number(recentHit.toFixed(2)),olderHitRate:Number(olderHit.toFixed(2))},
   modelHealth:{score:Number(healthScore.toFixed(1)),status:healthStatus,uncertainty:uncertaintyLabel,uncertaintyPts:Number(currentUncertainty.toFixed(1)),driftPts:Number(driftPts.toFixed(1)),validationScore:Number(validationScore.toFixed(1)),coverage:Number(validation.coverage.toFixed(1)),brierScore:Number(brierScore.toFixed(1)),calibrationScore:Number(calibrationScore.toFixed(1)),sampleScore:Number(sampleScore.toFixed(1))},
   qualityGuards:{backgroundUse,calibration:calibrationState,drift:driftState,sample:sampleState,uncertainty:uncertaintyState,coverage:coverageState,brier:brierState,hardQuarantine,criteria:{calibrationError:Number(validation.calibrationError.toFixed(2)),driftPts:Number(driftPts.toFixed(2)),effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),totalSamples:total,uncertaintyPts:Number(currentUncertainty.toFixed(2)),coverage:Number(validation.coverage.toFixed(2)),brier:Number(validation.brier.toFixed(4))}},
   validation:{mode:validation.mode,samples:validation.samples,coverage:Number(validation.coverage.toFixed(2)),hitRate:Number(validation.hitRate.toFixed(2)),brier:Number(validation.brier.toFixed(4)),calibrationError:Number(validation.calibrationError.toFixed(2)),logLoss:Number(validation.logLoss.toFixed(4)),folds:validation.folds},
   source:{timeframe:sourceTimeframe,barMinutes,candles:candles.length,counts:{M1:m1.length,M5:m5.length,M15:m15.length}},
+  dataIntegrity:{chronological:true,leakageGuard:'FEATURES_AT_T__OUTCOMES_AFTER_T',duplicateGuard:'TIMESTAMP_DEDUPE',rawCounts:{M1:Array.isArray(raw.M1)?raw.M1.length:0,M5:Array.isArray(raw.M5)?raw.M5.length:0,M15:Array.isArray(raw.M15)?raw.M15.length:0},cleanCounts:{M1:m1.length,M5:m5.length,M15:m15.length}},
   global:{samples:total,hitRate:Number((wins/Math.max(1,total)*100).toFixed(2)),weightedHitRate:Number(weightedHit.toFixed(2)),avgR:Number((samples.reduce((s,x)=>s+x.r,0)/Math.max(1,total)).toFixed(4)),brier:Number(rawMetrics.brier.toFixed(4)),calibrationError:Number(rawMetrics.calibrationError.toFixed(2)),reliability:Number(reliability.toFixed(4))},
   horizons:Object.fromEntries(Object.entries(horizons).map(([k,r])=>[k,{samples:r.n,hitRate:Number((r.w/Math.max(1,r.n)*100).toFixed(2)),avgR:Number((r.r/Math.max(1,r.n)).toFixed(4))}])),
   models:{bestRegime:bestBy('regime'),bestSession:bestBy('session'),weights},
