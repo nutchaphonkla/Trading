@@ -4364,6 +4364,337 @@ body{font-variant-numeric:tabular-nums!important}
 @media(max-width:620px){.ai-core-topbar{padding:18px 14px 13px}.ai-core-topbar h3{font-size:20px}.ai-source-strip{grid-template-columns:repeat(2,1fr)}.ai-brain-stage{grid-template-columns:92px minmax(156px,1fr) 92px;gap:7px;padding:20px 10px 15px}.brain-side-card{padding:10px 8px;border-radius:13px}.brain-side-card b{font-size:9px}.ai-brain-orbit{width:min(100%,210px)}.brain-core-center strong{font-size:40px}.ai-metric-rack{grid-template-columns:repeat(3,1fr);padding:0 12px 14px}.ai-context-grid{grid-template-columns:repeat(2,1fr);padding:0 12px 15px}.ai-activity-panel{margin:0 12px 12px}}
 @media(max-width:400px){.ai-brain-stage{grid-template-columns:78px minmax(145px,1fr) 78px}.brain-side-card span{font-size:5.6px}.brain-side-card b{font-size:8px}.brain-side-card small{font-size:5.7px}.brain-core-center strong{font-size:36px}.ai-core-actions .status-chip{display:none}}
 
+
+/* ================================================================
+   V37.1 PREMIUM AI COCKPIT — iPhone defect fix + visual hierarchy
+   ================================================================ */
+#marketView{padding-bottom:148px!important;scroll-padding-bottom:148px!important}
+#marketView .page-intro{margin-bottom:12px!important}
+.ai-core-premium{
+  isolation:isolate;
+  border-radius:28px!important;
+  border:1px solid rgba(64,205,222,.28)!important;
+  background:
+    radial-gradient(720px 360px at 50% 18%,rgba(20,188,213,.105),transparent 62%),
+    radial-gradient(420px 250px at 96% 4%,rgba(31,120,222,.10),transparent 70%),
+    radial-gradient(430px 300px at 0% 48%,rgba(36,224,184,.055),transparent 72%),
+    linear-gradient(180deg,#06141c 0%,#031017 48%,#020b10 100%)!important;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.48),
+    0 0 0 1px rgba(40,164,183,.04),
+    inset 0 1px 0 rgba(255,255,255,.035)!important
+}
+.ai-core-premium:before{display:none!important}
+.ai-core-gridfx{
+  position:absolute;z-index:-2;inset:0;pointer-events:none;opacity:.28;
+  background-image:
+    linear-gradient(rgba(55,180,198,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(55,180,198,.035) 1px,transparent 1px);
+  background-size:26px 26px;
+  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.65),transparent 76%);
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.65),transparent 76%)
+}
+.ai-core-scanfx{
+  position:absolute;z-index:-1;left:0;right:0;top:-30%;height:36%;pointer-events:none;opacity:.35;
+  background:linear-gradient(to bottom,transparent,rgba(54,225,230,.045),transparent);
+  animation:coreScan 8.5s ease-in-out infinite
+}
+@keyframes coreScan{0%,10%{transform:translateY(0)}70%,100%{transform:translateY(430%)}}
+
+.ai-core-topbar{
+  position:relative;padding:22px 20px 19px!important;
+  border-bottom:0!important;
+  background:linear-gradient(120deg,rgba(8,26,35,.96),rgba(4,14,20,.78))
+}
+.ai-core-topbar:after{
+  content:"";position:absolute;left:20px;right:20px;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(49,222,230,.36),rgba(67,136,226,.20),transparent)
+}
+.ai-core-titleblock{min-width:0}
+.ai-core-kicker{display:flex;align-items:center;gap:8px;color:#78a7b7!important}
+.ai-core-kicker i{width:7px;height:7px;border-radius:50%;background:#4ce0d2;box-shadow:0 0 15px rgba(76,224,210,.78)}
+.ai-core-topbar h3{
+  margin:5px 0 5px!important;font-size:27px!important;line-height:1.02!important;
+  color:#f3f7f8;letter-spacing:-.045em!important;
+  text-shadow:0 8px 32px rgba(0,0,0,.3)
+}
+.ai-core-topbar p{max-width:560px!important;color:#8293a0!important;font-size:9px!important}
+.ai-core-actions{align-self:center}
+.ai-core-actions .status-chip{
+  border-color:rgba(79,218,216,.22)!important;background:rgba(6,27,32,.72)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.025)
+}
+.ai-core-actions button{
+  display:flex!important;align-items:center!important;gap:7px!important;
+  min-height:40px!important;padding:0 13px!important;border-radius:14px!important;
+  background:linear-gradient(180deg,rgba(8,31,40,.92),rgba(4,18,25,.92))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.03),0 8px 24px rgba(0,0,0,.16)
+}
+.ai-core-actions button svg{width:14px;height:14px;fill:none;stroke:#59dbe5;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ai-core-actions button span{font:inherit}
+
+.ai-source-strip{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:9px!important;padding:12px 14px 9px!important;
+  background:transparent!important;border:0!important
+}
+.ai-source-cell{
+  position:relative;display:flex!important;align-items:flex-start;gap:10px;
+  min-height:92px!important;padding:13px 12px!important;border:1px solid rgba(69,187,205,.145)!important;
+  border-radius:18px!important;overflow:hidden;
+  background:
+    radial-gradient(circle at 88% 12%,rgba(55,205,218,.06),transparent 36%),
+    linear-gradient(155deg,rgba(7,25,33,.92),rgba(3,14,20,.88))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.024),0 12px 28px rgba(0,0,0,.10)
+}
+.ai-source-cell:after{
+  content:"";position:absolute;left:10px;right:10px;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(71,216,222,.20),transparent)
+}
+.ai-source-cell.primary{
+  background:
+    radial-gradient(circle at 92% 20%,rgba(55,215,220,.15),transparent 38%),
+    linear-gradient(150deg,rgba(7,36,43,.95),rgba(3,15,21,.90))!important;
+  border-color:rgba(72,216,222,.22)!important
+}
+.source-icon{
+  flex:0 0 31px;width:31px;height:31px;border-radius:10px;display:grid;place-items:center;
+  color:#39dbe3;border:1px solid rgba(55,210,220,.18);
+  background:linear-gradient(180deg,rgba(7,38,47,.9),rgba(4,21,28,.88));
+  box-shadow:inset 0 1px rgba(255,255,255,.025)
+}
+.source-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ai-source-cell>div{min-width:0;padding-top:1px}
+.ai-source-cell span:not(.source-icon){color:#728691!important;font-size:6.4px!important;letter-spacing:.14em!important}
+.ai-source-cell b{
+  margin-top:7px!important;color:#e4edf0!important;font-size:11px!important;
+  white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.15!important
+}
+.ai-source-cell.primary b{
+  color:#58ded7!important;font-size:17px!important;letter-spacing:-.02em;
+  text-shadow:0 0 18px rgba(64,221,213,.13)
+}
+.ai-source-cell small{
+  margin-top:4px!important;color:#667986!important;font-size:6.8px!important;
+  white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.3!important
+}
+
+.ai-cockpit-label{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  padding:12px 16px 3px;color:#7e929f;text-align:center
+}
+.ai-cockpit-label span{font-size:7px;font-weight:950;letter-spacing:.18em;color:#9eb1bb}
+.ai-cockpit-label i{width:4px;height:4px;border-radius:50%;background:#40d9dc;box-shadow:0 0 10px #40d9dc}
+.ai-cockpit-label small{font-size:5.7px;font-weight:850;letter-spacing:.08em;color:#536875}
+
+.ai-brain-stage{
+  position:relative;padding:17px 16px 18px!important;gap:14px!important;
+  grid-template-columns:minmax(112px,1fr) minmax(220px,1.55fr) minmax(112px,1fr)!important
+}
+.ai-brain-stage:before{
+  content:"";position:absolute;left:8%;right:8%;top:8%;bottom:8%;pointer-events:none;
+  background:radial-gradient(circle at center,rgba(37,209,219,.07),transparent 50%);
+  filter:blur(10px)
+}
+.ai-brain-side{gap:11px!important;position:relative;z-index:2}
+.brain-side-card{
+  position:relative;min-height:82px!important;padding:12px 11px!important;border-radius:17px!important;
+  border:1px solid rgba(68,187,203,.15)!important;overflow:hidden;
+  background:
+    linear-gradient(145deg,rgba(8,27,35,.94),rgba(3,14,20,.88))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.025),0 12px 24px rgba(0,0,0,.10)!important
+}
+.brain-side-card:before{
+  content:"";position:absolute;left:0;top:12px;bottom:12px;width:2px;border-radius:4px;background:#2cccd4;opacity:.45
+}
+.brain-side-card.good:before{background:#45dfb4;opacity:.9}
+.brain-side-card.warn:before{background:#e1ba62;opacity:.9}
+.brain-side-card.bad:before{background:#eb6475;opacity:.95}
+.brain-side-card span{color:#728692!important;font-size:6.3px!important}
+.brain-side-card b{font-size:11px!important;white-space:normal!important;line-height:1.15!important}
+.brain-side-card small{font-size:6.5px!important;color:#637682!important;line-height:1.35!important}
+.brain-side-card.good b{color:#64e2c2!important}
+.brain-side-card.warn b{color:#e9c96f!important}
+.brain-side-card.bad b{color:#f17183!important}
+
+.ai-brain-orbit{
+  z-index:3;width:min(100%,264px)!important;
+  background:
+    conic-gradient(from 214deg,#45e0b6 0 calc(var(--brain-score)*.66%),#20c0ec calc(var(--brain-score)*.66%) calc(var(--brain-score)*1%),rgba(18,58,71,.20) 0)!important;
+  filter:drop-shadow(0 0 24px rgba(38,214,219,.15))!important;
+  box-shadow:0 0 0 1px rgba(62,209,220,.05),inset 0 0 35px rgba(52,217,216,.05)
+}
+.ai-brain-orbit:before{
+  inset:11px!important;
+  background:
+    radial-gradient(circle at 50% 44%,rgba(15,48,55,.82),rgba(4,17,23,.98) 48%,#020d12 66%)!important;
+  border:1px solid rgba(72,221,222,.30)!important;
+  box-shadow:inset 0 0 36px rgba(45,215,214,.06)
+}
+.ai-brain-orbit:after{inset:33px!important;border-color:rgba(66,228,225,.25)!important}
+.brain-orbit-halo{position:absolute;border-radius:50%;pointer-events:none}
+.brain-orbit-halo.halo-a{inset:-9px;border:1px solid rgba(42,175,199,.14);animation:haloBreath 3.2s ease-in-out infinite}
+.brain-orbit-halo.halo-b{inset:24px;border:1px solid rgba(72,222,207,.10);animation:orbitSpin 24s linear reverse infinite}
+@keyframes haloBreath{50%{transform:scale(1.035);opacity:.45}}
+.brain-orbit-node{
+  position:absolute;z-index:4;width:5px;height:5px;border-radius:50%;
+  background:#58e0cd;box-shadow:0 0 10px rgba(88,224,205,.9)
+}
+.brain-orbit-node.n1{top:15%;left:23%;animation:nodePulse 2.1s infinite}
+.brain-orbit-node.n2{right:13%;top:49%;animation:nodePulse 2.4s .4s infinite}
+.brain-orbit-node.n3{left:42%;bottom:10%;animation:nodePulse 2.6s .9s infinite}
+@keyframes nodePulse{50%{opacity:.3;transform:scale(.65)}}
+.brain-core-center span{font-size:6.8px!important;letter-spacing:.18em!important}
+.brain-core-center strong{
+  margin:5px 0 0!important;font-size:54px!important;
+  background:linear-gradient(180deg,#6cf1d4,#2ccbd8 68%,#22aee2);
+  -webkit-background-clip:text;background-clip:text;color:transparent!important;
+  text-shadow:none!important;filter:drop-shadow(0 0 14px rgba(65,224,214,.15))
+}
+.brain-core-center b{font-size:12px!important;letter-spacing:.11em!important}
+.brain-core-center small{
+  margin-top:7px!important;padding:5px 9px!important;
+  background:rgba(6,24,30,.78)!important;border-color:rgba(79,201,209,.20)!important
+}
+
+.ai-decision-strip{
+  position:relative;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:11px;
+  margin:0 16px 13px;padding:12px 13px;border-radius:17px;overflow:hidden;
+  border:1px solid rgba(65,186,201,.17);
+  background:
+    linear-gradient(90deg,rgba(6,26,34,.93),rgba(3,15,21,.86));
+  box-shadow:inset 0 1px rgba(255,255,255,.025)
+}
+.ai-decision-strip:after{
+  content:"";position:absolute;right:-40px;top:-50px;width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle,rgba(43,213,216,.075),transparent 68%);pointer-events:none
+}
+.decision-orb{width:37px;height:37px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(67,213,216,.22);background:rgba(5,33,40,.8)}
+.decision-orb i{width:9px;height:9px;border-radius:50%;background:#6f8290;box-shadow:0 0 0 5px rgba(111,130,144,.07)}
+.ai-decision-strip.good .decision-orb i{background:#4ee0b0;box-shadow:0 0 0 5px rgba(78,224,176,.08),0 0 14px rgba(78,224,176,.38)}
+.ai-decision-strip.warn .decision-orb i{background:#e5bd61;box-shadow:0 0 0 5px rgba(229,189,97,.08),0 0 14px rgba(229,189,97,.25)}
+.ai-decision-strip.bad .decision-orb i{background:#ee6477;box-shadow:0 0 0 5px rgba(238,100,119,.08),0 0 14px rgba(238,100,119,.25)}
+.decision-copy{min-width:0}
+.decision-copy span{display:block;color:#718590;font-size:6.2px;font-weight:950;letter-spacing:.13em}
+.decision-copy b{display:block;margin-top:4px;color:#e2eaed;font-size:12px;line-height:1.15}
+.decision-copy small{display:block;margin-top:3px;color:#657884;font-size:6.8px;line-height:1.35}
+.ai-decision-strip em{
+  position:relative;z-index:2;font-style:normal;padding:6px 8px;border-radius:999px;
+  color:#81909a;background:rgba(103,121,132,.10);font-size:6.2px;font-weight:950;letter-spacing:.08em
+}
+.ai-decision-strip.good em{color:#64deb5;background:rgba(67,212,164,.08)}
+.ai-decision-strip.warn em{color:#e2c26d;background:rgba(224,187,95,.08)}
+.ai-decision-strip.bad em{color:#f07184;background:rgba(238,92,114,.08)}
+
+.ai-activity-panel{
+  margin:0 16px 13px!important;border-radius:19px!important;
+  border-color:rgba(69,188,202,.17)!important;background:rgba(2,12,17,.76)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.018)
+}
+.ai-activity-head{padding:11px 13px!important}
+.ai-activity-row{grid-template-columns:34px minmax(0,1fr) auto!important;gap:10px!important;padding:11px 12px!important}
+.activity-icon{
+  width:31px!important;height:31px!important;border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(6,34,42,.9),rgba(3,20,26,.86))!important
+}
+.activity-icon svg{width:17px;height:17px;fill:none;stroke:#31dbe3;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.ai-activity-row div b{font-size:9.2px!important}
+.ai-activity-row div small{font-size:6.8px!important}
+.ai-activity-row em{font-size:6.1px!important}
+
+.ai-metric-rack{
+  position:relative;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:8px!important;
+  padding:0 16px 17px!important
+}
+.ai-metric{
+  min-height:93px;padding:10px 4px 8px!important;border-radius:15px!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(47,207,216,.045),transparent 48%),
+    rgba(3,15,21,.80)!important;
+  border-color:rgba(65,176,191,.13)!important
+}
+.metric-ring{width:50px!important;box-shadow:0 0 18px rgba(55,207,214,.045),inset 0 0 0 1px rgba(91,211,216,.08)!important}
+.metric-ring b{font-size:10.2px!important}
+.ai-metric>span{font-size:5.7px!important}
+.ai-metric>small{font-size:5.7px!important}
+
+.ai-context-head{padding:12px 16px 9px!important}
+.ai-context-grid{gap:9px!important;padding:0 16px 22px!important}
+.ai-context-grid div{
+  min-height:65px;padding:11px 10px!important;border-radius:15px!important;
+  background:linear-gradient(150deg,rgba(7,23,30,.82),rgba(3,14,20,.78))!important
+}
+.ai-context-grid b{font-size:10px!important;white-space:normal!important}
+
+@media(max-width:620px){
+  #marketView{padding-bottom:154px!important}
+  .ai-core-premium{border-radius:25px!important}
+  .ai-core-topbar{padding:18px 14px 16px!important}
+  .ai-core-topbar h3{font-size:23px!important}
+  .ai-core-topbar p{font-size:8px!important;line-height:1.45!important}
+  .ai-core-actions{gap:6px!important}
+  .ai-core-actions .status-chip{display:none!important}
+  .ai-core-actions button{min-height:38px!important;padding:0 10px!important}
+  .ai-core-actions button span{display:none}
+  .ai-source-strip{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;padding:10px 11px 8px!important
+  }
+  .ai-source-cell{min-height:88px!important;padding:12px 10px!important;border-radius:16px!important;gap:8px!important}
+  .source-icon{width:28px;height:28px;flex-basis:28px;border-radius:9px}
+  .source-icon svg{width:15px;height:15px}
+  .ai-source-cell b{font-size:10px!important}
+  .ai-source-cell.primary b{font-size:16px!important}
+  .ai-cockpit-label{padding:11px 10px 0}
+  .ai-cockpit-label small{display:none}
+  .ai-brain-stage{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-areas:
+      "ring ring ring"
+      "left left left"
+      "right right right"!important;
+    gap:10px!important;padding:12px 11px 15px!important
+  }
+  .ai-brain-orbit{grid-area:ring;width:238px!important;margin:3px auto 5px!important}
+  .ai-brain-side.left{grid-area:left;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+  .ai-brain-side.right{grid-area:right;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+  .brain-side-card{min-height:78px!important;padding:10px 9px!important;border-radius:14px!important}
+  .brain-side-card span{font-size:5.7px!important;letter-spacing:.09em!important}
+  .brain-side-card b{margin-top:5px!important;font-size:9px!important}
+  .brain-side-card small{margin-top:3px!important;font-size:5.8px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .brain-core-center strong{font-size:52px!important}
+  .ai-decision-strip{margin:0 11px 11px!important;padding:11px!important;border-radius:15px!important;grid-template-columns:36px minmax(0,1fr) auto!important}
+  .decision-orb{width:34px;height:34px}
+  .decision-copy b{font-size:10.5px}
+  .decision-copy small{font-size:6.2px}
+  .ai-activity-panel{margin:0 11px 11px!important;border-radius:17px!important}
+  .ai-activity-row{padding:10px 10px!important;grid-template-columns:32px minmax(0,1fr) auto!important}
+  .activity-icon{width:29px!important;height:29px!important}
+  .ai-metric-rack{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;padding:0 11px 14px!important}
+  .ai-metric{min-height:82px!important}
+  .metric-ring{width:44px!important}
+  .ai-context-head{padding:11px 11px 8px!important}
+  .ai-context-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:0 11px 20px!important}
+}
+
+@media(max-width:390px){
+  .ai-core-topbar h3{font-size:21px!important}
+  .ai-core-titleblock p{max-width:255px!important}
+  .ai-source-cell{min-height:84px!important}
+  .ai-source-cell small{font-size:6.2px!important}
+  .ai-brain-orbit{width:224px!important}
+  .brain-core-center strong{font-size:48px!important}
+  .brain-side-card{min-height:74px!important;padding:9px 8px!important}
+  .brain-side-card b{font-size:8.4px!important}
+  .ai-activity-row div small{font-size:6.3px!important}
+  .ai-decision-strip em{padding:5px 7px!important;font-size:5.8px!important}
+}
+
+/* Fixed nav must not hide the final rows on iPhone. */
+.bottom-nav{z-index:80!important}
+body{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
+
 </style>
 </head>
 <body>
@@ -4956,55 +5287,72 @@ body{font-variant-numeric:tabular-nums!important}
         <span class="status-orb" id="marketPageStatus"><i></i><b>DATA</b></span>
       </div>
 
-      <article class="card ai-core-card">
+
+      <article class="card ai-core-card ai-core-premium">
+        <div class="ai-core-gridfx" aria-hidden="true"></div>
+        <div class="ai-core-scanfx" aria-hidden="true"></div>
+
         <div class="ai-core-topbar">
-          <div>
-            <div class="kicker">AI INTELLIGENCE CORE</div>
+          <div class="ai-core-titleblock">
+            <div class="kicker ai-core-kicker"><i></i> AI INTELLIGENCE CORE</div>
             <h3>V37 Precision Brain</h3>
             <p id="brainCoreHeadline">กำลังตรวจ Model Pack และ Market Feed</p>
           </div>
           <div class="ai-core-actions">
             <span class="status-chip" id="dataHealthChip">NO DATA</span>
-            <button id="marketRefreshBtn">REFRESH</button>
+            <button id="marketRefreshBtn" aria-label="Refresh market intelligence">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5M6.1 9a7 7 0 0 1 11.6-2.4L20 9M4 15l2.3 2.4A7 7 0 0 0 18 15"/></svg>
+              <span>REFRESH</span>
+            </button>
           </div>
         </div>
 
         <div class="ai-source-strip">
-          <div class="ai-source-cell">
-            <span>ACTIVE FEED</span>
-            <b id="feedActive">—</b>
-            <small id="feedPrimary">—</small>
+          <div class="ai-source-cell source-feed">
+            <span class="source-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 0 1 14 0M8 12a4 4 0 0 1 8 0M12 12v7M9.5 19h5"/></svg>
+            </span>
+            <div><span>ACTIVE FEED</span><b id="feedActive">—</b><small id="feedPrimary">—</small></div>
           </div>
-          <div class="ai-source-cell">
-            <span>MODE</span>
-            <b id="feedMode">—</b>
-            <small id="feedFallback">—</small>
+          <div class="ai-source-cell source-mode">
+            <span class="source-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>
+            </span>
+            <div><span>MARKET MODE</span><b id="feedMode">—</b><small id="feedFallback">—</small></div>
           </div>
-          <div class="ai-source-cell primary">
-            <span>XAUUSD</span>
-            <b id="dataLastPrice">—</b>
-            <small id="dataAge">—</small>
+          <div class="ai-source-cell source-recovery">
+            <span class="source-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>
+            </span>
+            <div><span>FAILOVER STATE</span><b id="feedDivergence">—</b><small id="brainFeedState">CHECKING</small></div>
           </div>
-          <div class="ai-source-cell">
-            <span>RECOVERY</span>
-            <b id="feedDivergence">—</b>
-            <small id="brainFeedState">CHECKING</small>
+          <div class="ai-source-cell primary source-price">
+            <span class="source-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l5-5 3 3 7-8M16 8h3v3"/></svg>
+            </span>
+            <div><span>XAUUSD</span><b id="dataLastPrice">—</b><small id="dataAge">—</small></div>
           </div>
+        </div>
+
+        <div class="ai-cockpit-label">
+          <span>AUTONOMOUS DECISION ENGINE</span>
+          <i></i>
+          <small>MODEL · FEED · CALIBRATION · DRIFT · UNCERTAINTY</small>
         </div>
 
         <div class="ai-brain-stage">
           <div class="ai-brain-side left">
-            <div class="brain-side-card">
+            <div class="brain-side-card" data-card="model">
               <span>MODEL HEALTH</span>
               <b id="brainModelHealth">—</b>
               <small id="brainModelHealthSub">Python ML</small>
             </div>
-            <div class="brain-side-card">
+            <div class="brain-side-card" data-card="calibration">
               <span>CALIBRATION</span>
               <b id="brainCalibration">—</b>
               <small id="brainCalibrationSub">Probability fit</small>
             </div>
-            <div class="brain-side-card">
+            <div class="brain-side-card" data-card="drift">
               <span>DRIFT WATCH</span>
               <b id="brainDrift">—</b>
               <small id="brainDriftSub">Distribution shift</small>
@@ -5013,10 +5361,15 @@ body{font-variant-numeric:tabular-nums!important}
 
           <div class="ai-brain-orbit" id="brainCoreRing" style="--brain-score:0">
             <div class="brain-orbit-glow"></div>
+            <div class="brain-orbit-halo halo-a"></div>
+            <div class="brain-orbit-halo halo-b"></div>
             <div class="brain-orbit-track outer"></div>
             <div class="brain-orbit-track inner"></div>
+            <div class="brain-orbit-node n1"></div>
+            <div class="brain-orbit-node n2"></div>
+            <div class="brain-orbit-node n3"></div>
             <div class="brain-core-center">
-              <span>SYSTEM TRUST</span>
+              <span>AI CORE HEALTH</span>
               <strong id="brainCoreScore">—</strong>
               <b id="brainCoreState">WAIT DATA</b>
               <small id="brainCoreConfidence">V37 MODEL</small>
@@ -5025,22 +5378,32 @@ body{font-variant-numeric:tabular-nums!important}
           </div>
 
           <div class="ai-brain-side right">
-            <div class="brain-side-card">
-              <span>LEARNING</span>
+            <div class="brain-side-card" data-card="learning">
+              <span>BACKGROUND BRAIN</span>
               <b id="brainLearningState">—</b>
               <small id="brainLearningSub">Background brain</small>
             </div>
-            <div class="brain-side-card">
+            <div class="brain-side-card" data-card="plan">
               <span>PLAN ENGINE</span>
               <b id="brainPlanQuality">—</b>
               <small id="brainPlanSub">Pending ranking</small>
             </div>
-            <div class="brain-side-card">
-              <span>MEMORY</span>
+            <div class="brain-side-card" data-card="memory">
+              <span>OUTCOME MEMORY</span>
               <b id="brainMemory">—</b>
               <small id="brainMemorySub">Outcome journal</small>
             </div>
           </div>
+        </div>
+
+        <div class="ai-decision-strip" id="brainDecisionStrip">
+          <div class="decision-orb"><i></i></div>
+          <div class="decision-copy">
+            <span>LIVE DECISION STATE</span>
+            <b id="brainDecisionText">WAIT DATA</b>
+            <small id="brainDecisionSub">กำลังอ่าน Pending Engine</small>
+          </div>
+          <em id="brainDecisionBadge">WAIT</em>
         </div>
 
         <div class="ai-activity-panel">
@@ -5049,27 +5412,37 @@ body{font-variant-numeric:tabular-nums!important}
             <b id="brainSystemNominal"><i></i> CHECKING</b>
           </div>
           <div class="ai-activity-row">
-            <span class="activity-icon">⌁</span>
+            <span class="activity-icon">
+              <svg viewBox="0 0 24 24"><path d="M3 12h3l2-5 4 10 3-7 2 2h4"/></svg>
+            </span>
             <div><b>Market feed</b><small id="brainFeedActivity">กำลังตรวจแหล่งข้อมูล</small></div>
             <em id="brainFeedBadge">WAIT</em>
           </div>
           <div class="ai-activity-row">
-            <span class="activity-icon">◈</span>
+            <span class="activity-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 4h6v3h3v10h-3v3H9v-3H6V7h3zM9 10h6M9 14h6"/></svg>
+            </span>
             <div><b>Python AutoML</b><small id="brainModelActivity">รอ ai-ml-brain.json</small></div>
             <em id="brainModelBadge">WAIT</em>
           </div>
           <div class="ai-activity-row">
-            <span class="activity-icon">◎</span>
+            <span class="activity-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+            </span>
             <div><b>Pending plan ranking</b><small id="brainPlanActivity">รอ Market Analysis</small></div>
             <em id="brainPlanBadge">WAIT</em>
           </div>
           <div class="ai-activity-row">
-            <span class="activity-icon">∿</span>
+            <span class="activity-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-2.7 7.8-7 10-4.3-2.2-7-5.5-7-10V6zM9 12l2 2 4-5"/></svg>
+            </span>
             <div><b>Calibration & drift guard</b><small id="brainGuardActivity">กำลังตรวจ Model Guard</small></div>
             <em id="brainGuardBadge">WAIT</em>
           </div>
           <div class="ai-activity-row">
-            <span class="activity-icon">✦</span>
+            <span class="activity-icon">
+              <svg viewBox="0 0 24 24"><path d="M7 8a5 5 0 0 1 10 0v8a5 5 0 0 1-10 0zM12 3v18M7 10H4M20 10h-3M7 15H4M20 15h-3"/></svg>
+            </span>
             <div><b>Learning & outcomes</b><small id="brainLearningActivity">กำลังอ่าน Outcome Memory</small></div>
             <em id="brainLearningBadge">WAIT</em>
           </div>
@@ -5086,15 +5459,15 @@ body{font-variant-numeric:tabular-nums!important}
           </div>
           <div class="ai-metric">
             <div class="metric-ring" id="metricCal" style="--v:0"><b id="metricCalValue">—</b></div>
-            <span>CALIBRATION</span><small id="metricCalLabel">WAIT</small>
+            <span>CAL</span><small id="metricCalLabel">WAIT</small>
           </div>
           <div class="ai-metric">
             <div class="metric-ring" id="metricDrift" style="--v:0"><b id="metricDriftValue">—</b></div>
-            <span>DRIFT GUARD</span><small id="metricDriftLabel">WAIT</small>
+            <span>DRIFT</span><small id="metricDriftLabel">WAIT</small>
           </div>
           <div class="ai-metric">
             <div class="metric-ring" id="metricGuard" style="--v:0"><b id="metricGuardValue">—</b></div>
-            <span>UNCERTAINTY</span><small id="metricGuardLabel">WAIT</small>
+            <span>GUARD</span><small id="metricGuardLabel">WAIT</small>
           </div>
           <div class="ai-metric">
             <div class="metric-ring" id="metricPlan" style="--v:0"><b id="metricPlanValue">—</b></div>
@@ -5103,12 +5476,12 @@ body{font-variant-numeric:tabular-nums!important}
         </div>
 
         <div class="ai-context-head">
-          <div><span>CURRENT MARKET CONTEXT</span><small id="brainLastUpdate">Last update —</small></div>
+          <div><span>MARKET CONTEXT USED BY AI</span><small id="brainLastUpdate">Last update —</small></div>
           <span class="status-chip" id="marketIntelChip">WAIT</span>
         </div>
         <div class="ai-context-grid">
-          <div><span>TREND BIAS</span><b id="marketH1Trend">—</b></div>
-          <div><span>STRUCTURE</span><b id="marketM15Struct">—</b></div>
+          <div><span>H1 BIAS</span><b id="marketH1Trend">—</b></div>
+          <div><span>M15 STRUCTURE</span><b id="marketM15Struct">—</b></div>
           <div><span>REGIME</span><b id="marketRegime">—</b></div>
           <div><span>VOLATILITY</span><b id="marketVolatility">—</b></div>
         </div>
@@ -5921,7 +6294,15 @@ function renderFeedHealthV361(){
   set('feedPrimaryCell','feedPrimary',p.configured===false?'NOT SET':`${p.ok?'ONLINE':String(p.status||'OFFLINE')}${Number.isFinite(pAge)?' · '+fmtAge(pAge):''}`,p.ok?'good':'bad');
   const fbText=b.configured===false&&!packMeta.directFallback?'NOT SET':(!b.checked&&!packMeta.directFallback?'STANDBY':`${(b.ok||packMeta.directFallback)?'ONLINE':String(b.status||'OFFLINE')}${Number.isFinite(bAge)?' · '+fmtAge(bAge):''}`);
   set('feedFallbackCell','feedFallback',fbText,(b.ok||packMeta.directFallback)?'good':(!b.checked?'warn':'bad'));
-  set('feedDivergenceCell','feedDivergence',`${st.recovery}/${st.recoveryRequired} · SWITCH BACK`,st.mode==='PRIMARY_RECOVERY'?'warn':'good');
+  const primaryActive=st.active.includes('TWELVE')&&!st.mode.includes('RECOVERY')&&!st.mode.includes('FALLBACK');
+  const recoveryLabel=primaryActive
+    ? 'PRIMARY ACTIVE'
+    : st.mode.includes('RECOVERY')
+      ? `${st.recovery}/${st.recoveryRequired} · VERIFY PRIMARY`
+      : st.active.includes('MT5')
+        ? `MT5 ACTIVE · ${st.recovery}/${st.recoveryRequired}`
+        : 'STANDBY';
+  set('feedDivergenceCell','feedDivergence',recoveryLabel,st.mode.includes('RECOVERY')?'warn':st.blocked?'bad':'good');
   set('feedStrategyCell','feedStrategy','PRIMARY ONLY → FAILOVER','good');
   const note=$('#feedHealthNote');if(note)note.innerHTML=`<strong>${st.blocked?'FEED HOLD':'PRIMARY/FAILOVER READY'}</strong> · ${f.reason||packMeta.source||'Market pack'}${packMeta.directFallback?' · App ดึง MT5 M1 ตรงเฉพาะตอน Fallback เท่านั้น':''}`;
 }
@@ -7611,6 +7992,12 @@ function renderAiCoreV37(){
   $('#brainCoreConfidence').textContent=hasModel?`MODEL TRUST ${Math.round(model)}%`:'WAIT MODEL PACK';
   $('#brainCorePulse').classList.toggle('live',hasModel&&!fs.blocked);
   $('#brainCoreHeadline').textContent=hasModel?`${String(mlBrain.status||'MODEL')} · ${fs.label} · ${m.open?m.session:'LAST SESSION'} · ${Number(mlBrain?.current?.qualifiedCount||0)}/${Number(mlBrain?.current?.candidateCount||12)} plans qualified`:'กำลังรอ Python V37 Model Pack จาก GitHub Actions';
+  // Do not show “2/2 SWITCH BACK” after Twelve has already become active.
+  const recoveryEl=$('#feedDivergence');
+  if(recoveryEl){
+    const primaryNow=fs.active.includes('TWELVE')&&!fs.mode.includes('RECOVERY')&&!fs.mode.includes('FALLBACK');
+    recoveryEl.textContent=primaryNow?'PRIMARY ACTIVE':fs.mode.includes('RECOVERY')?`${fs.recovery}/${fs.recoveryRequired} · VERIFY PRIMARY`:fs.active.includes('MT5')?`MT5 ACTIVE · ${fs.recovery}/${fs.recoveryRequired}`:'STANDBY';
+  }
 
   $('#brainModelHealth').textContent=hasModel?`${Math.round(model)}/100`:'—';
   $('#brainModelHealthSub').textContent=hasModel?String(h.status||mlBrain.status||'MODEL'):'Python ML not ready';
@@ -7641,6 +8028,41 @@ function renderAiCoreV37(){
   $('#brainGuardBadge').textContent=driftPts<=12?'LOW':driftPts<=28?'WATCH':'GUARD';$('#brainGuardBadge').className=driftPts<=12?'good':driftPts<=28?'warn':'bad';
   $('#brainLearningActivity').textContent=learningState.active?`${learningState.phase||'LEARNING'} · ${learningState.note||''}`:`${localLearning} · ${outcomeMemory.length} outcomes · Model ${mlBrain.generatedAt?dtBangkok(mlBrain.generatedAt,true):'not trained'}`;
   $('#brainLearningBadge').textContent=learningState.active?'LEARNING':hasModel?'READY':'WAIT';$('#brainLearningBadge').className=learningState.active||hasModel?'good':'';
+
+  // Premium cockpit tones + a truthful live decision state.
+  const setCardTone=(name,tone)=>{
+    const el=document.querySelector(`.brain-side-card[data-card="${name}"]`);
+    if(el){el.classList.remove('good','warn','bad');if(tone)el.classList.add(tone)}
+  };
+  setCardTone('model',!hasModel?'warn':model>=75?'good':model>=55?'warn':'bad');
+  setCardTone('calibration',!Number.isFinite(ece)?'warn':ece<=.02?'good':ece<=.06?'warn':'bad');
+  setCardTone('drift',!Number.isFinite(driftPts)?'warn':driftPts<=12?'good':driftPts<=28?'warn':'bad');
+  setCardTone('learning',learningState.active||hasModel?'good':'warn');
+  setCardTone('plan',plan?.qualifiedPlan?'good':plan?'bad':'warn');
+  setCardTone('memory',outcomeMemory?.length>0?'good':'warn');
+
+  const decisionStrip=$('#brainDecisionStrip');
+  if(decisionStrip){
+    decisionStrip.classList.remove('good','warn','bad');
+    let decisionTone='warn',decisionText='WAIT DATA',decisionSub='กำลังอ่าน Pending Engine',decisionBadge='WAIT';
+    if(fs.blocked){
+      decisionTone='bad';decisionText='FEED HOLD';decisionSub='ข้อมูลสดไม่ผ่าน Execution Gate · ห้ามเปิดแผนใหม่';decisionBadge='HOLD';
+    }else if(plan?.qualifiedPlan){
+      decisionTone='good';decisionText=`${prettyOrderV35(plan.type)} QUALIFIED`;
+      decisionSub=`Pending @ ${price(plan.entry)} · Score ${Math.round(planScore)}/100 · ผ่าน Quality Gate`;
+      decisionBadge='READY';
+    }else if(plan){
+      decisionTone='bad';decisionText='NO QUALITY PLAN';
+      decisionSub=`${prettyOrderV35(plan.type)} เป็น Reference เท่านั้น · Score ${Math.round(planScore)}/100 · DO NOT PLACE`;
+      decisionBadge='REJECTED';
+    }else if(hasModel){
+      decisionTone='warn';decisionText='STANDBY';decisionSub='โมเดลพร้อม แต่ยังไม่มี Candidate ที่ผ่านเงื่อนไข';decisionBadge='WATCH';
+    }
+    decisionStrip.classList.add(decisionTone);
+    $('#brainDecisionText').textContent=decisionText;
+    $('#brainDecisionSub').textContent=decisionSub;
+    $('#brainDecisionBadge').textContent=decisionBadge;
+  }
 
   const metric=(id,value,label)=>{const root=$('#'+id),v=Math.round(clamp(Number(value)||0,0,100));if(root)root.style.setProperty('--v',v);const val=$('#'+id+'Value');if(val)val.textContent=hasModel||id==='metricFeed'?v:'—';const lab=$('#'+id+'Label');if(lab)lab.textContent=label};
   metric('metricModel',model,hasModel?(model>=75?'STRONG':model>=55?'USABLE':'LIMITED'):'WAIT');
