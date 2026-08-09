@@ -1,7 +1,7 @@
 {
-  "version": "V38.0",
-  "engine": "ONEMONTH-SHADOW-SELFPLAY-FIRST-HIT",
-  "updatedAt": "2026-08-09T17:54:47.652Z",
+  "version": "V42.0",
+  "engine": "ONEMONTH-SHADOW-SELFPLAY-FIRST-HIT-V42",
+  "updatedAt": "2026-08-09T18:12:09.845Z",
   "entries": [
     {
       "id": "SHADOW:99e68508361d7fbb896c:1786260600000:SELL_LIMIT:BALANCED",
@@ -44,7 +44,7 @@
         "LOW_TP1_PROBABILITY",
         "WEAK_TP1_SL_EDGE"
       ],
-      "status": "FILLED",
+      "status": "COMPLETE",
       "filledTs": 1786260660000,
       "firstHit": null,
       "mfeR": 0.8754,
@@ -57,7 +57,20 @@
       "tp1Hit": false,
       "tp2Hit": false,
       "slHit": false,
-      "firstHitTs": null
+      "firstHitTs": null,
+      "creationFeedKind": "PRIMARY",
+      "labelSchema": "M1_FIRST_HIT_V42",
+      "resolutionFeedKind": "PRIMARY",
+      "resolutionDataFingerprint": "36e87f1a",
+      "resolutionDataWatermark": 1786299060000,
+      "provenanceStatus": "VERIFIED",
+      "result": "TIMEOUT",
+      "resultR": 0.7093,
+      "outcomeMinutes": 180,
+      "resolvedAt": "2026-08-09T10:31:00.000Z",
+      "outcomeFeedKind": "PRIMARY",
+      "outcomeDataFingerprint": "36e87f1a",
+      "outcomeDataWatermark": 1786299060000
     },
     {
       "id": "SHADOW:99e68508361d7fbb896c:1786260600000:BUY_LIMIT:BALANCED",
@@ -100,7 +113,7 @@
         "LOW_TP1_PROBABILITY",
         "WEAK_TP1_SL_EDGE"
       ],
-      "status": "FILLED",
+      "status": "COMPLETE",
       "filledTs": 1786260660000,
       "firstHit": null,
       "mfeR": 0.721,
@@ -113,7 +126,20 @@
       "tp1Hit": false,
       "tp2Hit": false,
       "slHit": false,
-      "firstHitTs": null
+      "firstHitTs": null,
+      "creationFeedKind": "PRIMARY",
+      "labelSchema": "M1_FIRST_HIT_V42",
+      "resolutionFeedKind": "PRIMARY",
+      "resolutionDataFingerprint": "36e87f1a",
+      "resolutionDataWatermark": 1786299060000,
+      "provenanceStatus": "VERIFIED",
+      "result": "TIMEOUT",
+      "resultR": -0.3428,
+      "outcomeMinutes": 180,
+      "resolvedAt": "2026-08-09T10:31:00.000Z",
+      "outcomeFeedKind": "PRIMARY",
+      "outcomeDataFingerprint": "36e87f1a",
+      "outcomeDataWatermark": 1786299060000
     },
     {
       "id": "SHADOW:99e68508361d7fbb896c:1786260600000:SELL_STOP:BALANCED",
@@ -222,24 +248,57 @@
   ],
   "summary": {
     "total": 4,
-    "open": 2,
-    "resolved": 2,
+    "open": 0,
+    "resolved": 4,
     "filled": 2,
-    "completed": 0,
+    "completed": 2,
     "expired": 2,
     "fillRate": 50,
-    "winRate": null,
-    "lossRate": null,
-    "avgR": null,
-    "avgMfeR": null,
-    "avgMaeR": null,
-    "rejectedTested": 0,
-    "rejectedWouldWinRate": null,
-    "byType": {},
-    "byVariant": {},
-    "byRegime": {},
-    "bySession": {}
+    "winRate": 0,
+    "lossRate": 0,
+    "avgR": 0.183,
+    "avgMfeR": 0.798,
+    "avgMaeR": 0.432,
+    "rejectedTested": 2,
+    "rejectedWouldWinRate": 0,
+    "byType": {
+      "SELL_LIMIT": {
+        "samples": 1,
+        "winRate": 0,
+        "avgR": 0.709
+      },
+      "BUY_LIMIT": {
+        "samples": 1,
+        "winRate": 0,
+        "avgR": -0.343
+      }
+    },
+    "byVariant": {
+      "BALANCED": {
+        "samples": 2,
+        "winRate": 0,
+        "avgR": 0.183
+      }
+    },
+    "byRegime": {
+      "UNKNOWN": {
+        "samples": 2,
+        "winRate": 0,
+        "avgR": 0.183
+      }
+    },
+    "bySession": {
+      "UNKNOWN": {
+        "samples": 2,
+        "winRate": 0,
+        "avgR": 0.183
+      }
+    },
+    "provenanceVerified": 2,
+    "provenanceBlocked": 0
   },
   "currentFeed": "TWELVE_DATA",
-  "currentModel": "99e68508361d7fbb896c"
+  "currentModel": "99e68508361d7fbb896c",
+  "labelSchema": "M1_FIRST_HIT_V42",
+  "captureState": "MODEL_PROVENANCE_BLOCK"
 }
