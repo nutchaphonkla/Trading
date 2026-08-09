@@ -23,7 +23,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
-import numpy as np
 
 ROOT = Path.cwd()
 SHADOW = ROOT / "ai-shadow-journal.json"
@@ -173,19 +172,25 @@ def advance_promotion(previous: dict, raw_activation: bool, identity: dict) -> d
 def metrics(rows: List[dict]) -> dict:
     if not rows:
         return {"samples": 0, "winRate": None, "avgR": None, "sumR": 0, "maxDrawdownR": None, "profitFactor": None}
-    rs = np.array([f(x.get("resultR")) for x in rows], dtype=float)
-    wins = rs > 0
-    eq = np.cumsum(rs)
-    peak = np.maximum.accumulate(np.r_[0.0, eq])[:-1]
-    dd = peak - eq
-    gains = float(rs[rs > 0].sum())
-    losses = float(-rs[rs < 0].sum())
+    rs = [f(x.get("resultR")) for x in rows]
+    n = len(rs)
+    wins = sum(1 for x in rs if x > 0)
+    total = sum(rs)
+    equity = 0.0
+    peak = 0.0
+    max_dd = 0.0
+    for value in rs:
+        equity += value
+        peak = max(peak, equity)
+        max_dd = max(max_dd, peak - equity)
+    gains = sum(x for x in rs if x > 0)
+    losses = -sum(x for x in rs if x < 0)
     return {
-        "samples": int(len(rows)),
-        "winRate": round(float(100 * wins.mean()), 1),
-        "avgR": round(float(rs.mean()), 4),
-        "sumR": round(float(rs.sum()), 3),
-        "maxDrawdownR": round(float(dd.max(initial=0.0)), 3),
+        "samples": n,
+        "winRate": round(100.0 * wins / n, 1),
+        "avgR": round(total / n, 4),
+        "sumR": round(total, 3),
+        "maxDrawdownR": round(max_dd, 3),
         "profitFactor": round(gains / losses, 3) if losses > 1e-9 else None,
     }
 
@@ -300,8 +305,8 @@ def context_modifiers(rows: List[dict]) -> dict:
             avg = f(m.get("avgR"))
             wr = f(m.get("winRate"), 50)
             # Small bounded deltas only. This is deliberately conservative.
-            score_delta = float(np.clip(-avg * 8 + (50 - wr) * 0.05, -4, 5))
-            tp_delta = float(np.clip(-avg * 5 + (50 - wr) * 0.035, -3, 4))
+            score_delta = float(max(-4, min(5, -avg * 8 + (50 - wr) * 0.05)))
+            tp_delta = float(max(-3, min(4, -avg * 5 + (50 - wr) * 0.035)))
             out[target][k] = {
                 "samples": len(g),
                 "avgR": m["avgR"],
@@ -415,11 +420,12 @@ def counterfactual(rows: List[dict], bars: List[dict]) -> dict:
     for v, rs in scores.items():
         if len(rs) < 20:
             continue
-        arr = np.asarray(rs, dtype=float)
+        avg_r = sum(rs) / len(rs)
+        positive_rate = 100.0 * sum(1 for x in rs if x > 0) / len(rs)
         ranked.append({
             "entryShiftRisk": v[0], "riskMultiplier": v[1], "rrMultiplier": v[2],
             "samples": len(rs), "fillRate": round(100 * fills[v] / len(rs), 1),
-            "avgR": round(float(arr.mean()), 4), "positiveRate": round(float(100 * (arr > 0).mean()), 1),
+            "avgR": round(avg_r, 4), "positiveRate": round(positive_rate, 1),
         })
     ranked.sort(key=lambda x: (x["avgR"], x["positiveRate"]), reverse=True)
     baseline = next((x for x in ranked if x["entryShiftRisk"] == 0 and x["riskMultiplier"] == 1 and x["rrMultiplier"] == 1), None)
@@ -536,7 +542,7 @@ def main() -> None:
         "policy": {
             "autoApply": True,
             "rule": f"ml-train.py may use recommended thresholds only after two distinct chronological evidence passes with at least {MIN_NEW_COHORTS_CONFIRM} new decision cohorts; identical workflow reruns never advance promotion.",
-            "fallback": "Use V37/V38 static guarded thresholds when evidence is insufficient.",
+            "fallback": "Use V42 static guarded thresholds when evidence is insufficient.",
         },
     }
     save(OUT_THRESH, threshold_pack)
@@ -604,7 +610,7 @@ def main() -> None:
         ],
     }
     save(OUT_SELF, self_pack)
-    print("V38 Self-Play Lab", {
+    print("V42 Self-Play Lab", {
         "shadow": summary.get("total", len(entries)),
         "primaryResolved": len(primary_rows),
         "thresholdReady": threshold_pack["activationReady"],
