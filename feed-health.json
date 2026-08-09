@@ -1,14 +1,14 @@
 {
-  "version": "V36.2",
-  "generatedAt": "2026-08-09T07:46:31.712Z",
+  "version": "V37",
+  "generatedAt": "2026-08-09T08:35:38.626Z",
   "symbol": "XAU/USD",
   "marketLikelyOpen": false,
   "active": "TWELVE_DATA",
   "mode": "LAST_SESSION",
   "status": "LAST_SESSION",
-  "reason": "Market closed; using Twelve Data last session only",
-  "latestM1Ts": 1786261440000,
-  "latestM1AgeMs": 151712,
+  "reason": "Market closed; Twelve last session",
+  "latestM1Ts": 1786264440000,
+  "latestM1AgeMs": 98626,
   "primary": {
     "provider": "Twelve Data",
     "configured": true,
@@ -17,13 +17,13 @@
     "fresh": true,
     "status": "ONLINE",
     "httpStatus": 200,
-    "latestTs": 1786261440000,
-    "ageMs": 151632,
+    "latestTs": 1786264440000,
+    "ageMs": 98537,
     "credits": {
       "api-credits-used": "1",
       "api-credits-left": "7"
     },
-    "fetchedAt": "2026-08-09T07:46:31.633Z",
+    "fetchedAt": "2026-08-09T08:35:38.538Z",
     "error": null
   },
   "fallback": {
@@ -37,15 +37,33 @@
     "error": null
   },
   "switching": {
-    "policy": "PRIMARY_ONLY_THEN_FAILOVER",
+    "policy": "PRIMARY_ONLY_THEN_ISOLATED_FAILOVER",
     "mergeFeeds": false,
     "primaryRecoveryStreak": 2,
     "primaryRecoveryRequired": 2,
-    "note": "Use Twelve Data only while healthy. MT5 is queried/used only on failover or recovery confirmation. Never average or blend feed prices."
+    "note": "Only one live feed is selected. Primary and fallback histories are stored separately. No price averaging or simultaneous source merge."
+  },
+  "isolation": {
+    "primaryFile": "xauusd-primary.json",
+    "fallbackFile": "xauusd-fallback.json",
+    "activeFile": "xauusd.json",
+    "trainingRecommendation": "Train ML on PRIMARY file; score current ACTIVE file."
   },
   "efficiency": {
     "twelveRequestsThisRun": 1,
     "fallbackRequestsThisRun": 0,
-    "strategy": "Twelve M1 primary -> local M5/M15/H1. MT5 fallback is standby and activates only when primary fails/stales."
+    "strategy": "Twelve M1 PRIMARY. MT5 queried only during failure/recovery/closed-session fallback.",
+    "primaryTrainingRetentionDays": {
+      "M1": 30,
+      "M5": 90,
+      "M15": 180,
+      "H1": 365
+    },
+    "activeAppRetentionDays": {
+      "M1": 7,
+      "M5": 45,
+      "M15": 120,
+      "H1": 240
+    }
   }
 }
