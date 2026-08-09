@@ -97,7 +97,7 @@ if(candQualified&&!rollbackProtection&&(materiallyBetter||freshNonInferior||lega
   if(old)write(PREVIOUS,annotate(old,'PREVIOUS',{retiredAt:now}));
   champion=annotate(candidate,'CHAMPION',{deployedAt:now,promotionReason:legacyMigration?'V34_3_GOVERNANCE_MIGRATION':materiallyBetter?'BETTER_VALIDATION':'FRESH_NON_INFERIOR'});
   write(CHAMPION,champion);
-  promoted=true;action='PROMOTE_CHALLENGER';reason=legacyMigration?`Migrate legacy champion into V35 governance (${candScore.toFixed(1)} vs ${champScore.toFixed(1)})`:materiallyBetter?`Challenger score ${candScore.toFixed(1)} > champion ${champScore.toFixed(1)}`:`Champion age >12h and challenger is non-inferior (${candScore.toFixed(1)} vs ${champScore.toFixed(1)})`;
+  promoted=true;action='PROMOTE_CHALLENGER';reason=legacyMigration?`Migrate legacy champion into V36 governance (${candScore.toFixed(1)} vs ${champScore.toFixed(1)})`:materiallyBetter?`Challenger score ${candScore.toFixed(1)} > champion ${champScore.toFixed(1)}`:`Champion age >12h and challenger is non-inferior (${candScore.toFixed(1)} vs ${champScore.toFixed(1)})`;
   state.promotions=[...(state.promotions||[]),{at:now,from:old?modelId(old):null,to:modelId(champion),candidateScore:Number(candScore.toFixed(2)),championScore:Number(champScore.toFixed(2)),reason}].slice(-50);
 }else if(!champion){
   champion=annotate(candidate,'CHAMPION',{deployedAt:now,promotionReason:'FIRST_MODEL'});write(CHAMPION,champion);promoted=true;action='PROMOTE_FIRST_MODEL';reason='No champion existed';

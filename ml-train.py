@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OneMonth OS V35 Python ML Brain.
+"""OneMonth OS V36 Autonomous ML Plan Brain.
 
 Reads xauusd.json, builds leakage-safe multi-timeframe features, creates four pending
 order candidates (BUY/SELL LIMIT + BUY/SELL STOP), labels their historical outcomes,
@@ -23,10 +23,18 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor, HistGradientBoostingClassifier, HistGradientBoostingRegressor
+from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor, HistGradientBoostingClassifier, HistGradientBoostingRegressor, RandomForestClassifier
 from sklearn.impute import SimpleImputer
+from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, brier_score_loss, roc_auc_score
+
+try:
+    from xgboost import XGBClassifier
+    HAS_XGBOOST = True
+except Exception:
+    XGBClassifier = None
+    HAS_XGBOOST = False
 
 ROOT = Path(os.environ.get("GITHUB_WORKSPACE", Path.cwd()))
 DATA_PATH = ROOT / "xauusd.json"
@@ -34,13 +42,13 @@ OUT_PATH = ROOT / "ai-ml-brain.json"
 CANDIDATE_PATH = ROOT / "ai-ml-candidate.json"
 GOV_PATH = ROOT / "ai-ml-governance.json"
 JOURNAL_PATH = ROOT / "ai-outcome-journal.json"
-VERSION = "V35.0 PYTHON ML BRAIN"
-SEED = 3509
+VERSION = "V36.0 AUTONOMOUS ML PLAN BRAIN"
+SEED = 3609
 MIN_M15 = 420
 FILL_HORIZON = 8
 OUTCOME_HORIZON = 12
 PURGE_BARS = FILL_HORIZON + OUTCOME_HORIZON
-N_FOLDS = 4
+N_FOLDS = 3
 
 ORDER_TYPES = ("BUY_LIMIT", "SELL_LIMIT", "BUY_STOP", "SELL_STOP")
 ORDER_ONEHOT = {k: i for i, k in enumerate(ORDER_TYPES)}
@@ -69,11 +77,12 @@ def wait_data(reason: str, counts: Optional[dict] = None) -> None:
         "ready": False,
         "status": "WAIT_DATA",
         "reason": reason,
-        "engine": "PYTHON_SKLEARN_ENSEMBLE",
+        "engine": "AUTO_ML_TOURNAMENT",
         "training": {"counts": counts or {}},
     }
     write_json(OUT_PATH, pack)
     write_json(CANDIDATE_PATH, pack)
+    write_json(GOV_PATH, {"version": VERSION, "updatedAt": utc_now(), "action": "WAIT_DATA", "trusted": False, "reason": reason})
     print("ML WAIT_DATA:", reason, counts or {})
     raise SystemExit(0)
 
@@ -403,7 +412,16 @@ def build_dataset(anchor: pd.DataFrame, m15: pd.DataFrame) -> Tuple[pd.DataFrame
     return ds, feature_cols, current_candidates
 
 
+class IdentityCalibrator:
+    name = "IDENTITY"
+    def fit(self, raw: np.ndarray, y: np.ndarray):
+        return self
+    def transform(self, raw: np.ndarray) -> np.ndarray:
+        return np.clip(np.asarray(raw, dtype=float), 0.005, 0.995)
+
+
 class PlattCalibrator:
+    name = "PLATT"
     def __init__(self):
         self.model: Optional[LogisticRegression] = None
 
@@ -412,18 +430,38 @@ class PlattCalibrator:
         p = np.clip(np.asarray(p, dtype=float), 1e-5, 1 - 1e-5)
         return np.log(p / (1 - p)).reshape(-1, 1)
 
-    def fit(self, raw: np.ndarray, y: np.ndarray) -> "PlattCalibrator":
+    def fit(self, raw: np.ndarray, y: np.ndarray):
         y = np.asarray(y, dtype=int)
         if len(y) >= 60 and len(np.unique(y)) == 2:
-            self.model = LogisticRegression(C=1.0, solver="lbfgs", max_iter=400, random_state=SEED)
+            self.model = LogisticRegression(C=0.8, solver="lbfgs", max_iter=500, random_state=SEED)
             self.model.fit(self._logit(raw), y)
         return self
 
     def transform(self, raw: np.ndarray) -> np.ndarray:
         raw = np.asarray(raw, dtype=float)
         if self.model is None:
-            return np.clip(raw, 0.01, 0.99)
+            return np.clip(raw, 0.005, 0.995)
         return self.model.predict_proba(self._logit(raw))[:, 1]
+
+
+class IsotonicCalibrator:
+    name = "ISOTONIC"
+    def __init__(self):
+        self.model: Optional[IsotonicRegression] = None
+
+    def fit(self, raw: np.ndarray, y: np.ndarray):
+        raw = np.asarray(raw, dtype=float)
+        y = np.asarray(y, dtype=int)
+        if len(y) >= 180 and len(np.unique(y)) == 2 and len(np.unique(np.round(raw, 4))) >= 16:
+            self.model = IsotonicRegression(out_of_bounds="clip", y_min=0.005, y_max=0.995)
+            self.model.fit(raw, y)
+        return self
+
+    def transform(self, raw: np.ndarray) -> np.ndarray:
+        raw = np.asarray(raw, dtype=float)
+        if self.model is None:
+            return np.clip(raw, 0.005, 0.995)
+        return np.clip(self.model.predict(raw), 0.005, 0.995)
 
 
 def recency_weights(ts: np.ndarray, half_life_days: float = 45.0) -> np.ndarray:
@@ -463,19 +501,19 @@ def classification_metrics(y: np.ndarray, p: np.ndarray) -> dict:
 
 def make_hgb_classifier() -> HistGradientBoostingClassifier:
     return HistGradientBoostingClassifier(
-        learning_rate=0.045,
-        max_iter=180,
-        max_leaf_nodes=19,
-        min_samples_leaf=22,
-        l2_regularization=1.4,
+        learning_rate=0.04,
+        max_iter=135,
+        max_leaf_nodes=21,
+        min_samples_leaf=24,
+        l2_regularization=1.8,
         random_state=SEED,
     )
 
 
 def make_extra_classifier() -> ExtraTreesClassifier:
     return ExtraTreesClassifier(
-        n_estimators=260,
-        max_features=0.75,
+        n_estimators=150,
+        max_features=0.72,
         min_samples_leaf=7,
         class_weight="balanced_subsample",
         n_jobs=-1,
@@ -483,13 +521,55 @@ def make_extra_classifier() -> ExtraTreesClassifier:
     )
 
 
+def make_rf_classifier() -> RandomForestClassifier:
+    return RandomForestClassifier(
+        n_estimators=220,
+        max_depth=12,
+        max_features="sqrt",
+        min_samples_leaf=8,
+        class_weight="balanced_subsample",
+        n_jobs=-1,
+        random_state=SEED,
+    )
+
+
+def make_xgb_classifier():
+    if not HAS_XGBOOST:
+        return None
+    return XGBClassifier(
+        n_estimators=170,
+        max_depth=4,
+        learning_rate=0.035,
+        min_child_weight=5,
+        subsample=0.84,
+        colsample_bytree=0.78,
+        reg_alpha=0.08,
+        reg_lambda=2.4,
+        objective="binary:logistic",
+        eval_metric="logloss",
+        tree_method="hist",
+        n_jobs=2,
+        random_state=SEED,
+    )
+
+
+def classifier_factories() -> Dict[str, object]:
+    out = {
+        "HGB": make_hgb_classifier,
+        "EXTRATREES": make_extra_classifier,
+    }
+    if HAS_XGBOOST:
+        out["XGBOOST"] = make_xgb_classifier
+    return out
+
+
 def make_hgb_regressor() -> HistGradientBoostingRegressor:
     return HistGradientBoostingRegressor(
         learning_rate=0.045,
-        max_iter=160,
+        max_iter=170,
         max_leaf_nodes=17,
         min_samples_leaf=22,
-        l2_regularization=1.2,
+        l2_regularization=1.4,
         loss="absolute_error",
         random_state=SEED,
     )
@@ -528,7 +608,7 @@ def walk_forward_slices(times: np.ndarray, n_folds: int = N_FOLDS) -> List[Tuple
     return folds
 
 
-def oof_hgb(X: np.ndarray, y: np.ndarray, times: np.ndarray) -> Tuple[np.ndarray, np.ndarray, int]:
+def oof_for_factory(factory, X: np.ndarray, y: np.ndarray, times: np.ndarray) -> Tuple[np.ndarray, np.ndarray, int]:
     pred = np.full(len(y), np.nan, dtype=float)
     used = np.zeros(len(y), dtype=bool)
     folds = walk_forward_slices(times)
@@ -536,7 +616,9 @@ def oof_hgb(X: np.ndarray, y: np.ndarray, times: np.ndarray) -> Tuple[np.ndarray
         yt = y[tr]
         if len(np.unique(yt)) < 2:
             continue
-        model = make_hgb_classifier()
+        model = factory()
+        if model is None:
+            continue
         w = recency_weights(times[tr])
         model.fit(X[tr], yt, sample_weight=w)
         pred[te] = model.predict_proba(X[te])[:, 1]
@@ -544,38 +626,144 @@ def oof_hgb(X: np.ndarray, y: np.ndarray, times: np.ndarray) -> Tuple[np.ndarray
     return pred, used, len(folds)
 
 
+def _quality_from_metrics(m: dict) -> float:
+    auc = safe_num(m.get("auc"), 0.5)
+    brier = safe_num(m.get("brier"), 0.35)
+    ece = safe_num(m.get("ece"), 0.20)
+    auc_term = np.clip((auc - 0.50) / 0.25, 0, 1)
+    brier_term = np.clip((0.25 - brier) / 0.16, 0, 1)
+    ece_term = np.clip((0.14 - ece) / 0.12, 0, 1)
+    return float(0.50 * auc_term + 0.34 * brier_term + 0.16 * ece_term)
+
+
+def _normalize_weights(scores: Dict[str, float]) -> Dict[str, float]:
+    if not scores:
+        return {}
+    best = max(scores.values())
+    kept = {k: v for k, v in sorted(scores.items(), key=lambda kv: kv[1], reverse=True)[:3] if v >= best - 0.16}
+    if not kept:
+        kept = {max(scores, key=scores.get): best}
+    vals = {k: math.exp((v - best) * 4.5) for k, v in kept.items()}
+    total = sum(vals.values()) or 1.0
+    return {k: v / total for k, v in vals.items()}
+
+
+def _calibration_score(metrics: dict) -> float:
+    return safe_num(metrics.get("brier"), 1) + 0.55 * safe_num(metrics.get("ece"), 1)
+
+
+def choose_calibrator(raw: np.ndarray, y: np.ndarray, times: np.ndarray):
+    raw = np.asarray(raw, dtype=float)
+    y = np.asarray(y, dtype=int)
+    order = np.argsort(times)
+    raw, y = raw[order], y[order]
+    split = max(80, int(len(y) * 0.62))
+    split = min(split, max(1, len(y) - 50))
+    train_raw, train_y = raw[:split], y[:split]
+    eval_raw, eval_y = raw[split:], y[split:]
+    candidates = [IdentityCalibrator(), PlattCalibrator(), IsotonicCalibrator()]
+    results = []
+    for cal in candidates:
+        try:
+            cal.fit(train_raw, train_y)
+            pred = cal.transform(eval_raw)
+            m = classification_metrics(eval_y, pred)
+            penalty = 0.002 if getattr(cal, "name", "") == "ISOTONIC" and len(train_y) < 350 else 0.0
+            results.append((_calibration_score(m) + penalty, cal.name, m))
+        except Exception:
+            pass
+    if not results:
+        chosen = IdentityCalibrator()
+        selection = {"selected": "IDENTITY", "evaluation": []}
+    else:
+        results.sort(key=lambda x: x[0])
+        name = results[0][1]
+        chosen = {"IDENTITY": IdentityCalibrator, "PLATT": PlattCalibrator, "ISOTONIC": IsotonicCalibrator}[name]()
+        selection = {
+            "selected": name,
+            "evaluation": [{"name": n, "score": round(float(sc), 5), "metrics": m} for sc, n, m in results],
+        }
+    chosen.fit(raw, y)
+    return chosen, selection
+
+
 @dataclass
 class ClassifierHead:
     name: str
-    hgb: HistGradientBoostingClassifier
-    extra: ExtraTreesClassifier
-    calibrator: PlattCalibrator
+    models: Dict[str, object]
+    weights: Dict[str, float]
+    calibrator: object
     metrics: dict
+    model_metrics: dict
+    selection: dict
+    calibration: dict
 
-    def predict_pair(self, X: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        p1 = self.hgb.predict_proba(X)[:, 1]
-        p2 = self.extra.predict_proba(X)[:, 1]
-        raw = 0.58 * p1 + 0.42 * p2
-        return self.calibrator.transform(raw), p1, p2
+    def predict_ensemble(self, X: np.ndarray) -> Tuple[np.ndarray, Dict[str, np.ndarray], np.ndarray]:
+        preds: Dict[str, np.ndarray] = {}
+        for name, model in self.models.items():
+            preds[name] = model.predict_proba(X)[:, 1]
+        raw = np.zeros(X.shape[0], dtype=float)
+        for name, w in self.weights.items():
+            raw += float(w) * preds[name]
+        if not self.weights and preds:
+            raw = np.mean(list(preds.values()), axis=0)
+        calibrated = self.calibrator.transform(raw)
+        stack = np.vstack([preds[n] for n in self.weights if n in preds]) if self.weights else np.vstack(list(preds.values()))
+        disagreement = np.std(stack, axis=0) * 100 if len(stack) else np.full(X.shape[0], 100.0)
+        return calibrated, preds, disagreement
 
 
 def fit_head(name: str, X: np.ndarray, y: np.ndarray, times: np.ndarray) -> ClassifierHead:
-    oof, used, folds = oof_hgb(X, y, times)
-    cal = PlattCalibrator()
-    if used.any():
-        cal.fit(oof[used], y[used])
-        calibrated = cal.transform(oof[used])
-        metrics = classification_metrics(y[used], calibrated)
-    else:
-        metrics = classification_metrics(np.array([], dtype=int), np.array([], dtype=float))
+    factories = classifier_factories()
+    oofs: Dict[str, np.ndarray] = {}
+    useds: Dict[str, np.ndarray] = {}
+    model_metrics: Dict[str, dict] = {}
+    quality: Dict[str, float] = {}
+    folds = 0
+    for model_name, factory in factories.items():
+        try:
+            pred, used, f = oof_for_factory(factory, X, y, times)
+            folds = max(folds, f)
+            if used.any():
+                m = classification_metrics(y[used], pred[used])
+                oofs[model_name] = pred
+                useds[model_name] = used
+                model_metrics[model_name] = m
+                quality[model_name] = _quality_from_metrics(m)
+        except Exception as exc:
+            model_metrics[model_name] = {"error": str(exc)[:160]}
+    if not oofs:
+        raise RuntimeError(f"NO_WALK_FORWARD_MODELS:{name}")
+    weights = _normalize_weights(quality)
+    common = np.ones(len(y), dtype=bool)
+    for model_name in weights:
+        common &= useds[model_name]
+    if common.sum() < 80:
+        common = np.zeros(len(y), dtype=bool)
+        best_name = max(weights, key=weights.get)
+        common |= useds[best_name]
+        weights = {best_name: 1.0}
+    raw_oof = np.zeros(common.sum(), dtype=float)
+    for model_name, w in weights.items():
+        raw_oof += float(w) * oofs[model_name][common]
+    cal, cal_selection = choose_calibrator(raw_oof, y[common], times[common])
+    calibrated = cal.transform(raw_oof)
+    metrics = classification_metrics(y[common], calibrated)
     metrics["folds"] = folds
-    hgb = make_hgb_classifier()
-    extra = make_extra_classifier()
-    w = recency_weights(times)
-    hgb.fit(X, y, sample_weight=w)
-    extra.fit(X, y, sample_weight=w)
-    return ClassifierHead(name, hgb, extra, cal, metrics)
-
+    models: Dict[str, object] = {}
+    w_all = recency_weights(times)
+    for model_name in weights:
+        model = factories[model_name]()
+        model.fit(X, y, sample_weight=w_all)
+        models[model_name] = model
+    selection = {
+        "selectedModels": list(weights.keys()),
+        "weights": {k: round(float(v), 4) for k, v in weights.items()},
+        "oofQuality": {k: round(float(quality[k]), 4) for k in weights},
+        "availableModels": list(factories.keys()),
+        "xgboostAvailable": HAS_XGBOOST,
+    }
+    return ClassifierHead(name, models, weights, cal, metrics, model_metrics, selection, cal_selection)
 
 def fit_regressor(X: np.ndarray, y: np.ndarray, times: np.ndarray):
     h = make_hgb_regressor()
@@ -586,8 +774,22 @@ def fit_regressor(X: np.ndarray, y: np.ndarray, times: np.ndarray):
     return h, e
 
 
-def feature_importance(extra: ExtraTreesClassifier, names: List[str], n: int = 14) -> List[dict]:
-    vals = np.asarray(extra.feature_importances_, dtype=float)
+def feature_importance(head: ClassifierHead, names: List[str], n: int = 14) -> List[dict]:
+    vals = np.zeros(len(names), dtype=float)
+    used = 0.0
+    for model_name, weight in head.weights.items():
+        model = head.models.get(model_name)
+        imp = getattr(model, "feature_importances_", None)
+        if imp is None:
+            continue
+        arr = np.asarray(imp, dtype=float)
+        if len(arr) != len(names):
+            continue
+        vals += float(weight) * arr
+        used += float(weight)
+    if used <= 0:
+        return []
+    vals /= used
     idx = np.argsort(vals)[::-1][:n]
     return [{"feature": names[i], "importance": round(float(vals[i]), 5)} for i in idx]
 
@@ -669,7 +871,7 @@ def main() -> None:
     existing = load_json(OUT_PATH)
     latest_m15_ts = int(tfs["M15"].iloc[-1]["ts"]) if len(tfs["M15"]) else 0
     old_market_ts = int(safe_num((existing.get("current") or {}).get("marketTs"), 0))
-    if os.environ.get("ML_FORCE") != "1" and existing.get("ready") and latest_m15_ts and old_market_ts and latest_m15_ts - old_market_ts < 60 * 60 * 1000:
+    if os.environ.get("ML_FORCE") != "1" and existing.get("version") == VERSION and existing.get("ready") and latest_m15_ts and old_market_ts and latest_m15_ts - old_market_ts < 60 * 60 * 1000:
         print("ML SKIP: fewer than 4 new M15 bars since last trained brain", {"latest": latest_m15_ts, "trained": old_market_ts})
         raise SystemExit(0)
     if counts["M15"] < MIN_M15:
@@ -726,36 +928,35 @@ def main() -> None:
     for item in current:
         row = pd.DataFrame([{c: item["features"].get(c, np.nan) for c in feature_cols}])
         xc = imputer.transform(row)
-        pfill, f1, f2 = fill_head.predict_pair(xc)
-        ptp1, t1, t2 = tp1_head.predict_pair(xc)
+        pfill, _, d_fill = fill_head.predict_ensemble(xc)
+        ptp1, _, d_tp1 = tp1_head.predict_ensemble(xc)
         if tp2_head:
-            ptp2, t21, t22 = tp2_head.predict_pair(xc)
+            ptp2, _, d_tp2 = tp2_head.predict_ensemble(xc)
             p_tp2 = float(ptp2[0])
-            dis_tp2 = abs(float(t21[0]) - float(t22[0])) * 100
+            dis_tp2 = float(d_tp2[0])
         else:
             p_tp2 = max(0.02, float(ptp1[0]) * 0.58)
             dis_tp2 = 12.0
-        psl, s1, s2 = sl_head.predict_pair(xc)
+        psl, _, d_sl = sl_head.predict_ensemble(xc)
         mfe = max(0.0, float(0.58 * mfe_h.predict(xc)[0] + 0.42 * mfe_e.predict(xc)[0]))
         mae = max(0.0, float(0.58 * mae_h.predict(xc)[0] + 0.42 * mae_e.predict(xc)[0]))
-        disagreement = float(np.mean([
-            abs(float(f1[0]) - float(f2[0])) * 100,
-            abs(float(t1[0]) - float(t2[0])) * 100,
-            dis_tp2,
-            abs(float(s1[0]) - float(s2[0])) * 100,
-        ]))
+        disagreement = float(np.mean([float(d_fill[0]), float(d_tp1[0]), dis_tp2, float(d_sl[0])]))
         disagreements.append(disagreement)
         # TP2 is incremental beyond TP1: only its additional 0.8R is added.
         ev_fill = float(ptp1[0]) * 1.40 + p_tp2 * 0.80 - float(psl[0]) * 1.0
         total_ev = float(pfill[0]) * ev_fill
+        edge = float(ptp1[0]) - float(psl[0])
+        excursion_edge = np.clip((mfe - mae) / 2.2, -0.25, 1.0)
         quality = (
-            float(ptp1[0]) * 47
-            + p_tp2 * 14
-            + float(pfill[0]) * 17
-            + max(0.0, 1.0 - float(psl[0])) * 14
-            + np.clip((mfe - mae) / 2.5, -0.2, 1.0) * 8
+            float(ptp1[0]) * 43
+            + p_tp2 * 12
+            + float(pfill[0]) * 12
+            + max(0.0, 1.0 - float(psl[0])) * 13
+            + np.clip((total_ev + 0.15) / 0.75, 0, 1) * 12
+            + excursion_edge * 8
         )
-        quality -= max(0.0, disagreement - 8.0) * 0.35
+        quality += np.clip(edge, -0.25, 0.45) * 18
+        quality -= max(0.0, disagreement - 7.0) * 0.45
         geom = item["geometry"].copy()
         scored.append({
             **{k: geom[k] for k in ["type", "side", "entry", "entryLow", "entryHigh", "sl", "tp1", "tp2", "rr", "cancelLevel"]},
@@ -763,6 +964,7 @@ def main() -> None:
             "pTp1": round(float(ptp1[0]) * 100, 2),
             "pTp2": round(p_tp2 * 100, 2),
             "pSl": round(float(psl[0]) * 100, 2),
+            "edgePts": round(edge * 100, 2),
             "expectedMfeR": round(mfe, 3),
             "expectedMaeR": round(mae, 3),
             "evR": round(total_ev, 3),
@@ -787,7 +989,7 @@ def main() -> None:
     # Closed-loop feedback from real pending-plan journal. This is deliberately a
     # small adjustment; historical ML validation remains the main evidence.
     journal = load_json(JOURNAL_PATH)
-    by_type = (journal.get("planSummary") or {}).get("byType") or {}
+    by_type = (journal.get("mlPlanSummary") or journal.get("planSummary") or {}).get("byType") or {}
     for c in scored:
         key_space = c["type"].replace("_", " ")
         st = by_type.get(c["type"]) or by_type.get(key_space) or {}
@@ -802,13 +1004,58 @@ def main() -> None:
         c["journalSamples"] = samples
         c["journalAdjustment"] = round(float(adj), 2)
 
-    # Governance/trust must affect ranking; low-trust ML remains visible but cannot dominate.
-    scored.sort(key=lambda x: (x["score"], x["evR"], x["pTp1"]), reverse=True)
+    # Autonomous execution-quality policy. Model health and candidate quality are separate:
+    # a TRUSTED model is allowed to speak, but a weak candidate is still rejected.
+    tp1_base = safe_num(tp1_head.metrics.get("baseRate"), 0.25) * 100.0
+    sl_base = safe_num(sl_head.metrics.get("baseRate"), 0.25) * 100.0
+    min_plan_score = float(np.clip(60.0 + max(0.0, disagreement_pts - 8.0) * 0.20 + max(0.0, drift - 15.0) * 0.10, 60.0, 70.0))
+    min_tp1 = float(np.clip(tp1_base + 5.0, 20.0, 58.0))
+    max_sl = float(np.clip(sl_base + 9.0, 22.0, 48.0))
+    min_ev = 0.18
+    min_edge = 6.0
+    max_disagreement = 18.0
+
+    for c in scored:
+        reasons = []
+        if status != "TRUSTED": reasons.append("MODEL_NOT_TRUSTED")
+        if c["score"] < min_plan_score: reasons.append("LOW_PLAN_SCORE")
+        if c["evR"] < min_ev: reasons.append("LOW_EXPECTED_VALUE")
+        if c["pTp1"] < min_tp1: reasons.append("LOW_TP1_PROBABILITY")
+        if c["pSl"] > max_sl: reasons.append("SL_PROBABILITY_HIGH")
+        if c["pTp1"] - c["pSl"] < min_edge: reasons.append("WEAK_TP1_SL_EDGE")
+        if c["modelDisagreementPts"] > max_disagreement: reasons.append("MODEL_DISAGREEMENT")
+        passed = len(reasons) == 0
+        if passed and c["score"] >= 75 and c["evR"] >= 0.35 and c["pTp1"] - c["pSl"] >= 12:
+            grade = "A+"
+        elif passed and c["score"] >= 67:
+            grade = "A"
+        elif passed:
+            grade = "B"
+        else:
+            grade = "REJECT"
+        c["qualityGate"] = {
+            "passed": passed,
+            "grade": grade,
+            "reasons": reasons,
+            "thresholds": {
+                "minPlanScore": round(min_plan_score, 1),
+                "minTp1Probability": round(min_tp1, 1),
+                "maxSlProbability": round(max_sl, 1),
+                "minExpectedValueR": min_ev,
+                "minTp1SlEdgePts": min_edge,
+                "maxDisagreementPts": max_disagreement,
+            },
+        }
+
+    scored.sort(key=lambda x: (bool(x["qualityGate"]["passed"]), x["score"], x["evR"], x["pTp1"]), reverse=True)
     for rank, c in enumerate(scored, 1):
         c["rank"] = rank
         c["trusted"] = bool(status == "TRUSTED")
-        c["planState"] = "ML RANKED" if status == "TRUSTED" else "REFERENCE ONLY"
+        c["planState"] = ("QUALIFIED " + c["qualityGate"]["grade"]) if c["qualityGate"]["passed"] else "REJECTED"
         c["reason"] = f"P(TP1) {c['pTp1']:.1f}% · P(fill) {c['pFill']:.1f}% · SL {c['pSl']:.1f}% · EV {c['evR']:+.2f}R"
+
+    qualified = [c for c in scored if c["qualityGate"]["passed"]]
+    reference = scored[0] if scored else None
 
     latest_ts = int(anchor.iloc[-1]["ts"])
     coverage_days = round((int(anchor.iloc[-1]["ts"]) - int(anchor.iloc[0]["ts"])) / 86400000, 1)
@@ -825,7 +1072,7 @@ def main() -> None:
         "generatedAt": utc_now(),
         "ready": True,
         "status": status,
-        "engine": "HGB+EXTRATREES / PLATT / WALK_FORWARD",
+        "engine": "AUTO ML TOURNAMENT / XGB+HGB+TREES / AUTO CALIBRATION / WALK_FORWARD",
         "sourceFingerprint": source_fp,
         "sourceGeneratedAt": pack.get("generatedAt"),
         "training": training_counts,
@@ -849,20 +1096,36 @@ def main() -> None:
         "governance": gov,
         "features": {
             "count": len(feature_cols),
-            "top": feature_importance(tp1_head.extra, feature_cols, 14),
+            "top": feature_importance(tp1_head, feature_cols, 14),
+        },
+        "autoML": {
+            "xgboostAvailable": HAS_XGBOOST,
+            "heads": {
+                "fill": {"selection": fill_head.selection, "calibration": fill_head.calibration, "modelMetrics": fill_head.model_metrics},
+                "tp1": {"selection": tp1_head.selection, "calibration": tp1_head.calibration, "modelMetrics": tp1_head.model_metrics},
+                "tp2": ({"selection": tp2_head.selection, "calibration": tp2_head.calibration, "modelMetrics": tp2_head.model_metrics} if tp2_head else None),
+                "sl": {"selection": sl_head.selection, "calibration": sl_head.calibration, "modelMetrics": sl_head.model_metrics},
+            },
+            "selectionRule": "Leakage-safe chronological OOF tournament; models and calibration are selected by Brier/ECE/AUC quality.",
         },
         "current": {
             "marketTs": latest_ts,
             "candidates": scored,
-            "primary": scored[0] if scored else None,
-            "backup": scored[1] if len(scored) > 1 else None,
+            "primary": qualified[0] if qualified else None,
+            "backup": qualified[1] if len(qualified) > 1 else None,
+            "reference": reference,
+            "qualifiedCount": len(qualified),
         },
         "policy": {
             "mlCanOverrideTechnical": bool(status == "TRUSTED" and health >= 60 and drift <= 32),
-            "minimumPlanScore": 58,
-            "minimumTp1Probability": 54,
-            "maximumSlProbability": 48,
-            "note": "ML ranks pending candidates; live/news/risk/gap revalidation still applies before execution.",
+            "minimumPlanScore": round(min_plan_score, 1),
+            "minimumTp1Probability": round(min_tp1, 1),
+            "maximumSlProbability": round(max_sl, 1),
+            "minimumExpectedValueR": min_ev,
+            "minimumTp1SlEdgePts": min_edge,
+            "maximumDisagreementPts": max_disagreement,
+            "hardCandidateGate": True,
+            "note": "A trusted model can still reject every candidate. Only qualified pending plans may become actionable; live/news/risk/gap revalidation still applies.",
         },
     }
 
@@ -878,7 +1141,9 @@ def main() -> None:
         "auc": primary_metrics.get("auc"),
         "ece": primary_metrics.get("ece"),
         "drift": round(drift, 1),
-        "primary": scored[0]["type"] if scored else None,
+        "primary": qualified[0]["type"] if qualified else None,
+        "reference": reference["type"] if reference else None,
+        "qualified": len(qualified),
     })
 
 
