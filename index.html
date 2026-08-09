@@ -12,7 +12,7 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
-  <link rel="stylesheet" href="./kage-v40.css?v=400">
+  <link rel="stylesheet" href="./kage-v40.css?v=401">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -71,24 +71,24 @@
         </article>
 
         <div class="module-grid" aria-label="สถานะโมดูล AI">
-          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-feed"></use></svg></span><span><b>FEED</b><small id="feedStatus">Data linked</small></span></article>
-          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-calibrate"></use></svg></span><span><b>CALIBRATION</b><small>82% calibrated</small></span></article>
-          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-drift"></use></svg></span><span><b>DRIFT</b><small>Low drift</small></span></article>
-          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-learning"></use></svg></span><span><b>LEARNING</b><small>Cycle online</small></span></article>
-          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-mode"></use></svg></span><span><b>MODE</b><small>Neutral watch</small></span></article>
-          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-memory"></use></svg></span><span><b>MEMORY</b><small>12,431 patterns</small></span></article>
+          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-feed"></use></svg></span><span><b>FEED</b><small id="feedStatus">กำลังเชื่อมต่อ</small></span></article>
+          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-calibrate"></use></svg></span><span><b>CALIBRATION</b><small id="calibrationStatus">กำลังอ่านโมเดล</small></span></article>
+          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-drift"></use></svg></span><span><b>DRIFT</b><small id="driftStatus">กำลังตรวจสอบ</small></span></article>
+          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-learning"></use></svg></span><span><b>LEARNING</b><small id="learningStatus">กำลังโหลด</small></span></article>
+          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-mode"></use></svg></span><span><b>MODE</b><small id="modelModeStatus">รอสถานะ</small></span></article>
+          <article class="module-card panel"><span class="module-icon"><svg><use href="#i-memory"></use></svg></span><span><b>MEMORY</b><small id="memoryStatus">กำลังนับข้อมูล</small></span></article>
         </div>
 
         <article class="quality-card panel">
-          <div class="quality-head"><span><svg><use href="#i-spark"></use></svg> PLAN QUALITY</span><strong>78<small>%</small></strong></div>
-          <div class="meter"><i style="--value:78%"></i></div>
-          <p>Strong Edge <span>•</span> risk gates are active</p>
+          <div class="quality-head"><span><svg><use href="#i-spark"></use></svg> PLAN QUALITY</span><strong id="overviewQuality">—<small>%</small></strong></div>
+          <div class="meter"><i id="overviewQualityBar" style="--value:0%"></i></div>
+          <p id="overviewQualityNote">กำลังอ่าน Hard Quality Gate จากโมเดลจริง</p>
         </article>
 
         <article class="decision-card panel">
           <div class="card-label"><span>LIVE DECISION</span><time class="live-clock">--:-- ICT</time></div>
-          <div class="decision-line"><div><strong class="decision-word">WAIT</strong><span>NO HIGH-QUALITY SETUP</span></div><span class="decision-mark"><svg><use href="#i-position"></use></svg></span></div>
-          <p>รอให้โครงสร้างราคาและคุณภาพแผนสอดคล้องกัน</p>
+          <div class="decision-line"><div><strong class="decision-word" id="overviewDecision">WAIT</strong><span id="overviewDecisionLabel">LOADING AI GATES</span></div><span class="decision-mark"><svg><use href="#i-position"></use></svg></span></div>
+          <p id="overviewDecisionReason">กำลังตรวจ Feed, ML Quality Gate, ข่าว และ Risk Guardian</p>
         </article>
       </section>
 
@@ -96,13 +96,13 @@
         <div class="page-heading"><span class="eyebrow">AI MARKET</span><h1 id="marketTitle">Core Intelligence</h1><p>ระบบประเมินคุณภาพตลาดแบบหลายชั้น</p></div>
 
         <article class="core-stage panel ornate">
-          <div class="satellite satellite-a"><svg><use href="#i-feed"></use></svg><b>FEED</b><small>Real-time</small></div>
-          <div class="satellite satellite-b"><svg><use href="#i-calibrate"></use></svg><b>CALIBRATION</b><small>92%</small></div>
-          <div class="satellite satellite-c"><svg><use href="#i-mode"></use></svg><b>MODE</b><small>Adaptive</small></div>
-          <div class="satellite satellite-d"><svg><use href="#i-memory"></use></svg><b>MEMORY</b><small>32.6k</small></div>
+          <div class="satellite satellite-a"><svg><use href="#i-feed"></use></svg><b>FEED</b><small id="coreFeed">Loading</small></div>
+          <div class="satellite satellite-b"><svg><use href="#i-calibrate"></use></svg><b>CALIBRATION</b><small id="coreCalibration">—</small></div>
+          <div class="satellite satellite-c"><svg><use href="#i-mode"></use></svg><b>MODE</b><small id="coreMode">Loading</small></div>
+          <div class="satellite satellite-d"><svg><use href="#i-memory"></use></svg><b>MEMORY</b><small id="coreMemory">—</small></div>
           <div class="core-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
-          <div class="core-ring" id="coreRing" style="--score:82">
-            <div class="core-face"><span>AI CORE SCORE</span><strong id="coreScore">82<small>/100</small></strong><b>HIGH CONFIDENCE</b></div>
+          <div class="core-ring" id="coreRing" style="--score:0">
+            <div class="core-face"><span>PLAN SCORE</span><strong id="coreScore">0<small>/100</small></strong><b id="coreScoreState">LOADING MODEL</b></div>
           </div>
           <div class="core-pulse" aria-hidden="true"></div>
         </article>
@@ -110,13 +110,20 @@
         <article class="quality-card panel">
           <div class="quality-head"><span><svg><use href="#i-spark"></use></svg> PLAN QUALITY</span><strong id="marketQuality">78<small>%</small></strong></div>
           <div class="meter"><i id="marketQualityBar" style="--value:78%"></i></div>
-          <p>Confidence weighted across H1 / M15 / M5</p>
+          <p id="marketQualityNote">คะแนนแผนจาก Governed ML Candidate</p>
         </article>
 
         <article class="health-card panel">
-          <div class="health-title"><span><svg><use href="#i-pulse"></use></svg><b>AI CORE HEALTH</b></span><span class="trusted">TRUSTED <i></i></span></div>
-          <div class="health-score"><span>Model integrity</span><strong>91<small>%</small></strong></div>
-          <div class="health-grid"><span>Data integrity<b>Good</b></span><span>Model health<b>Healthy</b></span><span>Latency<b>96ms</b></span><span>Uptime<b>99.8%</b></span></div>
+          <div class="health-title"><span><svg><use href="#i-pulse"></use></svg><b>AI CORE HEALTH</b></span><span class="trusted" id="modelTrustState">LOADING <i></i></span></div>
+          <div class="health-score"><span>Model integrity</span><strong id="modelIntegrity">—<small>%</small></strong></div>
+          <div class="health-grid"><span>Data feed<b id="modelDataState">—</b></span><span>Governance<b id="modelGovernance">—</b></span><span>Validation AUC<b id="modelValidation">—</b></span><span>Training set<b id="modelTrainingSamples">—</b></span></div>
+        </article>
+
+        <article class="evidence-card panel">
+          <div class="card-label"><span>AI EVIDENCE — ไม่ใช่ค่าจำลอง</span><span id="modelUpdatedAt">—</span></div>
+          <div class="evidence-grid"><span>Model ID<b id="modelId">—</b></span><span>Qualified Plans<b id="qualifiedPlans">—</b></span><span>P(TP1)<b id="tp1Probability">—</b></span><span>Expected Value<b id="expectedValue">—</b></span></div>
+          <p id="modelEvidenceNote">กำลังอ่าน ai-ml-brain.json และ governance จริง</p>
+          <a class="terminal-link" href="./legacy-v39.html#aiView">เปิด AI TERMINAL V39 แบบเต็มทุกฟังก์ชัน <svg><use href="#i-chevron"></use></svg></a>
         </article>
       </section>
 
@@ -125,27 +132,46 @@
 
         <article class="decision-card decision-large panel ornate">
           <div class="card-label"><span>LIVE DECISION</span><time class="live-clock">--:-- ICT</time></div>
-          <div class="decision-line"><div><strong class="decision-word">WAIT</strong><span>NO HIGH-QUALITY SETUP</span></div><span class="decision-mark"><svg><use href="#i-position"></use></svg></span></div>
-          <p>ยังไม่ผ่านเกณฑ์ความน่าจะเป็นและการจัดการความเสี่ยง</p>
-          <div class="metric-strip"><span>Confidence<b id="confidenceValue">61%</b></span><span>Risk<b>LOW</b></span><span>Quality<b class="positive">GOOD</b></span><span>Bias<b>NEUTRAL</b></span></div>
+          <div class="decision-line"><div><strong class="decision-word" id="positionDecision">WAIT</strong><span id="positionDecisionLabel">LOADING AI GATES</span></div><span class="decision-mark"><svg><use href="#i-position"></use></svg></span></div>
+          <p id="positionDecisionReason">กำลังตรวจว่ามีแผนที่ผ่านเกณฑ์หรือไม่</p>
+          <div class="metric-strip"><span>P(TP1)<b id="confidenceValue">—</b></span><span>Risk<b id="riskState">—</b></span><span>Quality<b id="qualityState">—</b></span><span>Bias<b id="biasState">—</b></span></div>
         </article>
 
         <article class="signal-card panel">
-          <div class="card-label"><span>CURRENT SIGNAL</span><span>M15</span></div>
+          <div class="card-label"><span>CURRENT AI PLAN</span><span id="signalTimeframe">ML</span></div>
           <div class="signal-top"><div><b>XAUUSD</b><strong id="latestPrice">—</strong></div><span id="priceChange">SYNCING</span></div>
           <svg class="sparkline" id="marketSparkline" viewBox="0 0 360 92" preserveAspectRatio="none" aria-label="กราฟราคา XAUUSD"><defs><linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#50e7e3" stop-opacity=".22"/><stop offset="1" stop-color="#50e7e3" stop-opacity="0"/></linearGradient></defs><path class="spark-area" d="M0 70 L360 70 L360 92 L0 92Z"/><path class="spark-path" d="M0 70 L360 70"/></svg>
-          <div class="signal-metrics"><span>Direction<b>WAIT</b></span><span>Strength<b>—</b></span><span>Setup Quality<b>N/A</b></span><span>Entry Window<b>—</b></span></div>
-          <div class="signal-wait">AWAITING HIGH-PROBABILITY SETUP</div>
+          <div class="signal-metrics"><span>Direction<b id="signalDirection">WAIT</b></span><span>Plan Score<b id="signalStrength">—</b></span><span>Quality Gate<b id="signalQuality">—</b></span><span>Order Type<b id="signalOrderType">—</b></span></div>
+          <div class="signal-wait" id="signalGateState">กำลังอ่านแผนจาก AI</div>
+        </article>
+
+        <article class="execution-card panel ornate" id="executionCard">
+          <div class="execution-head">
+            <div><span class="eyebrow">AI ENTRY MAP</span><h2 id="executionTitle">รอข้อมูลแผน</h2></div>
+            <span class="status-chip" id="executionBadge">LOADING</span>
+          </div>
+          <div class="execution-levels">
+            <div class="entry-level"><span>ENTRY ZONE</span><b id="aiEntryZone">—</b></div>
+            <div class="danger-level"><span>STOP LOSS</span><b id="aiStopLoss">—</b></div>
+            <div class="profit-level"><span>TAKE PROFIT 1</span><b id="aiTakeProfit1">—</b></div>
+            <div class="profit-level"><span>TAKE PROFIT 2</span><b id="aiTakeProfit2">—</b></div>
+            <div><span>RISK : REWARD</span><b id="aiRiskReward">—</b></div>
+            <div><span>LOT GUIDE</span><b id="aiLotGuide">ตั้งทุนก่อน</b></div>
+          </div>
+          <div class="gate-flow" id="aiGateFlow" aria-label="ลำดับเงื่อนไข AI">
+            <span data-gate="model">MODEL</span><i>›</i><span data-gate="plan">PLAN</span><i>›</i><span data-gate="market">MARKET</span><i>›</i><span data-gate="risk">RISK</span>
+          </div>
+          <p class="execution-warning" id="executionWarning">ระดับราคาจะแสดงแม้แผนถูกปฏิเสธ แต่ห้ามใช้เป็นคำสั่งเข้าเทรดจนสถานะ READY</p>
         </article>
 
         <article class="context-card panel">
           <div class="card-label"><span>MARKET CONTEXT</span><span id="contextTime">UPDATED NOW</span></div>
-          <div class="context-grid"><span>Volatility<b id="volatilityState">Normal</b></span><span>Trend Bias<b id="trendBias">Neutral</b></span><span>Liquidity<b>Adequate</b></span><span>News Risk<b>Low</b></span></div>
+          <div class="context-grid"><span>Volatility<b id="volatilityState">—</b></span><span>Trend Bias<b id="trendBias">—</b></span><span>Feed State<b id="liquidityState">—</b></span><span>News Risk<b id="newsRiskState">—</b></span></div>
         </article>
 
         <article class="actions-card panel">
           <div class="card-label"><span>PLAN ACTIONS</span></div>
-          <div class="action-grid"><button type="button" data-go="plan">VIEW PLAN</button><button type="button" data-go="market">CHECK CORE</button><button type="button" data-go="intel">AI MARKET</button></div>
+          <div class="action-grid"><button type="button" data-go="plan">VIEW PLAN</button><button type="button" data-go="market">CHECK CORE</button><button type="button" id="positionScanButton">RESCAN AI</button></div>
         </article>
       </section>
 
@@ -153,7 +179,7 @@
         <div class="page-heading"><span class="eyebrow">EVENT INTELLIGENCE</span><h1 id="intelTitle">Market Intel</h1><p>ข่าวและช่วงเวลาตลาดที่มีนัยสำคัญ</p></div>
 
         <article class="radar-card panel ornate">
-          <div><span class="eyebrow">GOLD NEWS RADAR</span><h2>ไม่พบข่าวแรงใกล้ feed</h2><p>Status: <b>CLEAR</b></p></div>
+          <div><span class="eyebrow">GOLD NEWS RADAR</span><h2 id="newsRadarTitle">กำลังโหลดข่าว</h2><p>Status: <b id="newsRadarState">LOADING</b></p></div>
           <div class="radar" aria-hidden="true"><i></i><span></span></div>
         </article>
 
@@ -174,30 +200,30 @@
       <section class="screen" id="screen-plan" data-screen="plan" aria-labelledby="planTitle">
         <div class="page-heading"><span class="eyebrow">CAPITAL CAMPAIGN</span><h1 id="planTitle">30-Day Plan</h1><p>แผนควบคุมความเสี่ยงและเป้าหมาย</p></div>
 
+        <article class="capital-card panel ornate">
+          <div class="card-label"><span>ใส่ทุนและกำไรที่ต้องการ</span><span>บันทึกในเครื่องนี้</span></div>
+          <form id="capitalPlanForm" class="capital-form">
+            <label><span>ทุนปัจจุบัน (USD)</span><input id="capitalInput" inputmode="decimal" autocomplete="off" value="10" aria-describedby="capitalHelp"></label>
+            <label><span>กำไรที่อยากได้ (USD)</span><input id="profitTargetInput" inputmode="decimal" autocomplete="off" value="20" aria-describedby="profitHelp"></label>
+            <div class="target-preview"><span>เป้าหมายปลายทาง</span><strong id="targetBalancePreview">$30.00</strong><small id="targetGrowthPreview">+200.00% ภายใน 30 วัน</small></div>
+            <button class="glow-button capital-submit" id="saveCapitalPlan" type="submit"><svg><use href="#i-plan"></use></svg><span>สร้าง / อัปเดตแผน 30 วัน</span></button>
+          </form>
+          <div class="plan-risk-strip"><span>เป้ารายวัน<b id="dailyProfitPreview">—</b></span><span>Max Loss วันนี้<b id="dailyRiskPreview">—</b></span><span>ทุนล่าสุด<b id="currentBalancePreview">—</b></span></div>
+          <form id="sessionResultForm" class="session-result-form">
+            <label><span>Balance หลังจบ Session วันนี้</span><input id="sessionBalanceInput" inputmode="decimal" autocomplete="off" placeholder="เช่น 11.20"></label>
+            <button type="submit" id="saveSessionBalance">บันทึกผลวันนี้</button>
+          </form>
+        </article>
+
         <article class="plan-progress panel ornate">
-          <div class="card-label"><span>PLAN PROGRESS</span><span class="status-chip">ON PLAN</span></div>
-          <div class="progress-number"><strong>8 <small>/ 30</small></strong><span>Plans Completed</span></div>
-          <div class="meter gold"><i style="--value:27%"></i><b>27%</b></div>
+          <div class="card-label"><span>PLAN PROGRESS</span><span class="status-chip" id="planStatusChip">READY TO SET</span></div>
+          <div class="progress-number"><strong id="planCompleted">0 <small>/ 30</small></strong><span>Sessions Completed</span></div>
+          <div class="meter gold"><i id="planProgressBar" style="--value:0%"></i><b id="planProgressPercent">0%</b></div>
         </article>
 
         <div class="section-title"><span>PLAN STAGES</span><small>Adaptive roadmap</small></div>
-        <div class="stage-list">
-          <article class="stage-card panel completed">
-            <span class="stage-number">01</span><div class="stage-main"><b>$10.00 → $11.20</b><small>Target +$1.20</small></div><div class="stage-profit"><b>+$1.20</b><span>DONE</span></div>
-            <div class="stage-meta"><span>Lot Guide<b>&lt; 0.01 lot</b></span><span>Best Window (ICT)<b>19:00 – 19:45 · NY</b></span><span>AI<b>56/100</b></span></div>
-          </article>
-          <article class="stage-card panel active-stage">
-            <span class="stage-number">02</span><div class="stage-main"><b>$11.20 → $12.55</b><small>Target +$1.35</small></div><div class="stage-profit"><b>+$0.88</b><span>ACTIVE</span></div>
-            <div class="stage-meta"><span>Lot Guide<b>&lt; 0.01 lot</b></span><span>Best Window (ICT)<b>19:25 – 20:10 · NY</b></span><span>AI<b>61/100</b></span></div>
-          </article>
-          <article class="stage-card panel">
-            <span class="stage-number">03</span><div class="stage-main"><b>$12.55 → $14.05</b><small>Target +$1.50</small></div><div class="stage-profit muted"><b>—</b><span>WAIT</span></div>
-            <div class="stage-meta"><span>Lot Guide<b>&lt; 0.01 lot</b></span><span>Best Window (ICT)<b>20:10 – 21:00 · NY</b></span><span>AI<b>—</b></span></div>
-          </article>
-          <article class="stage-card panel locked-stage">
-            <span class="stage-number">04</span><div class="stage-main"><b>Adaptive checkpoint</b><small>Unlock after Stage 03</small></div><div class="stage-profit muted"><b>LOCKED</b></div>
-          </article>
-        </div>
+        <div class="stage-list" id="planStageList"><article class="stage-card panel"><div class="stage-main"><b>ยังไม่มีแผน</b><small>ใส่ทุนและกำไรด้านบนเพื่อสร้าง Roadmap</small></div></article></div>
+        <a class="terminal-link plan-terminal-link" href="./legacy-v39.html#planView">เปิด PLAN / STATS / SESSION แบบเต็มใน V39 <svg><use href="#i-chevron"></use></svg></a>
         <p class="disclaimer">Decision-support only · ผลลัพธ์ในอดีตไม่รับประกันผลลัพธ์ในอนาคต</p>
       </section>
 
@@ -205,22 +231,16 @@
         <div class="page-heading"><span class="eyebrow">MEMORY ARCHIVE</span><h1 id="historyTitle">Pattern Memory</h1><p>คลังข้อมูลการเทรดจริงและบทเรียนของระบบ</p></div>
 
         <div class="stat-grid">
-          <article class="stat-card panel"><span>COMPLETED</span><strong>128</strong><small>Sessions</small></article>
-          <article class="stat-card panel"><span>HIT RATE</span><strong>63<small>%</small></strong><small>Win Rate</small></article>
-          <article class="stat-card panel positive-stat"><span>BEST DAY</span><strong>+8.42<small>%</small></strong><small>Return</small></article>
-          <article class="stat-card panel negative-stat"><span>MAX DRAWDOWN</span><strong>-3.21<small>%</small></strong><small>Drawdown</small></article>
+          <article class="stat-card panel"><span>COMPLETED</span><strong id="historyCompleted">0</strong><small>Sessions</small></article>
+          <article class="stat-card panel"><span>AI HIT RATE</span><strong id="historyHitRate">—</strong><small>Verified outcomes</small></article>
+          <article class="stat-card panel positive-stat"><span>BEST DAY</span><strong id="historyBestDay">—</strong><small>Plan return</small></article>
+          <article class="stat-card panel negative-stat"><span>MAX DRAWDOWN</span><strong id="historyDrawdown">—</strong><small>Plan drawdown</small></article>
         </div>
 
         <article class="activity-card panel">
           <div class="card-label"><span>RECENT ACTIVITY</span><span>LIVE MEMORY</span></div>
-          <ol class="activity-list">
-            <li><i></i><span>High-quality setup identified</span><time>09:41</time></li>
-            <li><i></i><span>Trade plan executed · NY Session</span><time>09:22</time></li>
-            <li><i></i><span>Model recalibrated</span><time>08:55</time></li>
-            <li><i></i><span>Learning flow outcome recorded</span><time>08:44</time></li>
-            <li><i></i><span>Feed updated · 12,431 plans ranked</span><time>08:31</time></li>
-          </ol>
-          <button class="outline-button" id="memoryButton" type="button"><svg><use href="#i-eye"></use></svg> VIEW ALL SESSIONS</button>
+          <ol class="activity-list" id="activityList"><li><i></i><span>กำลังโหลดประวัติจริง</span><time>—</time></li></ol>
+          <a class="outline-button" id="memoryButton" href="./legacy-v39.html#statsView"><svg><use href="#i-eye"></use></svg> VIEW FULL MEMORY</a>
         </article>
       </section>
     </main>
@@ -237,10 +257,10 @@
 
   <aside class="notification-panel panel" id="notificationPanel" aria-hidden="true">
     <div><span class="eyebrow accent">CORE NOTICE</span><button id="closeNotifications" type="button" aria-label="ปิด">×</button></div>
-    <h2>System aligned</h2><p>Data feed, memory and risk guardian are operating normally.</p>
-    <small>Updated just now</small>
+    <h2 id="notificationTitle">กำลังตรวจระบบ</h2><p id="notificationText">Data feed, model governance และ risk gates กำลังโหลด</p>
+    <small id="notificationTime">Updated just now</small>
   </aside>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./kage-v40.js?v=400" defer></script>
+  <script src="./kage-v40.js?v=401" defer></script>
 </body>
 </html>

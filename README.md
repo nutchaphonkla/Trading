@@ -1,4 +1,4 @@
-# KAGE CORE V40 · Shadow Intelligence
+# KAGE CORE V40.1 · Shadow Intelligence
 
 Mobile-first six-screen UX/UI system for XAUUSD decision support, rebuilt from the KAGE CORE visual reference.
 
@@ -12,6 +12,16 @@ Mobile-first six-screen UX/UI system for XAUUSD decision support, rebuilt from t
 - History / memory archive
 - Responsive dark-glass UI, inline SVG icon system, PWA shell and local market-feed preview
 - Original generated hero artwork at `assets/kage-hero-v40.png` with an optimized WebP runtime copy
+
+## V40.1 functional bridge
+
+- Capital + desired-profit inputs create the same 30-day plan format used by V39 (`onemonth_os_plan_v15`)
+- Session closing balance updates the adaptive roadmap and risk guardian
+- Positions shows AI Entry Zone, Stop Loss, TP1, TP2, RR and lot guide
+- Governed ML data comes from `ai-ml-brain.json`, `ai-learning.json`, `ai-model-governance.json` and the real outcome journal
+- Rejected candidates still show their price map as **REFERENCE ONLY**; only a candidate that passes model, plan, market/news and risk gates can display READY
+- AI Market and History no longer use hard-coded health, sample-count or hit-rate placeholders
+- Runtime JSON uses network-first service-worker handling with an offline fallback
 
 The previous production page is preserved as `legacy-v39.html`.
 
