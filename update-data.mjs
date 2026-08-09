@@ -105,6 +105,18 @@ export function chooseAutoSource({marketOpen=true,mt5Connected=false,mt5Fresh=fa
   return {kind:'LAST_VALID',mode:marketOpen?'HOLD':'LAST_SESSION'};
 }
 
+export function chooseTrainingSource({mt5Connected=false,mt5ArchiveAvailable=false,twelveArchiveAvailable=false,previousTrainingFeed=''}={}){
+  // V44.1 policy: live execution routing and training routing are independent.
+  // A connected MT5 bridge may keep the heavy academy active even when its latest
+  // market candle is stale and the live app temporarily uses Twelve Data ECO.
+  if(mt5Connected && mt5ArchiveAvailable) return {kind:'MT5',trainingFeed:'MT5_ACADEMY',mode:'HEAVY'};
+  if(twelveArchiveAvailable) return {kind:'TWELVE',trainingFeed:'TWELVE_DATA_PRIMARY',mode:'ECO'};
+  const previous=String(previousTrainingFeed||'').toUpperCase();
+  if(previous==='MT5_ACADEMY') return {kind:'PREVIOUS',trainingFeed:'MT5_ACADEMY',mode:'HEAVY_STANDBY'};
+  if(previous==='TWELVE_DATA_PRIMARY') return {kind:'PREVIOUS',trainingFeed:'TWELVE_DATA_PRIMARY',mode:'ECO_STANDBY'};
+  return {kind:'NONE',trainingFeed:'',mode:'WAIT'};
+}
+
 function responseRateInfo(r){
   const names=['api-credits-used','api-credits-left','x-api-credits-used','x-ratelimit-remaining','x-ratelimit-limit','ratelimit-remaining','ratelimit-limit'];
   const out={}; for(const n of names){ const v=r.headers.get(n); if(v!=null) out[n]=v; } return out;
@@ -338,7 +350,9 @@ export async function main(){
     reason=marketOpen?'MT5 heartbeat online: HEAVY mode; Twelve Data API skipped':'MT5 heartbeat online: last-session HEAVY archive; Twelve Data API skipped';
   }else if(selectedKind==='TWELVE'&&primaryPack?.timeframes?.M1?.length){
     sourcePack=primaryPack; active='TWELVE_DATA';
-    reason=marketOpen?'MT5 offline: switched automatically to Twelve Data API ECO mode':'MT5 offline: Twelve Data API ECO last-session mode';
+    reason=mt5.connected
+      ? (marketOpen?'MT5 heartbeat online but live candle stale: Twelve Data API ECO live; MT5 archive remains eligible for HEAVY training':'MT5 heartbeat online: Twelve Data API ECO last-session live; MT5 archive remains eligible for HEAVY training')
+      : (marketOpen?'MT5 offline: switched automatically to Twelve Data API ECO mode':'MT5 offline: Twelve Data API ECO last-session mode');
   }else{
     selectedKind='LAST_VALID'; mode=marketOpen?'HOLD':'LAST_SESSION';
   }
@@ -361,10 +375,18 @@ export async function main(){
 
   let trainingPack=previousTraining;
   let trainingFeed=String(previousTraining?.feed?.trainingFeed||'');
-  if(selectedKind==='MT5'&&fallbackPack?.timeframes?.M1?.length){
+  const trainingRoute=chooseTrainingSource({
+    mt5Connected:mt5.connected,
+    mt5ArchiveAvailable:Boolean(fallbackPack?.timeframes?.M1?.length),
+    twelveArchiveAvailable:Boolean(primaryPack?.timeframes?.M1?.length),
+    previousTrainingFeed:trainingFeed,
+  });
+  if(trainingRoute.kind==='MT5'){
     trainingPack=trainingView(fallbackPack,'MT5_ACADEMY'); trainingFeed='MT5_ACADEMY';
-  }else if(selectedKind==='TWELVE'&&primaryPack?.timeframes?.M1?.length){
+  }else if(trainingRoute.kind==='TWELVE'){
     trainingPack=trainingView(primaryPack,'TWELVE_DATA_PRIMARY'); trainingFeed='TWELVE_DATA_PRIMARY';
+  }else if(trainingRoute.kind==='NONE'){
+    trainingFeed='';
   }
   if(trainingPack?.timeframes?.M1?.length) await writeJson('xauusd-training.json',trainingPack);
 
@@ -372,10 +394,10 @@ export async function main(){
     version:VERSION,generatedAt:nowIso(),symbol:SYMBOL,marketLikelyOpen:marketOpen,active,mode,status:overallStatus,reason,
     latestM1Ts:latestTs(activePack?.timeframes?.M1||[]),latestM1AgeMs:liveAge,closedBarWatermark:activeWatermark||null,
     primary:primaryFeedMeta,fallback:mt5FeedMeta,
-    training:{file:'xauusd-training.json',feed:trainingFeed||null,mode:trainingFeed==='MT5_ACADEMY'?'HEAVY':'ECO',counts:Object.fromEntries(Object.entries(trainingPack?.timeframes||{}).map(([k,a])=>[k,a.length]))},
-    switching:{policy:'MT5_FIRST_THEN_TWELVE_API_ECO',mergeFeeds:false,note:'MT5 heartbeat online => MT5 live + heavy historical training and zero Twelve request. MT5 offline => Twelve Data ECO. Histories remain isolated.'},
-    isolation:{primaryFile:'xauusd-primary.json',fallbackFile:'xauusd-fallback.json',trainingFile:'xauusd-training.json',activeFile:'xauusd.json',rule:'Exactly one source supplies active/training views at a time. No cross-source candle merge.'},
-    efficiency:{twelveRequestsThisRun:twelveRequests,mt5RequestsThisRun:mt5Requests,mt5HistoryPagesThisRun:mt5HistoryPages,strategy:'MT5-first auto router; Twelve Data is credit-saving ECO fallback only.',primaryRetentionDays:PRIMARY_RETENTION,mt5RetentionDays:MT5_RETENTION,activeAppRetentionDays:ACTIVE_RETENTION},
+    training:{file:'xauusd-training.json',feed:trainingFeed||null,mode:trainingRoute.mode,sourceKind:trainingRoute.kind,counts:Object.fromEntries(Object.entries(trainingPack?.timeframes||{}).map(([k,a])=>[k,a.length]))},
+    switching:{policy:'V44_1_DECOUPLED_LIVE_AND_TRAINING_ROUTERS',mergeFeeds:false,note:'Live feed follows freshness. Training follows MT5 heartbeat + isolated archive availability. Connected MT5 may train HEAVY while Twelve Data serves live ECO. No candle merge.'},
+    isolation:{primaryFile:'xauusd-primary.json',fallbackFile:'xauusd-fallback.json',trainingFile:'xauusd-training.json',activeFile:'xauusd.json',rule:'Live and training may select different isolated sources. xauusd-training.json always contains exactly one source; cross-source candle merge is forbidden.'},
+    efficiency:{twelveRequestsThisRun:twelveRequests,mt5RequestsThisRun:mt5Requests,mt5HistoryPagesThisRun:mt5HistoryPages,strategy:'Decoupled router: Twelve Data is ECO live fallback; connected MT5 archive remains HEAVY training source.',primaryRetentionDays:PRIMARY_RETENTION,mt5RetentionDays:MT5_RETENTION,activeAppRetentionDays:ACTIVE_RETENTION},
   };
 
   activePack={...activePack,generatedAt:nowIso(),source:selectedKind==='MT5'?'MT5 isolated live feed':selectedKind==='TWELVE'?'Twelve Data PRIMARY isolated feed':'Last valid isolated feed pack',feed:health};
