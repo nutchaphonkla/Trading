@@ -1,0 +1,88 @@
+{
+  "version": "1.1",
+  "engine": "ONEMONTH-MODEL-GOVERNANCE-V1.1-PENDING-QUALITY",
+  "promotions": [
+    {
+      "at": "2026-08-09T04:44:30.819Z",
+      "from": "ONEMONTH-PRECISION-TRIGGER-V3.1:90a3d735",
+      "to": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:59aaf0e6",
+      "candidateScore": 72.22,
+      "championScore": 71.45,
+      "reason": "Migrate legacy champion into V34.3 governance (72.2 vs 71.5)"
+    }
+  ],
+  "rollbacks": [],
+  "updatedAt": "2026-08-09T04:44:30.819Z",
+  "action": "PROMOTE_CHALLENGER",
+  "reason": "Migrate legacy champion into V34.3 governance (72.2 vs 71.5)",
+  "champion": {
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:59aaf0e6",
+    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V3.2",
+    "sourceFingerprint": "59aaf0e6",
+    "generatedAt": "2026-08-09T04:44:30.674Z",
+    "trainedThrough": "2026-08-09T04:30:00.000Z",
+    "score": 72.22,
+    "health": 73.1,
+    "samples": 4778,
+    "brier": 0.238,
+    "calibration": 5.91,
+    "coverage": 100,
+    "drift": 0,
+    "uncertainty": 35.55,
+    "guard": "LIMITED"
+  },
+  "challenger": {
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V3.2:59aaf0e6",
+    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V3.2",
+    "sourceFingerprint": "59aaf0e6",
+    "generatedAt": "2026-08-09T04:44:30.674Z",
+    "trainedThrough": "2026-08-09T04:30:00.000Z",
+    "score": 72.22,
+    "health": 73.1,
+    "samples": 4778,
+    "brier": 0.238,
+    "calibration": 5.91,
+    "coverage": 100,
+    "drift": 0,
+    "uncertainty": 35.55,
+    "guard": "LIMITED"
+  },
+  "previous": {
+    "modelId": "ONEMONTH-PRECISION-TRIGGER-V3.1:90a3d735",
+    "engine": "ONEMONTH-PRECISION-TRIGGER-V3.1",
+    "sourceFingerprint": "90a3d735",
+    "generatedAt": "2026-08-09T03:56:24.326Z",
+    "trainedThrough": "2026-08-09T03:45:00.000Z",
+    "score": 71.45,
+    "health": 72.1,
+    "samples": 4775,
+    "brier": 0.2379,
+    "calibration": 5.91,
+    "coverage": 100,
+    "drift": 0.2,
+    "uncertainty": 38.29,
+    "guard": "LIMITED"
+  },
+  "deployedJournal": {
+    "samples": 0,
+    "hitRate": null,
+    "avgR": null,
+    "goodEntryRate": null,
+    "falseSignals": 0
+  },
+  "deployedPlanJournal": {
+    "samples": 0,
+    "hitRate": null,
+    "avgR": null,
+    "goodEntryRate": null,
+    "fillCount": 0
+  },
+  "decision": {
+    "promoted": true,
+    "rolledBack": false,
+    "candidateQualified": true,
+    "materiallyBetter": false,
+    "freshNonInferior": false,
+    "legacyMigration": true
+  }
+}
