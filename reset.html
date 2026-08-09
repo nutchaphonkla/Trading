@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#020408">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>KAGE CORE · Force Update</title>
+
+<style>
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  background:#020408;
+  color:#eef4f7;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+body{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:28px;
+  box-sizing:border-box;
+}
+.wrap{
+  width:min(390px,100%);
+}
+.brand{
+  text-align:center;
+  margin-bottom:24px;
+}
+.icon{
+  width:76px;
+  height:76px;
+  margin:0 auto 18px;
+  border-radius:24px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(103,207,239,.22);
+  background:#07131b;
+  box-shadow:0 0 44px rgba(91,211,237,.12);
+  font-size:30px;
+}
+.kicker{
+  color:#6ee7c3;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.18em;
+}
+h1{
+  margin:9px 0 8px;
+  font-size:25px;
+  text-align:center;
+}
+.subtitle{
+  color:#84939f;
+  font-size:13px;
+  line-height:1.7;
+  text-align:center;
+}
+.card{
+  margin-top:22px;
+  padding:18px;
+  border-radius:22px;
+  background:#061018;
+  border:1px solid rgba(99,199,240,.16);
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.row:last-child{border-bottom:0}
+.row span{
+  color:#84939f;
+  font-size:12px;
+}
+.row b{
+  color:#eef4f7;
+  font-size:12px;
+  text-align:right;
+}
+.ok{color:#6ee7c3!important}
+.warn{color:#f0c86c!important}
+.bar{
+  height:7px;
+  margin-top:18px;
+  border-radius:999px;
+  overflow:hidden;
+  background:#0a1720;
+}
+.bar i{
+  display:block;
+  width:5%;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#63c7f0,#6ee7c3);
+  transition:width .28s ease;
+}
+.note{
+  margin-top:16px;
+  color:#748491;
+  font-size:11px;
+  line-height:1.65;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+<main class="wrap">
+  <div class="brand">
+    <div class="icon">✦</div>
+    <div class="kicker">KAGE CORE</div>
+    <h1>Force Update</h1>
+    <div class="subtitle" id="status">
+      กำลังล้าง Cache และ Service Worker เวอร์ชันเก่า
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="row">
+      <span>Target Version</span>
+      <b class="ok">V36.1 MULTI-FEED AUTONOMOUS ML</b>
+    </div>
+    <div class="row">
+      <span>Plan / Balance</span>
+      <b class="ok">PRESERVED</b>
+    </div>
+    <div class="row">
+      <span>Session / AI Memory</span>
+      <b class="ok">PRESERVED</b>
+    </div>
+    <div class="row">
+      <span>Cache / Service Worker</span>
+      <b id="cacheState" class="warn">CLEANING…</b>
+    </div>
+
+    <div class="bar"><i id="bar"></i></div>
+  </section>
+
+  <div class="note">
+    หน้านี้ไม่ลบ localStorage จึงไม่ลบแผน เงินตั้งต้น Session หรือ AI Memory ในเครื่อง
+  </div>
+</main>
+
+<script>
+(async () => {
+  const bar = document.getElementById('bar');
+  const status = document.getElementById('status');
+  const cacheState = document.getElementById('cacheState');
+
+  const goLatest = () => {
+    const url = './index.html?v=361&fresh=' + Date.now();
+    location.replace(url);
+  };
+
+  try {
+    bar.style.width = '18%';
+
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(
+        regs.map(reg => reg.unregister().catch(() => false))
+      );
+    }
+
+    bar.style.width = '50%';
+
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys.map(key => caches.delete(key))
+      );
+    }
+
+    bar.style.width = '82%';
+    cacheState.textContent = 'CLEARED';
+    cacheState.className = 'ok';
+    status.textContent = 'ล้างระบบเก่าแล้ว · กำลังเปิด KAGE CORE เวอร์ชันล่าสุด';
+
+    bar.style.width = '100%';
+
+    setTimeout(goLatest, 650);
+  } catch (err) {
+    console.error('Force update failed', err);
+    status.textContent = 'เปิดเวอร์ชันล่าสุดโดยตรง';
+    cacheState.textContent = 'SKIPPED';
+    setTimeout(goLatest, 400);
+  }
+})();
+</script>
+</body>
+</html>

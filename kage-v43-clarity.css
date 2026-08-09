@@ -1,0 +1,153 @@
+/* KAGE CORE V43 — CLARITY / AUDIT UI
+   Final presentation layer only. Runtime IDs and trading logic stay compatible. */
+:root{
+  --v43-bg:#030609;
+  --v43-panel:#070b0f;
+  --v43-panel-2:#0a0f14;
+  --v43-line:rgba(214,226,234,.12);
+  --v43-line-soft:rgba(214,226,234,.07);
+  --v43-text:#f2f5f7;
+  --v43-muted:#77838c;
+  --v43-info:#64dce2;
+  --v43-good:#55d8b3;
+  --v43-warn:#d8b66c;
+  --v43-bad:#e66d7c;
+}
+
+/* Remove dashboard theatre: flatter, quieter surfaces and stronger hierarchy. */
+.ai-core-card.ai-core-v38{
+  background:
+    radial-gradient(520px 230px at 78% -6%,rgba(62,207,216,.065),transparent 72%),
+    linear-gradient(180deg,#060a0e 0%,#030609 100%)!important;
+  border:1px solid rgba(217,230,237,.14)!important;
+  border-radius:24px!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.025)!important;
+}
+.ai-core-card .v38-mesh,.ai-core-card .v38-beam{opacity:.24!important}
+.v38-head{padding:20px 18px 15px!important;border-bottom:1px solid var(--v43-line-soft)!important}
+.v38-head h3{font-size:27px!important;line-height:1!important;letter-spacing:-.045em!important}
+.v38-head p{max-width:620px;color:#77848e!important;font-size:8.4px!important;line-height:1.5!important}
+.v38-kicker{color:#93a0a8!important}
+.v38-refresh{background:#090f13!important;border-color:rgba(113,205,214,.14)!important}
+.v38-health-chip{right:71px!important;top:22px!important}
+
+/* Source cards are context, not hero content. */
+.v38-source-row{gap:7px!important;padding:11px 13px 7px!important}
+.v38-source-card{
+  min-height:78px!important;padding:10px 10px!important;border-radius:14px!important;
+  background:#070c10!important;border:1px solid var(--v43-line-soft)!important;
+  box-shadow:none!important;
+}
+.v38-source-card.price-card{background:#071014!important;border-color:rgba(81,205,211,.14)!important}
+.v38-source-card span{font-size:5.8px!important;color:#6e7b84!important}
+.v38-source-card b{font-size:10.5px!important;margin-top:6px!important}
+.v38-source-card.price-card b{font-size:16px!important;color:#65dce0!important}
+.v38-source-card small{font-size:6.1px!important;color:#5e6b74!important}
+.v38-source-card em{font-size:5.5px!important;margin-top:5px!important}
+
+/* New V43 truth layer: one glance = data / authority / evidence. */
+.v43-truth-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;
+  margin:8px 13px 6px;padding:9px;border:1px solid var(--v43-line-soft);border-radius:16px;
+  background:rgba(6,10,14,.72);
+}
+.v43-truth-grid>div{min-width:0;padding:8px 9px;border-radius:11px;background:rgba(255,255,255,.018)}
+.v43-truth-grid span{display:block;color:#65717a;font-size:5.3px;font-weight:900;letter-spacing:.12em}
+.v43-truth-grid b{display:block;margin-top:5px;color:#dfe5e8;font-size:8.8px;line-height:1.2;overflow-wrap:anywhere}
+.v43-truth-grid small{display:block;margin-top:4px;color:#59656d;font-size:5.7px;line-height:1.35;overflow-wrap:anywhere}
+.v43-truth-grid b.good{color:var(--v43-good)}
+.v43-truth-grid b.warn{color:var(--v43-warn)}
+.v43-truth-grid b.bad{color:var(--v43-bad)}
+
+/* Decision first, trust visualization second. */
+.v38-core-zone{padding:8px 13px 12px!important;align-items:stretch!important}
+.v38-core-copy{order:2;margin:12px 0 3px!important;text-align:left!important;padding:0 3px}
+.v38-core-copy .v38-section-label{font-size:5.8px!important;color:#69767e!important}
+.v38-core-copy b{font-size:9px!important;color:#cbd2d6!important}
+.v38-core-copy small{font-size:6.2px!important;color:#5c6870!important}
+.v38-decision{order:1;width:100%!important;margin:0!important;padding:12px 12px!important;border-radius:15px!important;background:#070d12!important;border:1px solid rgba(219,230,235,.10)!important;box-shadow:none!important}
+.v38-decision .decision-orb{width:34px;height:34px;border-radius:10px}
+.v38-decision .decision-copy span{font-size:5.7px!important}
+.v38-decision .decision-copy b{font-size:12px!important;letter-spacing:-.01em}
+.v38-decision .decision-copy small{font-size:6.6px!important;color:#6e7a82!important}
+.v38-decision em{font-size:5.7px!important}
+
+/* The old 270px halo was visually dominant. Keep it as a compact trust instrument. */
+.v38-orbit{
+  order:3;width:166px!important;height:166px!important;margin:8px auto 2px!important;
+  filter:drop-shadow(0 0 17px rgba(49,206,211,.10))!important;
+}
+.ai-brain-orbit:after{inset:25px!important;opacity:.55!important}
+.brain-orbit-track.inner{inset:34px!important}
+.brain-orbit-halo.halo-a{inset:-5px!important;opacity:.55}
+.brain-orbit-halo.halo-b{inset:18px!important;opacity:.55}
+.brain-core-center strong{font-size:36px!important;margin:3px 0 0!important}
+.brain-core-center span{font-size:5.3px!important}
+.brain-core-center b{font-size:8.5px!important}
+.brain-core-center small{font-size:5.2px!important;padding:4px 7px!important;margin-top:5px!important}
+.brain-core-center i{margin-top:6px!important}
+
+/* Put factual health before the self-play lab. */
+.v38-health-row{gap:7px!important;padding:0 13px 10px!important}
+.v38-health-row .brain-side-card{min-height:68px!important;padding:9px 9px!important;border-radius:13px!important;background:#070c10!important;box-shadow:none!important}
+.v38-health-row .brain-side-card span{font-size:5.3px!important}
+.v38-health-row .brain-side-card b{font-size:10.5px!important;margin-top:5px!important}
+.v38-health-row .brain-side-card small{font-size:5.6px!important}
+
+.v38-selfplay{
+  margin:0 13px 10px!important;padding:12px!important;border-radius:17px!important;
+  background:#060b0f!important;border:1px solid var(--v43-line-soft)!important;
+}
+.v38-selfplay .v38-section-head b{font-size:8.2px!important}
+.v38-selfplay-grid{gap:5px!important;margin-top:10px!important}
+.v38-selfplay-grid>div{padding:8px 7px!important;border-radius:11px!important;background:#05090c!important}
+.v38-selfplay-grid span{font-size:5px!important}.v38-selfplay-grid b{font-size:11px!important}.v38-selfplay-grid small{font-size:5px!important}
+.adaptive-model-v42{margin-top:7px!important;gap:5px!important}
+.adaptive-model-v42>div{min-height:60px!important;padding:8px 7px!important;border-radius:11px!important}
+
+.v38-activity{margin:0 13px 10px!important;border-radius:16px!important;background:#060b0f!important;border-color:var(--v43-line-soft)!important}
+.v38-activity-row{padding:9px 11px!important}
+.v38-activity-row small{font-size:6px!important}
+.v38-details{margin:0 13px 14px!important;border-radius:14px!important;background:#05090c!important;border-color:var(--v43-line-soft)!important}
+
+/* Semantic state colors: only use color where it carries meaning. */
+.v38-decision.warn{border-color:rgba(216,182,108,.18)!important}
+.v38-decision.bad{border-color:rgba(230,109,124,.18)!important}
+.v38-decision.good{border-color:rgba(85,216,179,.18)!important}
+.brain-side-card.warn b{color:var(--v43-warn)!important}.brain-side-card.bad b{color:var(--v43-bad)!important}.brain-side-card.good b{color:var(--v43-good)!important}
+
+/* Bottom nav: smaller visual footprint without shrinking tap targets. */
+.bottom-nav{min-height:70px!important;padding-top:5px!important;padding-bottom:calc(6px + env(safe-area-inset-bottom))!important}
+.bottom-nav button{min-height:56px!important}
+
+@media(max-width:520px){
+  .ai-core-card.ai-core-v38{border-radius:20px!important}
+  .v38-head{padding:17px 12px 13px!important;grid-template-columns:minmax(0,1fr) 38px!important}
+  .v38-head h3{font-size:22px!important}
+  .v38-head p{font-size:7.7px!important;padding-right:2px}
+  .v38-refresh{width:38px!important;height:38px!important;border-radius:12px!important}
+  .v38-health-chip{display:none!important}
+  .v38-source-row{padding:9px 9px 5px!important;gap:5px!important}
+  .v38-source-card{min-height:74px!important;padding:9px 7px!important}
+  .v38-source-card b{font-size:9px!important}.v38-source-card.price-card b{font-size:14px!important}
+  .v43-truth-grid{margin:6px 9px 6px;padding:7px;gap:5px;border-radius:14px}
+  .v43-truth-grid>div{padding:7px 7px}
+  .v43-truth-grid b{font-size:7.6px}.v43-truth-grid small{font-size:5.2px}
+  .v38-core-zone{padding:6px 9px 10px!important}
+  .v38-decision{grid-template-columns:34px minmax(0,1fr) auto!important;gap:9px!important;padding:10px!important}
+  .v38-decision .decision-copy b{font-size:11px!important}
+  .v38-orbit{width:150px!important;height:150px!important;margin-top:7px!important}
+  .brain-core-center strong{font-size:32px!important}
+  .v38-health-row{padding-left:9px!important;padding-right:9px!important;gap:5px!important}
+  .v38-health-row .brain-side-card{min-height:64px!important;padding:8px 7px!important}
+  .v38-selfplay,.v38-activity,.v38-details{margin-left:9px!important;margin-right:9px!important}
+}
+
+@media(max-width:390px){
+  .v43-truth-grid{grid-template-columns:1fr 1fr}
+  .v43-truth-grid>div:last-child{grid-column:1/-1}
+  .v38-source-row{grid-template-columns:1fr 1fr!important}
+  .v38-source-card.price-card{grid-column:1/-1;min-height:62px!important;display:grid;grid-template-columns:1fr auto;column-gap:10px;align-items:center}
+  .v38-source-card.price-card span,.v38-source-card.price-card small{grid-column:1}.v38-source-card.price-card b{grid-column:2;grid-row:1/3;margin:0!important;font-size:17px!important}
+  .v38-health-row{grid-template-columns:1fr 1fr!important}.v38-health-row .brain-side-card:last-child{grid-column:1/-1}
+}
