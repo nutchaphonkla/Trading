@@ -46,6 +46,13 @@ function records(count, rawScore, outcomeAt) {
   assert.equal(result.terminalAt, start + 120_000, 'fill candle must not be used for the outcome label');
   assert.equal(result.outcome, 'WIN');
 
+  const ambiguous = AI.resolveOutcome({
+    marketTs: start, creationFeed: 'TWELVE_DATA_PRIMARY', side: 'BUY',
+    entry: 100, sl: 98, tp1: 102
+  }, [bars[0], { ts: start + 60_000, open: 100.5, high: 102.5, low: 99.8, close: 101.5 }], 'TWELVE_DATA_PRIMARY');
+  assert.equal(ambiguous.resolved, false, 'same fill candle terminal touch must not be relabeled from a later candle');
+  assert.equal(ambiguous.reason, 'AMBIGUOUS_FILL_CANDLE');
+
   const mixedFeed = AI.resolveOutcome({
     marketTs: start, creationFeed: 'TWELVE_DATA_PRIMARY', side: 'BUY', entry: 100, sl: 98, tp1: 102
   }, bars, 'MT5_FALLBACK');
