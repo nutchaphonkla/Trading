@@ -3307,9 +3307,9 @@
     }
   ],
   "backgroundJournal": {
-    "total": 1,
+    "total": 2,
     "completed": 0,
-    "pending": 1,
+    "pending": 2,
     "verified30m": 0,
     "trustedSignals": 0,
     "falseSignals": 0,
@@ -3317,40 +3317,50 @@
     "hitRate30": null,
     "hitRate60": null,
     "avgR30": null,
-    "lastDecisionAt": "2026-08-09T04:42:19.280Z",
-    "updatedAt": "2026-08-09T04:42:19.281Z",
+    "lastDecisionAt": "2026-08-09T04:42:59.109Z",
+    "updatedAt": "2026-08-09T04:42:59.110Z",
     "entryQuality": {
       "good": 0,
       "late": 0,
       "poor": 0,
-      "neutral": 0,
-      "goodRate": null,
-      "avgMfeR30": null,
-      "avgMaeR30": null
+      "neutral": 1,
+      "goodRate": 0,
+      "avgMfeR30": 0.8158,
+      "avgMaeR30": 0.189
     },
     "sessionStats": {},
     "modelStats": {},
     "globalJournal": {
-      "total": 2,
+      "total": 3,
       "verified30m": 0
     },
     "source": "ai-outcome-journal.json",
     "deployedModelId": "ONEMONTH-PRECISION-TRIGGER-V3.1:90a3d735"
   },
   "pendingPlanJournal": {
-    "total": 2,
-    "waiting": 2,
-    "filled": 0,
+    "total": 4,
+    "waiting": 3,
+    "filled": 1,
     "expired": 0,
     "completed": 0,
-    "fillRate": 0,
-    "hitRate30": null,
-    "avgR30": null,
-    "goodEntryRate": null,
-    "byType": {},
+    "fillRate": 25,
+    "hitRate30": 100,
+    "avgR30": 0.3643,
+    "goodEntryRate": 100,
+    "byType": {
+      "BUY LIMIT": {
+        "samples": 1,
+        "hitRate": 100,
+        "falseSignals": 0,
+        "avgR": 0.3643,
+        "goodEntryRate": 100,
+        "lateEntries": 0,
+        "poorEntries": 0
+      }
+    },
     "globalJournal": {
-      "total": 2,
-      "filled": 0
+      "total": 4,
+      "filled": 1
     },
     "source": "ai-outcome-journal.json",
     "deployedModelId": "ONEMONTH-PRECISION-TRIGGER-V3.1:90a3d735"
