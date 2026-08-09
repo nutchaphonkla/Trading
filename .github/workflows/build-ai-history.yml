@@ -3,22 +3,18 @@ name: AI Background Learning
 on:
   workflow_dispatch:
 
-  # fallback เผื่อ data workflow ไม่ trigger
   schedule:
     - cron: "23 * * * *"
 
-  # เรียนต่อทันทีหลังอัปเดตข้อมูลตลาด
   workflow_run:
-    workflows:
-      - "Update XAUUSD data pack"
-    types:
-      - completed
+    workflows: ["Update XAUUSD data pack"]
+    types: [completed]
 
 permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-learning
+  group: onemonth-ai-learning-v35
   cancel-in-progress: true
 
 jobs:
@@ -26,7 +22,7 @@ jobs:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
 
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 18
 
     steps:
       - name: Checkout latest repository
@@ -39,107 +35,111 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validate AI builders
+      - name: Setup Python ML runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-ml.txt
+
+      - name: Install ML dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-ml.txt
+
+      - name: Validate all AI builders
         run: |
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
           node --check build-ai-journal.mjs
           node --check build-ai-governance.mjs
+          python -m py_compile ml-train.py
 
-      # 1. สร้าง Historical Brain
-      - name: Rebuild rolling history brain
+      - name: Rebuild rolling historical brain
         run: node build-ai-history.mjs
 
-      # 2. สร้าง Challenger จากข้อมูลล่าสุด
-      - name: Train challenger model
+      - name: Train statistical challenger
         run: node build-ai-learning.mjs
 
-      # 3. เช็กผล Signal/Pending Plan เก่าที่ครบเวลาแล้ว
-      - name: Resolve deployed model outcomes
+      - name: Resolve old signal and pending outcomes
         run: node build-ai-journal.mjs
 
-      # 4. Champion vs Challenger + Auto Rollback
       - name: Champion challenger governance
         run: node build-ai-governance.mjs
 
-      # 5. บันทึก Pending Plan ของ Champion ปัจจุบัน
-      - name: Journal newly deployed champion
+      - name: Train Python ML ensemble
+        run: python ml-train.py
+
+      - name: Journal deployed and ML pending plans
         run: node build-ai-journal.mjs
 
-      # 6. ตรวจไฟล์สมองทั้งหมดก่อน commit
-      - name: Verify governed brain packs
+      - name: Verify V35 brain packs
         run: |
-          node - <<'NODE'
-          const fs = require('fs');
+          python - <<'PY'
+          import json
+          from pathlib import Path
 
-          const read = (file) =>
-            JSON.parse(fs.readFileSync(file, 'utf8'));
+          required = [
+              "ai-history.json",
+              "ai-learning.json",
+              "ai-learning-candidate.json",
+              "ai-model-governance.json",
+              "ai-outcome-journal.json",
+              "ai-ml-brain.json",
+              "ai-ml-candidate.json",
+              "ai-ml-governance.json",
+          ]
 
-          const history = read('ai-history.json');
-          const champion = read('ai-learning.json');
-          const challenger = read('ai-learning-candidate.json');
-          const governance = read('ai-model-governance.json');
+          for name in required:
+              p = Path(name)
 
-          const journal =
-            fs.existsSync('ai-outcome-journal.json')
-              ? read('ai-outcome-journal.json')
-              : null;
+              if not p.exists():
+                  raise SystemExit(f"missing {name}")
 
-          if (!history.generatedAt) {
-            throw new Error('ai-history.json missing generatedAt');
-          }
+              json.loads(p.read_text())
 
-          if (!champion.generatedAt) {
-            throw new Error('ai-learning.json missing generatedAt');
-          }
+          ml = json.loads(
+              Path("ai-ml-brain.json").read_text()
+          )
 
-          if (!challenger.generatedAt) {
-            throw new Error('ai-learning-candidate.json missing generatedAt');
-          }
+          print(
+              "PYTHON ML",
+              {
+                  "ready": ml.get("ready"),
+                  "status": ml.get("status"),
+                  "health": (
+                      ml.get("modelHealth") or {}
+                  ).get("score"),
+                  "samples": (
+                      ml.get("training") or {}
+                  ).get("candidateSamples"),
+                  "filled": (
+                      ml.get("training") or {}
+                  ).get("filledSamples"),
+                  "primary": (
+                      (
+                          ml.get("current") or {}
+                      ).get("primary") or {}
+                  ).get("type"),
+                  "tp1Auc": (
+                      (
+                          (
+                              ml.get("validation") or {}
+                          ).get("tp1") or {}
+                      ).get("auc")
+                  ),
+                  "tp1Brier": (
+                      (
+                          (
+                              ml.get("validation") or {}
+                          ).get("tp1") or {}
+                      ).get("brier")
+                  ),
+              },
+          )
+          PY
 
-          if (!governance.updatedAt) {
-            throw new Error('ai-model-governance.json missing updatedAt');
-          }
-
-          console.log('HISTORY', {
-            ready: history.ready,
-            candles: history.totalCandles,
-            coverageDays: history.coverageDays
-          });
-
-          console.log('CHAMPION', {
-            id: champion.modelId,
-            engine: champion.engine,
-            samples: champion.global?.samples,
-            health: champion.modelHealth?.score
-          });
-
-          console.log('CHALLENGER', {
-            id: challenger.modelId || challenger.sourceFingerprint,
-            samples: challenger.global?.samples,
-            health: challenger.modelHealth?.score
-          });
-
-          console.log('GOVERNANCE', {
-            action: governance.action,
-            championScore: governance.champion?.score,
-            challengerScore: governance.challenger?.score,
-            reason: governance.reason
-          });
-
-          console.log(
-            'OUTCOME JOURNAL',
-            journal?.summary || 'journal pending'
-          );
-
-          console.log(
-            'PENDING PLAN JOURNAL',
-            journal?.planSummary || 'pending-plan journal learning'
-          );
-          NODE
-
-      # 7. Commit สมอง + Journal กลับเข้า GitHub
-      - name: Commit governed brain and journal
+      - name: Commit governed brains and ML packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -151,7 +151,10 @@ jobs:
             ai-learning-candidate.json \
             ai-learning-previous.json \
             ai-model-governance.json \
-            ai-outcome-journal.json
+            ai-outcome-journal.json \
+            ai-ml-brain.json \
+            ai-ml-candidate.json \
+            ai-ml-governance.json
           do
             if [ -e "$f" ]; then
               git add "$f"
@@ -159,11 +162,10 @@ jobs:
           done
 
           if git diff --cached --quiet; then
-            echo "No governed-model changes"
+            echo "No brain changes"
             exit 0
           fi
 
-          git commit -m "ai: refresh V34.3 pending-plan brain"
-
+          git commit -m "ai: refresh V35 Python ML brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
