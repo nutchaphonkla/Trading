@@ -1,0 +1,76 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const INPUT='xauusd-primary.json';
+const OUTPUT='ai-history.json';
+const VERSION='V42.0';
+const ARTIFACT_SCHEMA='KAGE_AI_V42';
+const TRAINING_FEED='TWELVE_DATA_PRIMARY';
+const FEATURE_SCHEMA=['direction','regime','rsiBucket','structure','timeframe'];
+const FEATURE_SCHEMA_HASH='17e82bd347b6f345ad289df1';
+const LABEL_SCHEMA='FUTURE_CLOSE_DIRECTION_BY_TF_V42';
+const LABEL_SCHEMA_HASH='fffe7703ec24c8cac8851daa';
+const TF_MS={M1:60000,M5:300000,M15:900000,H1:3600000};
+const FWD={M1:15,M5:8,M15:4,H1:2};
+const STRIDE={M1:12,M5:5,M15:3,H1:1};
+const HALF_LIFE_DAYS=45;
+const PRIOR=12;
+const DAY=86400000;
+const Z90=1.645;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const median=a=>{const x=a.filter(Number.isFinite).slice().sort((p,q)=>p-q);if(!x.length)return 0;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2};
+const num=v=>{const n=Number(v);return Number.isFinite(n)?n:NaN};
+function normalize(v){const open=num(v.open),high=num(v.high),low=num(v.low),close=num(v.close);let ts=num(v.ts);if(!Number.isFinite(ts)){const d=String(v.datetime||v.date||'').trim();ts=Date.parse(d.includes('T')?d:d.replace(' ','T')+'Z')}if(!Number.isFinite(ts)||![open,high,low,close].every(Number.isFinite)||open<=0||high<Math.max(open,close)||low>Math.min(open,close)||high<low)return null;return{ts,open,high,low,close}}
+function clean(raw){const a=(raw||[]).map(normalize).filter(Boolean).sort((x,y)=>x.ts-y.ts),out=[];let last=-1;for(const c of a){if(c.ts===last)continue;last=c.ts;out.push(c)}return out}
+export function closedBars(raw,tf,watermark){const width=TF_MS[tf]||60000,limit=Number(watermark);if(!(limit>0))return[];return clean(raw).filter(c=>c.ts+width<=limit)}
+export function aggregate(src,tf,watermark){const ms=TF_MS[tf],limit=Number(watermark),out=[];let bucket=-1,cur=null,count=0;for(const c of clean(src)){const b=Math.floor(c.ts/ms)*ms;if(b!==bucket){if(cur&&cur.ts+ms<=limit&&count>=ms/60000)out.push(cur);bucket=b;count=1;cur={ts:b,open:c.open,high:c.high,low:c.low,close:c.close}}else{count++;cur.high=Math.max(cur.high,c.high);cur.low=Math.min(cur.low,c.low);cur.close=c.close}}if(cur&&cur.ts+ms<=limit&&count>=ms/60000)out.push(cur);return out}
+function ema(vals,p){if(!vals.length)return[];const k=2/(p+1),out=[];let x=vals[0];for(let i=0;i<vals.length;i++){x=i?vals[i]*k+x*(1-k):vals[i];out.push(x)}return out}
+function trueRanges(c){return c.map((x,i)=>i?Math.max(x.high-x.low,Math.abs(x.high-c[i-1].close),Math.abs(x.low-c[i-1].close)):x.high-x.low)}
+function wilders(vals,p=14){const out=new Array(vals.length).fill(null);if(vals.length<p)return out;let x=vals.slice(0,p).reduce((a,b)=>a+b,0)/p;out[p-1]=x;for(let i=p;i<vals.length;i++){x=(x*(p-1)+vals[i])/p;out[i]=x}return out}
+function rsi(vals,p=14){const out=new Array(vals.length).fill(null);if(vals.length<=p)return out;let g=0,l=0;for(let i=1;i<=p;i++){const d=vals[i]-vals[i-1];g+=Math.max(d,0);l+=Math.max(-d,0)}let ag=g/p,al=l/p;out[p]=al===0?100:100-100/(1+ag/al);for(let i=p+1;i<vals.length;i++){const d=vals[i]-vals[i-1];ag=(ag*(p-1)+Math.max(d,0))/p;al=(al*(p-1)+Math.max(-d,0))/p;out[i]=al===0?100:100-100/(1+ag/al)}return out}
+function adx(c,p=14){const tr=trueRanges(c),pd=[0],md=[0];for(let i=1;i<c.length;i++){const up=c[i].high-c[i-1].high,dn=c[i-1].low-c[i].low;pd.push(up>dn&&up>0?up:0);md.push(dn>up&&dn>0?dn:0)}const a=wilders(tr,p),pw=wilders(pd,p),mw=wilders(md,p),dx=new Array(c.length).fill(0);for(let i=0;i<c.length;i++){if(a[i]&&pw[i]!=null&&mw[i]!=null){const plus=100*pw[i]/a[i],minus=100*mw[i]/a[i],s=plus+minus;dx[i]=s?100*Math.abs(plus-minus)/s:0}}return wilders(dx,p)}
+function bucketRsi(v){return v<40?'LOW':v>60?'HIGH':'MID'}
+function rollingStructure(c,i){if(i<42)return'RANGE';const a=c.slice(i-19,i+1),b=c.slice(i-39,i-19),hiA=Math.max(...a.map(x=>x.high)),loA=Math.min(...a.map(x=>x.low)),hiB=Math.max(...b.map(x=>x.high)),loB=Math.min(...b.map(x=>x.low));if(hiA>hiB&&loA>loB)return'BULL';if(hiA<hiB&&loA<loB)return'BEAR';return'RANGE'}
+function recencyWeight(ts,latestTs){const age=Math.max(0,(latestTs-ts)/DAY);return .22+.78*Math.exp(-Math.log(2)*age/HALF_LIFE_DAYS)}
+function effectiveN(w,w2){return w2>0?Math.max(1,w*w/w2):0}
+function posterior(upW,sumW){return(upW+PRIOR*.5)/(sumW+PRIOR)}
+function ci(p,n){if(!n)return{low:.05,high:.95};const z2=Z90*Z90,d=1+z2/n,c=(p+z2/(2*n))/d,m=Z90*Math.sqrt((p*(1-p)+z2/(4*n))/n)/d;return{low:clamp(c-m,0,1),high:clamp(c+m,0,1)}}
+function hierarchyKeys(direction,regime,rb,structure){return[[direction,regime,rb,structure].join('|'),[direction,regime,structure].join('|'),[direction,regime].join('|'),direction]}
+function analyzeTf(c,tf){
+  if(c.length<80)return null;const close=c.map(x=>x.close),E9=ema(close,9),E21=ema(close,21),E50=ema(close,50),E200=ema(close,200),RS=rsi(close),AT=wilders(trueRanges(c),14),AD=adx(c),ranges=trueRanges(c),forward=FWD[tf]||4,stride=STRIDE[tf]||2,latestTs=c.at(-1).ts;
+  const maps=[new Map(),new Map(),new Map(),new Map()],regimes={TREND_BUY:0,TREND_SELL:0,RANGE:0,VOLATILE:0,TRANSITION:0};let sampleCount=0;
+  function add(map,key,row,w){const a=map.get(key)||{n:0,w:0,w2:0,upW:0,ret:0,mfe:0,mae:0};a.n++;a.w+=w;a.w2+=w*w;a.upW+=(row.up?1:0)*w;a.ret+=row.retR*w;a.mfe+=row.mfe*w;a.mae+=row.mae*w;map.set(key,a)}
+  for(let i=80;i<c.length-forward;i+=stride){const atr=AT[i]||ranges[i]||1,slope=(E21[i]-E21[Math.max(0,i-8)])/atr;let bull=0,bear=0;close[i]>E21[i]?bull++:bear++;E9[i]>E21[i]?bull++:bear++;E21[i]>E50[i]?bull++:bear++;close[i]>E200[i]?bull+=.5:bear+=.5;slope>.12?bull+=.8:slope<-.12?bear+=.8:0;const direction=bull>=bear?'BUY':'SELL',structure=rollingStructure(c,i);if(structure==='BULL')bull++;if(structure==='BEAR')bear++;const ad=AD[i]||0,medAtr=median(AT.slice(Math.max(0,i-80),i+1).filter(Number.isFinite))||atr;let regime=ad>=27?'TREND':ad<17?'RANGE':'TRANSITION';if(atr>medAtr*1.75)regime='VOLATILE';if(regime==='TREND')regimes[direction==='BUY'?'TREND_BUY':'TREND_SELL']++;else regimes[regime]=(regimes[regime]||0)+1;const future=c.slice(i+1,i+1+forward),end=future.at(-1)?.close??close[i],retR=(end-close[i])/atr,mfe=(Math.max(...future.map(x=>x.high))-close[i])/atr,mae=(close[i]-Math.min(...future.map(x=>x.low)))/atr,row={up:retR>0,retR,mfe,mae},w=recencyWeight(c[i].ts,latestTs),ks=hierarchyKeys(direction,regime,bucketRsi(RS[i]??50),structure);for(let k=0;k<ks.length;k++)add(maps[k],ks[k],row,w);sampleCount++}
+  function summarize(a,key,level){const nEff=effectiveN(a.w,a.w2),p=posterior(a.upW,a.w),C=ci(p,nEff);return{key,matchLevel:level,n:a.n,effectiveSamples:Number(nEff.toFixed(2)),upRate:p,posteriorUpRate:p,lowerBound:C.low,upperBound:C.high,uncertaintyPts:(C.high-C.low)*100,avgReturnR:a.ret/a.w,avgMfeR:a.mfe/a.w,avgMaeR:a.mae/a.w}}
+  const exact=[...maps[0].entries()].map(([k,a])=>summarize(a,k,'EXACT')).filter(r=>r.effectiveSamples>=2.5).sort((a,b)=>b.effectiveSamples-a.effectiveSamples);
+  const n=c.length-1,atr=AT[n]||ranges[n]||Math.abs(close[n])*.001||1,ret=bars=>n>=bars?(close[n]-close[n-bars])/atr:0;let signed=0;signed+=close[n]>E21[n]?12:-12;signed+=E9[n]>E21[n]?10:-10;signed+=E21[n]>E50[n]?15:-15;signed+=close[n]>E200[n]?7:-7;signed+=clamp(ret(Math.min(20,n))*2.7,-12,12);signed+=clamp(ret(Math.min(50,n))*1.5,-12,12);signed+=clamp(ret(Math.min(200,n))*.7,-12,12);const latestStructure=rollingStructure(c,n);if(latestStructure==='BULL')signed+=8;if(latestStructure==='BEAR')signed-=8;const bias=signed>12?'BUY':signed<-12?'SELL':'NEUTRAL',strength=Math.round(clamp(50+Math.abs(signed)*.60,0,97)),currentRegime=(AD[n]||0)>=27?'TREND':(AD[n]||0)<17?'RANGE':'TRANSITION',dir=bias==='NEUTRAL'?(E21[n]>=E50[n]?'BUY':'SELL'):bias,rb=bucketRsi(RS[n]??50),ks=hierarchyKeys(dir,currentRegime,rb,latestStructure),mins=[4,7,11,18];let match=null;
+  for(let k=0;k<ks.length;k++){const a=maps[k].get(ks[k]);if(!a)continue;const s=summarize(a,ks[k],['EXACT','REGIME_STRUCTURE','REGIME','DIRECTION'][k]);if(!match||s.effectiveSamples>match.effectiveSamples)match=s;if(s.effectiveSamples>=mins[k]){match=s;break}}
+  const upProbability=match?Math.round(clamp(match.posteriorUpRate*100,5,95)):Math.round(clamp(50+signed*.45,7,93));
+  return{candles:c.length,from:new Date(c[0].ts).toISOString(),to:new Date(c[n].ts).toISOString(),sampleCount,forwardBars:forward,recencyHalfLifeDays:HALF_LIFE_DAYS,latest:{bias,strength,upProbability,rsi:Number((RS[n]??50).toFixed(2)),adx:Number((AD[n]??0).toFixed(2)),structure:latestStructure,key:ks[0],matchLevel:match?.matchLevel||'NONE',effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),lowerBound:Number(((match?.lowerBound??.05)*100).toFixed(2)),upperBound:Number(((match?.upperBound??.95)*100).toFixed(2)),uncertaintyPts:Number((match?.uncertaintyPts??90).toFixed(2))},regimes,patterns:exact.slice(0,500).map(r=>({...r,upRate:Number(r.upRate.toFixed(4)),posteriorUpRate:Number(r.posteriorUpRate.toFixed(4)),lowerBound:Number(r.lowerBound.toFixed(4)),upperBound:Number(r.upperBound.toFixed(4)),avgReturnR:Number(r.avgReturnR.toFixed(4)),avgMfeR:Number(r.avgMfeR.toFixed(4)),avgMaeR:Number(r.avgMaeR.toFixed(4))}))};
+}
+function artifactSchema(){return{version:ARTIFACT_SCHEMA,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchemaHash:LABEL_SCHEMA_HASH}}
+function artifactProvenance(sourceFingerprint=null,dataWatermark=null){return{schemaVersion:ARTIFACT_SCHEMA,trainingSource:INPUT,trainingFeed:TRAINING_FEED,mergeFeeds:false,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchema:LABEL_SCHEMA,labelSchemaHash:LABEL_SCHEMA_HASH,sourceFingerprint,dataWatermark}}
+function fingerprint(data,watermark){const hash=crypto.createHash('sha256');hash.update(`${TRAINING_FEED}|${watermark}|`);for(const tf of ['M1','M5','M15','H1']){hash.update(`${tf}|`);for(const b of data[tf]||[])hash.update(`${b.ts},${b.open},${b.high},${b.low},${b.close};`)}return hash.digest('hex').slice(0,24)}
+function waiting(reason,extra={}){return{version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:'ONEMONTH-HISTORY-V42',symbol:'XAUUSD',generatedAt:new Date().toISOString(),ready:false,status:reason.startsWith('INVALID_')?'QUARANTINED':'WAIT_DATA',reason,artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(extra.sourceFingerprint||null,extra.dataWatermark||null),featureSchema:FEATURE_SCHEMA,timeframes:{},global:{bias:'NEUTRAL',upProbability:50,agreement:0,totalPatterns:0,uncertaintyPts:100,confidence:0},...extra}}
+
+export function buildHistory(pack){
+  if(!pack||typeof pack!=='object')return waiting('MISSING_PRIMARY_PACK');
+  const feed=pack.feed||{},source=String(pack.source||'').toUpperCase(),active=String(feed.active||'').toUpperCase(),watermark=Number(pack.closedBarWatermark||feed.closedBarWatermark||0);
+  if(active!=='TWELVE_DATA'||!source.includes('PRIMARY')||feed.switching?.mergeFeeds!==false)return waiting('INVALID_PRIMARY_TRAINING_FEED',{dataWatermark:watermark||null});
+  if(!(watermark>0))return waiting('INVALID_CLOSED_BAR_WATERMARK');
+  const raw=pack.timeframes||pack.data||pack,M1=closedBars(raw.M1||[],'M1',watermark),data={M1};
+  for(const tf of ['M5','M15','H1']){const own=closedBars(raw[tf]||[],tf,watermark),derived=M1.length>=180?aggregate(M1,tf,watermark):[];data[tf]=own.length>=derived.length?own:derived}
+  const sourceFingerprint=fingerprint(data,watermark),timeframes={};
+  for(const tf of ['M1','M5','M15','H1']){const row=analyzeTf(data[tf]||[],tf);if(row)timeframes[tf]=row}
+  const weights={H1:.36,M15:.34,M5:.20,M1:.10};let signed=0,wSum=0,totalCandles=0,totalPatterns=0,biasVotes=[],uncertaintyWeighted=0;
+  for(const[tf,row]of Object.entries(timeframes)){const w=weights[tf]||.1,p=row.latest.upProbability;signed+=(p-50)*w;uncertaintyWeighted+=(row.latest.uncertaintyPts||90)*w;wSum+=w;totalCandles+=row.candles;totalPatterns+=row.patterns.length;biasVotes.push(row.latest.bias)}
+  const upProbability=Math.round(clamp(50+(wSum?signed/wSum:0),5,95)),globalBias=upProbability>=55?'BUY':upProbability<=45?'SELL':'NEUTRAL',same=biasVotes.filter(x=>x===globalBias).length,agreement=biasVotes.length?Math.round(same/biasVotes.length*100):0,uncertainty=wSum?uncertaintyWeighted/wSum:90,confidence=Math.round(clamp(agreement*.55+(100-uncertainty)*.45,0,100));
+  const coverageFrom=Object.values(timeframes).map(r=>Date.parse(r.from)).filter(Number.isFinite),coverageTo=Object.values(timeframes).map(r=>Date.parse(r.to)).filter(Number.isFinite),coverageDays=coverageFrom.length&&coverageTo.length?(Math.max(...coverageTo)-Math.min(...coverageFrom))/DAY:0,totalSamples=Object.values(timeframes).reduce((sum,row)=>sum+(Number(row.sampleCount)||0),0),ready=Object.keys(timeframes).length>=2&&totalSamples>=100;
+  return{version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:'ONEMONTH-HISTORY-V42',symbol:'XAUUSD',generatedAt:new Date().toISOString(),sourceGeneratedAt:pack.generatedAt||null,dataFeed:feed,sourceFingerprint,ready,status:ready?'READY':'WAIT_DATA',reason:ready?null:'INSUFFICIENT_CLOSED_HISTORY',artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(sourceFingerprint,watermark),featureSchema:FEATURE_SCHEMA,dataIntegrity:{closedBarsOnly:true,dataWatermark:watermark,mergeFeeds:false,counts:Object.fromEntries(Object.entries(data).map(([tf,rows])=>[tf,rows.length]))},coverageDays:Number(coverageDays.toFixed(1)),recency:{halfLifeDays:HALF_LIFE_DAYS},totalCandles,timeframes,global:{bias:globalBias,upProbability,agreement,totalPatterns,totalSamples,coverageDays:Number(coverageDays.toFixed(1)),uncertaintyPts:Number(uncertainty.toFixed(1)),confidence}};
+}
+
+export function main(){let pack=null;try{pack=JSON.parse(fs.readFileSync(INPUT,'utf8'))}catch(_){}const out=buildHistory(pack);fs.writeFileSync(OUTPUT,JSON.stringify(out,null,2));console.log(`V42 history ${out.status}: ${out.global?.bias||'NEUTRAL'} ${out.global?.upProbability||50}% | ${out.totalCandles||0} candles | ${out.global?.totalPatterns||0} patterns`)}
+const invokedPath=process.argv[1]?path.resolve(process.argv[1]):'';
+if(invokedPath&&invokedPath===path.resolve(fileURLToPath(import.meta.url)))main();
