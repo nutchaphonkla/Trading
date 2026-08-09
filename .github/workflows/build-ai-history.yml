@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-v38
+  group: onemonth-ai-v42
   cancel-in-progress: true
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-ml.txt
 
-      - name: Validate V38 brain source
+      - name: Validate V42 brain source and safety fixtures
         run: |
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
@@ -55,6 +55,13 @@ jobs:
           node --check build-ai-shadow.mjs
           python -m py_compile selfplay-lab.py
           python -m py_compile ml-train.py
+          node tests/pipeline-closed-bars-v42.test.mjs
+          node tests/shadow-feed-isolation-v42.test.mjs
+          node tests/learning-closed-bars-v42.test.mjs
+          node tests/history-provenance-v42.test.mjs
+          node tests/governance-provenance-v42.test.mjs
+          python tests/test_selfplay_promotion_v42.py
+          python tests/test_ml_provenance_v42.py
 
       - name: Verify PRIMARY training isolation
         run: |
@@ -93,21 +100,21 @@ jobs:
       - name: Statistical champion challenger governance
         run: node build-ai-governance.mjs
 
-      - name: V38 self-play lab threshold counterfactual autopsy
+      - name: V42 self-play lab threshold counterfactual autopsy
         run: python selfplay-lab.py
 
-      - name: Train V38 Python autonomous self-play precision brain
+      - name: Train V42 Python autonomous self-play precision brain
         env:
           ML_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: python ml-train.py
 
-      - name: Capture all 12 V38 candidates for next forward test
+      - name: Capture all 12 V42 candidates for next forward test
         run: node build-ai-shadow.mjs
 
-      - name: Journal V38 qualified pending plans
+      - name: Journal V42 qualified pending plans
         run: node build-ai-journal.mjs
 
-      - name: Verify V38 packs
+      - name: Verify V42 packs
         run: |
           python - <<'PY'
           import json
@@ -138,9 +145,27 @@ jobs:
               Path('ai-ml-brain.json').read_text()
           ) if Path('ai-ml-brain.json').exists() else {}
 
+          history=json.loads(
+              Path('ai-history.json').read_text()
+          ) if Path('ai-history.json').exists() else {}
+
+          if history.get('ready') is True:
+              provenance=history.get('artifactProvenance') or {}
+              schema=history.get('artifactSchema') or {}
+              if provenance.get('schemaVersion') != 'KAGE_AI_V42':
+                  raise SystemExit('V42 ready history missing schema contract')
+              if provenance.get('trainingSource') != 'xauusd-primary.json' or provenance.get('trainingFeed') != 'TWELVE_DATA_PRIMARY' or provenance.get('mergeFeeds') is not False:
+                  raise SystemExit('V42 ready history violates training-feed isolation')
+              if provenance.get('featureSchemaHash') != '17e82bd347b6f345ad289df1' or schema.get('featureSchemaHash') != provenance.get('featureSchemaHash'):
+                  raise SystemExit('V42 ready history feature schema mismatch')
+              if provenance.get('labelSchemaHash') != 'fffe7703ec24c8cac8851daa' or schema.get('labelSchemaHash') != provenance.get('labelSchemaHash'):
+                  raise SystemExit('V42 ready history label schema mismatch')
+              if provenance.get('sourceFingerprint') != history.get('sourceFingerprint') or not provenance.get('dataWatermark'):
+                  raise SystemExit('V42 ready history provenance mismatch')
+
           sp=ml.get('selfPlay') or {}
 
-          print('V38',{
+          print('V42',{
               'version':ml.get('version'),
               'ready':ml.get('ready'),
               'status':ml.get('status'),
@@ -158,10 +183,24 @@ jobs:
           })
 
           if (ml.get('dataIsolation') or {}).get('mergeFeeds') is True:
-              raise SystemExit('V38 policy violation: mergeFeeds true')
+              raise SystemExit('V42 policy violation: mergeFeeds true')
+
+          if ml.get('ready') is True:
+              provenance=ml.get('artifactProvenance') or {}
+              schema=ml.get('artifactSchema') or {}
+              candidates=(ml.get('current') or {}).get('candidates') or []
+              if (provenance.get('schemaVersion') or schema.get('version')) != 'KAGE_AI_V42':
+                  raise SystemExit('V42 ready artifact missing schema contract')
+              if provenance.get('trainingFeed') != 'TWELVE_DATA_PRIMARY' or provenance.get('mergeFeeds') is not False:
+                  raise SystemExit('V42 ready artifact violates training-feed isolation')
+              for field in ('featureSchemaHash','labelSchemaHash','sourceFingerprint','dataWatermark'):
+                  if not provenance.get(field):
+                      raise SystemExit(f'V42 ready artifact missing {field}')
+              if len(candidates) != 12 or (ml.get('current') or {}).get('candidateCount') != 12:
+                  raise SystemExit('V42 ready artifact must contain exactly 12 candidates')
           PY
 
-      - name: Commit V38 brain and self-play packs
+      - name: Commit V42 brain and self-play packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -189,10 +228,10 @@ jobs:
           done
 
           if git diff --cached --quiet; then
-            echo "No V38 brain changes"
+            echo "No V42 brain changes"
             exit 0
           fi
 
-          git commit -m "ai: refresh V38 self-play precision brain"
+          git commit -m "ai: refresh V42 self-play precision brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

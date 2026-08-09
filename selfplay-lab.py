@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OneMonth OS V38 Self-Play Lab.
+"""OneMonth OS V42 Self-Play Lab.
 
 Consumes virtual candidate outcomes produced by build-ai-shadow.mjs and creates:
 - ai-selfplay.json: forward-test / replay summary and learning state
@@ -16,6 +16,7 @@ Safety/data policy:
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
@@ -32,7 +33,11 @@ OUT_SELF = ROOT / "ai-selfplay.json"
 OUT_THRESH = ROOT / "ai-thresholds.json"
 OUT_CF = ROOT / "ai-counterfactual.json"
 OUT_AUTOPSY = ROOT / "ai-autopsy.json"
-VERSION = "V38.0 SELF-PLAY LAB"
+VERSION = "V42.0 SELF-PLAY LAB"
+ARTIFACT_SCHEMA = "KAGE_AI_V42"
+LABEL_SCHEMA = "M1_FIRST_HIT_V42"
+LABEL_SCHEMA_HASH = "7c9ff5daadb124444d716c94"
+MIN_NEW_COHORTS_CONFIRM = 4
 FILL_MIN = 90
 OUTCOME_MIN = 180
 
@@ -72,8 +77,21 @@ def ts_ms(v) -> int:
 
 
 def primary_entry(e: dict) -> bool:
-    src = str(e.get("feedSource") or "").upper()
-    return "TWELVE" in src or src in {"PRIMARY", "TWELVE_DATA_PRIMARY"}
+    creation = str(e.get("creationFeedKind") or e.get("feedSource") or "").upper()
+    outcome = str(e.get("outcomeFeedKind") or "").upper()
+    creation_primary = creation == "PRIMARY" or "TWELVE" in creation
+    return bool(
+        creation_primary
+        and outcome == "PRIMARY"
+        and e.get("provenanceStatus") == "VERIFIED"
+        and e.get("modelArtifactSchema") == ARTIFACT_SCHEMA
+        and e.get("labelSchema") == LABEL_SCHEMA
+        and e.get("labelSchemaHash") == LABEL_SCHEMA_HASH
+        and bool(e.get("creationDataFingerprint"))
+        and ts_ms(e.get("creationDataWatermark")) > 0
+        and bool(e.get("outcomeDataFingerprint"))
+        and ts_ms(e.get("outcomeDataWatermark")) > 0
+    )
 
 
 def completed_entries(entries: Iterable[dict]) -> List[dict]:
@@ -89,6 +107,67 @@ def completed_entries(entries: Iterable[dict]) -> List[dict]:
             continue
         out.append(e)
     return sorted(out, key=lambda x: ts_ms(x.get("marketTs")))
+
+
+def stable_hash(value) -> str:
+    payload = json.dumps(value, sort_keys=True, ensure_ascii=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:24]
+
+
+def evidence_identity(rows: List[dict], recommended: dict) -> dict:
+    ordered = sorted(rows, key=lambda x: (ts_ms(x.get("marketTs")), str(x.get("id") or "")))
+    cohorts = sorted({ts_ms(x.get("marketTs")) for x in ordered if ts_ms(x.get("marketTs")) > 0})
+    outcomes = [{
+        "id": str(x.get("id") or ""),
+        "marketTs": ts_ms(x.get("marketTs")),
+        "result": str(x.get("result") or ""),
+        "resultR": round(f(x.get("resultR")), 6),
+        "outcomeFeedKind": str(x.get("outcomeFeedKind") or ""),
+        "outcomeDataFingerprint": str(x.get("outcomeDataFingerprint") or ""),
+    } for x in ordered]
+    return {
+        "candidateHash": stable_hash(recommended),
+        "evidenceHash": stable_hash(outcomes),
+        "cohortCount": len(cohorts),
+        "rowCount": len(ordered),
+        "watermark": cohorts[-1] if cohorts else 0,
+    }
+
+
+def advance_promotion(previous: dict, raw_activation: bool, identity: dict) -> dict:
+    previous = previous or {}
+    prev_streak = int(previous.get("promotionStreak") or 0)
+    prev_candidate = str(previous.get("candidateHash") or "")
+    prev_evidence = str(previous.get("evidenceHash") or "")
+    prev_cohorts = int(previous.get("evidenceCohorts") or 0)
+    prev_watermark = int(previous.get("evidenceWatermark") or 0)
+    candidate_hash = str(identity.get("candidateHash") or "")
+    evidence_hash = str(identity.get("evidenceHash") or "")
+    cohorts = int(identity.get("cohortCount") or 0)
+    watermark = int(identity.get("watermark") or 0)
+    new_cohorts = max(0, cohorts - prev_cohorts)
+
+    advanced = False
+    if not raw_activation:
+        streak, reason = 0, "ACTIVATION_GUARD_FAILED"
+    elif not prev_candidate or prev_streak <= 0:
+        streak, advanced, reason = 1, True, "FIRST_DISTINCT_EVIDENCE_PASS"
+    elif candidate_hash != prev_candidate:
+        streak, advanced, reason = 1, True, "NEW_CANDIDATE_RESTART_CONFIRMATION"
+    elif evidence_hash == prev_evidence:
+        streak, reason = prev_streak, "IDENTICAL_EVIDENCE_NO_ADVANCE"
+    elif watermark <= prev_watermark or new_cohorts < MIN_NEW_COHORTS_CONFIRM:
+        streak, reason = prev_streak, "INSUFFICIENT_NEW_COHORTS_NO_ADVANCE"
+    else:
+        streak, advanced, reason = prev_streak + 1, True, "NEW_CHRONOLOGICAL_EVIDENCE_PASS"
+
+    return {
+        "promotionStreak": streak,
+        "trusted": bool(raw_activation and streak >= 2),
+        "promotionAdvanced": advanced,
+        "promotionReason": reason,
+        "newCohortsSincePass": new_cohorts,
+    }
 
 
 def metrics(rows: List[dict]) -> dict:
@@ -427,24 +506,36 @@ def main() -> None:
 
     previous_thresholds = load(OUT_THRESH, {})
     raw_activation = bool(evidence.get("activationReady"))
-    previous_streak = int(previous_thresholds.get("promotionStreak") or 0)
-    promotion_streak = previous_streak + 1 if raw_activation else 0
-    trusted_activation = bool(raw_activation and promotion_streak >= 2)
+    identity = evidence_identity(primary_rows, recommended)
+    promotion = advance_promotion(previous_thresholds, raw_activation, identity)
+    promotion_streak = promotion["promotionStreak"]
+    trusted_activation = promotion["trusted"]
     threshold_pack = {
         "version": VERSION,
         "generatedAt": now(),
+        "artifactSchema": ARTIFACT_SCHEMA,
+        "labelSchema": LABEL_SCHEMA,
+        "labelSchemaHash": LABEL_SCHEMA_HASH,
         "source": "PRIMARY_SHADOW_OUTCOMES_ONLY",
         "trusted": trusted_activation,
         "activationReady": raw_activation,
         "promotionStreak": promotion_streak,
         "requiredPromotionStreak": 2,
+        "candidateHash": identity["candidateHash"],
+        "evidenceHash": identity["evidenceHash"],
+        "evidenceRows": identity["rowCount"],
+        "evidenceCohorts": identity["cohortCount"],
+        "evidenceWatermark": identity["watermark"],
+        "promotionAdvanced": promotion["promotionAdvanced"],
+        "promotionReason": promotion["promotionReason"],
+        "newCohortsSincePass": promotion["newCohortsSincePass"],
         "baseline": base,
         "recommended": recommended,
         "contextModifiers": modifiers,
         "evidence": evidence,
         "policy": {
             "autoApply": True,
-            "rule": "ml-train.py may use recommended thresholds only when activationReady=true AND trusted=true after two consecutive unseen-tail validation passes; context deltas are bounded.",
+            "rule": f"ml-train.py may use recommended thresholds only after two distinct chronological evidence passes with at least {MIN_NEW_COHORTS_CONFIRM} new decision cohorts; identical workflow reruns never advance promotion.",
             "fallback": "Use V37/V38 static guarded thresholds when evidence is insufficient.",
         },
     }
@@ -462,6 +553,9 @@ def main() -> None:
             "allShadowIdeas": int(summary.get("total") or len(entries)),
             "primaryLearningOutcomes": len(primary_rows),
             "fallbackUsedForPrimaryLearning": False,
+            "artifactSchema": ARTIFACT_SCHEMA,
+            "labelSchema": LABEL_SCHEMA,
+            "labelSchemaHash": LABEL_SCHEMA_HASH,
         },
         "shadow": summary,
         "primaryResolved": metrics(primary_rows),
@@ -471,6 +565,10 @@ def main() -> None:
             "baselineGate": replay_base,
             "candidateGate": replay_new,
             "candidateActivationReady": bool(evidence.get("activationReady")),
+            "evidenceHash": identity["evidenceHash"],
+            "evidenceCohorts": identity["cohortCount"],
+            "promotionAdvanced": promotion["promotionAdvanced"],
+            "promotionReason": promotion["promotionReason"],
         },
         "thresholdOptimizer": {
             "ready": bool(evidence.get("ready")),

@@ -1,12 +1,17 @@
-const CACHE='kage-core-v41-monochrome-shell';
+const CACHE='kage-core-v42-adaptive-shell';
 const SHELL=[
   './index.html',
   './manifest.webmanifest',
   './kage-v40-full.css',
   './kage-v41-monochrome.css',
+  './kage-v42-adaptive.css',
+  './adaptive-ai-v42.js',
+  './icon-32.png',
+  './icon-64.png',
   './icon-180.png',
   './icon-192.png',
   './icon-512.png',
+  './assets/kage-app-icon-v42.png',
   './assets/kage-anime-avatar-v41.webp',
   './assets/kage-anime-hero-v41.webp',
   './xauusd.json',

@@ -1,9 +1,16 @@
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 
 const INPUT='xauusd-primary.json';
 const OUTPUT='ai-learning-candidate.json';
-const VERSION='3.2';
-const ENGINE='ONEMONTH-GOVERNED-CHALLENGER-V3.2';
+const VERSION='V42.0';
+const ENGINE='ONEMONTH-GOVERNED-CHALLENGER-V42';
+const ARTIFACT_SCHEMA='KAGE_AI_V42';
+const TRAINING_FEED='TWELVE_DATA_PRIMARY';
+const FEATURE_SCHEMA=['direction','regime','session','rsiBucket','structure'];
+const FEATURE_SCHEMA_HASH='c3372751b985cd6c32d06e0f';
+const LABEL_SCHEMA='NODE_M30_FIRST_TOUCH_ATR_TP0.8_SL0.6_TIE_SL_TIMEOUT_SIGNED_GT_0.12_V42';
+const LABEL_SCHEMA_HASH='dd88c080f7855fdab25a56f0';
 const HALF_LIFE_DAYS=38;
 const PRIOR_STRENGTH=12;
 const Z90=1.645;
@@ -13,9 +20,14 @@ const num=v=>{const n=Number(v);return Number.isFinite(n)?n:NaN};
 const median=a=>{const x=a.filter(Number.isFinite).slice().sort((p,q)=>p-q);if(!x.length)return 0;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2};
 const safeDiv=(a,b,f=0)=>b?a/b:f;
 
-function fingerprintPack(pack){
-  const t=pack.timeframes||pack.data||pack||{},parts=['M1','M5','M15','H1'].map(tf=>{const a=Array.isArray(t[tf])?t[tf]:[];const first=a[0]||{},last=a.at(-1)||{};return`${tf}:${a.length}:${first.ts||first.datetime||''}:${first.close||''}:${last.ts||last.datetime||''}:${last.close||''}`}).join('|');
-  let h=2166136261;for(let i=0;i<parts.length;i++){h^=parts.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16);
+function fingerprintFrames(frames,watermark){
+  const hash=crypto.createHash('sha256');
+  hash.update(`${TRAINING_FEED}|${watermark}|`);
+  for(const tf of ['M1','M5','M15','H1']){
+    hash.update(`${tf}|`);
+    for(const b of frames[tf]||[]) hash.update(`${b.ts},${b.open},${b.high},${b.low},${b.close};`);
+  }
+  return hash.digest('hex').slice(0,24);
 }
 function normalize(v){
   const open=num(v.open),high=num(v.high),low=num(v.low),close=num(v.close);let ts=num(v.ts);
@@ -24,7 +36,7 @@ function normalize(v){
   return{ts,open,high,low,close};
 }
 function clean(a){const x=(a||[]).map(normalize).filter(Boolean).sort((a,b)=>a.ts-b.ts),o=[];let last=-1;for(const c of x){if(c.ts===last)continue;last=c.ts;o.push(c)}return o}
-function aggregate(src,ms){const o=[];let b=-1,c=null;for(const x of src){const q=Math.floor(x.ts/ms)*ms;if(q!==b){if(c)o.push(c);b=q;c={ts:q,open:x.open,high:x.high,low:x.low,close:x.close}}else{c.high=Math.max(c.high,x.high);c.low=Math.min(c.low,x.low);c.close=x.close}}if(c)o.push(c);return o}
+function aggregate(src,ms,watermark=Infinity){const o=[];let b=-1,c=null;for(const x of src){const q=Math.floor(x.ts/ms)*ms;if(q!==b){if(c&&c.ts+ms<=watermark)o.push(c);b=q;c={ts:q,open:x.open,high:x.high,low:x.low,close:x.close}}else{c.high=Math.max(c.high,x.high);c.low=Math.min(c.low,x.low);c.close=x.close}}if(c&&c.ts+ms<=watermark)o.push(c);return o}
 function ema(v,p){const o=[];if(!v.length)return o;const k=2/(p+1);let x=v[0];for(let i=0;i<v.length;i++){x=i?v[i]*k+x*(1-k):v[i];o.push(x)}return o}
 function tr(c){return c.map((x,i)=>i?Math.max(x.high-x.low,Math.abs(x.high-c[i-1].close),Math.abs(x.low-c[i-1].close)):x.high-x.low)}
 function wild(v,p=14){const o=new Array(v.length).fill(null);if(v.length<p)return o;let x=v.slice(0,p).reduce((a,b)=>a+b,0)/p;o[p-1]=x;for(let i=p;i<v.length;i++){x=(x*(p-1)+v[i])/p;o[i]=x}return o}
@@ -78,18 +90,37 @@ function walkForward(samples){
   const m=metrics(preds),testTotal=folds.reduce((s,x)=>s+x.testSamples,0);return{mode:'EXPANDING_WINDOW_4_FOLD',folds,samples:preds.length,coverage:testTotal?preds.length/testTotal*100:0,hitRate:m.hitRate,brier:m.brier,calibrationError:m.calibrationError,logLoss:m.logLoss};
 }
 
-if(!fs.existsSync(INPUT)){console.log('V37 PRIMARY training waiting: missing xauusd-primary.json');process.exit(0)}
-const pack=JSON.parse(fs.readFileSync(INPUT,'utf8')),raw=pack.timeframes||pack.data||pack||{},sourceFingerprint=fingerprintPack(pack);
-try{if(fs.existsSync(OUTPUT)){const prev=JSON.parse(fs.readFileSync(OUTPUT,'utf8'));if(prev?.engine===ENGINE&&prev?.sourceFingerprint===sourceFingerprint){console.log(`No new market data: ${OUTPUT} already trained on ${sourceFingerprint}`);process.exit(0)}}}catch(_){}
-const m1=clean(raw.M1||[]),directM5=clean(raw.M5||[]),directM15=clean(raw.M15||[]);
-const derivedM5=m1.length>=300?aggregate(m1,300000):[],derivedM15=m1.length>=900?aggregate(m1,900000):[];
+function artifactSchema(){return{version:ARTIFACT_SCHEMA,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchemaHash:LABEL_SCHEMA_HASH}}
+function artifactProvenance(sourceFingerprint=null,dataWatermark=null){return{schemaVersion:ARTIFACT_SCHEMA,trainingSource:INPUT,trainingFeed:TRAINING_FEED,mergeFeeds:false,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchema:LABEL_SCHEMA,labelSchemaHash:LABEL_SCHEMA_HASH,sourceFingerprint,dataWatermark}}
+function writeWaiting(reason,extra={}){
+  const pending={version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:ENGINE,status:reason.startsWith('INVALID_')?'QUARANTINED':'WAIT_DATA',generatedAt:new Date().toISOString(),ready:false,reason,artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(extra.sourceFingerprint||null,extra.dataWatermark||null),featureSchema:FEATURE_SCHEMA,qualityGuards:{backgroundUse:'QUARANTINED',calibration:'BLOCK',drift:'BLOCK',sample:'BLOCK',uncertainty:'BLOCK',coverage:'BLOCK',brier:'BLOCK',hardQuarantine:true},...extra};
+  fs.writeFileSync(OUTPUT,JSON.stringify(pending,null,2));
+  console.log(`V42 learning ${pending.status}: ${reason}`);
+}
+if(!fs.existsSync(INPUT)){writeWaiting('MISSING_PRIMARY_PACK');process.exit(0)}
+let pack;
+try{pack=JSON.parse(fs.readFileSync(INPUT,'utf8'))}
+catch(_){writeWaiting('INVALID_PRIMARY_PACK_JSON');process.exit(0)}
+const raw=pack.timeframes||pack.data||pack||{};
+const activeFeed=String(pack?.feed?.active||'').toUpperCase();
+const declaredSource=String(pack?.source||'').toUpperCase();
+const mergeFeeds=pack?.feed?.switching?.mergeFeeds;
+const dataWatermark=Number(pack?.closedBarWatermark||pack?.feed?.closedBarWatermark||0);
+if(activeFeed!=='TWELVE_DATA'||!declaredSource.includes('PRIMARY')||!declaredSource.includes('TWELVE')){writeWaiting('INVALID_PRIMARY_TRAINING_FEED',{dataWatermark:dataWatermark||null});process.exit(0)}
+if(mergeFeeds!==false){writeWaiting('INVALID_PRIMARY_FEED_ISOLATION',{dataWatermark:dataWatermark||null});process.exit(0)}
+if(!Number.isFinite(dataWatermark)||dataWatermark<=0){writeWaiting('INVALID_CLOSED_BAR_WATERMARK');process.exit(0)}
+const closeTf=(rows,ms)=>clean(rows).filter(b=>b.ts+ms<=dataWatermark);
+const m1=closeTf(raw.M1||[],60000),directM5=closeTf(raw.M5||[],300000),directM15=closeTf(raw.M15||[],900000),directH1=closeTf(raw.H1||[],3600000);
+const sourceFingerprint=fingerprintFrames({M1:m1,M5:directM5,M15:directM15,H1:directH1},dataWatermark);
+try{if(fs.existsSync(OUTPUT)){const prev=JSON.parse(fs.readFileSync(OUTPUT,'utf8')),p=prev?.artifactProvenance||{};if(prev?.engine===ENGINE&&prev?.ready&&p.schemaVersion===ARTIFACT_SCHEMA&&p.trainingFeed===TRAINING_FEED&&p.mergeFeeds===false&&p.sourceFingerprint===sourceFingerprint&&p.dataWatermark===dataWatermark){console.log(`No new market data: ${OUTPUT} already trained on ${sourceFingerprint}`);process.exit(0)}}}catch(_){}
+const derivedM5=m1.length>=300?aggregate(m1,300000,dataWatermark):[],derivedM15=m1.length>=900?aggregate(m1,900000,dataWatermark):[];
 const m5=directM5.length>=derivedM5.length?directM5:derivedM5,m15=directM15.length>=derivedM15.length?directM15:derivedM15;
 let candles,sourceTimeframe,barMinutes,horizonBars;
 if(m15.length>=260){candles=m15;sourceTimeframe='M15';barMinutes=15;horizonBars={M15:1,M30:2,M60:4}}
 else if(m5.length>=280){candles=m5;sourceTimeframe='M5';barMinutes=5;horizonBars={M15:3,M30:6,M60:12}}
 else if(m1.length>=320){candles=m1;sourceTimeframe='M1';barMinutes=1;horizonBars={M15:15,M30:30,M60:60}}
 else{
-  const pending={version:VERSION,engine:ENGINE,status:'WAIT_DATA',generatedAt:new Date().toISOString(),sourceFingerprint,sourceGeneratedAt:pack.generatedAt||null,dataFeed:pack.feed||null,ready:false,reason:'WAITING_FOR_MORE_MARKET_HISTORY',counts:{M1:m1.length,M5:m5.length,M15:m15.length},minimum:{M1:320,M5:280,M15:260},modelHealth:{score:0,status:'WAIT_DATA',uncertainty:'HIGH',uncertaintyPts:100,driftPts:0},qualityGuards:{backgroundUse:'WAIT_DATA',calibration:'BLOCK',drift:'BLOCK',sample:'BLOCK',uncertainty:'BLOCK',coverage:'BLOCK',brier:'BLOCK'},validation:{mode:'WAIT_DATA',samples:0,coverage:0,hitRate:50,brier:.25,calibrationError:0},global:{samples:0,hitRate:50,weightedHitRate:50,avgR:0,brier:.25,calibrationError:0,reliability:0},horizons:{},models:{bestRegime:null,bestSession:null,weights:{regime:0,session:0,structure:0,rsi:0}},current:{key:'WAITING',direction:'WAIT',regime:'UNKNOWN',session:'UNKNOWN',structure:'UNKNOWN',rsi:50,learnedWinProbability:50,samples:0,effectiveSamples:0,reliability:0,lowerBound:5,upperBound:95,uncertaintyPts:90,matchLevel:'NONE'},edges:[]};
+  const pending={version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:ENGINE,status:'WAIT_DATA',generatedAt:new Date().toISOString(),sourceFingerprint,sourceGeneratedAt:pack.generatedAt||null,dataFeed:pack.feed||null,ready:false,reason:'WAITING_FOR_MORE_MARKET_HISTORY',artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(sourceFingerprint,dataWatermark),featureSchema:FEATURE_SCHEMA,counts:{M1:m1.length,M5:m5.length,M15:m15.length},minimum:{M1:320,M5:280,M15:260},modelHealth:{score:0,status:'WAIT_DATA',uncertainty:'HIGH',uncertaintyPts:100,driftPts:0},qualityGuards:{backgroundUse:'WAIT_DATA',calibration:'BLOCK',drift:'BLOCK',sample:'BLOCK',uncertainty:'BLOCK',coverage:'BLOCK',brier:'BLOCK',hardQuarantine:true},validation:{mode:'WAIT_DATA',samples:0,coverage:0,hitRate:50,brier:.25,calibrationError:0},global:{samples:0,hitRate:50,weightedHitRate:50,avgR:0,brier:.25,calibrationError:0,reliability:0},horizons:{},models:{bestRegime:null,bestSession:null,weights:{regime:0,session:0,structure:0,rsi:0}},current:{key:'WAITING',direction:'WAIT',regime:'UNKNOWN',session:'UNKNOWN',structure:'UNKNOWN',rsi:50,learnedWinProbability:50,samples:0,effectiveSamples:0,reliability:0,lowerBound:5,upperBound:95,uncertaintyPts:90,matchLevel:'NONE'},edges:[]};
   fs.writeFileSync(OUTPUT,JSON.stringify(pending,null,2));console.log(`Learning pending, not failed: M1=${m1.length} M5=${m5.length} M15=${m15.length}`);process.exit(0);
 }
 
@@ -131,14 +162,16 @@ const brierState=validation.brier<=.22?'PASS':validation.brier<=.28?'CAUTION':'B
 const hardQuarantine=validation.calibrationError>30||driftPts>28||validation.coverage<15||validation.brier>.34||total<55||(match?.effectiveSamples||0)<3||currentUncertainty>45;
 const backgroundUse=hardQuarantine?'QUARANTINED':healthScore>=68&&![calibrationState,driftState,sampleState,uncertaintyState,coverageState,brierState].includes('BLOCK')?'TRUSTED':healthScore>=42?'LIMITED':'LIVE_ONLY';
 const reliability=clamp((healthScore/100)*.72+Math.log10(total+1)/4*.28,0,1);
+const artifactReady=!hardQuarantine&&backgroundUse==='TRUSTED';
 const out={
-  version:VERSION,engine:ENGINE,role:'CHALLENGER',status:'READY',generatedAt:new Date().toISOString(),sourceFingerprint,trainedThrough:new Date(latestTs).toISOString(),sourceGeneratedAt:pack.generatedAt||null,dataFeed:pack.feed||null,ready:true,
+  version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:ENGINE,role:'CHALLENGER',status:artifactReady?'READY':'QUARANTINED',generatedAt:new Date().toISOString(),sourceFingerprint,trainedThrough:new Date(latestTs).toISOString(),sourceGeneratedAt:pack.generatedAt||null,dataFeed:pack.feed||null,ready:artifactReady,
+  artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(sourceFingerprint,dataWatermark),featureSchema:FEATURE_SCHEMA,
   recency:{halfLifeDays:HALF_LIFE_DAYS,minimumWeight:.20,weightedHitRate:Number(weightedHit.toFixed(2)),recentCut:new Date(recentCut).toISOString(),recentHitRate:Number(recentHit.toFixed(2)),olderHitRate:Number(olderHit.toFixed(2))},
   modelHealth:{score:Number(healthScore.toFixed(1)),status:healthStatus,uncertainty:uncertaintyLabel,uncertaintyPts:Number(currentUncertainty.toFixed(1)),driftPts:Number(driftPts.toFixed(1)),validationScore:Number(validationScore.toFixed(1)),coverage:Number(validation.coverage.toFixed(1)),brierScore:Number(brierScore.toFixed(1)),calibrationScore:Number(calibrationScore.toFixed(1)),sampleScore:Number(sampleScore.toFixed(1))},
   qualityGuards:{backgroundUse,calibration:calibrationState,drift:driftState,sample:sampleState,uncertainty:uncertaintyState,coverage:coverageState,brier:brierState,hardQuarantine,criteria:{calibrationError:Number(validation.calibrationError.toFixed(2)),driftPts:Number(driftPts.toFixed(2)),effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),totalSamples:total,uncertaintyPts:Number(currentUncertainty.toFixed(2)),coverage:Number(validation.coverage.toFixed(2)),brier:Number(validation.brier.toFixed(4))}},
   validation:{mode:validation.mode,samples:validation.samples,coverage:Number(validation.coverage.toFixed(2)),hitRate:Number(validation.hitRate.toFixed(2)),brier:Number(validation.brier.toFixed(4)),calibrationError:Number(validation.calibrationError.toFixed(2)),logLoss:Number(validation.logLoss.toFixed(4)),folds:validation.folds},
   source:{timeframe:sourceTimeframe,barMinutes,candles:candles.length,counts:{M1:m1.length,M5:m5.length,M15:m15.length}},
-  dataIntegrity:{chronological:true,leakageGuard:'FEATURES_AT_T__OUTCOMES_AFTER_T',duplicateGuard:'TIMESTAMP_DEDUPE',rawCounts:{M1:Array.isArray(raw.M1)?raw.M1.length:0,M5:Array.isArray(raw.M5)?raw.M5.length:0,M15:Array.isArray(raw.M15)?raw.M15.length:0},cleanCounts:{M1:m1.length,M5:m5.length,M15:m15.length}},
+  dataIntegrity:{chronological:true,closedBarsOnly:true,dataWatermark,leakageGuard:'FEATURES_AT_T__OUTCOMES_AFTER_T',duplicateGuard:'TIMESTAMP_DEDUPE',rawCounts:{M1:Array.isArray(raw.M1)?raw.M1.length:0,M5:Array.isArray(raw.M5)?raw.M5.length:0,M15:Array.isArray(raw.M15)?raw.M15.length:0},cleanCounts:{M1:m1.length,M5:m5.length,M15:m15.length}},
   global:{samples:total,hitRate:Number((wins/Math.max(1,total)*100).toFixed(2)),weightedHitRate:Number(weightedHit.toFixed(2)),avgR:Number((samples.reduce((s,x)=>s+x.r,0)/Math.max(1,total)).toFixed(4)),brier:Number(rawMetrics.brier.toFixed(4)),calibrationError:Number(rawMetrics.calibrationError.toFixed(2)),reliability:Number(reliability.toFixed(4))},
   horizons:Object.fromEntries(Object.entries(horizons).map(([k,r])=>[k,{samples:r.n,hitRate:Number((r.w/Math.max(1,r.n)*100).toFixed(2)),avgR:Number((r.r/Math.max(1,r.n)).toFixed(4))}])),
   models:{bestRegime:bestBy('regime'),bestSession:bestBy('session'),weights},

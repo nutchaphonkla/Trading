@@ -1,10 +1,17 @@
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const PACK = 'xauusd.json';
+const PRIMARY_PACK = 'xauusd-primary.json';
+const FALLBACK_PACK = 'xauusd-fallback.json';
 const BRAIN = 'ai-ml-brain.json';
 const OUTPUT = 'ai-shadow-journal.json';
-const VERSION = 'V38.0';
-const ENGINE = 'ONEMONTH-SHADOW-SELFPLAY-FIRST-HIT';
+const VERSION = 'V42.0';
+const ENGINE = 'ONEMONTH-SHADOW-SELFPLAY-FIRST-HIT-V42';
+const ARTIFACT_SCHEMA = 'KAGE_AI_V42';
+const LABEL_SCHEMA = 'M1_FIRST_HIT_V42';
+const LABEL_SCHEMA_HASH = '7c9ff5daadb124444d716c94';
 const FILL_HORIZON_MIN = 90;
 const OUTCOME_HORIZON_MIN = 180;
 const MAX_ENTRIES = 30000;
@@ -28,7 +35,7 @@ function normalizeBar(v) {
   if (high < Math.max(open, close) || low > Math.min(open, close) || high < low) return null;
   return { ts, open, high, low, close };
 }
-function cleanBars(rows) {
+export function cleanBars(rows) {
   const map = new Map();
   for (const raw of rows || []) {
     const b = normalizeBar(raw);
@@ -41,6 +48,52 @@ function load(path, fallback = {}) {
 }
 function save(path, value) {
   fs.writeFileSync(path, JSON.stringify(value, null, 2));
+}
+export function feedKind(value) {
+  const src = String(value || '').toUpperCase();
+  if (src.includes('TWELVE') || src === 'PRIMARY' || src.includes('PRIMARY_HISTORY')) return 'PRIMARY';
+  if (src.includes('MT5') || src.includes('FALLBACK')) return 'FALLBACK';
+  return 'UNKNOWN';
+}
+export function packFingerprint(pack = {}) {
+  const raw = pack.timeframes || pack.data || {};
+  const watermark = Number(pack.closedBarWatermark || pack?.feed?.closedBarWatermark || 0);
+  const widths = { M1: 60_000, M5: 300_000, M15: 900_000, H1: 3_600_000 };
+  let hash = 2166136261;
+  const update = value => {
+    const text = String(value);
+    for (let i = 0; i < text.length; i++) { hash ^= text.charCodeAt(i); hash = Math.imul(hash, 16777619); }
+  };
+  update(`${pack.source || ''}|${watermark || ''}|`);
+  for (const tf of ['M1', 'M5', 'M15', 'H1']) {
+    update(`${tf}|`);
+    for (const b of cleanBars(raw[tf] || []).filter(row => watermark > 0 && row.ts + widths[tf] <= watermark)) {
+      update(`${b.ts},${b.open},${b.high},${b.low},${b.close};`);
+    }
+  }
+  return (hash >>> 0).toString(16).padStart(8, '0');
+}
+export function compatibleBrain(brain = {}) {
+  const p = brain.artifactProvenance || {};
+  const schema = brain.artifactSchema || {};
+  return !!brain.ready
+    && String(brain.version || '').startsWith('V42')
+    && brain.status === 'TRUSTED'
+    && brain?.governance?.trusted === true
+    && p.schemaVersion === ARTIFACT_SCHEMA
+    && p.trainingSource === 'xauusd-primary.json'
+    && p.trainingFeed === 'TWELVE_DATA_PRIMARY'
+    && p.mergeFeeds === false
+    && p.labelSchema === LABEL_SCHEMA
+    && p.labelSchemaHash === LABEL_SCHEMA_HASH
+    && !!p.featureSchemaHash
+    && schema.version === ARTIFACT_SCHEMA
+    && schema.featureSchemaHash === p.featureSchemaHash
+    && schema.labelSchemaHash === p.labelSchemaHash
+    && !!brain.sourceFingerprint
+    && p.sourceFingerprint === brain.sourceFingerprint
+    && Number(p.dataWatermark) > 0
+    && Number(p.candidateSchemaCount) === 12;
 }
 function findAtOrAfter(rows, ts) {
   let lo = 0, hi = rows.length - 1, ans = -1;
@@ -56,9 +109,9 @@ function sideOf(c) { return String(c?.side || c?.direction || '').toUpperCase();
 function touchedEntry(bar, p) {
   const side = p.side, kind = p.kind;
   if (kind === 'STOP') return side === 'BUY' ? bar.high >= p.entry : bar.low <= p.entry;
-  const lo = finite(p.entryLow) ? p.entryLow : p.entry;
-  const hi = finite(p.entryHigh) ? p.entryHigh : p.entry;
-  return bar.low <= Math.max(lo, hi) && bar.high >= Math.min(lo, hi);
+  // The trainer labels a LIMIT fill at the exact order price. A display zone
+  // must never turn into a more optimistic fill rule in the shadow evaluator.
+  return side === 'BUY' ? bar.low <= p.entry : bar.high >= p.entry;
 }
 function touchFlags(bar, p) {
   if (p.side === 'BUY') return {
@@ -97,8 +150,34 @@ function emptyJournal() {
   };
 }
 
-function resolveEntry(p, bars) {
+function finishProvenance(p, source) {
+  p.outcomeFeedKind = source.kind;
+  p.outcomeDataFingerprint = source.fingerprint;
+  p.outcomeDataWatermark = source.watermark || null;
+  p.provenanceStatus = 'VERIFIED';
+}
+
+export function selectResolutionSource(entry, sources = {}) {
+  const expected = feedKind(entry?.creationFeedKind || entry?.feedSource || entry?.creationFeed);
+  if (!['PRIMARY', 'FALLBACK'].includes(expected)) return null;
+  const source = sources[expected];
+  if (!source || source.kind !== expected || !Array.isArray(source.bars) || !source.bars.length) return null;
+  return source;
+}
+
+export function resolveEntry(p, bars, source = {}) {
   if (['COMPLETE', 'EXPIRED'].includes(p.status)) return;
+  const expected = feedKind(p.creationFeedKind || p.feedSource || p.creationFeed);
+  if (!['PRIMARY', 'FALLBACK'].includes(expected) || source.kind !== expected) {
+    p.provenanceStatus = source.kind ? 'SOURCE_MISMATCH' : 'WAIT_SOURCE';
+    return;
+  }
+  p.creationFeedKind = expected;
+  p.labelSchema = LABEL_SCHEMA;
+  p.resolutionFeedKind = source.kind;
+  p.resolutionDataFingerprint = source.fingerprint || null;
+  p.resolutionDataWatermark = source.watermark || null;
+  p.provenanceStatus = 'SOURCE_VERIFIED';
   const createTs = normalizeTs(p.marketTs || p.createdMarketTs || p.ts);
   if (!finite(createTs)) return;
   let start = findAtOrAfter(bars, createTs + 60000);
@@ -117,12 +196,15 @@ function resolveEntry(p, bars) {
         p.result = 'NO_FILL';
         p.resultR = 0;
         p.fillMinutes = null;
+        finishProvenance(p, source);
       }
       return;
     }
     p.filledTs = bars[fillIndex].ts;
     p.filledAt = iso(p.filledTs);
     p.fillMinutes = Math.round((p.filledTs - createTs) / 60000);
+    p.fillFeedKind = source.kind;
+    p.fillDataFingerprint = source.fingerprint || null;
     p.status = 'FILLED';
     start = fillIndex;
   } else {
@@ -150,6 +232,7 @@ function resolveEntry(p, bars) {
       if (f.sl) { firstHit = 'SL'; firstHitTs = bar.ts; }
       else if (f.tp1) { firstHit = 'TP1'; firstHitTs = bar.ts; }
     }
+    if (firstHit) break;
   }
 
   p.mfeR = Number(maxMfe.toFixed(4));
@@ -166,12 +249,14 @@ function resolveEntry(p, bars) {
     p.resultR = Number((firstHit === 'TP1' ? rr1 : -1).toFixed(4));
     p.outcomeMinutes = Math.round((firstHitTs - p.filledTs) / 60000);
     p.resolvedAt = iso(firstHitTs);
+    finishProvenance(p, source);
   } else if (bars.at(-1).ts > deadline) {
     p.status = 'COMPLETE';
     p.result = 'TIMEOUT';
     p.resultR = Number(markR(last, p).toFixed(4));
     p.outcomeMinutes = OUTCOME_HORIZON_MIN;
     p.resolvedAt = iso(deadline);
+    finishProvenance(p, source);
   }
 }
 
@@ -222,102 +307,147 @@ function summarize(entries) {
   };
 }
 
-if (!fs.existsSync(PACK) || !fs.existsSync(BRAIN)) {
-  console.log('Shadow lab skipped: xauusd.json or ai-ml-brain.json missing');
-  process.exit(0);
+export function resolutionSourceFromPack(pack, requiredKind) {
+  if (!pack || typeof pack !== 'object') return null;
+  const raw = pack.timeframes || pack.data || {};
+  const watermark = Number(pack.closedBarWatermark || pack?.feed?.closedBarWatermark || 0);
+  const bars = cleanBars(raw.M1 || []).filter(row => watermark > 0 && row.ts + 60_000 <= watermark);
+  const declared = feedKind(pack?.feed?.active || pack?.source);
+  if (!(watermark > 0) || !bars.length || declared !== requiredKind) return null;
+  return {
+    kind: requiredKind,
+    bars,
+    fingerprint: packFingerprint(pack),
+    watermark,
+  };
 }
 
-const pack = load(PACK);
-const brain = load(BRAIN);
-const raw = pack.timeframes || pack.data || {};
-const m1 = cleanBars(raw.M1 || []);
-if (!m1.length || !brain?.ready) {
-  console.log('Shadow lab waiting: M1/model not ready');
-  process.exit(0);
-}
+export function main() {
+  if (!fs.existsSync(PACK)) {
+    console.log('Shadow lab skipped: xauusd.json missing');
+    return;
+  }
 
-let journal = load(OUTPUT, emptyJournal());
-journal.entries = Array.isArray(journal.entries) ? journal.entries : [];
-for (const e of journal.entries) resolveEntry(e, m1);
+  const pack = load(PACK);
+  const brain = load(BRAIN, {});
+  const activeRaw = pack.timeframes || pack.data || {};
+  const activeM1 = cleanBars(activeRaw.M1 || []);
+  const sources = {
+    PRIMARY: resolutionSourceFromPack(load(PRIMARY_PACK, null), 'PRIMARY'),
+    FALLBACK: resolutionSourceFromPack(load(FALLBACK_PACK, null), 'FALLBACK'),
+  };
 
-const current = brain.current || {};
-const marketTs = normalizeTs(current.marketTs || m1.at(-1).ts);
-const feed = String(pack?.feed?.active || pack?.source || 'UNKNOWN').toUpperCase();
-const modelFp = String(brain.sourceFingerprint || brain.modelId || 'NOFP');
-const rows = Array.isArray(current.candidates) ? current.candidates : [];
-const known = new Set(journal.entries.map(x => x.id));
-let created = 0;
+  let journal = load(OUTPUT, emptyJournal());
+  journal.entries = Array.isArray(journal.entries) ? journal.entries : [];
+  for (const e of journal.entries) {
+    const source = selectResolutionSource(e, sources);
+    resolveEntry(e, source?.bars || [], source || {});
+  }
 
-for (const c of rows) {
-  const side = sideOf(c), entry = n(c.entry, NaN), sl = n(c.sl, NaN), tp1 = n(c.tp1, NaN), tp2 = n(c.tp2, NaN);
-  if (!['BUY', 'SELL'].includes(side) || ![entry, sl, tp1].every(Number.isFinite)) continue;
-  const type = String(c.type || 'UNKNOWN').replaceAll(' ', '_').toUpperCase();
-  const variant = String(c.variant || 'BALANCED').toUpperCase();
-  const id = `SHADOW:${modelFp}:${marketTs}:${type}:${variant}`;
-  if (known.has(id)) continue;
-  const risk = Math.max(1e-9, Math.abs(entry - sl));
-  const q = c.qualityGate || {};
-  journal.entries.push({
-    id,
-    version: VERSION,
-    modelFingerprint: modelFp,
-    modelStatus: String(brain.status || 'UNKNOWN'),
-    feedSource: feed,
-    createdAt: new Date().toISOString(),
-    marketTs,
-    type,
-    kind: orderKind(type),
-    variant,
-    side,
-    regime: String(c.regime || current.regime || 'UNKNOWN'),
-    session: String(c.session || current.session || 'UNKNOWN'),
-    entry,
-    entryLow: finite(c.entryLow) ? Number(c.entryLow) : entry,
-    entryHigh: finite(c.entryHigh) ? Number(c.entryHigh) : entry,
-    sl,
-    tp1,
-    tp2: finite(tp2) ? tp2 : null,
-    risk,
-    rr1: Number((Math.abs(tp1 - entry) / risk).toFixed(4)),
-    rr2: finite(tp2) ? Number((Math.abs(tp2 - entry) / risk).toFixed(4)) : null,
-    score: n(c.score),
-    pFill: n(c.pFill),
-    pTp1: n(c.pTp1),
-    pTp2: n(c.pTp2),
-    pSl: n(c.pSl),
-    pCleanWin: n(c.pCleanWin),
-    evR: n(c.evR),
-    disagreementPts: n(c.modelDisagreementPts),
-    oodScore: n(brain?.modelHealth?.driftPts),
-    modelHealth: n(brain?.modelHealth?.score),
-    qualified: q.passed === true,
-    grade: String(q.grade || (q.passed ? 'PASS' : 'REJECT')),
-    rejectReasons: Array.isArray(q.reasons) ? q.reasons : [],
-    status: 'WAIT_FILL',
-    filledTs: null,
-    firstHit: null,
-    mfeR: 0,
-    maeR: 0,
+  const current = brain.current || {};
+  const marketTs = normalizeTs(current.marketTs || activeM1.at(-1)?.ts);
+  const feed = String(pack?.feed?.active || pack?.source || 'UNKNOWN').toUpperCase();
+  const creationFeedKind = feedKind(feed);
+  const creationSource = sources[creationFeedKind] || null;
+  const modelFp = String(brain.sourceFingerprint || brain.modelId || 'NOFP');
+  const rows = Array.isArray(current.candidates) ? current.candidates : [];
+  const modelCompatible = compatibleBrain(brain);
+  const candidateSchemaComplete = rows.length === 12;
+  const canCapture = modelCompatible && candidateSchemaComplete && creationSource && finite(marketTs);
+  const known = new Set(journal.entries.map(x => x.id));
+  let created = 0;
+
+  if (canCapture) for (const c of rows) {
+    const side = sideOf(c), entry = n(c.entry, NaN), sl = n(c.sl, NaN), tp1 = n(c.tp1, NaN), tp2 = n(c.tp2, NaN);
+    if (!['BUY', 'SELL'].includes(side) || ![entry, sl, tp1].every(Number.isFinite)) continue;
+    const type = String(c.type || 'UNKNOWN').replaceAll(' ', '_').toUpperCase();
+    const variant = String(c.variant || 'BALANCED').toUpperCase();
+    const id = `SHADOW:${modelFp}:${marketTs}:${type}:${variant}`;
+    if (known.has(id)) continue;
+    const risk = Math.max(1e-9, Math.abs(entry - sl));
+    const q = c.qualityGate || {};
+    journal.entries.push({
+      id,
+      version: VERSION,
+      labelSchema: LABEL_SCHEMA,
+      labelSchemaHash: LABEL_SCHEMA_HASH,
+      modelFingerprint: modelFp,
+      modelArtifactSchema: brain.artifactProvenance.schemaVersion,
+      modelStatus: String(brain.status || 'UNKNOWN'),
+      feedSource: feed,
+      creationFeed: feed,
+      creationFeedKind,
+      creationDataFingerprint: creationSource.fingerprint,
+      creationDataWatermark: creationSource.watermark,
+      provenanceStatus: 'SOURCE_VERIFIED',
+      createdAt: new Date().toISOString(),
+      marketTs,
+      type,
+      kind: orderKind(type),
+      variant,
+      side,
+      regime: String(c.regime || current.regime || 'UNKNOWN'),
+      session: String(c.session || current.session || 'UNKNOWN'),
+      entry,
+      entryLow: finite(c.entryLow) ? Number(c.entryLow) : entry,
+      entryHigh: finite(c.entryHigh) ? Number(c.entryHigh) : entry,
+      sl,
+      tp1,
+      tp2: finite(tp2) ? tp2 : null,
+      risk,
+      rr1: Number((Math.abs(tp1 - entry) / risk).toFixed(4)),
+      rr2: finite(tp2) ? Number((Math.abs(tp2 - entry) / risk).toFixed(4)) : null,
+      estimatedCostR: n(c.estimatedCostR),
+      score: n(c.score),
+      pFill: n(c.pFill),
+      pTp1: n(c.pTp1),
+      pTp2: n(c.pTp2),
+      pSl: n(c.pSl),
+      pCleanWin: n(c.pCleanWin),
+      evR: n(c.evR),
+      disagreementPts: n(c.modelDisagreementPts),
+      oodScore: n(c?.ood?.score ?? brain?.modelHealth?.driftPts),
+      modelHealth: n(brain?.modelHealth?.score),
+      qualified: q.passed === true,
+      grade: String(q.grade || (q.passed ? 'PASS' : 'REJECT')),
+      rejectReasons: Array.isArray(q.reasons) ? q.reasons : [],
+      status: 'WAIT_FILL',
+      filledTs: null,
+      firstHit: null,
+      mfeR: 0,
+      maeR: 0,
+    });
+    known.add(id); created++;
+  }
+
+  for (const e of journal.entries) {
+    const source = selectResolutionSource(e, sources);
+    resolveEntry(e, source?.bars || [], source || {});
+  }
+  journal.entries = journal.entries.slice(-MAX_ENTRIES);
+  journal.version = VERSION;
+  journal.engine = ENGINE;
+  journal.labelSchema = LABEL_SCHEMA;
+  journal.updatedAt = new Date().toISOString();
+  journal.currentFeed = feed;
+  journal.currentModel = modelFp;
+  journal.captureState = canCapture ? 'READY' : !modelCompatible ? 'MODEL_PROVENANCE_BLOCK' : !candidateSchemaComplete ? 'CANDIDATE_SCHEMA_BLOCK' : 'SOURCE_PROVENANCE_BLOCK';
+  journal.summary = summarize(journal.entries);
+  journal.summary.provenanceVerified = journal.entries.filter(x => x.provenanceStatus === 'VERIFIED').length;
+  journal.summary.provenanceBlocked = journal.entries.filter(x => ['SOURCE_MISMATCH', 'WAIT_SOURCE'].includes(x.provenanceStatus)).length;
+  save(OUTPUT, journal);
+
+  console.log('V42 Shadow Self-Play', {
+    created,
+    captureState: journal.captureState,
+    total: journal.summary.total,
+    resolved: journal.summary.resolved,
+    completed: journal.summary.completed,
+    rejectedTested: journal.summary.rejectedTested,
+    rejectedWouldWinRate: journal.summary.rejectedWouldWinRate,
+    feed,
   });
-  known.add(id); created++;
 }
 
-for (const e of journal.entries) resolveEntry(e, m1);
-journal.entries = journal.entries.slice(-MAX_ENTRIES);
-journal.version = VERSION;
-journal.engine = ENGINE;
-journal.updatedAt = new Date().toISOString();
-journal.currentFeed = feed;
-journal.currentModel = modelFp;
-journal.summary = summarize(journal.entries);
-save(OUTPUT, journal);
-
-console.log('V38 Shadow Self-Play', {
-  created,
-  total: journal.summary.total,
-  resolved: journal.summary.resolved,
-  completed: journal.summary.completed,
-  rejectedTested: journal.summary.rejectedTested,
-  rejectedWouldWinRate: journal.summary.rejectedWouldWinRate,
-  feed,
-});
+const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : '';
+if (invokedPath && invokedPath === path.resolve(fileURLToPath(import.meta.url))) main();

@@ -1,0 +1,279 @@
+/* KAGE CORE V42 · ADAPTIVE ACCENT LAYER
+   Sparse semantic color over the V41 monochrome system. Runtime IDs and behavior stay intact. */
+
+body.v40-full.v41-mono.v42-adaptive {
+  --accent-core: #70ddea;
+  --accent-good: #69d5a5;
+  --accent-warn: #d7b66d;
+  --accent-bad: #e27380;
+  --accent-core-soft: rgba(112, 221, 234, .12);
+  --accent-good-soft: rgba(105, 213, 165, .11);
+  --accent-warn-soft: rgba(215, 182, 109, .11);
+  --accent-bad-soft: rgba(226, 115, 128, .11);
+}
+
+/* V41 used a parent compositing filter. It must be removed before semantic accents can render. */
+body.v40-full.v41-mono.v42-adaptive .app,
+body.v40-full.v41-mono.v42-adaptive .bottom-nav,
+body.v40-full.v41-mono.v42-adaptive .modal,
+body.v40-full.v41-mono.v42-adaptive #installGate,
+body.v40-full.v41-mono.v42-adaptive #appIntro,
+body.v40-full.v41-mono.v42-adaptive #actionLoader,
+body.v40-full.v41-mono.v42-adaptive .ai-brain-orbit,
+body.v40-full.v41-mono.v42-adaptive .neon-progress-ring,
+body.v40-full.v41-mono.v42-adaptive .news-policy-icon {
+  filter: none !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .kage-hero-art {
+  filter: grayscale(1) contrast(1.08) brightness(.82) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .brandmark-premium img,
+body.v40-full.v41-mono.v42-adaptive .gate-logo img,
+body.v40-full.v41-mono.v42-adaptive .intro-logo img {
+  filter: contrast(1.06) brightness(.94) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .brandmark-premium,
+body.v40-full.v41-mono.v42-adaptive .gate-logo,
+body.v40-full.v41-mono.v42-adaptive .intro-logo {
+  border-color: rgba(112, 221, 234, .35) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .025), 0 0 28px rgba(112, 221, 234, .09), 0 18px 44px rgba(0, 0, 0, .55) !important;
+}
+
+/* The graph UI is retired. Compatibility nodes stay in the DOM for legacy listeners. */
+body.v40-full.v41-mono.v42-adaptive #marketView .chart-runtime,
+body.v40-full.v41-mono.v42-adaptive #marketView #chartTf,
+body.v40-full.v41-mono.v42-adaptive #marketView #chartHealthBadge,
+body.v40-full.v41-mono.v42-adaptive #marketView #chartPrice,
+body.v40-full.v41-mono.v42-adaptive #marketView #candleTime,
+body.v40-full.v41-mono.v42-adaptive #marketView #candleO,
+body.v40-full.v41-mono.v42-adaptive #marketView #candleH,
+body.v40-full.v41-mono.v42-adaptive #marketView #candleL,
+body.v40-full.v41-mono.v42-adaptive #marketView #candleC,
+body.v40-full.v41-mono.v42-adaptive #marketView #marketChart,
+body.v40-full.v41-mono.v42-adaptive #marketView #chartEmpty,
+body.v40-full.v41-mono.v42-adaptive #marketView #zoomOutBtn,
+body.v40-full.v41-mono.v42-adaptive #marketView #zoomInBtn,
+body.v40-full.v41-mono.v42-adaptive #marketView #fitBtn,
+body.v40-full.v41-mono.v42-adaptive #marketView #latestBtn,
+body.v40-full.v41-mono.v42-adaptive #marketView #tfTabs,
+body.v40-full.v41-mono.v42-adaptive #statsView .equity-section-head,
+body.v40-full.v41-mono.v42-adaptive #statsView .equity-card {
+  display: none !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #marketView .legacy-market-runtime::before {
+  content: "DATA INTEGRITY · FEED PIPELINE" !important;
+  color: var(--accent-core) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #marketView .legacy-market-runtime {
+  border-color: rgba(112, 221, 234, .16) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #marketView #freshnessBanner i,
+body.v40-full.v41-mono.v42-adaptive .v38-learning-line i,
+body.v40-full.v41-mono.v42-adaptive .brain-system-nominal i {
+  background: var(--accent-core) !important;
+  box-shadow: 0 0 10px rgba(112, 221, 234, .55) !important;
+}
+
+/* Core/navigation accent: current system state, never decorative card fill. */
+body.v40-full.v41-mono.v42-adaptive .bottom-nav button.active {
+  color: var(--accent-core) !important;
+  border-color: rgba(112, 221, 234, .28) !important;
+  background: linear-gradient(180deg, rgba(112, 221, 234, .075), rgba(112, 221, 234, .012)) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .bottom-nav button.active::after {
+  background: var(--accent-core) !important;
+  box-shadow: 0 0 9px rgba(112, 221, 234, .72) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .kage-hero-action,
+body.v40-full.v41-mono.v42-adaptive #marketRefreshBtn,
+body.v40-full.v41-mono.v42-adaptive .v38-refresh,
+body.v40-full.v41-mono.v42-adaptive .doctor-action {
+  color: var(--accent-core) !important;
+  border-color: rgba(112, 221, 234, .28) !important;
+  background: rgba(112, 221, 234, .045) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #brainCoreScore,
+body.v40-full.v41-mono.v42-adaptive #rawConfidence,
+body.v40-full.v41-mono.v42-adaptive #calConfidence,
+body.v40-full.v41-mono.v42-adaptive #adaptiveModelTrust,
+body.v40-full.v41-mono.v42-adaptive #commandEntryZone,
+body.v40-full.v41-mono.v42-adaptive #entryZone,
+body.v40-full.v41-mono.v42-adaptive #pendingPrimaryEntry {
+  color: var(--accent-core) !important;
+  text-shadow: 0 0 14px rgba(112, 221, 234, .18) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .progress i,
+body.v40-full.v41-mono.v42-adaptive .health-bar i,
+body.v40-full.v41-mono.v42-adaptive .precision-bar i,
+body.v40-full.v41-mono.v42-adaptive .learning-progress i,
+body.v40-full.v41-mono.v42-adaptive .calibration-bar i,
+body.v40-full.v41-mono.v42-adaptive .confirm-track i,
+body.v40-full.v41-mono.v42-adaptive .intro-bar i,
+body.v40-full.v41-mono.v42-adaptive .action-loader-bar i,
+body.v40-full.v41-mono.v42-adaptive #planProgressBar {
+  background: linear-gradient(90deg, #47747a, var(--accent-core)) !important;
+  box-shadow: 0 0 10px rgba(112, 221, 234, .28) !important;
+}
+
+/* Positive outcomes and take-profit values. */
+body.v40-full.v41-mono.v42-adaptive :is(.status-chip.good, .final-ai-badge.good, .intel-chip.good, .precision-pill.good, .exec-gate.pass),
+body.v40-full.v41-mono.v42-adaptive :is(.good-text, .pnl-positive, .roadmap-pnl.positive, .doctor-pass),
+body.v40-full.v41-mono.v42-adaptive :is(.status-mini.hit, .status-mini.ready, .status-mini.live) {
+  color: var(--accent-good) !important;
+  border-color: rgba(105, 213, 165, .27) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #todayProfit,
+body.v40-full.v41-mono.v42-adaptive #tpStop,
+body.v40-full.v41-mono.v42-adaptive #commandTp1,
+body.v40-full.v41-mono.v42-adaptive #commandTp2,
+body.v40-full.v41-mono.v42-adaptive #signalTp1,
+body.v40-full.v41-mono.v42-adaptive #signalTp2,
+body.v40-full.v41-mono.v42-adaptive #pendingPrimaryTp1,
+body.v40-full.v41-mono.v42-adaptive #pendingPrimaryTp2 {
+  color: var(--accent-good) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive :is(.roadmap-row.hit, .home-ai-health.good, .signal-card.live, .life-card.live) {
+  border-color: rgba(105, 213, 165, .25) !important;
+  box-shadow: inset 2px 0 var(--accent-good) !important;
+}
+
+/* Caution/current uses amber; danger/risk uses coral. */
+body.v40-full.v41-mono.v42-adaptive :is(.status-chip.warn, .final-ai-badge.warn, .intel-chip.warn, .precision-pill.warn, .exec-gate.warn),
+body.v40-full.v41-mono.v42-adaptive :is(.status-mini.current, .status-mini.wait, .doctor-warn),
+body.v40-full.v41-mono.v42-adaptive #planPace.warn {
+  color: var(--accent-warn) !important;
+  border-color: rgba(215, 182, 109, .26) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .roadmap-row.current {
+  border-color: rgba(215, 182, 109, .3) !important;
+  box-shadow: inset 2px 0 var(--accent-warn) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive :is(.status-chip.bad, .final-ai-badge.bad, .intel-chip.bad, .precision-pill.bad, .exec-gate.block),
+body.v40-full.v41-mono.v42-adaptive :is(.danger-text, .pnl-negative, .roadmap-pnl.negative, .doctor-fail),
+body.v40-full.v41-mono.v42-adaptive :is(.status-mini.miss, .status-mini.bad) {
+  color: var(--accent-bad) !important;
+  border-color: rgba(226, 115, 128, .28) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #maxLoss,
+body.v40-full.v41-mono.v42-adaptive #statDd,
+body.v40-full.v41-mono.v42-adaptive #commandSl,
+body.v40-full.v41-mono.v42-adaptive #signalSl,
+body.v40-full.v41-mono.v42-adaptive #pendingPrimarySl {
+  color: var(--accent-bad) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .roadmap-row.miss,
+body.v40-full.v41-mono.v42-adaptive .home-ai-health.bad {
+  border-color: rgba(226, 115, 128, .26) !important;
+  box-shadow: inset 2px 0 var(--accent-bad) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #newsView .news-row.high {
+  border-left-color: var(--accent-bad) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #newsView .news-row.medium {
+  border-left-color: var(--accent-warn) !important;
+}
+
+/* Adaptive candidate/champion governance. */
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 7px;
+}
+
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42 > div {
+  min-width: 0;
+  min-height: 54px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .018);
+}
+
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42 span,
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42 small {
+  display: block;
+  color: #686e73;
+  font-size: 5.3px;
+  letter-spacing: .075em;
+}
+
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42 b {
+  display: block;
+  margin: 4px 0 2px;
+  overflow: hidden;
+  color: #e6e8e8;
+  font-size: 8px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-note {
+  margin-top: 6px;
+  padding: 7px 8px;
+  color: #777d81;
+  border-left: 1px solid var(--accent-core);
+  background: rgba(112, 221, 234, .025);
+  font-size: 5.6px;
+  line-height: 1.45;
+}
+
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42[data-tone="good"] #adaptiveModelState,
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42[data-tone="good"] #adaptiveModelAction {
+  color: var(--accent-good) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42[data-tone="warn"] #adaptiveModelState,
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42[data-tone="warn"] #adaptiveModelAction {
+  color: var(--accent-warn) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42[data-tone="bad"] #adaptiveModelState,
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42[data-tone="bad"] #adaptiveModelAction {
+  color: var(--accent-bad) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42[data-tone="core"] #adaptiveModelState,
+body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42[data-tone="core"] #adaptiveModelAction,
+body.v40-full.v41-mono.v42-adaptive #adaptiveModelBrier {
+  color: var(--accent-core) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #homeDelta.pnl-positive {
+  color: var(--accent-good) !important;
+}
+
+body.v40-full.v41-mono.v42-adaptive #homeDelta.pnl-negative {
+  color: var(--accent-bad) !important;
+}
+
+@media (max-width: 390px) {
+  body.v40-full.v41-mono.v42-adaptive .adaptive-model-v42 > div {
+    min-height: 50px;
+    padding: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.v40-full.v41-mono.v42-adaptive .bottom-nav button.active::after {
+    box-shadow: none !important;
+  }
+}

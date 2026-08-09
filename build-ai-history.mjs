@@ -1,7 +1,17 @@
 import fs from 'node:fs';
+import crypto from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const INPUT='xauusd-primary.json';
 const OUTPUT='ai-history.json';
+const VERSION='V42.0';
+const ARTIFACT_SCHEMA='KAGE_AI_V42';
+const TRAINING_FEED='TWELVE_DATA_PRIMARY';
+const FEATURE_SCHEMA=['direction','regime','rsiBucket','structure','timeframe'];
+const FEATURE_SCHEMA_HASH='17e82bd347b6f345ad289df1';
+const LABEL_SCHEMA='FUTURE_CLOSE_DIRECTION_BY_TF_V42';
+const LABEL_SCHEMA_HASH='fffe7703ec24c8cac8851daa';
 const TF_MS={M1:60000,M5:300000,M15:900000,H1:3600000};
 const FWD={M1:15,M5:8,M15:4,H1:2};
 const STRIDE={M1:12,M5:5,M15:3,H1:1};
@@ -14,7 +24,8 @@ const median=a=>{const x=a.filter(Number.isFinite).slice().sort((p,q)=>p-q);if(!
 const num=v=>{const n=Number(v);return Number.isFinite(n)?n:NaN};
 function normalize(v){const open=num(v.open),high=num(v.high),low=num(v.low),close=num(v.close);let ts=num(v.ts);if(!Number.isFinite(ts)){const d=String(v.datetime||v.date||'').trim();ts=Date.parse(d.includes('T')?d:d.replace(' ','T')+'Z')}if(!Number.isFinite(ts)||![open,high,low,close].every(Number.isFinite)||open<=0||high<Math.max(open,close)||low>Math.min(open,close)||high<low)return null;return{ts,open,high,low,close}}
 function clean(raw){const a=(raw||[]).map(normalize).filter(Boolean).sort((x,y)=>x.ts-y.ts),out=[];let last=-1;for(const c of a){if(c.ts===last)continue;last=c.ts;out.push(c)}return out}
-function aggregate(src,tf){const ms=TF_MS[tf],out=[];let bucket=-1,cur=null;for(const c of src){const b=Math.floor(c.ts/ms)*ms;if(b!==bucket){if(cur)out.push(cur);bucket=b;cur={ts:b,open:c.open,high:c.high,low:c.low,close:c.close}}else{cur.high=Math.max(cur.high,c.high);cur.low=Math.min(cur.low,c.low);cur.close=c.close}}if(cur)out.push(cur);return out}
+export function closedBars(raw,tf,watermark){const width=TF_MS[tf]||60000,limit=Number(watermark);if(!(limit>0))return[];return clean(raw).filter(c=>c.ts+width<=limit)}
+export function aggregate(src,tf,watermark){const ms=TF_MS[tf],limit=Number(watermark),out=[];let bucket=-1,cur=null,count=0;for(const c of clean(src)){const b=Math.floor(c.ts/ms)*ms;if(b!==bucket){if(cur&&cur.ts+ms<=limit&&count>=ms/60000)out.push(cur);bucket=b;count=1;cur={ts:b,open:c.open,high:c.high,low:c.low,close:c.close}}else{count++;cur.high=Math.max(cur.high,c.high);cur.low=Math.min(cur.low,c.low);cur.close=c.close}}if(cur&&cur.ts+ms<=limit&&count>=ms/60000)out.push(cur);return out}
 function ema(vals,p){if(!vals.length)return[];const k=2/(p+1),out=[];let x=vals[0];for(let i=0;i<vals.length;i++){x=i?vals[i]*k+x*(1-k):vals[i];out.push(x)}return out}
 function trueRanges(c){return c.map((x,i)=>i?Math.max(x.high-x.low,Math.abs(x.high-c[i-1].close),Math.abs(x.low-c[i-1].close)):x.high-x.low)}
 function wilders(vals,p=14){const out=new Array(vals.length).fill(null);if(vals.length<p)return out;let x=vals.slice(0,p).reduce((a,b)=>a+b,0)/p;out[p-1]=x;for(let i=p;i<vals.length;i++){x=(x*(p-1)+vals[i])/p;out[i]=x}return out}
@@ -39,11 +50,27 @@ function analyzeTf(c,tf){
   const upProbability=match?Math.round(clamp(match.posteriorUpRate*100,5,95)):Math.round(clamp(50+signed*.45,7,93));
   return{candles:c.length,from:new Date(c[0].ts).toISOString(),to:new Date(c[n].ts).toISOString(),sampleCount,forwardBars:forward,recencyHalfLifeDays:HALF_LIFE_DAYS,latest:{bias,strength,upProbability,rsi:Number((RS[n]??50).toFixed(2)),adx:Number((AD[n]??0).toFixed(2)),structure:latestStructure,key:ks[0],matchLevel:match?.matchLevel||'NONE',effectiveSamples:Number((match?.effectiveSamples||0).toFixed(2)),lowerBound:Number(((match?.lowerBound??.05)*100).toFixed(2)),upperBound:Number(((match?.upperBound??.95)*100).toFixed(2)),uncertaintyPts:Number((match?.uncertaintyPts??90).toFixed(2))},regimes,patterns:exact.slice(0,500).map(r=>({...r,upRate:Number(r.upRate.toFixed(4)),posteriorUpRate:Number(r.posteriorUpRate.toFixed(4)),lowerBound:Number(r.lowerBound.toFixed(4)),upperBound:Number(r.upperBound.toFixed(4)),avgReturnR:Number(r.avgReturnR.toFixed(4)),avgMfeR:Number(r.avgMfeR.toFixed(4)),avgMaeR:Number(r.avgMaeR.toFixed(4))}))};
 }
-function fingerprint(pack){const t=pack.timeframes||pack.data||pack||{},rows=['M1','M5','M15','H1'].map(tf=>{const a=t[tf]||[];return`${tf}:${a.length}:${a[0]?.ts||a[0]?.datetime||''}:${a.at(-1)?.ts||a.at(-1)?.datetime||''}`}).join('|');let h=2166136261;for(let i=0;i<rows.length;i++){h^=rows.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16)}
-if(!fs.existsSync(INPUT)){console.log(`V37 PRIMARY training waiting: missing ${INPUT}`);process.exit(0)}
-const pack=JSON.parse(fs.readFileSync(INPUT,'utf8')),raw=pack.timeframes||pack.data||pack||{},M1=clean(raw.M1||[]),data={M1};for(const tf of ['M5','M15','H1']){const own=clean(raw[tf]||[]);const derived=M1.length>=180?aggregate(M1,tf):[];data[tf]=own.length>=derived.length?own:derived}
-const timeframes={};for(const tf of ['M1','M5','M15','H1']){const r=analyzeTf(data[tf]||[],tf);if(r)timeframes[tf]=r}
-const weights={H1:.36,M15:.34,M5:.20,M1:.10};let signed=0,wSum=0,totalCandles=0,totalPatterns=0,biasVotes=[],uncertaintyWeighted=0;for(const[tf,row]of Object.entries(timeframes)){const w=weights[tf]||.1,p=row.latest.upProbability;signed+=(p-50)*w;uncertaintyWeighted+=(row.latest.uncertaintyPts||90)*w;wSum+=w;totalCandles+=row.candles;totalPatterns+=row.patterns.length;biasVotes.push(row.latest.bias)}const upProbability=Math.round(clamp(50+(wSum?signed/wSum:0),5,95)),globalBias=upProbability>=55?'BUY':upProbability<=45?'SELL':'NEUTRAL',same=biasVotes.filter(x=>x===globalBias).length,agreement=biasVotes.length?Math.round(same/biasVotes.length*100):0,uncertainty=wSum?uncertaintyWeighted/wSum:90,confidence=Math.round(clamp(agreement*.55+(100-uncertainty)*.45,0,100));
-const coverageFrom=Object.values(timeframes).map(r=>Date.parse(r.from)).filter(Number.isFinite),coverageTo=Object.values(timeframes).map(r=>Date.parse(r.to)).filter(Number.isFinite),coverageDays=coverageFrom.length&&coverageTo.length?(Math.max(...coverageTo)-Math.min(...coverageFrom))/DAY:0;
-const out={version:'2.1',engine:'ONEMONTH-HISTORY-V2.1',symbol:'XAUUSD',generatedAt:new Date().toISOString(),sourceGeneratedAt:pack.generatedAt||null,dataFeed:pack.feed||null,sourceFingerprint:fingerprint(pack),ready:Object.keys(timeframes).length>=2,coverageDays:Number(coverageDays.toFixed(1)),recency:{halfLifeDays:HALF_LIFE_DAYS},totalCandles,timeframes,global:{bias:globalBias,upProbability,agreement,totalPatterns,coverageDays:Number(coverageDays.toFixed(1)),uncertaintyPts:Number(uncertainty.toFixed(1)),confidence}};
-fs.writeFileSync(OUTPUT,JSON.stringify(out,null,2));console.log(`Built ${OUTPUT}: ${globalBias} ${upProbability}% | confidence ${confidence} | ${totalCandles} candles | ${totalPatterns} patterns`);
+function artifactSchema(){return{version:ARTIFACT_SCHEMA,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchemaHash:LABEL_SCHEMA_HASH}}
+function artifactProvenance(sourceFingerprint=null,dataWatermark=null){return{schemaVersion:ARTIFACT_SCHEMA,trainingSource:INPUT,trainingFeed:TRAINING_FEED,mergeFeeds:false,featureSchemaHash:FEATURE_SCHEMA_HASH,labelSchema:LABEL_SCHEMA,labelSchemaHash:LABEL_SCHEMA_HASH,sourceFingerprint,dataWatermark}}
+function fingerprint(data,watermark){const hash=crypto.createHash('sha256');hash.update(`${TRAINING_FEED}|${watermark}|`);for(const tf of ['M1','M5','M15','H1']){hash.update(`${tf}|`);for(const b of data[tf]||[])hash.update(`${b.ts},${b.open},${b.high},${b.low},${b.close};`)}return hash.digest('hex').slice(0,24)}
+function waiting(reason,extra={}){return{version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:'ONEMONTH-HISTORY-V42',symbol:'XAUUSD',generatedAt:new Date().toISOString(),ready:false,status:reason.startsWith('INVALID_')?'QUARANTINED':'WAIT_DATA',reason,artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(extra.sourceFingerprint||null,extra.dataWatermark||null),featureSchema:FEATURE_SCHEMA,timeframes:{},global:{bias:'NEUTRAL',upProbability:50,agreement:0,totalPatterns:0,uncertaintyPts:100,confidence:0},...extra}}
+
+export function buildHistory(pack){
+  if(!pack||typeof pack!=='object')return waiting('MISSING_PRIMARY_PACK');
+  const feed=pack.feed||{},source=String(pack.source||'').toUpperCase(),active=String(feed.active||'').toUpperCase(),watermark=Number(pack.closedBarWatermark||feed.closedBarWatermark||0);
+  if(active!=='TWELVE_DATA'||!source.includes('PRIMARY')||feed.switching?.mergeFeeds!==false)return waiting('INVALID_PRIMARY_TRAINING_FEED',{dataWatermark:watermark||null});
+  if(!(watermark>0))return waiting('INVALID_CLOSED_BAR_WATERMARK');
+  const raw=pack.timeframes||pack.data||pack,M1=closedBars(raw.M1||[],'M1',watermark),data={M1};
+  for(const tf of ['M5','M15','H1']){const own=closedBars(raw[tf]||[],tf,watermark),derived=M1.length>=180?aggregate(M1,tf,watermark):[];data[tf]=own.length>=derived.length?own:derived}
+  const sourceFingerprint=fingerprint(data,watermark),timeframes={};
+  for(const tf of ['M1','M5','M15','H1']){const row=analyzeTf(data[tf]||[],tf);if(row)timeframes[tf]=row}
+  const weights={H1:.36,M15:.34,M5:.20,M1:.10};let signed=0,wSum=0,totalCandles=0,totalPatterns=0,biasVotes=[],uncertaintyWeighted=0;
+  for(const[tf,row]of Object.entries(timeframes)){const w=weights[tf]||.1,p=row.latest.upProbability;signed+=(p-50)*w;uncertaintyWeighted+=(row.latest.uncertaintyPts||90)*w;wSum+=w;totalCandles+=row.candles;totalPatterns+=row.patterns.length;biasVotes.push(row.latest.bias)}
+  const upProbability=Math.round(clamp(50+(wSum?signed/wSum:0),5,95)),globalBias=upProbability>=55?'BUY':upProbability<=45?'SELL':'NEUTRAL',same=biasVotes.filter(x=>x===globalBias).length,agreement=biasVotes.length?Math.round(same/biasVotes.length*100):0,uncertainty=wSum?uncertaintyWeighted/wSum:90,confidence=Math.round(clamp(agreement*.55+(100-uncertainty)*.45,0,100));
+  const coverageFrom=Object.values(timeframes).map(r=>Date.parse(r.from)).filter(Number.isFinite),coverageTo=Object.values(timeframes).map(r=>Date.parse(r.to)).filter(Number.isFinite),coverageDays=coverageFrom.length&&coverageTo.length?(Math.max(...coverageTo)-Math.min(...coverageFrom))/DAY:0,totalSamples=Object.values(timeframes).reduce((sum,row)=>sum+(Number(row.sampleCount)||0),0),ready=Object.keys(timeframes).length>=2&&totalSamples>=100;
+  return{version:VERSION,schemaVersion:ARTIFACT_SCHEMA,engine:'ONEMONTH-HISTORY-V42',symbol:'XAUUSD',generatedAt:new Date().toISOString(),sourceGeneratedAt:pack.generatedAt||null,dataFeed:feed,sourceFingerprint,ready,status:ready?'READY':'WAIT_DATA',reason:ready?null:'INSUFFICIENT_CLOSED_HISTORY',artifactSchema:artifactSchema(),artifactProvenance:artifactProvenance(sourceFingerprint,watermark),featureSchema:FEATURE_SCHEMA,dataIntegrity:{closedBarsOnly:true,dataWatermark:watermark,mergeFeeds:false,counts:Object.fromEntries(Object.entries(data).map(([tf,rows])=>[tf,rows.length]))},coverageDays:Number(coverageDays.toFixed(1)),recency:{halfLifeDays:HALF_LIFE_DAYS},totalCandles,timeframes,global:{bias:globalBias,upProbability,agreement,totalPatterns,totalSamples,coverageDays:Number(coverageDays.toFixed(1)),uncertaintyPts:Number(uncertainty.toFixed(1)),confidence}};
+}
+
+export function main(){let pack=null;try{pack=JSON.parse(fs.readFileSync(INPUT,'utf8'))}catch(_){}const out=buildHistory(pack);fs.writeFileSync(OUTPUT,JSON.stringify(out,null,2));console.log(`V42 history ${out.status}: ${out.global?.bias||'NEUTRAL'} ${out.global?.upProbability||50}% | ${out.totalCandles||0} candles | ${out.global?.totalPatterns||0} patterns`)}
+const invokedPath=process.argv[1]?path.resolve(process.argv[1]):'';
+if(invokedPath&&invokedPath===path.resolve(fileURLToPath(import.meta.url)))main();

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OneMonth OS V38 Autonomous Self-Play Precision Brain.
+"""OneMonth OS V42 Autonomous Self-Play Precision Brain.
 
 Design goals:
 - Train on Twelve Data PRIMARY history only when an isolated primary pack exists.
@@ -38,6 +38,15 @@ from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss, roc_auc_score
 
+from ai_provenance_v42 import (
+    ARTIFACT_SCHEMA_VERSION,
+    LABEL_SCHEMA,
+    LABEL_SCHEMA_HASH,
+    compatible_artifact,
+    feature_schema_hash,
+    validate_primary_pack_metadata,
+)
+
 try:
     from xgboost import XGBClassifier
     HAS_XGBOOST = True
@@ -59,7 +68,7 @@ THRESHOLD_PATH = ROOT / "ai-thresholds.json"
 COUNTERFACTUAL_PATH = ROOT / "ai-counterfactual.json"
 AUTOPSY_PATH = ROOT / "ai-autopsy.json"
 
-VERSION = "V38 AUTONOMOUS SELF-PLAY PRECISION BRAIN"
+VERSION = "V42 AUTONOMOUS SELF-PLAY PRECISION BRAIN"
 SEED = 3809
 RNG = np.random.default_rng(SEED)
 MIN_M15 = 420
@@ -115,13 +124,28 @@ def wait_data(reason: str, counts: Optional[dict] = None) -> None:
         "ready": False,
         "status": "WAIT_DATA",
         "reason": reason,
-        "engine": "V37_PRIMARY_ISOLATED_AUTOML",
+        "engine": "V42_PRIMARY_ISOLATED_AUTOML",
+        "artifactSchema": {
+            "version": ARTIFACT_SCHEMA_VERSION,
+            "featureSchemaHash": None,
+            "labelSchemaHash": LABEL_SCHEMA_HASH,
+        },
+        "artifactProvenance": {
+            "schemaVersion": ARTIFACT_SCHEMA_VERSION,
+            "trainingFeed": "TWELVE_DATA_PRIMARY",
+            "mergeFeeds": False,
+            "featureSchemaHash": None,
+            "labelSchema": LABEL_SCHEMA,
+            "labelSchemaHash": LABEL_SCHEMA_HASH,
+            "sourceFingerprint": None,
+            "dataWatermark": None,
+        },
         "training": {"counts": counts or {}},
     }
     write_json(CANDIDATE_PATH, pack)
     # Do not destroy a previously valid active brain merely because a new training
     # run is temporarily waiting for more isolated PRIMARY data.
-    if not OUT_PATH.exists() or not load_json(OUT_PATH).get("ready"):
+    if not compatible_artifact(load_json(OUT_PATH)):
         write_json(OUT_PATH, pack)
     write_json(GOV_PATH, {
         "version": VERSION,
@@ -129,6 +153,8 @@ def wait_data(reason: str, counts: Optional[dict] = None) -> None:
         "action": "WAIT_DATA",
         "trusted": False,
         "reason": reason,
+        "artifactSchemaVersion": ARTIFACT_SCHEMA_VERSION,
+        "labelSchemaHash": LABEL_SCHEMA_HASH,
     })
     print("ML WAIT_DATA:", reason, counts or {})
     raise SystemExit(0)
@@ -152,16 +178,36 @@ def frame_from_rows(rows: Iterable[dict]) -> pd.DataFrame:
 
 def pack_frames(pack: dict) -> Dict[str, pd.DataFrame]:
     raw = pack.get("timeframes") or pack.get("data") or {}
-    return {k: frame_from_rows(raw.get(k, [])) for k in ["M1", "M5", "M15", "H1"]}
+    frames = {k: frame_from_rows(raw.get(k, [])) for k in ["M1", "M5", "M15", "H1"]}
+    watermark = int(safe_num(pack.get("closedBarWatermark") or (pack.get("feed") or {}).get("closedBarWatermark"), 0))
+    if watermark > 0:
+        widths = {"M1": M1_MS, "M5": M5_MS, "M15": M15_MS, "H1": H1_MS}
+        frames = {
+            key: df[df["ts"] + widths[key] <= watermark].reset_index(drop=True)
+            for key, df in frames.items()
+        }
+    return frames
 
 
 def load_packs() -> Tuple[dict, dict, str]:
     live = load_json(LIVE_DATA_PATH)
     if not live:
         wait_data("MISSING_XAUUSD_JSON")
+    live_feed = live.get("feed") or {}
+    live_watermark = int(safe_num(live.get("closedBarWatermark") or live_feed.get("closedBarWatermark"), 0))
+    if (live_feed.get("switching") or {}).get("mergeFeeds") is not False:
+        wait_data("LIVE_FEED_ISOLATION_NOT_EXPLICIT")
+    if live_watermark <= 0:
+        wait_data("LIVE_CLOSED_BAR_WATERMARK_MISSING")
     primary = load_json(PRIMARY_DATA_PATH)
     if primary:
+        metadata_ok, metadata_reason, primary_watermark = validate_primary_pack_metadata(primary)
+        if not metadata_ok:
+            wait_data(metadata_reason, {"primaryPack": True})
         pf = pack_frames(primary)
+        widths = {"M1": M1_MS, "M5": M5_MS, "M15": M15_MS, "H1": H1_MS}
+        if any(len(df) and int(df.iloc[-1]["ts"]) + widths[key] > primary_watermark for key, df in pf.items()):
+            wait_data("PRIMARY_CONTAINS_UNCLOSED_BARS", {key: len(df) for key, df in pf.items()})
         if len(pf["M15"]) >= MIN_M15 and len(pf["M1"]) >= MIN_M1:
             return live, primary, "xauusd-primary.json"
     active = str((live.get("feed") or {}).get("active") or "").upper()
@@ -1066,13 +1112,22 @@ def health_score(metrics: dict, filled_samples: int, ood_pts: float, disagreemen
     return float(np.clip(score, 0, 100))
 
 
-def governance(candidate_score: float, metrics: dict, source_fp: str) -> dict:
+def governance(candidate_score: float, metrics: dict, source_fp: str, provenance: dict) -> dict:
     old = load_json(GOV_PATH)
+    if old.get("artifactSchemaVersion") != ARTIFACT_SCHEMA_VERSION:
+        old = {}
     best = safe_num(old.get("bestScore"), -1)
     best_brier = safe_num(old.get("bestBrier"), 9)
     cur_brier = safe_num(metrics.get("brier"), 9)
     streak = int(safe_num(old.get("promotionStreak"), 0))
-    if best < 0:
+    same_evidence = bool(
+        old.get("sourceFingerprint") == source_fp
+        and int(safe_num(old.get("dataWatermark"), 0)) == int(safe_num(provenance.get("dataWatermark"), 0))
+    )
+    if same_evidence:
+        action = "KEEP_IDENTICAL_EVIDENCE"
+        trusted = bool(old.get("trusted"))
+    elif best < 0:
         action = "BOOTSTRAP"
         trusted = candidate_score >= 50 and cur_brier <= 0.28
         streak = 1 if trusted else 0
@@ -1111,7 +1166,12 @@ def governance(candidate_score: float, metrics: dict, source_fp: str) -> dict:
         "candidateBrier": None if cur_brier >= 8 else round(cur_brier, 5),
         "bestBrier": None if best_brier >= 8 else round(best_brier, 5),
         "promotionStreak": streak,
+        "evidenceAdvanced": not same_evidence,
         "sourceFingerprint": source_fp,
+        "artifactSchemaVersion": ARTIFACT_SCHEMA_VERSION,
+        "featureSchemaHash": provenance.get("featureSchemaHash"),
+        "labelSchemaHash": LABEL_SCHEMA_HASH,
+        "dataWatermark": provenance.get("dataWatermark"),
         "note": "Governance can quarantine a weak challenger; models are retrained from source data rather than serialized broker execution models.",
     }
 
@@ -1323,13 +1383,16 @@ def explain_candidate(item: dict, c: dict) -> List[str]:
 
 
 def source_fingerprint(pack: dict, tfs: Dict[str, pd.DataFrame], label: str) -> str:
-    payload = {
-        "source": label,
-        "generatedAt": pack.get("generatedAt"),
-        "last": {k: int(v.iloc[-1]["ts"]) if len(v) else None for k, v in tfs.items()},
-        "counts": {k: len(v) for k, v in tfs.items()},
-    }
-    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()[:24]
+    watermark = int(safe_num(pack.get("closedBarWatermark") or (pack.get("feed") or {}).get("closedBarWatermark"), 0))
+    digest = hashlib.sha256(f"{label}|{watermark}|".encode("utf-8"))
+    for timeframe in ["M1", "M5", "M15", "H1"]:
+        digest.update(f"{timeframe}|".encode("utf-8"))
+        frame = tfs.get(timeframe)
+        if frame is None:
+            continue
+        for row in frame[["ts", "open", "high", "low", "close"]].itertuples(index=False, name=None):
+            digest.update((",".join(format(safe_num(value), ".12g") for value in row) + ";").encode("ascii"))
+    return digest.hexdigest()[:24]
 
 
 def main() -> None:
@@ -1366,6 +1429,10 @@ def main() -> None:
 
     ds, feature_cols, _ = build_dataset(train_anchor, train_tfs["M1"])
     _, live_feature_cols, current = build_dataset(live_anchor.tail(1), live_tfs["M1"])
+    if len(current) != len(ORDER_TYPES) * len(VARIANTS):
+        wait_data("CURRENT_CANDIDATE_SCHEMA_INCOMPLETE", {
+            "expected": len(ORDER_TYPES) * len(VARIANTS), "actual": len(current), **live_counts,
+        })
     if ds.empty or len(ds) < 1600:
         wait_data("NOT_ENOUGH_M1_FIRST_HIT_PENDING_LABELS", {**train_counts, "labeled": len(ds)})
     feature_cols = [c for c in feature_cols if c in live_feature_cols]
@@ -1404,6 +1471,20 @@ def main() -> None:
     mae_q = fit_quantile_bundle(Xf, filled_ds["mae_r"].to_numpy(dtype=float), tf)
 
     fp = source_fingerprint(train_pack, train_tfs, train_source)
+    _, _, primary_watermark = validate_primary_pack_metadata(train_pack)
+    schema_hash = feature_schema_hash(feature_cols)
+    provenance = {
+        "schemaVersion": ARTIFACT_SCHEMA_VERSION,
+        "trainingSource": train_source,
+        "trainingFeed": "TWELVE_DATA_PRIMARY",
+        "mergeFeeds": False,
+        "featureSchemaHash": schema_hash,
+        "labelSchema": LABEL_SCHEMA,
+        "labelSchemaHash": LABEL_SCHEMA_HASH,
+        "sourceFingerprint": fp,
+        "dataWatermark": primary_watermark,
+        "candidateSchemaCount": len(current),
+    }
     pop_drift = population_drift(X, times)
     experts = context_stats(filled_ds)
     news_guard = load_news_guard(int(live_anchor.iloc[-1]["ts"]))
@@ -1500,7 +1581,7 @@ def main() -> None:
     disagreement_pts = float(np.mean(disagreements)) if disagreements else 100.0
     primary_metrics = tp1_head.metrics
     health = health_score(primary_metrics, int(filled_mask.sum()), ood_score, disagreement_pts)
-    gov = governance(health, primary_metrics, fp)
+    gov = governance(health, primary_metrics, fp, provenance)
     if ood_score > 55 or safe_num(primary_metrics.get("ece"), 1) > 0.18 or safe_num(primary_metrics.get("brier"), 1) > 0.27:
         gov["trusted"] = False
         gov["action"] = "QUARANTINE_GUARD"
@@ -1540,7 +1621,12 @@ def main() -> None:
     # can promote these values, and selfplay-lab.py validates them on an unseen
     # chronological tail before activationReady becomes true.
     threshold_pack = load_json(THRESHOLD_PATH)
-    auto_threshold_active = bool(threshold_pack.get("activationReady") and threshold_pack.get("trusted"))
+    threshold_schema_ok = bool(
+        threshold_pack.get("artifactSchema") == ARTIFACT_SCHEMA_VERSION
+        and threshold_pack.get("labelSchemaHash") == LABEL_SCHEMA_HASH
+        and threshold_pack.get("source") == "PRIMARY_SHADOW_OUTCOMES_ONLY"
+    )
+    auto_threshold_active = bool(threshold_schema_ok and threshold_pack.get("activationReady") and threshold_pack.get("trusted"))
     if auto_threshold_active:
         rec = threshold_pack.get("recommended") or {}
         min_plan_score = float(np.clip(safe_num(rec.get("minPlanScore"), min_plan_score), 56, 78))
@@ -1643,10 +1729,16 @@ def main() -> None:
     pack_out = {
         "version": VERSION,
         "generatedAt": utc_now(),
-        "ready": True,
+        "ready": bool(status == "TRUSTED" and gov.get("trusted")),
         "status": status,
-        "engine": "V38 M1 FIRST-HIT / XGB+HGB+TREES / SHADOW SELF-PLAY / AUTO THRESHOLD / AUTOPSY / COUNTERFACTUAL",
+        "engine": "V42 M1 FIRST-HIT / XGB+HGB+TREES / SHADOW SELF-PLAY / AUTO THRESHOLD / AUTOPSY / COUNTERFACTUAL",
         "sourceFingerprint": fp,
+        "artifactSchema": {
+            "version": ARTIFACT_SCHEMA_VERSION,
+            "featureSchemaHash": schema_hash,
+            "labelSchemaHash": LABEL_SCHEMA_HASH,
+        },
+        "artifactProvenance": provenance,
         "dataIsolation": {
             "trainingSource": train_source,
             "trainingFeed": "TWELVE_DATA_PRIMARY",
@@ -1657,7 +1749,7 @@ def main() -> None:
         "training": {
             "anchors": int(len(train_anchor)), "candidateSamples": int(len(ds)), "filledSamples": int(filled_mask.sum()),
             "coverageDays": coverage_days, "labelCoverageDays": label_coverage_days, "M1": train_counts["M1"], "M5": train_counts["M5"], "M15": train_counts["M15"], "H1": train_counts["H1"],
-            "labels": "M1_FIRST_HIT", "fillHorizonMin": FILL_HORIZON_MIN, "outcomeHorizonMin": OUTCOME_HORIZON_MIN,
+            "labels": LABEL_SCHEMA, "fillHorizonMin": FILL_HORIZON_MIN, "outcomeHorizonMin": OUTCOME_HORIZON_MIN,
             "geometryVariants": list(VARIANTS), "candidateSpace": len(ORDER_TYPES) * len(VARIANTS),
         },
         "validation": {
@@ -1743,9 +1835,29 @@ def main() -> None:
     }
 
     write_json(CANDIDATE_PATH, pack_out)
-    write_json(OUT_PATH, pack_out)
+    existing_active = load_json(OUT_PATH)
+    if status == "TRUSTED" and gov.get("trusted"):
+        existing_provenance = existing_active.get("artifactProvenance") or {}
+        identical_active = bool(
+            compatible_artifact(existing_active)
+            and existing_active.get("sourceFingerprint") == fp
+            and int(safe_num(existing_provenance.get("dataWatermark"), 0)) == int(primary_watermark)
+        )
+        if gov.get("action") == "KEEP_IDENTICAL_EVIDENCE" and identical_active:
+            gov["activeAction"] = "KEEP_IDENTICAL_ACTIVE"
+        else:
+            write_json(OUT_PATH, pack_out)
+            gov["activeAction"] = "PROMOTE_CANDIDATE"
+    elif compatible_artifact(existing_active):
+        gov["activeAction"] = "KEEP_COMPATIBLE_ACTIVE"
+        gov["activeSourceFingerprint"] = existing_active.get("sourceFingerprint")
+    else:
+        # No compatible champion exists. Publish the quarantined candidate so
+        # every consumer fails closed instead of silently retaining a legacy pack.
+        write_json(OUT_PATH, pack_out)
+        gov["activeAction"] = "PUBLISH_QUARANTINED_NO_COMPATIBLE_ACTIVE"
     write_json(GOV_PATH, gov)
-    print("V38 brain ready", {
+    print("V42 brain ready", {
         "status": status, "health": round(health, 1), "samples": len(ds), "filled": int(filled_mask.sum()),
         "auc": primary_metrics.get("auc"), "brier": primary_metrics.get("brier"), "ece": primary_metrics.get("ece"),
         "ood": round(ood_score, 1), "liveFeed": source_live, "qualified": len(qualified),

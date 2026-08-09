@@ -1,12 +1,13 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(process.cwd());
 const TWELVE_API_KEY = process.env.TWELVE_DATA_API_KEY || '';
 const FALLBACK_URL = (process.env.TV_FALLBACK_URL || '').replace(/\/$/, '');
 const FALLBACK_TOKEN = process.env.TV_FALLBACK_TOKEN || '';
 
-const VERSION = 'V38';
+const VERSION = 'V42';
 const SYMBOL = 'XAU/USD';
 const DAY = 86_400_000;
 const MINUTE = 60_000;
@@ -17,13 +18,14 @@ const PRIMARY_STALE_OPEN_MS = 20 * MINUTE;
 const FALLBACK_STALE_OPEN_MS = 4 * MINUTE;
 const CLOSED_SESSION_MAX_MS = 72 * 60 * MINUTE;
 const PRIMARY_RECOVERY_REQUIRED = 2;
+const CLOSED_BAR_SAFETY_MS = 5_000;
 
 function nowIso(){ return new Date().toISOString(); }
 function safeMsg(err){ return String(err?.message || err || 'unknown error').slice(0,260); }
 function latestTs(rows=[]){ return rows.length ? Number(rows.at(-1)?.ts) || 0 : 0; }
 function ageMs(ts){ return ts ? Math.max(0, Date.now() - ts) : Infinity; }
 
-function normalizeCandle(v){
+export function normalizeCandle(v){
   const rawTime = String(v?.datetime || v?.time || '');
   const parsedTime = rawTime
     ? Date.parse(rawTime.replace(' ', 'T') + (/[zZ]|[+-]\d\d:?\d\d$/.test(rawTime) ? '' : 'Z'))
@@ -38,13 +40,13 @@ function normalizeCandle(v){
   return { ts:minuteTs, datetime:new Date(minuteTs).toISOString().replace('T',' ').slice(0,19), open,high,low,close };
 }
 
-function dedupeSort(rows=[]){
+export function dedupeSort(rows=[]){
   const m=new Map();
   for(const raw of rows){ const c=normalizeCandle(raw); if(c) m.set(c.ts,c); }
   return [...m.values()].sort((a,b)=>a.ts-b.ts);
 }
 
-function rollHistory(oldRows=[], newRows=[], days=7){
+export function rollHistory(oldRows=[], newRows=[], days=7){
   const m=new Map();
   for(const raw of oldRows){ const c=normalizeCandle(raw); if(c) m.set(c.ts,c); }
   for(const raw of newRows){ const c=normalizeCandle(raw); if(c) m.set(c.ts,c); }
@@ -54,7 +56,14 @@ function rollHistory(oldRows=[], newRows=[], days=7){
   return rows.filter(x=>x.ts>=cut);
 }
 
-function aggregate(rows,bucketMs){
+export function closedBars(rows=[], timeframeMs=MINUTE, watermarkMs=Date.now()-CLOSED_BAR_SAFETY_MS){
+  const tf=Math.max(MINUTE,Number(timeframeMs)||MINUTE);
+  const watermark=Number(watermarkMs);
+  if(!Number.isFinite(watermark)) return [];
+  return dedupeSort(rows).filter(c=>c.ts+tf<=watermark);
+}
+
+export function aggregate(rows,bucketMs,closedThroughMs=Infinity){
   const b=new Map();
   for(const c of dedupeSort(rows)){
     const ts=Math.floor(c.ts/bucketMs)*bucketMs;
@@ -65,7 +74,10 @@ function aggregate(rows,bucketMs){
       p.high=Math.max(p.high,c.high); p.low=Math.min(p.low,c.low); p.close=c.close;
     }
   }
-  return [...b.values()].sort((a,b)=>a.ts-b.ts);
+  const watermark=Number(closedThroughMs);
+  return [...b.values()]
+    .filter(c=>!Number.isFinite(watermark)||c.ts+bucketMs<=watermark)
+    .sort((a,b)=>a.ts-b.ts);
 }
 
 function likelyFxOpen(date=new Date()){
@@ -93,8 +105,11 @@ async function fetchTwelveM1(){
     if(!r.ok || j?.status==='error' || !Array.isArray(j?.values)){
       const e=new Error(j?.message || `Twelve Data HTTP ${r.status}`); e.httpStatus=r.status; e.rateInfo=responseRateInfo(r); throw e;
     }
-    const rows=dedupeSort(j.values.slice().reverse()); if(!rows.length) throw new Error('Twelve Data returned no usable M1 candles');
-    return {rows,meta:{status:'ONLINE',httpStatus:r.status,latestTs:latestTs(rows),ageMs:ageMs(latestTs(rows)),credits:responseRateInfo(r),fetchedAt:nowIso()}};
+    const received=dedupeSort(j.values.slice().reverse());
+    const watermark=Date.now()-CLOSED_BAR_SAFETY_MS;
+    const rows=closedBars(received,MINUTE,watermark);
+    if(!rows.length) throw new Error('Twelve Data returned no closed M1 candles');
+    return {rows,meta:{status:'ONLINE',httpStatus:r.status,latestTs:latestTs(rows),ageMs:ageMs(latestTs(rows)),closedBarWatermark:watermark,droppedOpenBars:received.length-rows.length,credits:responseRateInfo(r),fetchedAt:nowIso()}};
   }finally{ clearTimeout(timer); }
 }
 
@@ -107,26 +122,31 @@ async function fetchMt5Fallback(limit=10_000){
     const r=await fetch(u,{headers,signal:ctrl.signal,cache:'no-store'}); const text=await r.text(); let j;
     try{ j=JSON.parse(text); }catch{ throw new Error(`MT5 fallback invalid JSON (${r.status})`); }
     if(!r.ok || j?.status==='error') throw new Error(j?.message || `MT5 fallback HTTP ${r.status}`);
-    const rows=dedupeSort(j?.timeframes?.M1 || j?.bars || []); if(!rows.length) throw new Error('MT5 fallback returned no M1 bars');
-    return {rows,meta:{status:'ONLINE',httpStatus:r.status,latestTs:latestTs(rows),ageMs:ageMs(latestTs(rows)),count:rows.length,fetchedAt:nowIso()}};
+    const received=dedupeSort(j?.timeframes?.M1 || j?.bars || []);
+    const watermark=Date.now()-CLOSED_BAR_SAFETY_MS;
+    const rows=closedBars(received,MINUTE,watermark);
+    if(!rows.length) throw new Error('MT5 fallback returned no closed M1 bars');
+    return {rows,meta:{status:'ONLINE',httpStatus:r.status,latestTs:latestTs(rows),ageMs:ageMs(latestTs(rows)),count:rows.length,closedBarWatermark:watermark,droppedOpenBars:received.length-rows.length,fetchedAt:nowIso()}};
   }finally{ clearTimeout(timer); }
 }
 
 async function readJson(name,fallback={}){ try{return JSON.parse(await fs.readFile(path.join(ROOT,name),'utf8'));}catch{return fallback;} }
 
-function sourcePackFromM1(previousSourcePack, rows, source, feedMeta, retention){
+export function sourcePackFromM1(previousSourcePack, rows, source, feedMeta, retention){
   const prev=previousSourcePack?.timeframes || {};
   const r=retention || ACTIVE_RETENTION;
-  const m1=rollHistory(prev.M1||[], rows, r.M1);
-  const a5=aggregate(m1,5*MINUTE), a15=aggregate(m1,15*MINUTE), a60=aggregate(m1,60*MINUTE);
+  const incoming=dedupeSort(rows);
+  const closedThrough=latestTs(incoming)+MINUTE;
+  const m1=closedBars(rollHistory(prev.M1||[],incoming,r.M1),MINUTE,closedThrough);
+  const a5=aggregate(m1,5*MINUTE,closedThrough), a15=aggregate(m1,15*MINUTE,closedThrough), a60=aggregate(m1,60*MINUTE,closedThrough);
   const tf={
     M1:m1,
-    M5:rollHistory(prev.M5||[],a5,r.M5),
-    M15:rollHistory(prev.M15||[],a15,r.M15),
-    H1:rollHistory(prev.H1||[],a60,r.H1),
+    M5:rollHistory(closedBars(prev.M5||[],5*MINUTE,closedThrough),a5,r.M5),
+    M15:rollHistory(closedBars(prev.M15||[],15*MINUTE,closedThrough),a15,r.M15),
+    H1:rollHistory(closedBars(prev.H1||[],60*MINUTE,closedThrough),a60,r.H1),
   };
   const coverageDays=Object.fromEntries(Object.entries(tf).map(([k,a])=>[k,a.length>1?Number(((a.at(-1).ts-a[0].ts)/DAY).toFixed(1)):0]));
-  return {generatedAt:nowIso(),source,symbol:SYMBOL,retentionDays:r,coverageDays,feed:feedMeta,timeframes:tf};
+  return {generatedAt:nowIso(),source,symbol:SYMBOL,retentionDays:r,coverageDays,closedBarWatermark:closedThrough,feed:{...feedMeta,closedBarWatermark:closedThrough},timeframes:tf};
 }
 
 async function fetchNews(){
@@ -141,6 +161,7 @@ async function fetchNews(){
   return {generatedAt:nowIso(),source:'Trading Economics guest feed via GitHub Actions',events};
 }
 
+export async function main(){
 const previousActive=await readJson('xauusd.json',{timeframes:{},feed:{}});
 const previousPrimary=await readJson('xauusd-primary.json',{timeframes:{},feed:{}});
 const previousFallback=await readJson('xauusd-fallback.json',{timeframes:{},feed:{}});
@@ -221,9 +242,14 @@ if(fallback.checked && fallback.ok && fallback.rows.length){
 
 function activeView(sourcePack, sourceLabel){
   const tf=sourcePack?.timeframes||{};
+  const watermark=Number(sourcePack?.closedBarWatermark||sourcePack?.feed?.closedBarWatermark||0);
+  const widths={M1:MINUTE,M5:5*MINUTE,M15:15*MINUTE,H1:60*MINUTE};
   const out={};
-  for(const k of ['M1','M5','M15','H1']) out[k]=rollHistory([],tf[k]||[],ACTIVE_RETENTION[k]);
-  return {generatedAt:nowIso(),source:sourceLabel,symbol:SYMBOL,retentionDays:ACTIVE_RETENTION,timeframes:out};
+  for(const k of ['M1','M5','M15','H1']){
+    const rows=rollHistory([],tf[k]||[],ACTIVE_RETENTION[k]);
+    out[k]=watermark>0?closedBars(rows,widths[k],watermark):rows;
+  }
+  return {generatedAt:nowIso(),source:sourceLabel,symbol:SYMBOL,retentionDays:ACTIVE_RETENTION,closedBarWatermark:watermark||null,timeframes:out};
 }
 
 let activePack=previousActive;
@@ -237,11 +263,19 @@ if(selectedKind==='PRIMARY'){
   throw new Error('No last-valid XAUUSD pack exists and both feeds are unavailable');
 }
 
+const preSanitizeLatest=latestTs(activePack?.timeframes?.M1||[]);
+const activeWatermark=Number(activePack?.closedBarWatermark||activePack?.feed?.closedBarWatermark||(preSanitizeLatest?preSanitizeLatest+MINUTE:0));
+if(activeWatermark>0){
+  const widths={M1:MINUTE,M5:5*MINUTE,M15:15*MINUTE,H1:60*MINUTE};
+  activePack={...activePack,closedBarWatermark:activeWatermark,timeframes:Object.fromEntries(
+    ['M1','M5','M15','H1'].map(tf=>[tf,closedBars(activePack?.timeframes?.[tf]||[],widths[tf],activeWatermark)])
+  )};
+}
 const activeLatest=latestTs(activePack?.timeframes?.M1||[]),liveAge=ageMs(activeLatest);
 let overallStatus=!marketOpen?(liveAge<=CLOSED_SESSION_MAX_MS?'LAST_SESSION':'STALE'):(mode==='PRIMARY'&&liveAge<=PRIMARY_STALE_OPEN_MS?'LIVE':((mode==='FALLBACK'||mode==='PRIMARY_RECOVERY')&&liveAge<=FALLBACK_STALE_OPEN_MS?'FALLBACK_ACTIVE':'HOLD'));
 const health={
   version:VERSION,generatedAt:nowIso(),symbol:SYMBOL,marketLikelyOpen:marketOpen,active,mode,status:overallStatus,reason,
-  latestM1Ts:activeLatest,latestM1AgeMs:liveAge,
+  latestM1Ts:activeLatest,latestM1AgeMs:liveAge,closedBarWatermark:activeWatermark||null,
   primary:primaryFeedMeta,fallback:fallbackFeedMeta,
   switching:{policy:'PRIMARY_ONLY_THEN_ISOLATED_FAILOVER',mergeFeeds:false,primaryRecoveryStreak:recoveryStreak,primaryRecoveryRequired:PRIMARY_RECOVERY_REQUIRED,note:'Only one live feed is selected. Primary and fallback histories are stored separately. No price averaging or simultaneous source merge.'},
   isolation:{primaryFile:'xauusd-primary.json',fallbackFile:'xauusd-fallback.json',activeFile:'xauusd.json',trainingRecommendation:'Train ML on PRIMARY file; score current ACTIVE file.'},
@@ -253,4 +287,10 @@ await fs.writeFile(path.join(ROOT,'xauusd.json'),JSON.stringify(activePack));
 await fs.writeFile(path.join(ROOT,'feed-health.json'),JSON.stringify(health,null,2));
 await fs.writeFile(path.join(ROOT,'news.json'),JSON.stringify(await fetchNews()));
 
-console.log('V38 STRICT PRIMARY -> ISOLATED FAILOVER',{active,mode,status:overallStatus,reason,primary:{ok:primary.ok,fresh:primary.fresh,error:primary.error},fallback:{checked:fallback.checked,ok:fallback.ok,fresh:fallback.fresh,error:fallback.error},mergeFeeds:false,activeCandles:Object.fromEntries(Object.entries(activePack.timeframes||{}).map(([k,a])=>[k,a.length])),primaryCandles:Object.fromEntries(Object.entries(primaryPack?.timeframes||{}).map(([k,a])=>[k,a.length])),fallbackCandles:Object.fromEntries(Object.entries(fallbackPack?.timeframes||{}).map(([k,a])=>[k,a.length]))});
+console.log('V42 STRICT PRIMARY -> ISOLATED FAILOVER',{active,mode,status:overallStatus,reason,closedBarWatermark:activeWatermark||null,primary:{ok:primary.ok,fresh:primary.fresh,error:primary.error},fallback:{checked:fallback.checked,ok:fallback.ok,fresh:fallback.fresh,error:fallback.error},mergeFeeds:false,activeCandles:Object.fromEntries(Object.entries(activePack.timeframes||{}).map(([k,a])=>[k,a.length])),primaryCandles:Object.fromEntries(Object.entries(primaryPack?.timeframes||{}).map(([k,a])=>[k,a.length])),fallbackCandles:Object.fromEntries(Object.entries(fallbackPack?.timeframes||{}).map(([k,a])=>[k,a.length]))});
+}
+
+const invokedPath=process.argv[1]?path.resolve(process.argv[1]):'';
+if(invokedPath&&invokedPath===path.resolve(fileURLToPath(import.meta.url))){
+  await main();
+}

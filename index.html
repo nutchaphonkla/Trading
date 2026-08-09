@@ -7,19 +7,21 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="KAGE CORE">
-<title>KAGE CORE · Monochrome Shadow Intelligence V41</title>
+<title>KAGE CORE · Adaptive Shadow Intelligence V42</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png?v=420">
+<link rel="icon" type="image/png" sizes="32x32" href="./icon-32.png?v=420">
+<link rel="icon" type="image/png" sizes="64x64" href="./icon-64.png?v=420">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=420">
+<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=420">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="KAGE CORE">
 <meta name="apple-mobile-web-app-title" content="KAGE CORE">
 
 
-<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=390">
-<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png?v=390">
+<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=420">
+<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png?v=420">
 <meta name="format-detection" content="telephone=no">
 
 <style>
@@ -4781,12 +4783,13 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 </style>
 <link rel="stylesheet" href="./kage-v40-full.css?v=402">
 <link rel="stylesheet" href="./kage-v41-monochrome.css?v=410">
+<link rel="stylesheet" href="./kage-v42-adaptive.css?v=420">
 </head>
-<body class="v40-full v41-mono">
+<body class="v40-full v41-mono v42-adaptive">
 
 <div id="installGate" aria-live="polite">
   <div class="install-shell">
-    <div class="gate-logo"><img src="./assets/kage-anime-avatar-v41.webp?v=410" alt="KAGE CORE monochrome anime warden"></div>
+    <div class="gate-logo"><img src="./assets/kage-app-icon-v42.png?v=420" alt="KAGE CORE adaptive shadow warden icon"></div>
     <div class="install-kicker">KAGE CORE · PRIVATE SHADOW TERMINAL</div>
     <h1 class="install-title">ติดตั้ง KAGE CORE ก่อนใช้งาน</h1>
     <p class="install-copy">ระบบจะเปิด Trading Terminal เมื่อรันจากไอคอนบน Home Screen เท่านั้น เพื่อให้ Intro, Local Memory และการทำงานของแอปอยู่ในโหมด Standalone เต็มรูปแบบ</p>
@@ -4802,7 +4805,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
   <div class="intro-shell">
     <div class="intro-orbit">
       <div class="intro-ring"></div><div class="intro-ring r2"></div>
-      <div class="intro-logo"><img src="./assets/kage-anime-avatar-v41.webp?v=410" alt="KAGE CORE monochrome anime warden"></div>
+      <div class="intro-logo"><img src="./assets/kage-app-icon-v42.png?v=420" alt="KAGE CORE adaptive shadow warden icon"></div>
     </div>
     <div class="intro-kicker">XAUUSD · SHADOW INTELLIGENCE</div>
     <div class="intro-title">KAGE CORE</div>
@@ -4832,7 +4835,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
   <header class="topbar">
     <div class="brand">
       <div class="brandmark brandmark-premium" aria-label="KAGE CORE">
-        <img src="./assets/kage-anime-avatar-v41.webp?v=410" alt="KAGE CORE monochrome anime warden">
+        <img src="./assets/kage-app-icon-v42.png?v=420" alt="KAGE CORE adaptive shadow warden icon">
       </div>
       <div class="brandcopy">
         <b>KAGE CORE</b>
@@ -5041,7 +5044,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
           <div><span>ML P(TP1) / P(SL)</span><b id="pendingPrimaryProb">—</b></div>
           <div><span>BACKUP ORDER / PRICE</span><b id="pendingBackupType">—</b><small id="pendingBackupEntry">—</small></div>
         </div>
-        <div class="final-note" id="pendingPlanNote">โหลด H1/M15/M5 เพื่อสร้าง BUY/SELL LIMIT และ STOP ที่เหมาะกับทรงกราฟ</div>
+        <div class="final-note" id="pendingPlanNote">โหลด H1/M15/M5 เพื่อสร้าง BUY/SELL LIMIT และ STOP จากโครงสร้างราคา</div>
       </article>
 
       <article class="card precision-entry-card">
@@ -5069,7 +5072,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
           <div><span>LEARNED MFE / MAE</span><b id="precisionExcursion">—</b></div>
           <div><span>PATTERN MATCH</span><b id="precisionMatch">—</b></div>
         </div>
-        <div class="precision-note-v33" id="precisionNote"><strong>WAIT</strong> · Pending Plan สร้างจากทรงกราฟก่อน · M1/M5 ใช้ Revalidate เพิ่มตอนราคาใกล้ Zone</div>
+        <div class="precision-note-v33" id="precisionNote"><strong>WAIT</strong> · Pending Plan สร้างจากโครงสร้างราคา · M1/M5 ใช้ Revalidate เพิ่มตอนราคาใกล้ Zone</div>
       </article>
 
       <div class="intel-stack">
@@ -5474,6 +5477,13 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
             <div><span>REJECT TEST</span><b id="spRejected">0</b><small>เรียนจากไม้ที่ไม่เข้า</small></div>
             <div><span>THRESHOLD</span><b id="spThreshold">STATIC</b><small id="spThresholdSub">รอหลักฐาน</small></div>
           </div>
+          <div class="adaptive-model-v42" aria-label="Adaptive champion governance">
+            <div><span>ADAPTIVE STATE</span><b id="adaptiveModelState">WAIT DATA</b><small id="adaptiveModelAction">SHADOW ONLY</small></div>
+            <div><span>VERIFIED OUTCOMES</span><b id="adaptiveModelSamples">0</b><small>time-ordered split</small></div>
+            <div><span>VALIDATION BRIER</span><b id="adaptiveModelBrier">—</b><small>lower is better</small></div>
+            <div><span>LIVE INFLUENCE</span><b id="adaptiveModelTrust">0%</b><small>capped at ±8 pts</small></div>
+          </div>
+          <div class="adaptive-model-note" id="adaptiveModelNote">Candidate → time-ordered validation → promote, keep or rollback</div>
           <div class="v38-learning-line">
             <i></i><span id="spLearningLine">Prediction → Future M1 → First Hit → Autopsy → Relearn</span>
           </div>
@@ -5535,7 +5545,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
         </div>
       </article>
 
-      <!-- Original market diagnostics, chart and timeframe controls remain visible in V41. -->
+      <!-- Data diagnostics stay visible; the retired graph runtime remains hidden for compatibility. -->
       <div class="legacy-market-runtime" aria-hidden="false">
         <b id="dataHealthTitle">—</b><b id="dataUpdated">—</b><b id="dataTfCount">0 / 4</b>
         <b id="feedStrategy">PRIMARY ONLY</b><div id="feedActiveCell"></div><div id="feedModeCell"></div>
@@ -5544,11 +5554,13 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
         <div id="freshnessBanner"><i></i><div><b id="freshnessTitle">—</b><span id="freshnessText">—</span></div></div>
         <b id="dataQualityScore">—</b><b id="dqOhlc">—</b><b id="dqTimestamp">—</b><b id="dqGap">—</b><b id="dqTf">—</b><div id="dqNote"></div>
         <b id="pipelineStatus">WAIT</b><b id="pipeRaw">—</b><b id="pipeClean">—</b><b id="pipeDupes">—</b><b id="pipeOutliers">—</b><b id="pipeSegment">—</b><b id="pipeTfSource">—</b><div id="pipeNote"></div>
-        <span id="chartTf">M15</span><span id="chartHealthBadge">PIPELINE —</span><span id="chartPrice">—</span>
-        <span id="candleTime">—</span><b id="candleO">—</b><b id="candleH">—</b><b id="candleL">—</b><b id="candleC">—</b>
-        <canvas id="marketChart"></canvas><div id="chartEmpty"></div>
-        <button id="zoomOutBtn">−</button><button id="zoomInBtn">+</button><button id="fitBtn">FIT</button><button id="latestBtn">LATEST</button>
-        <div id="tfTabs"><button data-tf="M1">M1</button><button data-tf="M5">M5</button><button class="active" data-tf="M15">M15</button><button data-tf="H1">H1</button></div>
+        <div class="chart-runtime" hidden aria-hidden="true">
+          <span id="chartTf">M15</span><span id="chartHealthBadge">PIPELINE —</span><span id="chartPrice">—</span>
+          <span id="candleTime">—</span><b id="candleO">—</b><b id="candleH">—</b><b id="candleL">—</b><b id="candleC">—</b>
+          <canvas id="marketChart"></canvas><div id="chartEmpty"></div>
+          <button id="zoomOutBtn" tabindex="-1">−</button><button id="zoomInBtn" tabindex="-1">+</button><button id="fitBtn" tabindex="-1">FIT</button><button id="latestBtn" tabindex="-1">LATEST</button>
+          <div id="tfTabs"><button data-tf="M1" tabindex="-1">M1</button><button data-tf="M5" tabindex="-1">M5</button><button class="active" data-tf="M15" tabindex="-1">M15</button><button data-tf="H1" tabindex="-1">H1</button></div>
+        </div>
       </div>
     </section>
 
@@ -5585,7 +5597,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 
       <article class="card news-policy-card">
         <div class="news-policy-icon">!</div>
-        <div><b>Execution Policy</b><p>High Impact จะล็อก Entry ใหม่ตามช่วงก่อน/หลังข่าวใน Settings แต่ยังดู Historical Bias และกราฟได้</p></div>
+        <div><b>Execution Policy</b><p>High Impact จะล็อก Entry ใหม่ตามช่วงก่อน/หลังข่าวใน Settings แต่ยังดู Historical Bias และข้อมูลตลาดได้</p></div>
       </article>
     </section>
 
@@ -5633,7 +5645,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
         </div>
         <div class="growth-note" id="growthNote"><strong>MODEL GROWTH</strong> · จำนวน sample เพิ่มอย่างเดียวไม่พอ ระบบดู validation, calibration, drift และ journal outcome พร้อมกัน</div>
       </article>
-      <div class="section-head"><h3>Equity Curve</h3><span>แผนจริงของคุณ</span></div>
+      <div class="section-head equity-section-head"><h3>Equity Curve</h3><span>แผนจริงของคุณ</span></div>
       <article class="card equity-card"><div class="equity-wrap"><canvas id="equityChart"></canvas></div></article>
 
       <div class="section-head"><h3>AI Scan Memory</h3><button id="clearScanMemoryBtn">CLEAR</button></div>
@@ -5678,7 +5690,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
   <div class="sheet">
     <div class="grabber"></div>
     <h2>KAGE CORE</h2>
-    <p>Single‑file runtime · ข้อมูลแผนเก็บในเครื่องนี้ ส่วนกราฟจะอ่าน `xauusd.json` ที่อยู่ root ของ GitHub</p>
+    <p>Single‑file runtime · ข้อมูลแผนเก็บในเครื่องนี้ ส่วนข้อมูลตลาดอ่าน `xauusd.json` ที่ root ของ GitHub</p>
     <div class="form-grid">
       <div class="field"><label>MIN LOT</label><input id="minLotInput" inputmode="decimal" value="0.01"></div>
       <div class="field"><label>CONTRACT SIZE</label><input id="contractInput" inputmode="decimal" value="100"></div>
@@ -5722,6 +5734,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 
 <div class="toast" id="toast"></div>
 
+<script src="./adaptive-ai-v42.js?v=420"></script>
 <script>
 (()=>{
 'use strict';
@@ -5878,7 +5891,7 @@ const bootUI = {
 
 
 
-// iOS / mobile browser zoom lock — chart's own +/- controls still work.
+// iOS / mobile browser zoom lock.
 ['gesturestart','gesturechange','gestureend'].forEach(type=>{
   document.addEventListener(type,e=>e.preventDefault(),{passive:false});
 });
@@ -5919,11 +5932,12 @@ const BG_FRESH_OPEN_MS=60*60*1000;   // model may support live decisions for max
 const BG_LAST_SESSION_MS=72*60*60*1000;
 const V341_DATA_RETENTION_LABEL='M15 90D · H1 180D';
 
-const APP_VERSION='V41.0 KAGE CORE';
+const APP_VERSION='V42.0 KAGE CORE';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
 const LEARN_STATE_KEY='onemonth_os_learning_state_v31';
+const ADAPTIVE_MODEL_KEY='onemonth_os_adaptive_model_v42';
 
 const V25_EDGE_MIN_SAMPLES=4;
 const V25_READY_PROB_MIN=58;
@@ -5943,6 +5957,15 @@ let v25={
 const SHADOW_KEY='onemonth_os_shadow_mode_v23';
 let shadowMode=storeGet(SHADOW_KEY)==='1';
 let outcomeMemory=loadJson(OUTCOME_KEY,[]);
+const adaptiveApi=window.KageAdaptiveAI||null;
+function safeAdaptiveStateV42(value){
+  if(!adaptiveApi)return null;
+  if(!value||value.version!==adaptiveApi.VERSION||typeof value!=='object')return adaptiveApi.defaultState();
+  const validModel=model=>!model||(model.kind==='ADAPTIVE'&&model.version===adaptiveApi.VERSION&&Number.isFinite(Number(model.trainedCount))&&Number(model.trainedCount)>=0&&Number(model.trainedCount)<=5000);
+  if(!validModel(value.champion)||!validModel(value.previous)||!validModel(value.candidate))return adaptiveApi.defaultState();
+  return value;
+}
+let adaptiveModel=safeAdaptiveStateV42(loadJson(ADAPTIVE_MODEL_KEY,null));
 
 let pipelineStats={
   raw:0,clean:0,duplicates:0,outliers:0,segment:0,source:'—',status:'WAIT',lastRun:0
@@ -5953,7 +5976,7 @@ let learningPulseTimer=null;
 
 let intelligence={
   router:null,setups:[],best:null,rawConfidence:0,calibrated:0,ev:0,chaseLimit:null,
-  executionGates:[],explain:'',probability:0
+  executionGates:[],explain:'',probability:0,adaptive:null
 };
 
 let dataQuality={score:0,ohlc:0,timestamp:0,gap:0,tf:0,issues:[]};
@@ -6031,10 +6054,15 @@ async function loadRemoteBrains(){
   return r;
 }
 function backgroundPackAge(){const t=Date.parse(backgroundLearning?.generatedAt||'');return Number.isFinite(t)?Date.now()-t:Infinity}
+function artifactProvenanceV42(pack,{ml=false}={}){
+  return adaptiveApi?.validateArtifact?.(pack,{ml})||{ok:false,reasons:['VALIDATOR_UNAVAILABLE'],trainingFeed:'',watermark:0};
+}
 function backgroundBrainState(){
   const runLive=['queued','in_progress','waiting','pending'].includes(githubLearningRun.status);
   if(runLive)return{status:'LEARNING',tone:'good',css:'loaded',note:'GitHub Actions กำลัง rebuild model จาก market pack ล่าสุด'};
   if(backgroundLearning?.ready){
+    const provenance=artifactProvenanceV42(backgroundLearning);
+    if(!provenance.ok)return{status:'QUARANTINED',tone:'bad',css:'quarantined',note:`โมเดลเดิมถูกเก็บเป็น Reference แต่ไม่มีสิทธิ์ตัดสินใจ · ${provenance.reasons.join(' / ')}`};
     const age=backgroundPackAge(),m=marketStatus(),guard=modelGuardV34(analysis?backgroundEvidenceFor(analysis):null,{ignoreAge:true});
     if(!m.open&&age<=BG_LAST_SESSION_MS)return{status:'LAST SESSION',tone:'warn',css:'last-session',note:'ตลาดปิด · ใช้โมเดล Session ล่าสุดช่วยจัด Pending Plan ได้ แต่ยังไม่ถือเป็น Live Execution'};
     if(m.open&&age>BG_FRESH_OPEN_MS)return{status:'QUARANTINED',tone:'bad',css:'quarantined',note:'ตลาดเปิดแต่ Background model เกิน 60 นาที · ตัดน้ำหนักจนกว่าจะ rebuild จากข้อมูลใหม่'};
@@ -6046,7 +6074,7 @@ function backgroundBrainState(){
   return{status:'NO PACK',tone:'bad',css:'quarantined',note:'ยังโหลด ai-learning.json ไม่สำเร็จ'};
 }
 function historyBrainState(){
-  if(historyBrain?.ready)return{status:'READY',tone:'good'};
+  if(historyBrain?.ready){const provenance=adaptiveApi?.validateArtifact?.(historyBrain,{history:true});return provenance?.ok?{status:'READY',tone:'good',trusted:true}:{status:'REFERENCE',tone:'bad',trusted:false,reasons:provenance?.reasons||['VALIDATOR_UNAVAILABLE']}}
   if(historyBrain?.generatedAt)return{status:'LIMITED',tone:'warn'};
   return{status:'NO PACK',tone:'bad'};
 }
@@ -6057,7 +6085,7 @@ function modelHealthV33(){
   const m=backgroundLearning?.modelHealth||{},v=backgroundLearning?.validation||{},c=backgroundLearning?.current||{},g=backgroundLearning?.global||{};
   const rawScore=clamp(Number(m.score)||0,0,100),uncertainty=Number(m.uncertaintyPts??c.uncertaintyPts??90),drift=Number(m.driftPts)||0,coverage=Number(v.coverage??m.coverage)||0;
   const calibration=Number(v.calibrationError??g.calibrationError??99),brier=Number(v.brier??g.brier??.40);
-  // Front-end safety score also works with older ai-learning.json packs.
+  // Legacy metrics remain visible, but provenance guard decides whether they get decision authority.
   const calPenalty=Math.max(0,calibration-12)*1.15,driftPenalty=Math.max(0,drift-12)*.72,coveragePenalty=Math.max(0,28-coverage)*.35,brierPenalty=Math.max(0,brier-.24)*70;
   const score=clamp(rawScore-calPenalty-driftPenalty-coveragePenalty-brierPenalty,0,100);
   const status=score>=75?'STRONG':score>=60?'GOOD':score>=45?'CAUTION':'WEAK';
@@ -6102,17 +6130,18 @@ function modelGuardV34(bg=null,opts={}){
   const journalPenalty=journalN>=20?clamp((50-journalHit)*.55,-5,12):0;
   const entryPenalty=journalN>=20?clamp((38-entryGood)*.25,0,7):0;
   const journalBonus=journalN>=20?clamp((journalHit-52)*.30,0,6):0;
-  const hardDisable=(!opts.ignoreAge&&modelTooOld)||cal>30||drift>28||coverage<15||brier>.34||total<55||eff<3||unc>45||(journalN>=35&&journalHit<38)||(journalN>=30&&entryGood<18);
+  const provenance=artifactProvenanceV42(backgroundLearning);
+  const hardDisable=!provenance.ok||(!opts.ignoreAge&&modelTooOld)||cal>30||drift>28||coverage<15||brier>.34||total<55||eff<3||unc>45||(journalN>=35&&journalHit<38)||(journalN>=30&&entryGood<18);
   const caution=[calibrationState,driftState,sampleState,uncertaintyState,coverageState,brierState].filter(x=>x==='CAUTION').length;
   const blocks=[calibrationState,driftState,sampleState,uncertaintyState,coverageState,brierState].filter(x=>x==='BLOCK').length;
   const trustScore=clamp(h.score-(blocks*10)-(caution*3)+(eff>=20?4:0)-journalPenalty-entryPenalty+journalBonus-(modelTooOld?30:0),0,100);
   const trustFactor=hardDisable?0:clamp(trustScore/100,.08,1);
   const canVeto=!hardDisable&&cal<=18&&drift<=18&&coverage>=25&&brier<=.28&&total>=80&&eff>=12&&unc<=30&&(journalN<20||journalHit>=45);
   const state=hardDisable?'QUARANTINED':trustScore>=68&&blocks===0?'TRUSTED':trustScore>=42?'LIMITED':'LIVE ONLY';
-  return{state,hardDisable,canVeto,trustScore,trustFactor,cal,brier,drift,coverage,eff,total,unc,calibrationState,driftState,sampleState,uncertaintyState,coverageState,brierState,modelTooOld,journalN,journalHit,entryGood};
+  return{state,hardDisable,canVeto,trustScore,trustFactor,cal,brier,drift,coverage,eff,total,unc,calibrationState,driftState,sampleState,uncertaintyState,coverageState,brierState,modelTooOld,journalN,journalHit,entryGood,provenance};
 }
 function backgroundEvidenceFor(a){
-  if(!a||!backgroundLearning?.ready)return null;
+  if(!a||!backgroundLearning?.ready||!artifactProvenanceV42(backgroundLearning).ok)return null;
   const direction=(a.side&&a.side!=='WAIT'?a.side:a.direction)||'WAIT',regime=a.regime||'UNKNOWN',sess=bgSessionV32(),rb=rsiBucketV32(a.rsi),structure=a.structure||'RANGE',key=[direction,regime,sess,rb,structure].join('|'),edges=Array.isArray(backgroundLearning.edges)?backgroundLearning.edges:[];
   let row=edges.find(e=>e.key===key),matchLevel='EXACT';
   if(!row){row=edges.filter(e=>e.direction===direction&&e.regime===regime&&e.session===sess&&e.structure===structure).sort((x,y)=>(y.effectiveSamples||y.samples||0)-(x.effectiveSamples||x.samples||0))[0];matchLevel='REGIME_SESSION_STRUCTURE'}
@@ -6124,7 +6153,7 @@ function backgroundEvidenceFor(a){
   return{prob:clamp(prob,5,95),samples,effectiveSamples,reliability,lower:clamp(lower,1,99),upper:clamp(upper,1,99),uncertainty:clamp(uncertainty,0,98),matchLevel:row.matchLevel||matchLevel,key:row.key||key,avgMfeR:Number(row.avgMfeR)||0,avgMaeR:Number(row.avgMaeR)||0,recentWinRate:Number(row.recentWinRate),row};
 }
 function historicalEvidenceV32(a){
-  if(!a||!historyBrain?.ready)return null;
+  if(!a||!historyBrain?.ready||!historyBrainState().trusted)return null;
   const direction=(a.side&&a.side!=='WAIT'?a.side:a.direction)||'BUY';
   const tf=historyBrain?.timeframes?.[a.tf];
   const up=Number(tf?.latest?.upProbability??historyBrain?.global?.upProbability);
@@ -6172,7 +6201,7 @@ function renderBackgroundBrain(){
   $('#backgroundBrainNote').textContent=bs.note+(githubLearningRun.conclusion?` · Last run ${String(githubLearningRun.conclusion).toUpperCase()}`:'');
   const mh=modelHealthV33(),val=backgroundLearning?.validation||{},previewBg=analysis?backgroundEvidenceFor(analysis):null,guard=modelGuardV34(previewBg);const mhEl=$('#modelHealthScore');if(mhEl){mhEl.textContent=`${guard.trustScore.toFixed(0)}/100 · ${guard.state}`;mhEl.className=guard.hardDisable?'guard-block':guard.state==='TRUSTED'?'guard-pass':'guard-caution'}const cg=$('#modelCalibrationGuard');if(cg){cg.textContent=`${guard.calibrationState} · ${guard.cal.toFixed(1)} pts`;cg.className=guard.calibrationState==='PASS'?'guard-pass':guard.calibrationState==='CAUTION'?'guard-caution':'guard-block'}const vv=$('#modelValidationScore');if(vv){vv.textContent=Number.isFinite(Number(val.brier))?`Brier ${Number(val.brier).toFixed(3)} · ${Number(val.coverage||0).toFixed(0)}%`:'—';vv.className=guard.brierState==='PASS'?'guard-pass':guard.brierState==='CAUTION'?'guard-caution':'guard-block'}const uu=$('#modelUncertainty');if(uu){uu.textContent=`${guard.uncertaintyState} · ±${(guard.unc/2).toFixed(1)} pts`;uu.className=guard.uncertaintyState==='PASS'?'guard-pass':guard.uncertaintyState==='CAUTION'?'guard-caution':'guard-block'}const dd=$('#modelDrift');if(dd){dd.textContent=`${guard.driftState} · ${guard.drift.toFixed(1)} pts`;dd.className=guard.driftState==='PASS'?'guard-pass':guard.driftState==='CAUTION'?'guard-caution':'guard-block'}const ss=$('#modelSampleTrust');if(ss){ss.textContent=`${guard.sampleState} · ${guard.eff.toFixed(0)} eff`;ss.className=guard.sampleState==='PASS'?'guard-pass':guard.sampleState==='CAUTION'?'guard-caution':'guard-block'}
   const hstat=$('#historyBrainStatus');hstat.textContent=hs.status;hstat.className='brain-status-pill '+hs.tone;
-  $('#historyBrainTitle').textContent=historyBrain?.ready?'Historical pattern pack':'History pack unavailable';
+  $('#historyBrainTitle').textContent=hs.trusted?'Historical pattern pack':historyBrain?.ready?'Historical reference · V42 rebuild required':'History pack unavailable';
   $('#historyBiasV32').textContent=historyBrain?.global?.bias||'—';
   $('#historyUpV32').textContent=Number.isFinite(Number(historyBrain?.global?.upProbability))?Number(historyBrain.global.upProbability).toFixed(0)+'%':'—';
   $('#historyCandlesV32').textContent=Number.isFinite(Number(historyBrain?.totalCandles))?Number(historyBrain.totalCandles).toLocaleString('en-US'):'—';
@@ -6182,10 +6211,10 @@ function renderBackgroundBrain(){
   $('#backgroundJournalCount').textContent=(Number(journal.verified30m||journal.completed||0)||0).toLocaleString('en-US')+' VERIFIED';
   $('#backgroundJournalHit').textContent=Number.isFinite(Number(journal.hitRate30))?Number(journal.hitRate30).toFixed(1)+'%':'—';
   $('#backgroundJournalTF').textContent=`${Number(journal.trustedSignals||0)||0} / ${Number(journal.falseSignals||0)||0}`;
-  const gov=modelGovernance||{},champ=gov.champion||{},chall=gov.challenger||{},entryQ=journal.entryQuality||{};
-  const gc=$('#govChampion');if(gc){gc.textContent=Number.isFinite(Number(champ.score))?`${Number(champ.score).toFixed(1)} · ${String(champ.guard||'DEPLOYED')}`:'—';gc.className='good'}
-  const gch=$('#govChallenger');if(gch){gch.textContent=Number.isFinite(Number(chall.score))?`${Number(chall.score).toFixed(1)} · ${String(chall.guard||'CHECK')}`:'—';gch.className=Number(chall.score)>Number(champ.score)?'good':'warn'}
-  const ga=$('#govAction');if(ga){ga.textContent=governanceActionLabel();ga.className=governanceTone()}
+  const gov=modelGovernance||{},champ=gov.champion||{},chall=gov.challenger||{},entryQ=journal.entryQuality||{},bgCompatible=artifactProvenanceV42(backgroundLearning).ok;
+  const gc=$('#govChampion');if(gc){gc.textContent=Number.isFinite(Number(champ.score))?`${Number(champ.score).toFixed(1)} · ${bgCompatible?String(champ.guard||'DEPLOYED'):'REFERENCE'}`:'—';gc.className=bgCompatible?'good':'warn'}
+  const gch=$('#govChallenger');if(gch){gch.textContent=Number.isFinite(Number(chall.score))?`${Number(chall.score).toFixed(1)} · ${bgCompatible?String(chall.guard||'CHECK'):'REFERENCE'}`:'—';gch.className=bgCompatible&&Number(chall.score)>Number(champ.score)?'good':'warn'}
+  const ga=$('#govAction');if(ga){ga.textContent=bgCompatible?governanceActionLabel():'V42 REBUILD REQUIRED';ga.className=bgCompatible?governanceTone():'bad'}
   const ge=$('#govEntryQuality');if(ge){ge.textContent=Number.isFinite(Number(entryQ.goodRate))?`${Number(entryQ.goodRate).toFixed(1)}% GOOD · ${Number(entryQ.late||0)} LATE`:'—';ge.className=Number(entryQ.goodRate)>=45?'good':Number(entryQ.goodRate)>=30?'warn':'bad'}
   const coverageDays=Number(historyBrain?.coverageDays||historyBrain?.global?.coverageDays||0);$('#backgroundCoverageDays').textContent=coverageDays?coverageDays.toFixed(0)+' DAYS':V341_DATA_RETENTION_LABEL;
   const blend=v25?.brainBlend;
@@ -6201,13 +6230,15 @@ function renderBackgroundBrain(){
 function prettyOrderV35(v){return String(v||'—').replace(/_/g,' ')}
 function mlBrainStateV35(){
   if(!mlBrain?.ready)return{status:mlBrain?.status==='WAIT_DATA'?'WAIT DATA':'NO PACK',tone:'warn',trusted:false,note:mlBrain?.reason||'รอ GitHub Actions สร้าง ai-ml-brain.json'};
+  const provenance=artifactProvenanceV42(mlBrain,{ml:true});
+  if(!provenance.ok)return{status:'QUARANTINED',tone:'bad',trusted:false,note:`Legacy ML ไม่มีสิทธิ์เปลี่ยน Entry/SL/TP · ${provenance.reasons.join(' / ')}`};
   const h=mlBrain.modelHealth||{},score=Number(h.score)||0,drift=Number(h.driftPts)||0,unc=Number(h.uncertaintyPts)||0,gov=mlBrain.governance||{},m=marketStatus(),age=Date.now()-(Date.parse(mlBrain.generatedAt||'')||0);
-  let trusted=String(mlBrain.status||'').toUpperCase()==='TRUSTED'&&gov.trusted!==false&&score>=53&&drift<=55;
+  let trusted=String(mlBrain.status||'').toUpperCase()==='TRUSTED'&&gov.trusted===true&&score>=53&&drift<=55;
   if(m.open&&age>90*60*1000)trusted=false;
   if(!m.open&&age<=BG_LAST_SESSION_MS)return{status:'LAST SESSION',tone:trusted?'good':'warn',trusted,note:`ML จาก Session ล่าสุด · Health ${score.toFixed(0)}/100 · Revalidate ตอนตลาดเปิด`};
   if(!m.open&&age>BG_LAST_SESSION_MS)return{status:'STALE',tone:'bad',trusted:false,note:'ML เก่ากว่า 72 ชั่วโมง · ใช้ Technical/History เป็น Reference จนกว่าจะมี market pack ใหม่'};
   if(!trusted)return{status:'QUARANTINED',tone:'bad',trusted:false,note:`ML ถูกจำกัดน้ำหนัก · Health ${score.toFixed(0)} · Drift ${drift.toFixed(1)} · Uncertainty ${unc.toFixed(1)}`};
-  return{status:'TRUSTED',tone:'good',trusted:true,note:`Python V38 ผ่าน First-Hit + Shadow Self-Play + Purged Walk-Forward + Calibration + OOD · Health ${score.toFixed(0)}/100`};
+  return{status:'TRUSTED',tone:'good',trusted:true,note:`Python V42 ผ่าน schema/feed provenance + validation guard · Health ${score.toFixed(0)}/100`};
 }
 function technicalPendingCandidatesV35(a){
   const h1=tfResults.H1,m15=tfResults.M15,m5=tfResults.M5;
@@ -6226,7 +6257,7 @@ function technicalPendingCandidatesV35(a){
     if(isLimit){score+=(m15.pullback?9:0)+(m5?.pullback?7:0)+(m15.regime==='RANGE'?8:0)+(m15.regime==='TREND'?3:0)}
     else{score+=(m15.bos===side?12:0)+(m5?.bos===side?9:0)+(m15.regime==='TREND'?8:0)-(m15.regime==='RANGE'?13:0)}
     if(m15.stretched&&isLimit)score+=4;if(m15.stretched&&!isLimit)score-=8;
-    if((historyBrain?.global?.bias||'')===side)score+=4;
+    if(historyBrainState().trusted&&(historyBrain?.global?.bias||'')===side)score+=4;
     score=clamp(score,8,94);
     return{type,side,entry,entryLow:entry-half,entryHigh:entry+half,sl,tp1,tp2,rr:1.40,score,source:'TECHNICAL',ml:null,cancelLevel:side==='BUY'?lo-R*.25:hi+R*.25,anchor:isLimit?'RETEST / VALUE ZONE':'STRUCTURE BREAK'};
   };
@@ -6240,7 +6271,7 @@ function pendingPlansV35(a=analysis){
     const m=mlMap.get(t.type),trusted=!!(mlState.trusted&&tsClose&&m);let out={...t};
     if(m){
       const mlScore=Number(m.score)||0,qg=m.qualityGate||null;
-      out.score=trusted?clamp(t.score*.34+mlScore*.66,0,99):clamp(t.score+(mlScore-50)*.05,0,96);
+      out.score=trusted?clamp(t.score*.34+mlScore*.66,0,99):t.score;
       out.ml={pFill:Number(m.pFill),pTp1:Number(m.pTp1),pTp2:Number(m.pTp2),pSl:Number(m.pSl),pCleanWin:Number(m.pCleanWin),evR:Number(m.evR),score:mlScore,disagreement:Number(m.modelDisagreementPts),edgePts:Number(m.edgePts),variant:m.variant||'BALANCED',regime:m.regime||mlBrain?.current?.regime||'—',session:m.session||mlBrain?.current?.session||'—',trusted,qualityGate:qg};
       if(trusted&&[m.entry,m.sl,m.tp1,m.tp2].every(Number.isFinite))out={...out,entry:Number(m.entry),entryLow:Number(m.entryLow??m.entry),entryHigh:Number(m.entryHigh??m.entry),sl:Number(m.sl),tp1:Number(m.tp1),tp2:Number(m.tp2),rr:Number(m.rr)||out.rr,source:'AUTO-ML + TECH',cancelLevel:Number(m.cancelLevel)||out.cancelLevel};
     }
@@ -6283,7 +6314,7 @@ function renderPendingPlansV35(){
 }
 function renderMlBrainV35(){
   if(!$('#mlBrainStatus'))return;const st=mlBrainStateV35(),h=mlBrain?.modelHealth||{},tr=mlBrain?.training||{},v=mlBrain?.validation?.tp1||{},qualified=mlBrain?.current?.primary||null,ref=mlBrain?.current?.reference||null,p=qualified||ref,top=mlBrain?.features?.top?.[0],tpAuto=mlBrain?.autoML?.heads?.tp1||{};const el=$('#mlBrainStatus');el.textContent=st.status;el.className='precision-pill '+st.tone;
-  $('#mlHealth').textContent=Number.isFinite(Number(h.score))?`${Number(h.score).toFixed(0)}/100 · ${String(h.status||mlBrain.status||'—')}`:'—';$('#mlSamples').textContent=Number(tr.candidateSamples||0).toLocaleString('en-US');$('#mlFilled').textContent=Number(tr.filledSamples||0).toLocaleString('en-US');$('#mlAuc').textContent=Number.isFinite(Number(v.auc))?Number(v.auc).toFixed(3):'—';$('#mlBrier').textContent=Number.isFinite(Number(v.brier))?Number(v.brier).toFixed(3):'—';$('#mlEce').textContent=Number.isFinite(Number(v.ece))?(Number(v.ece)*100).toFixed(1)+' pts':'—';$('#mlDrift').textContent=Number.isFinite(Number(h.driftPts))?Number(h.driftPts).toFixed(1)+' pts':'—';$('#mlUncertainty').textContent=Number.isFinite(Number(h.uncertaintyPts))?'±'+(Number(h.uncertaintyPts)/2).toFixed(1)+' pts':'—';
+  $('#mlHealth').textContent=Number.isFinite(Number(h.score))?`${Number(h.score).toFixed(0)}/100 · ${st.status}`:'—';$('#mlSamples').textContent=Number(tr.candidateSamples||0).toLocaleString('en-US');$('#mlFilled').textContent=Number(tr.filledSamples||0).toLocaleString('en-US');$('#mlAuc').textContent=Number.isFinite(Number(v.auc))?Number(v.auc).toFixed(3):'—';$('#mlBrier').textContent=Number.isFinite(Number(v.brier))?Number(v.brier).toFixed(3):'—';$('#mlEce').textContent=Number.isFinite(Number(v.ece))?(Number(v.ece)*100).toFixed(1)+' pts':'—';$('#mlDrift').textContent=Number.isFinite(Number(h.driftPts))?Number(h.driftPts).toFixed(1)+' pts':'—';$('#mlUncertainty').textContent=Number.isFinite(Number(h.uncertaintyPts))?'±'+(Number(h.uncertaintyPts)/2).toFixed(1)+' pts':'—';
   $('#mlPrimary').textContent=p?`${qualified?'QUALIFIED':'REFERENCE'} · ${prettyOrderV35(p.type)} ${p.variant||''} · ${Math.round(Number(p.score)||0)}/100`:'NO QUALITY PLAN';$('#mlPrimaryFill').textContent=p&&Number.isFinite(Number(p.pFill))?Number(p.pFill).toFixed(1)+'%':'—';$('#mlPrimaryTp1').textContent=p&&Number.isFinite(Number(p.pTp1))?Number(p.pTp1).toFixed(1)+'%':'—';$('#mlPrimarySl').textContent=p&&Number.isFinite(Number(p.pSl))?Number(p.pSl).toFixed(1)+'%':'—';$('#mlPrimaryEv').textContent=p&&Number.isFinite(Number(p.evR))?(Number(p.evR)>=0?'+':'')+Number(p.evR).toFixed(2)+'R':'—';$('#mlTopFeature').textContent=top?String(top.feature).replace(/_/g,' '):'—';
   const weights=tpAuto?.selection?.weights||{},stack=Object.entries(weights).sort((a,b)=>b[1]-a[1]).map(([k,w])=>`${k} ${Math.round(Number(w)*100)}%`).join(' · ');if($('#mlModelStack'))$('#mlModelStack').textContent=stack||'—';if($('#mlCalibration'))$('#mlCalibration').textContent=tpAuto?.calibration?.selected||'—';
   const q=Number(mlBrain?.current?.qualifiedCount||0),fs=feedHealthStateV361();$('#mlBrainNote').innerHTML=`<strong>${st.status}</strong> · FEED ${fs.label} · AUTO SELECT ${stack||'MODEL'} · ${tpAuto?.calibration?.selected||'CAL'} · QUALIFIED ${q}/${Number(mlBrain?.current?.candidateCount||12)} · ${st.note}`;
@@ -6448,7 +6479,7 @@ if(analyticsWorker){
 }
 function pushOutcomeStatsToWorker(){
   if(!analyticsWorker)return;
-  const vals=outcomeMemory.filter(r=>['WIN','LOSS'].includes(r.outcome)).map(r=>r.outcome==='WIN'?1:-1);
+  const vals=outcomeMemory.filter(verifiedLocalOutcomeV42).map(r=>r.outcome==='WIN'?1:-1);
   analyticsWorker.postMessage({type:'stats',data:vals});
 }
 
@@ -6631,20 +6662,21 @@ function latestContinuousSegment(arr,tf){
   }
   return arr.slice(start);
 }
-function aggregateCandles(src,targetTf){
+function aggregateCandles(src,targetTf,watermark=Date.now()-75000){
   const bucketMs=tfMs(targetTf);
   if(!src.length||bucketMs<=60000)return src.slice();
-  const out=[];let cur=null,bucket=-1;
+  if(adaptiveApi?.aggregateClosedBars)return adaptiveApi.aggregateClosedBars(src,bucketMs,watermark,60000);
+  const out=[];let cur=null,bucket=-1,count=0;
   for(const c of src){
     const b=Math.floor(c.ts/bucketMs)*bucketMs;
     if(b!==bucket){
-      if(cur)out.push(cur);
-      bucket=b;cur={ts:b,open:c.open,high:c.high,low:c.low,close:c.close};
+      if(cur&&cur.ts+bucketMs<=watermark&&count>=bucketMs/60000)out.push(cur);
+      bucket=b;count=1;cur={ts:b,open:c.open,high:c.high,low:c.low,close:c.close};
     }else{
-      cur.high=Math.max(cur.high,c.high);cur.low=Math.min(cur.low,c.low);cur.close=c.close;
+      count++;cur.high=Math.max(cur.high,c.high);cur.low=Math.min(cur.low,c.low);cur.close=c.close;
     }
   }
-  if(cur)out.push(cur);
+  if(cur&&cur.ts+bucketMs<=watermark&&count>=bucketMs/60000)out.push(cur);
   return out;
 }
 function cleanSingleTf(raw,tf){
@@ -6661,20 +6693,22 @@ function rebuildMarketData(pack){
   const tf=pack.timeframes||pack.data||pack||{};
   const rawM1=tf.M1||[];
   const m1=cleanSingleTf(rawM1,'M1');
+  const declaredWatermark=Number(pack?.closedBarWatermark||pack?.feed?.closedBarWatermark||0);
+  const closedThrough=Number.isFinite(declaredWatermark)&&declaredWatermark>0?declaredWatermark:Date.now()-75000;
 
   let source='PACK TF';
-  let cleanM1=m1.clean;
+  let cleanM1=m1.clean.filter(c=>c.ts+60000<=closedThrough);
   let rebuilt={M1:cleanM1,M5:[],M15:[],H1:[]};
 
   if(cleanM1.length>=180){
-    rebuilt.M5=aggregateCandles(cleanM1,'M5');
-    rebuilt.M15=aggregateCandles(cleanM1,'M15');
-    rebuilt.H1=aggregateCandles(cleanM1,'H1');
+    rebuilt.M5=aggregateCandles(cleanM1,'M5',closedThrough);
+    rebuilt.M15=aggregateCandles(cleanM1,'M15',closedThrough);
+    rebuilt.H1=aggregateCandles(cleanM1,'H1',closedThrough);
     source='REBUILT FROM M1';
   }else{
-    rebuilt.M5=cleanSingleTf(tf.M5||[],'M5').clean;
-    rebuilt.M15=cleanSingleTf(tf.M15||[],'M15').clean;
-    rebuilt.H1=cleanSingleTf(tf.H1||[],'H1').clean;
+    rebuilt.M5=cleanSingleTf(tf.M5||[],'M5').clean.filter(c=>c.ts+tfMs('M5')<=closedThrough);
+    rebuilt.M15=cleanSingleTf(tf.M15||[],'M15').clean.filter(c=>c.ts+tfMs('M15')<=closedThrough);
+    rebuilt.H1=cleanSingleTf(tf.H1||[],'H1').clean.filter(c=>c.ts+tfMs('H1')<=closedThrough);
   }
 
   for(const k of ['M1','M5','M15','H1'])marketData[k]=rebuilt[k];
@@ -6685,7 +6719,7 @@ function rebuildMarketData(pack){
   pipelineStats={
     raw:rawCount,clean:cleanCount,duplicates:Math.max(m1.duplicates,packDupes),
     outliers:m1.outliers,segment:marketData.M15.length||marketData.M5.length||marketData.M1.length,
-    source,status:cleanCount>=80?'READY':'LIMITED',lastRun:Date.now()
+    source,status:cleanCount>=80?'READY':'LIMITED',closedBarWatermark:closedThrough,lastRun:Date.now()
   };
   return pipelineStats;
 }
@@ -6772,16 +6806,18 @@ async function loadNews(){
 }
 function newsContext(){
   const now=Date.now(),before=Math.max(0,num(settings.newsBefore)||20),after=Math.max(0,num(settings.newsAfter)||15);
-  const relevant=newsPack.events.filter(e=>Math.abs(e.ts-now)<=36*3600000).sort((a,b)=>a.ts-b.ts);
+  const newsAge=newsPack.generatedAt?now-newsPack.generatedAt:Infinity,events=Array.isArray(newsPack.events)?newsPack.events:[];
+  const unknown=events.length===0||newsAge>48*3600000;
+  const relevant=events.filter(e=>Math.abs(e.ts-now)<=36*3600000).sort((a,b)=>a.ts-b.ts);
   let nearest=null;
   for(const e of relevant){
     const mins=(e.ts-now)/60000;
     if(!nearest||Math.abs(mins)<Math.abs(nearest.mins))nearest={event:e,mins};
   }
   const high=nearest&&nearest.event.importance>=2;
-  const lock=!!(high&&nearest.mins<=before&&nearest.mins>=-after);
-  const warn=!!(high&&nearest.mins>before&&nearest.mins<=90);
-  return{relevant,nearest,lock,warn}
+  const lock=unknown?marketStatus().open:!!(high&&nearest.mins<=before&&nearest.mins>=-after);
+  const warn=unknown||!!(high&&nearest.mins>before&&nearest.mins<=90);
+  return{relevant,nearest,lock,warn,unknown,newsAge}
 }
 
 function ema(vals,p){if(!vals.length)return[];const k=2/(p+1);let x=vals[0];return vals.map((v,i)=>(x=i?v*k+x*(1-k):v,x))}
@@ -7096,16 +7132,23 @@ function buildSetupCandidates(a){
   return candidates.sort((x,y)=>y.score-x.score);
 }
 function calibrationStats(){
-  const rows=outcomeMemory.filter(x=>Number.isFinite(x.rawScore)&&['WIN','LOSS'].includes(x.outcome));
-  if(rows.length<8)return{bias:0,samples:rows.length,winRate:null};
+  const rows=outcomeMemory.filter(x=>Number.isFinite(x.rawScore)&&verifiedLocalOutcomeV42(x));
+  if(rows.length<30)return{bias:0,samples:rows.length,winRate:null};
   const avgPred=rows.reduce((a,b)=>a+b.rawScore/100,0)/rows.length;
-  const actual=rows.filter(x=>x.outcome==='WIN').length/rows.length;
-  return{bias:actual-avgPred,samples:rows.length,winRate:actual};
+  const wins=rows.filter(x=>x.outcome==='WIN').length;
+  const actual=(wins+2)/(rows.length+4);
+  const shrink=Math.min(1,rows.length/80);
+  return{bias:clamp((actual-avgPred)*shrink,-.04,.04),samples:rows.length,winRate:actual};
 }
 function calibrateConfidence(raw){
   const c=calibrationStats();
-  if(c.samples<8)return clamp(raw*.92,0,94);
-  return clamp((raw/100+c.bias*.55)*100,0,94);
+  if(c.samples<30)return clamp(raw*.94,0,94);
+  return clamp((raw/100+c.bias)*100,0,94);
+}
+function adaptivePredictionV42(raw,a,setup){
+  if(!adaptiveApi||!adaptiveModel)return{probability:raw,raw,delta:0,trust:0,generation:0,source:'BASELINE'};
+  try{return adaptiveApi.predict(adaptiveModel,raw,{setup,regime:a?.regime,session:sessionBucket(),tf:a?.tf,feed:localFeedIdentityV42()})}
+  catch(e){console.warn('Adaptive prediction quarantined',e);return{probability:raw,raw,delta:0,trust:0,generation:0,source:'BASELINE'}}
 }
 function expectedValue(prob,rr){
   const p=clamp(prob/100,.01,.99),R=Math.max(.1,rr||0);
@@ -7126,7 +7169,7 @@ function buildExecutionGates(a){
   const fresh=!marketFreshness().stale;
   const quality=dataQuality.score>=DATA_QUALITY_READY_MIN;
   const confirm=confirmation.state==='READY';
-  const news=!newsContext().lock;
+  const newsState=newsContext(),news=!newsState.lock&&!newsState.unknown;
   const risk=!guardian().locked;
   const rr=!!a&&Number(a.rr)>=1.45;
   const ev=intelligence.ev>0.12;
@@ -7139,7 +7182,7 @@ function buildExecutionGates(a){
     ['Background Brain',bgOk,bg?(`${bg.prob.toFixed(0)}% · ${bg.samples}`):'NO PACK'],
     ['Data Quality',quality,dataQuality.score+'/100'],
     ['Confirmation',confirm,confirmation.state],
-    ['News',news,news?'CLEAR':'LOCK'],
+    ['News',news,news?'CLEAR':newsState.unknown?'UNKNOWN':'LOCK'],
     ['Risk',risk,risk?'PASS':'LOCK'],
     ['R:R',rr,a?.rr?Number(a.rr).toFixed(2):'—'],
     ['Expected Value',ev,intelligence.ev.toFixed(2)],
@@ -7163,17 +7206,19 @@ function buildShortExplain(a){
 }
 function buildIntelligence(a){
   if(!a){
-    intelligence={router:null,setups:[],best:null,rawConfidence:0,calibrated:0,ev:0,chaseLimit:null,executionGates:[],explain:'รอข้อมูล',probability:0};
+    intelligence={router:null,setups:[],best:null,rawConfidence:0,calibrated:0,ev:0,chaseLimit:null,executionGates:[],explain:'รอข้อมูล',probability:0,adaptive:null};
     return intelligence;
   }
   const router=routeStrategy(a),setups=buildSetupCandidates(a),best=setups[0]||null;
   const raw=clamp((a.score||0)+(best?((best.score-a.score)*.28):0),0,96);
-  const calibrated=calibrateConfidence(raw);
+  const localCalibrated=calibrateConfidence(raw);
+  const adaptive=adaptivePredictionV42(localCalibrated,a,best?.name||a.setupType);
+  const calibrated=adaptive.probability;
   const prob=calibrated;
   const rr=Number(a.rr||0);
   const ev=expectedValue(prob,rr);
   const chaseLimit=dynamicChaseLimit(a);
-  intelligence={router,setups,best,rawConfidence:raw,calibrated,ev,chaseLimit,executionGates:[],explain:'',probability:prob};
+  intelligence={router,setups,best,rawConfidence:raw,calibrated,ev,chaseLimit,executionGates:[],explain:'',probability:prob,adaptive};
   intelligence.executionGates=buildExecutionGates(a);
   intelligence.explain=buildShortExplain(a);
   return intelligence;
@@ -7202,45 +7247,52 @@ function renderIntelligence(){
   const cs=calibrationStats();
   $('#memoryChip').textContent=cs.samples+' SAMPLES';
   $('#memorySignals').textContent=outcomeMemory.length;
-  $('#memoryBias').textContent=cs.samples<8?'LEARNING':((cs.bias>=0?'+':'')+(cs.bias*100).toFixed(1)+'%');
-  const mfe=outcomeMemory.filter(x=>Number.isFinite(x.mfe));const mae=outcomeMemory.filter(x=>Number.isFinite(x.mae));
+  $('#memoryBias').textContent=cs.samples<30?'LEARNING':((cs.bias>=0?'+':'')+(cs.bias*100).toFixed(1)+'%');
+  const mfe=outcomeMemory.filter(x=>verifiedLocalOutcomeV42(x)&&Number.isFinite(x.mfe));const mae=outcomeMemory.filter(x=>verifiedLocalOutcomeV42(x)&&Number.isFinite(x.mae));
   $('#memoryMfe').textContent=mfe.length?(mfe.reduce((a,b)=>a+b.mfe,0)/mfe.length).toFixed(2)+'R':'—';
   $('#memoryMae').textContent=mae.length?(mae.reduce((a,b)=>a+b.mae,0)/mae.length).toFixed(2)+'R':'—';
   $('#shadowToggle').textContent=shadowMode?'SHADOW ON':'SHADOW OFF';$('#shadowStatus').textContent=shadowMode?'ON':'OFF';
+  renderAdaptiveModelV42();
 }
 function recordShadowSignal(a){
   if(!a||!a.market?.open||!IAmFinite(a.entryCenter))return;
 }
 function IAmFinite(v){return Number.isFinite(Number(v))}
+function localFeedIdentityV42(){
+  const f=packMeta.feed||{};
+  const active=String(f.runtimeActive||f.active||'').toUpperCase();
+  if(active.includes('TWELVE'))return'TWELVE_DATA_PRIMARY';
+  if(active.includes('MT5'))return'MT5_FALLBACK';
+  return'UNVERIFIED';
+}
+function verifiedLocalOutcomeV42(rec){
+  return !!rec&&['WIN','LOSS'].includes(rec.outcome)
+    &&['TWELVE_DATA_PRIMARY','MT5_FALLBACK'].includes(rec.creationFeed)
+    &&rec.creationFeed===rec.outcomeFeed
+    &&Number.isFinite(Number(rec.marketTs))&&Number.isFinite(Number(rec.fillAt))&&Number.isFinite(Number(rec.terminalAt))
+    &&Number(rec.fillAt)>Number(rec.marketTs)&&Number(rec.terminalAt)>Number(rec.fillAt);
+}
 
 function runLocalLearning(){
   if(!Array.isArray(outcomeMemory)||!outcomeMemory.length){
     localReplayCount=0;renderLearningEngine();return{updated:0}
   }
   let updated=0,replayed=0;
+  const replayFeed=localFeedIdentityV42();
   for(const rec of outcomeMemory){
-    if(!rec||!rec.tf||!Number.isFinite(rec.createdAt)||!Number.isFinite(rec.entry)||!Number.isFinite(rec.sl))continue;
-    const arr=marketData[rec.tf]||[];
-    const after=arr.filter(c=>c.ts>=rec.createdAt).slice(0,120);
-    if(!after.length)continue;
+    if(!rec||!rec.tf||!Number.isFinite(rec.marketTs)||!Number.isFinite(rec.entry)||!Number.isFinite(rec.sl))continue;
+    if(rec.creationFeed!==replayFeed||replayFeed==='UNVERIFIED')continue;
+    if(verifiedLocalOutcomeV42(rec))continue;
+    const arr=marketData.M1||[];
+    const result=adaptiveApi?.resolveOutcome?.(rec,arr,replayFeed,120);
+    if(!result?.replayed)continue;
     replayed++;
-    const risk=Math.abs(rec.entry-rec.sl)||1;
-    let mfe=0,mae=0,outcome=rec.outcome||null;
-    for(const c of after){
-      if(rec.side==='BUY'){
-        mfe=Math.max(mfe,(c.high-rec.entry)/risk);
-        mae=Math.max(mae,(rec.entry-c.low)/risk);
-        if(!outcome&&c.low<=rec.sl){outcome='LOSS';break}
-        if(!outcome&&Number.isFinite(rec.tp1)&&c.high>=rec.tp1){outcome='WIN';break}
-      }else{
-        mfe=Math.max(mfe,(rec.entry-c.low)/risk);
-        mae=Math.max(mae,(c.high-rec.entry)/risk);
-        if(!outcome&&c.high>=rec.sl){outcome='LOSS';break}
-        if(!outcome&&Number.isFinite(rec.tp1)&&c.low<=rec.tp1){outcome='WIN';break}
-      }
-    }
-    if(rec.mfe!==mfe||rec.mae!==mae||rec.outcome!==outcome){
-      rec.mfe=mfe;rec.mae=mae;rec.outcome=outcome;rec.lastReplay=Date.now();updated++;
+    const before=[rec.mfe,rec.mae,rec.outcome,rec.fillAt,rec.terminalAt,rec.outcomeFeed].join('|');
+    rec.mfe=result.mfe;rec.mae=result.mae;rec.outcome=result.outcome;rec.fillAt=result.fillAt;rec.fillPrice=result.fillPrice;
+    rec.terminalAt=result.terminalAt;rec.outcomeFeed=result.outcomeFeed;rec.outcomeReason=result.reason;
+    const after=[rec.mfe,rec.mae,rec.outcome,rec.fillAt,rec.terminalAt,rec.outcomeFeed].join('|');
+    if(before!==after){
+      rec.lastReplay=Date.now();updated++;
     }
   }
   localReplayCount=replayed;
@@ -7259,10 +7311,10 @@ function learningStatusTone(status){
   return'bad';
 }
 function learningEligibleCount(){
-  return outcomeMemory.filter(rec=>rec&&rec.tf&&Number.isFinite(rec.createdAt)&&Number.isFinite(rec.entry)&&Number.isFinite(rec.sl)).length;
+  return outcomeMemory.filter(rec=>rec&&rec.tf&&Number.isFinite(rec.marketTs)&&Number.isFinite(rec.entry)&&Number.isFinite(rec.sl)&&['TWELVE_DATA_PRIMARY','MT5_FALLBACK'].includes(rec.creationFeed)).length;
 }
 function learningCompletedCount(){
-  return outcomeMemory.filter(rec=>rec&&['WIN','LOSS'].includes(rec.outcome)).length;
+  return outcomeMemory.filter(verifiedLocalOutcomeV42).length;
 }
 function learningNextText(ts){
   if(!ts)return '—';
@@ -7306,6 +7358,7 @@ async function runLearningCycle(source='AUTO'){
   await nextFrame();
   const result=runLocalLearning()||{updated:0,replayed:0};
   buildSetupEdgeMemory();
+  const adaptiveResult=runAdaptiveLearningV42();
   if(analysis)buildIntelligence(analysis);
   renderIntelligence();
   if(analysis)runFinalDecisionEngine(analysis);
@@ -7323,7 +7376,7 @@ async function runLearningCycle(source='AUTO'){
     replayed,
     updated,
     lastRun:Date.now(),
-    note:updated>0?`อัปเดต memory ${updated} รายการจาก ${replayed} replays`:`ตรวจสอบ ${replayed} replays แล้ว พร้อมรอบถัดไป`
+    note:updated>0?`อัปเดต memory ${updated} รายการจาก ${replayed} replays · ${adaptiveResult?.state?.action||'ADAPTIVE WAIT'}`:`ตรวจสอบ ${replayed} replays · ${adaptiveResult?.state?.action||'ADAPTIVE WAIT'}`
   });
   scheduleLearningLoop(document.hidden?180000:90000);
 }
@@ -7331,6 +7384,41 @@ function bootLearningLoop(){
   clearInterval(learningPulseTimer);
   learningPulseTimer=setInterval(()=>{if(document.getElementById('learningNextRun'))renderLearningEngine()},1000);
   scheduleLearningLoop(document.hidden?15000:8000);
+}
+
+function runAdaptiveLearningV42(){
+  if(!adaptiveApi)return null;
+  try{
+    const result=adaptiveApi.evolve(outcomeMemory,adaptiveModel,Date.now());
+    adaptiveModel=safeAdaptiveStateV42(result.state);
+    saveJson(ADAPTIVE_MODEL_KEY,adaptiveModel);
+    renderAdaptiveModelV42();
+    return result;
+  }catch(e){
+    console.warn('Adaptive learning quarantined',e);
+    adaptiveModel=adaptiveApi.defaultState();
+    adaptiveModel.action='QUARANTINED';
+    adaptiveModel.reason='adaptive state ไม่ผ่าน schema guard';
+    renderAdaptiveModelV42();
+    return{state:adaptiveModel,changed:false,promoted:false,rolledBack:false};
+  }
+}
+
+function renderAdaptiveModelV42(){
+  const box=$('.adaptive-model-v42');if(!box)return;
+  const state=adaptiveModel||adaptiveApi?.defaultState?.()||{action:'UNAVAILABLE',reason:'adaptive module unavailable',generation:0,audit:{total:0}};
+  const action=String(state.action||'WAIT_DATA').toUpperCase();
+  const champion=state.champion||null,candidate=state.candidate||null,model=champion||candidate;
+  const trust=adaptiveApi&&champion?adaptiveApi.modelTrust(champion)*100:0;
+  const brier=model?.metrics?.brier;
+  const tone=action==='ROLLBACK'||action==='QUARANTINED'?'bad':champion?'good':candidate?'core':'warn';
+  box.dataset.tone=tone;
+  $('#adaptiveModelState').textContent=champion?`GEN ${Number(state.generation)||0} CHAMPION`:candidate?'SHADOW CANDIDATE':'WAIT DATA';
+  $('#adaptiveModelAction').textContent=action.replace(/_/g,' ');
+  $('#adaptiveModelSamples').textContent=Number(state.audit?.total)||0;
+  $('#adaptiveModelBrier').textContent=Number.isFinite(Number(brier))?Number(brier).toFixed(3):'—';
+  $('#adaptiveModelTrust').textContent=Math.round(trust)+'%';
+  $('#adaptiveModelNote').textContent=state.reason||'Candidate → time-ordered validation → promote, keep or rollback';
 }
 
 function renderLearningEngine(){
@@ -7348,43 +7436,31 @@ function renderLearningEngine(){
   const bar=$('#learningLoopBar');if(bar)bar.style.width=(learningState.active?Math.max(24,learningState.progress||24):(learningState.auto?100:14))+'%';
   const btn=$('#learningAutoToggle');if(btn){btn.textContent=learningState.auto?'AUTO LOCAL ON':'AUTO LOCAL OFF';btn.classList.toggle('active',!!learningState.auto)}
   const note=$('#learningNote');if(note){const local=learningEligibleCount();note.innerHTML=local?`<strong>LOCAL ${status}</strong> · ${learningState.note||'กำลังเรียนรู้จาก outcome ในเครื่อง'}`:`<strong>LOCAL MEMORY 0</strong> · ยังไม่มี Signal เก่าก็ไม่เป็นไร Background Brain บน GitHub ยังทำงานแยกกัน`}
+  renderAdaptiveModelV42();
   renderBackgroundBrain();
 }
 
 
 
 function updateOutcomeMemory(){
-  if(!outcomeMemory.length)return;
-  let changed=false;
-  for(const rec of outcomeMemory){
-    if(rec.outcome||!rec.tf||!IAmFinite(rec.entry)||!IAmFinite(rec.sl)||!IAmFinite(rec.tp1))continue;
-    const arr=marketData[rec.tf]||[];const after=arr.filter(c=>c.ts>=rec.createdAt).slice(0,80);
-    if(!after.length)continue;
-    const risk=Math.abs(rec.entry-rec.sl)||1;
-    let mfe=0,mae=0,outcome=null;
-    for(const c of after){
-      if(rec.side==='BUY'){
-        mfe=Math.max(mfe,(c.high-rec.entry)/risk);mae=Math.max(mae,(rec.entry-c.low)/risk);
-        if(c.low<=rec.sl){outcome='LOSS';break}
-        if(c.high>=rec.tp1){outcome='WIN';break}
-      }else{
-        mfe=Math.max(mfe,(rec.entry-c.low)/risk);mae=Math.max(mae,(c.high-rec.entry)/risk);
-        if(c.high>=rec.sl){outcome='LOSS';break}
-        if(c.low<=rec.tp1){outcome='WIN';break}
-      }
-    }
-    rec.mfe=mfe;rec.mae=mae;if(outcome)rec.outcome=outcome;changed=true;
-  }
-  if(changed){outcomeMemory=outcomeMemory.slice(-180);saveJson(OUTCOME_KEY,outcomeMemory)}
+  if(!outcomeMemory.length)return{updated:0,replayed:0};
+  return runLocalLearning();
 }
 function maybeRememberSignal(a){
   if(!a||!a.market?.open||!IAmFinite(a.entryCenter)||!IAmFinite(a.sl)||!IAmFinite(a.tp1))return;
-  const sig=`${a.side}|${a.tf}|${Math.round(a.entryCenter*100)}|${Math.round(a.sl*100)}`;
+  const creationFeed=localFeedIdentityV42();
+  const pending=pendingPlansV35(a)?.primary||null;
+  const source=pending&&[pending.entry,pending.sl,pending.tp1].every(Number.isFinite)?pending:{side:['BUY','SELL'].includes(a.side)?a.side:a.direction,type:null,entry:a.entryCenter,entryLow:a.entryLow,entryHigh:a.entryHigh,sl:a.sl,tp1:a.tp1,tp2:a.tp2,anchor:a.entryAnchor||a.setupType,qualifiedPlan:a.side!=='WAIT'};
+  const marketTs=Number((marketData.M1||[]).at(-1)?.ts)||0;
+  const side=source.side,orderType=String(source.type||`${side}_LIMIT`).toUpperCase();
+  if(creationFeed==='UNVERIFIED'||!marketTs||!['BUY','SELL'].includes(side)||![source.entry,source.sl,source.tp1].every(Number.isFinite))return;
+  const sig=`${creationFeed}|${side}|M1|${marketTs}|${Math.round(source.entry*100)}|${Math.round(source.sl*100)}`;
   if(outcomeMemory.some(x=>x.sig===sig))return;
   outcomeMemory.push({
-    sig,createdAt:Date.now(),side:a.side,tf:a.tf,entry:a.entryCenter,sl:a.sl,tp1:a.tp1,tp2:a.tp2,
-    rawScore:intelligence.rawConfidence,calibrated:intelligence.calibrated,setup:intelligence.best?.name||a.setupType,
-    regime:a.regime,session:sessionBucket(),shadow:shadowMode,outcome:null,mfe:null,mae:null
+    sig,createdAt:Date.now(),marketTs,creationFeed,outcomeFeed:null,fillAt:null,fillPrice:null,terminalAt:null,side,orderType,labelTf:'M1',tf:a.tf,entry:source.entry,entryLow:source.entryLow,entryHigh:source.entryHigh,sl:source.sl,tp1:source.tp1,tp2:source.tp2,
+    rawScore:intelligence.rawConfidence,calibrated:intelligence.calibrated,setup:source.anchor||intelligence.best?.name||a.setupType,qualifiedPlan:source.qualifiedPlan===true,
+    regime:a.regime,session:sessionBucket(),shadow:shadowMode,outcome:null,mfe:null,mae:null,
+    dataQuality:Number(dataQuality.score)||0,modelGeneration:Number(adaptiveModel?.generation)||0,adaptiveDelta:Number(intelligence.adaptive?.delta)||0
   });
   outcomeMemory=outcomeMemory.slice(-180);saveJson(OUTCOME_KEY,outcomeMemory)
 }
@@ -7403,7 +7479,7 @@ function memoryGroupKey(rec){
 function buildSetupEdgeMemory(){
   const groups=new Map();
   for(const r of outcomeMemory){
-    if(!r||!['WIN','LOSS'].includes(r.outcome))continue;
+    if(!verifiedLocalOutcomeV42(r))continue;
     const key=memoryGroupKey(r);
     if(!groups.has(key))groups.set(key,{key,setup:r.setup||'UNKNOWN',regime:r.regime||'UNKNOWN',session:r.session||'ANY',tf:r.tf||'ANY',wins:0,losses:0,mfe:0,mae:0,n:0});
     const g=groups.get(key);g.n++;if(r.outcome==='WIN')g.wins++;else g.losses++;
@@ -7442,18 +7518,23 @@ function trueSessionFit(a,setup){
   return clamp(score,0,100);
 }
 function walkForwardCalibration(raw,a,setup){
-  // Uses only completed outcome memory. Recent 30% acts as pseudo out-of-sample.
-  const rows=outcomeMemory.filter(r=>r&&['WIN','LOSS'].includes(r.outcome)&&r.setup===setup&&r.tf===a.tf);
-  if(rows.length<10)return clamp(raw*.90,5,93);
-  const ordered=rows.slice().sort((x,y)=>(x.createdAt||0)-(y.createdAt||0));
-  const split=Math.max(6,Math.floor(ordered.length*.7));
-  const test=ordered.slice(split);
-  if(test.length<3)return clamp(raw*.91,5,93);
-  const actual=test.filter(r=>r.outcome==='WIN').length/test.length;
-  const predicted=test.reduce((s,r)=>s+(Number(r.rawScore)||50)/100,0)/test.length;
-  const bias=actual-predicted;
-  const calibrated=(raw/100 + bias*.62)*100;
-  return clamp(calibrated,5,94);
+  // Fit on the old 70%, then let the untouched recent 30% accept or reject the correction.
+  const rows=outcomeMemory.filter(r=>verifiedLocalOutcomeV42(r)&&r.setup===setup&&r.tf===a.tf);
+  if(rows.length<30)return clamp(raw*.96,5,93);
+  const ordered=rows.slice().sort((x,y)=>(x.marketTs||0)-(y.marketTs||0));
+  const split=Math.max(20,Math.floor(ordered.length*.7));
+  const train=ordered.slice(0,split),validation=ordered.slice(split);
+  if(validation.length<8)return clamp(raw*.96,5,93);
+  const trainWins=train.filter(r=>r.outcome==='WIN').length;
+  const trainActual=(trainWins+2)/(train.length+4);
+  const trainPredicted=train.reduce((s,r)=>s+clamp((Number(r.rawScore)||50)/100,.03,.97),0)/train.length;
+  const delta=clamp((trainActual-trainPredicted)*(train.length/(train.length+28)),-.04,.04);
+  const brier=(rowsToScore,adjustment)=>rowsToScore.reduce((sum,r)=>{
+    const p=clamp((Number(r.rawScore)||50)/100+adjustment,.03,.97),y=r.outcome==='WIN'?1:0;
+    return sum+(p-y)*(p-y);
+  },0)/Math.max(1,rowsToScore.length);
+  const baseline=brier(validation,0),candidate=brier(validation,delta);
+  return clamp(candidate<=baseline-.001?(raw/100+delta)*100:raw*.96,5,94);
 }
 function noTradeEngine(a){
   const reasons=[];let score=0;
@@ -7461,7 +7542,8 @@ function noTradeEngine(a){
   if(!a)return{score:100,reasons:[{name:'NO ANALYSIS',pts:100,blocked:true}]};
   if(marketFreshness().stale)add('Stale market data',32,true);
   if(dataQuality.score<DATA_QUALITY_READY_MIN)add('Low data quality',28,true);
-  if(newsContext().lock)add('High-impact news lock',32,true);
+  if(newsContext().unknown)add('News feed unknown',32,true);
+  else if(newsContext().lock)add('High-impact news lock',32,true);
   else if(newsContext().warn)add('Near macro event',12,false);
   if(a.regime==='RANGE')add('Compression / range',20,false);
   if(a.stretched)add('Overextended move',16,false);
@@ -7493,7 +7575,7 @@ function runFinalDecisionEngine(a){
     v25={...v25,sessionFit:0,setupEdge:0,winProb:0,ev:0,noTradeScore:100,noTradeReasons:[],lifecycle:'WATCH',decision:'WAIT',explain:'รอข้อมูล',bestEdge:null,brainBlend:null,modelHealth:modelHealthV33(),precision:null};
     renderBackgroundBrain();renderPrecisionEntryV33();return v25;
   }
-  const setup=intelligence.best?.name||a.setupType||'UNKNOWN',edgeRow=lookupSpecificEdge(a,setup),setupEdge=edgeRow?edgeRow.edge:clamp((intelligence.best?.score||a.score||0)*.86,0,92),sessionFit=trueSessionFit(a,setup),raw=clamp(intelligence.rawConfidence*.50+setupEdge*.28+sessionFit*.22,0,96),baseProb=walkForwardCalibration(raw,a,setup),blend=brainBlendFor(a,baseProb),winProb=blend.prob,ev=expectedValue(winProb,Number(a.rr||0)),nt=noTradeEngine(a),precision=precisionEntryGateV33(a),health=blend.health||modelHealthV33(),guard=blend.guard||modelGuardV34(blend.bg);
+  const setup=intelligence.best?.name||a.setupType||'UNKNOWN',edgeRow=lookupSpecificEdge(a,setup),setupEdge=edgeRow?edgeRow.edge:clamp((intelligence.best?.score||a.score||0)*.86,0,92),sessionFit=trueSessionFit(a,setup),raw=clamp(intelligence.rawConfidence*.50+setupEdge*.28+sessionFit*.22,0,96),walkForwardProb=walkForwardCalibration(raw,a,setup),adaptive=adaptivePredictionV42(walkForwardProb,a,setup),baseProb=adaptive.probability,blend=brainBlendFor(a,baseProb),winProb=blend.prob,ev=expectedValue(winProb,Number(a.rr||0)),nt=noTradeEngine(a),precision=precisionEntryGateV33(a),health=blend.health||modelHealthV33(),guard=blend.guard||modelGuardV34(blend.bg);
   if(blend.conflict){const pts=blend.hardConflict?30:blend.historyConflict?12:15;nt.score=clamp(nt.score+pts,0,100);nt.reasons.push({name:blend.historyConflict?`History conflicts with ${a.direction}`:`Trusted BG conflict ${blend.bg?.prob?.toFixed(0)||'—'}% CI ${blend.bg?.lower?.toFixed(0)||'—'}–${blend.bg?.upper?.toFixed(0)||'—'}`,pts,blocked:blend.hardConflict})}
   if(guard.hardDisable)nt.reasons.push({name:`Background ${guard.state} · Live/History only`,pts:0,blocked:false});
   if(precision.score<V34_ENTRY_SCORE_MIN){const pts=precision.score<50?26:precision.inZone?12:8;nt.score=clamp(nt.score+pts,0,100);nt.reasons.push({name:`Entry quality ${precision.score}/100 · ${precision.state}`,pts,blocked:precision.hardBlock})}
@@ -7905,7 +7987,7 @@ function renderHomeAiHealth(){
 function renderHome(){
   if(!validPlan(plan))return;
   const bal=currentBalance(),done=completed(),idx=todayIndex(),d=plan.days[idx],monthProgress=clamp((bal-plan.start)/(plan.target-plan.start),0,1),m=marketStatus();
-  $('#homeBalance').textContent=money(bal);$('#homeDelta').textContent=(bal-plan.start>=0?'+':'')+money(bal-plan.start)+' since start';
+  $('#homeBalance').textContent=money(bal);const homeDelta=bal-plan.start;$('#homeDelta').textContent=(homeDelta>=0?'+':'')+money(homeDelta)+' since start';$('#homeDelta').className=homeDelta>=0?'pnl-positive':'pnl-negative';
   $('#homeTarget').textContent=money(plan.target);$('#homeTargetPct').textContent=((plan.target/plan.start-1)*100).toFixed(2)+'% month goal';
   $('#missionDay').textContent='DAY '+String(idx+1).padStart(2,'0');$('#todayProfit').textContent='+'+money(d.profit);$('#todayRate').textContent='Required '+(d.profit/d.start*100).toFixed(2)+'% / session';
   $('#todayStart').textContent=money(d.start);$('#todayClose').textContent=money(d.expected);$('#daysLeft').textContent=Math.max(0,30-done);$('#tpStop').textContent='+'+money(d.profit);$('#maxLoss').textContent='-'+money(d.maxLoss);
@@ -7932,7 +8014,7 @@ function renderPlan(){
   $('#planProgressText').textContent=done+' / 30';
   $('#planProgressBar').style.width=(done/30*100)+'%';
   const bal=currentBalance(),expected=done?plan.days[done-1].expected:plan.start;
-  $('#planPace').textContent=bal>=expected?'ON PLAN':'BEHIND';
+  $('#planPace').textContent=bal>=expected?'ON PLAN':'BEHIND';$('#planPace').className=bal>=expected?'good':'warn';
 
   const listKey=[plan.start,plan.target,done,idx,plan.days.map(d=>d.actual??'').join(','),settings.minLot,settings.contractSize,packMeta.generatedAt||0,newsPack.generatedAt||0,analysis?.score||0].join('|');
   if(perfState.planKey===listKey)return;perfState.planKey=listKey;
@@ -7979,13 +8061,13 @@ function renderModelGrowthV341(){
   $('#growthGoodEntry').textContent=Number.isFinite(Number(eq.goodRate))?Number(eq.goodRate).toFixed(1)+'%':'—';
   $('#growthBadEntry').textContent=`${Number(eq.late||0)} / ${Number(eq.poor||0)}`;
   $('#growthSessionGate').textContent=`${sg.bucket} · P${sg.prob} · E${sg.entry}`;
-  const mh=mlBrain?.modelHealth||{},mt=mlBrain?.training||{},mv=mlBrain?.validation?.tp1||{},mp=mlBrain?.current?.primary||mlBrain?.current?.reference;
-  $('#growthMlHealth').textContent=Number.isFinite(Number(mh.score))?`${Number(mh.score).toFixed(0)}/100 · ${String(mlBrain.status||'—')}`:'—';
+  const mh=mlBrain?.modelHealth||{},mt=mlBrain?.training||{},mv=mlBrain?.validation?.tp1||{},mp=mlBrain?.current?.primary||mlBrain?.current?.reference,mlState=mlBrainStateV35();
+  $('#growthMlHealth').textContent=Number.isFinite(Number(mh.score))?`${Number(mh.score).toFixed(0)}/100 · ${mlState.status}`:'—';
   $('#growthMlSamples').textContent=Number(mt.candidateSamples||0).toLocaleString('en-US');
   $('#growthMlValidation').textContent=Number.isFinite(Number(mv.auc))&&Number.isFinite(Number(mv.brier))?`${Number(mv.auc).toFixed(3)} / ${Number(mv.brier).toFixed(3)}`:'—';
   $('#growthMlPrimary').textContent=mp?`${mlBrain?.current?.primary?'QUALIFIED':'REFERENCE'} · ${prettyOrderV35(mp.type)} · ${Math.round(Number(mp.score)||0)}`:'NO QUALITY PLAN';
-  $('#growthStatus').textContent=mlBrain?.ready?`ML ${String(mlBrain.status||'LIMITED')}`:bs.status;
-  $('#growthNote').innerHTML=`<strong>${mlBrain?.ready?'PYTHON ML + '+bs.status:bs.status}</strong> · ML Walk-Forward ${Number(mv.folds||0)} folds · Node Champion/Challenger ${governanceActionLabel()} · Pending Journal ${Number(j.verified30m||0)} verified · ${V341_DATA_RETENTION_LABEL}`;
+  $('#growthStatus').textContent=mlBrain?.ready?`ML ${mlState.status}`:bs.status;
+  $('#growthNote').innerHTML=`<strong>${mlBrain?.ready?`PYTHON ML ${mlState.status} + ${bs.status}`:bs.status}</strong> · ML Walk-Forward ${Number(mv.folds||0)} folds · Node Champion/Challenger ${governanceActionLabel()} · Pending Journal ${Number(j.verified30m||0)} verified · ${V341_DATA_RETENTION_LABEL}`;
 }
 
 function renderStats(){
@@ -8030,16 +8112,16 @@ function renderAiCoreV37(){
   const planPack=pendingPlanV35||pendingPlansV35(analysis);
   const plan=planPack?.primary||planPack?.reference||null;
   const planScore=plan?clamp(Number(plan.score)||0,0,100):0;
-  const hasModel=!!mlBrain?.ready;
+  const packPresent=!!mlBrain?.ready,hasModel=packPresent&&artifactProvenanceV42(mlBrain,{ml:true}).ok;
   const core=hasModel?clamp(model*.44+feed*.18+calibration*.15+drift*.13+guard*.10,0,100):Math.round(feed*.28);
   const coreRounded=Math.round(core);
-  const coreState=!hasModel?'WAIT DATA':st.trusted?'TRUSTED':String(st.status||'LIMITED');
+  const coreState=!packPresent?'WAIT DATA':!hasModel?'QUARANTINED':st.trusted?'TRUSTED':String(st.status||'LIMITED');
   const ring=$('#brainCoreRing');ring.style.setProperty('--brain-score',coreRounded);
   $('#brainCoreScore').textContent=hasModel?coreRounded:'—';
   $('#brainCoreState').textContent=coreState;
-  $('#brainCoreConfidence').textContent=hasModel?`MODEL TRUST ${Math.round(model)}%`:'WAIT MODEL PACK';
+  $('#brainCoreConfidence').textContent=hasModel?`MODEL TRUST ${Math.round(model)}%`:packPresent?'ZERO AUTHORITY':'WAIT MODEL PACK';
   $('#brainCorePulse').classList.toggle('live',hasModel&&!fs.blocked);
-  $('#brainCoreHeadline').textContent=hasModel?`${String(mlBrain.status||'MODEL')} · ${fs.label} · ${m.open?m.session:'LAST SESSION'} · ${Number(mlBrain?.current?.qualifiedCount||0)}/${Number(mlBrain?.current?.candidateCount||12)} plans qualified`:'กำลังรอ Python V38 Model Pack จาก GitHub Actions';
+  $('#brainCoreHeadline').textContent=hasModel?`${String(mlBrain.status||'MODEL')} · ${fs.label} · ${m.open?m.session:'LAST SESSION'} · ${Number(mlBrain?.current?.qualifiedCount||0)}/${Number(mlBrain?.current?.candidateCount||12)} plans qualified`:packPresent?st.note:'กำลังรอ Python V42 Model Pack ที่ผ่าน provenance guard';
   // Do not show “2/2 SWITCH BACK” after Twelve has already become active.
   const recoveryEl=$('#feedDivergence');
   if(recoveryEl){
@@ -8067,8 +8149,8 @@ function renderAiCoreV37(){
   const sys=$('#brainSystemNominal');sys.className=nominal?'good':fs.blocked?'warn':'';sys.innerHTML=`<i></i> ${nominal?'SYSTEM READY':fs.blocked?'FEED HOLD':'LIMITED'}`;
   $('#brainFeedActivity').textContent=`${fs.label} · ${fs.reason||packMeta.source||'market pack'}`;
   $('#brainFeedBadge').textContent=fs.blocked?'HOLD':'READY';$('#brainFeedBadge').className=fs.blocked?'warn':'good';
-  $('#brainModelActivity').textContent=hasModel?`V38 ${String(mlBrain.status||'MODEL')} · Health ${Math.round(model)}/100`:'รอ ai-ml-brain.json จาก GitHub Actions';
-  $('#brainModelBadge').textContent=hasModel?(st.trusted?'TRUSTED':'LIMITED'):'WAIT';$('#brainModelBadge').className=hasModel?(st.trusted?'good':'warn'):'';
+  $('#brainModelActivity').textContent=hasModel?`${String(mlBrain.version||'V42')} · Health ${Math.round(model)}/100`:packPresent?st.note:'รอ ai-ml-brain.json จาก GitHub Actions';
+  $('#brainModelBadge').textContent=hasModel?(st.trusted?'TRUSTED':'LIMITED'):packPresent?'QUARANTINED':'WAIT';$('#brainModelBadge').className=hasModel?(st.trusted?'good':'warn'):packPresent?'bad':'';
   const qualified=Number(mlBrain?.current?.qualifiedCount||0),candidates=Number(mlBrain?.current?.candidateCount||12);
   $('#brainPlanActivity').textContent=plan?`${qualified}/${candidates} qualified · ${prettyOrderV35(plan.type)} · score ${Math.round(planScore)}`:`0/${candidates} qualified · No quality plan`;
   $('#brainPlanBadge').textContent=plan?.qualifiedPlan?'QUALIFIED':plan?'REJECT':'WAIT';$('#brainPlanBadge').className=plan?.qualifiedPlan?'good':plan?'warn':'';
@@ -8572,8 +8654,8 @@ $('#saveSettingsBtn').addEventListener('click',async()=>{
 $('#resetAllBtn').addEventListener('click',async()=>{
   if(!confirm('ล้างข้อมูลแผนทั้งหมดและเริ่มใหม่?'))return;
   await runUiAction({title:'กำลัง Reset แอป…',detail:'ล้างข้อมูลแผนและ AI Memory',button:'#resetAllBtn'},async()=>{
-    [PLAN_KEY,AI_KEY,SCAN_KEY,SIGNAL_KEY,BT_KEY].forEach(k=>{storeRemove(k);__storageCache.delete(k)});
-    plan=null;aiOn=false;analysis=null;scanMemory=[];activeSignal=null;backtestResult=null;perfState.planKey='';perfState.statsKey='';perfState.windowCache.clear();
+    [PLAN_KEY,AI_KEY,SCAN_KEY,SIGNAL_KEY,BT_KEY,OUTCOME_KEY,LEARN_STATE_KEY,ADAPTIVE_MODEL_KEY,SHADOW_KEY].forEach(k=>{storeRemove(k);__storageCache.delete(k)});
+    plan=null;aiOn=false;analysis=null;scanMemory=[];activeSignal=null;backtestResult=null;outcomeMemory=[];shadowMode=false;adaptiveModel=adaptiveApi?.defaultState?.()||null;perfState.planKey='';perfState.statsKey='';perfState.windowCache.clear();
     closeModal('#settingsModal');await nextFrame();setActionUI('กำลัง Reset แอป…','เตรียมหน้าเริ่มต้น',70);firstRun();setActionUI('เสร็จแล้ว','พร้อมสร้างแผนใหม่',100)
   })
 });
@@ -8585,8 +8667,9 @@ function runDoctor(){
   add('Market data',Object.values(marketData).filter(a=>a.length>20).length>=3,Object.values(marketData).filter(a=>a.length>20).length+'/4 TF');
   add('News feed',Array.isArray(newsPack.events),newsPack.events.length+' events');
   add('Plan storage',validPlan(plan),'localStorage');
-  add('Chart engine',!!$('#marketChart')&&typeof drawChartNow==='function','canvas');
+  add('Graph UI retired',!!$('#marketChart')&&$('#marketChart').closest('.chart-runtime')?.hidden===true,'runtime preserved');
   add('AI engine',typeof chooseAnalysis==='function'&&typeof analyzeTf==='function','local fusion');
+  add('Adaptive governance',!!adaptiveApi&&adaptiveModel?.version===adaptiveApi.VERSION,'candidate / champion / rollback');
   add('Backtest',typeof runBacktest==='function','async');
   const pass=checks.filter(x=>x.ok).length;
   $('#doctorRows').innerHTML=checks.map(x=>`<div class="doctor-row"><span>${x.name}${x.detail?' · '+x.detail:''}</span><b class="${x.ok?'doctor-pass':'doctor-warn'}">${x.ok?'PASS':'CHECK'}</b></div>`).join('');
@@ -8786,10 +8869,10 @@ document.addEventListener('touchmove',e=>{
 window.addEventListener('online',()=>{renderFreshness();loadRemoteBrains().catch(()=>{});toast('กลับมาออนไลน์แล้ว')});
 window.addEventListener('offline',()=>{renderFreshness();toast('ออฟไลน์ · ใช้ข้อมูล Cache ล่าสุด')});
 
-// V25.8: minimal no-cache Service Worker for PWA installability. It never caches HTML/data.
+// V42: network-first Service Worker with a versioned offline app shell and last-valid data cache.
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=410',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=420',{updateViaCache:'none'})
       .catch(err=>console.warn('SW',err));
   });
 }
