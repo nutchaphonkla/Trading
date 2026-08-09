@@ -2,12 +2,8 @@ name: Update XAUUSD data pack
 
 on:
   workflow_dispatch:
-
   schedule:
-    # จันทร์-ศุกร์ ทุก 10 นาที
     - cron: "*/10 * * * 1-5"
-
-    # ช่วงตลาดเริ่มเปิดคืนวันอาทิตย์ UTC
     - cron: "*/10 22-23 * * 0"
 
 permissions:
