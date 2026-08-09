@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="OneMonth OS">
-<title>OneMonth OS V36.2 Primary Failover Autonomous ML</title>
+<title>OneMonth OS V36 Autonomous ML Plan Brain</title>
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
@@ -4284,18 +4284,6 @@ body{font-variant-numeric:tabular-nums!important}
 .command-ticket.qualified .ticket-main b{color:var(--mint)}
 .final-grid small{display:block;margin-top:4px;font-size:8px;color:var(--muted)}
 @media(max-width:430px){.command-ticket{gap:7px;padding:10px}.command-ticket>div{padding:9px}.command-ticket b{font-size:11px}.command-ticket .ticket-main b{font-size:14px}}
-
-/* ===== V36.2 PRIMARY -> MT5 FAILOVER ===== */
-.feed-health-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
-.feed-health-cell{padding:10px 11px;border-radius:14px;border:1px solid rgba(105,200,239,.09);background:rgba(2,7,11,.62);min-width:0}
-.feed-health-cell span{display:block;color:#667886;font-size:5.4px;font-weight:900;letter-spacing:.10em}
-.feed-health-cell b{display:block;margin-top:5px;font-size:8px;line-height:1.25;overflow-wrap:anywhere}
-.feed-health-cell.good{border-color:rgba(110,231,195,.16)}.feed-health-cell.good b{color:var(--mint)}
-.feed-health-cell.warn{border-color:rgba(240,200,108,.16)}.feed-health-cell.warn b{color:var(--amber)}
-.feed-health-cell.bad{border-color:rgba(255,115,133,.17)}.feed-health-cell.bad b{color:var(--red)}
-.feed-note{margin-top:9px;padding:10px 11px;border-radius:14px;border:1px solid rgba(105,200,239,.10);background:rgba(4,12,17,.66);color:#778895;font-size:6.4px;line-height:1.5}
-.feed-note strong{color:var(--text)}
-@media(max-width:520px){.feed-health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -4526,7 +4514,7 @@ body{font-variant-numeric:tabular-nums!important}
 
       <article class="card final-ai-card" id="pendingPlanCard">
         <div class="final-ai-head">
-          <div><div class="kicker">PENDING PLAN ENGINE V36.2</div><h3>อ่านทรงก่อน · ดักรอราคา</h3></div>
+          <div><div class="kicker">PENDING PLAN ENGINE V36</div><h3>อ่านทรงก่อน · ดักรอราคา</h3></div>
           <span class="final-ai-badge" id="pendingPlanState">WAIT DATA</span>
         </div>
         <div class="final-grid">
@@ -4894,15 +4882,6 @@ body{font-variant-numeric:tabular-nums!important}
           <div class="data-cell"><span>TIMEFRAMES</span><b id="dataTfCount">0 / 4</b></div>
           <div class="data-cell"><span>LAST PRICE</span><b id="dataLastPrice">—</b></div>
         </div>
-        <div class="feed-health-grid" id="feedHealthGrid">
-          <div class="feed-health-cell" id="feedActiveCell"><span>ACTIVE FEED</span><b id="feedActive">—</b></div>
-          <div class="feed-health-cell" id="feedModeCell"><span>FAILOVER MODE</span><b id="feedMode">—</b></div>
-          <div class="feed-health-cell" id="feedPrimaryCell"><span>TWELVE DATA</span><b id="feedPrimary">—</b></div>
-          <div class="feed-health-cell" id="feedFallbackCell"><span>MT5 FALLBACK</span><b id="feedFallback">—</b></div>
-          <div class="feed-health-cell" id="feedDivergenceCell"><span>PRIMARY RECOVERY</span><b id="feedDivergence">—</b></div>
-          <div class="feed-health-cell" id="feedStrategyCell"><span>REQUEST STRATEGY</span><b id="feedStrategy">M1 → TF</b></div>
-        </div>
-        <div class="feed-note" id="feedHealthNote"><strong>PRIMARY → FAILOVER</strong> · ใช้ Twelve Data อย่างเดียวเมื่อปกติ · MT5 ทำงานเฉพาะเมื่อ Primary ล่ม/ค้าง</div>
         <div class="health-bar"><i id="dataHealthBar"></i></div>
         <div class="freshness-banner" id="freshnessBanner">
           <i></i><div><b id="freshnessTitle">กำลังตรวจความสดของข้อมูล</b><span id="freshnessText">AI จะปิด Entry ถ้าข้อมูลเก่าเกินกำหนด</span></div>
@@ -5334,7 +5313,7 @@ const NEWS_CACHE_KEY='onemonth_os_news_cache_v21';
 const HISTORY_CACHE_KEY='onemonth_os_history_cache_v32';
 const LEARNING_PACK_CACHE_KEY='onemonth_os_learning_pack_cache_v32';
 const MODEL_GOV_CACHE_KEY='onemonth_os_model_governance_cache_v342';
-const ML_BRAIN_CACHE_KEY='onemonth_os_ml_brain_cache_v361';
+const ML_BRAIN_CACHE_KEY='onemonth_os_ml_brain_cache_v36';
 const HISTORY_PACK_URL='./ai-history.json';
 const LEARNING_PACK_URL='./ai-learning.json';
 const MODEL_GOV_URL='./ai-model-governance.json';
@@ -5346,7 +5325,7 @@ const BG_FRESH_OPEN_MS=60*60*1000;   // model may support live decisions for max
 const BG_LAST_SESSION_MS=72*60*60*1000;
 const V341_DATA_RETENTION_LABEL='M15 90D · H1 180D';
 
-const APP_VERSION='V36.2 PRIMARY FAILOVER AUTONOMOUS ML';
+const APP_VERSION='V36.0 AUTONOMOUS ML PLAN BRAIN';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
@@ -5684,20 +5663,19 @@ function pendingPlansV35(a=analysis){
     return out;
   }).sort((x,y)=>(Number(y.qualifiedPlan)-Number(x.qualifiedPlan))||y.score-x.score||((y.ml?.evR||-9)-(x.ml?.evR||-9)));
   const qualified=rows.filter(x=>x.qualifiedPlan),display=qualified[0]||rows[0]||null,backup=qualified[1]||rows.find(x=>x!==display)||null;
-  const mkt=marketStatus(),fresh=marketFreshness(),feed=feedHealthStateV361(),news=newsContext(),g=guardian();let state='WAIT DATA',tone='warn';
+  const mkt=marketStatus(),fresh=marketFreshness(),news=newsContext(),g=guardian();let state='WAIT DATA',tone='warn';
   if(rows.length){
     if(!qualified.length){state='NO QUALITY PLAN';tone='bad'}
     else if(!mkt.open){state='PLAN PREPARED';tone='good'}
-    else if(feed.blocked){state='FEED HOLD';tone='bad'}
     else if(fresh.stale){state='REVALIDATE DATA';tone='bad'}
     else if(news.lock){state='NEWS HOLD';tone='bad'}
     else if(g.locked){state='RISK HOLD';tone='bad'}
     else{state='ARMED';tone='good'}
   }
-  return{state,tone,primary:display,qualifiedPrimary:qualified[0]||null,backup,candidates:rows,qualifiedCount:qualified.length,source:display?.source||'TECHNICAL',mlState,policy,feed};
+  return{state,tone,primary:display,qualifiedPrimary:qualified[0]||null,backup,candidates:rows,qualifiedCount:qualified.length,source:display?.source||'TECHNICAL',mlState,policy};
 }
 function lotForPendingV35(p){
-  if(!p||p.qualifiedPlan===false||!validPlan(plan)||!Number.isFinite(p.entry)||!Number.isFinite(p.sl)||(marketStatus().open&&feedHealthStateV361().blocked))return{suggested:'—',max:'—'};
+  if(!p||p.qualifiedPlan===false||!validPlan(plan)||!Number.isFinite(p.entry)||!Number.isFinite(p.sl))return{suggested:'—',max:'—'};
   const d=plan.days[todayIndex()],g=guardian(),riskMoney=Math.max(0,Math.min(Number(d?.maxLoss||0)/2,currentBalance()*.005))*Math.max(.25,g.mult||1),dist=Math.abs(p.entry-p.sl),min=Math.max(.01,num(settings.minLot)||.01),contract=Math.max(1,num(settings.contractSize)||100);
   if(!riskMoney||!dist)return{suggested:'—',max:'—'};const raw=riskMoney/(dist*contract),lot=Math.floor((raw+1e-12)/min)*min;return{suggested:lot>=min?lot.toFixed(2):'< '+min.toFixed(2),max:Math.max(min,lot).toFixed(2)};
 }
@@ -5706,74 +5684,29 @@ function renderPendingPlansV35(){
   const ids=['pendingPrimaryType','pendingPrimaryPrice','pendingPrimaryEntry','pendingPrimarySl','pendingPrimaryTp1','pendingPrimaryTp2','pendingPrimaryRr','pendingPrimaryScore','pendingPrimaryProb','pendingBackupType','pendingBackupEntry'];
   if(!p){ids.forEach(id=>{const el=$('#'+id);if(el)el.textContent='—'});$('#pendingPlanNote').textContent='ข้อมูล H1/M15/M5 ยังไม่พอสำหรับสร้างแผนดักรอ';return}
   $('#pendingPrimaryType').textContent=prettyOrderV35(p.type);$('#pendingPrimaryPrice').textContent=price(p.entry);$('#pendingPrimaryEntry').textContent=price(p.entryLow)+' – '+price(p.entryHigh);$('#pendingPrimarySl').textContent=price(p.sl);$('#pendingPrimaryTp1').textContent=price(p.tp1);$('#pendingPrimaryTp2').textContent=price(p.tp2);$('#pendingPrimaryRr').textContent=`1:${Number(p.rr||1.4).toFixed(2)}${p.ml&&Number.isFinite(p.ml.evR)?` · EV ${p.ml.evR>=0?'+':''}${p.ml.evR.toFixed(2)}R`:''}`;$('#pendingPrimaryScore').textContent=`${Math.round(p.score)}/100 · ${p.grade}${p.qualifiedPlan?' · QUALIFIED':' · REJECT'}`;$('#pendingPrimaryProb').textContent=p.ml?`${p.ml.pTp1.toFixed(1)}% / ${p.ml.pSl.toFixed(1)}%`:'TECH ONLY';$('#pendingBackupType').textContent=b?prettyOrderV35(b.type):'—';$('#pendingBackupEntry').textContent=b?`@ ${price(b.entry)} · ${Math.round(b.score)}/100`:'—';
-  const fs=feedHealthStateV361(),marketNote=marketStatus().open?(fs.blocked?'Feed ยังไม่ผ่าน · ห้ามวางจนกว่าจะได้ข้อมูลสด/Feed กลับมา':'ตลาดเปิด · ตรวจ Data/News/Risk/Gap ก่อนวาง'):'ตลาดปิด · ใช้ Last Session วางแผน แต่ Revalidate ตอนเปิด';const mlNote=p.ml?` · P(fill) ${p.ml.pFill.toFixed(1)}% · EV ${p.ml.evR>=0?'+':''}${p.ml.evR.toFixed(2)}R`:'';const reject=!p.qualifiedPlan?` · <strong>DO NOT PLACE</strong> · ${(p.rejectionReasons||[]).join(' / ')}`:'';$('#pendingPlanNote').innerHTML=`<strong>${prettyOrderV35(p.type)} @ ${price(p.entry)}</strong> · ${p.anchor} · ${marketNote}${mlNote}${reject}`;
+  const marketNote=marketStatus().open?'ตลาดเปิด · ตรวจ Data/News/Risk/Gap ก่อนวาง':'ตลาดปิด · ใช้ Last Session วางแผน แต่ Revalidate ตอนเปิด';const mlNote=p.ml?` · P(fill) ${p.ml.pFill.toFixed(1)}% · EV ${p.ml.evR>=0?'+':''}${p.ml.evR.toFixed(2)}R`:'';const reject=!p.qualifiedPlan?` · <strong>DO NOT PLACE</strong> · ${(p.rejectionReasons||[]).join(' / ')}`:'';$('#pendingPlanNote').innerHTML=`<strong>${prettyOrderV35(p.type)} @ ${price(p.entry)}</strong> · ${p.anchor} · ${marketNote}${mlNote}${reject}`;
 }
 function renderMlBrainV35(){
   if(!$('#mlBrainStatus'))return;const st=mlBrainStateV35(),h=mlBrain?.modelHealth||{},tr=mlBrain?.training||{},v=mlBrain?.validation?.tp1||{},qualified=mlBrain?.current?.primary||null,ref=mlBrain?.current?.reference||null,p=qualified||ref,top=mlBrain?.features?.top?.[0],tpAuto=mlBrain?.autoML?.heads?.tp1||{};const el=$('#mlBrainStatus');el.textContent=st.status;el.className='precision-pill '+st.tone;
   $('#mlHealth').textContent=Number.isFinite(Number(h.score))?`${Number(h.score).toFixed(0)}/100 · ${String(h.status||mlBrain.status||'—')}`:'—';$('#mlSamples').textContent=Number(tr.candidateSamples||0).toLocaleString('en-US');$('#mlFilled').textContent=Number(tr.filledSamples||0).toLocaleString('en-US');$('#mlAuc').textContent=Number.isFinite(Number(v.auc))?Number(v.auc).toFixed(3):'—';$('#mlBrier').textContent=Number.isFinite(Number(v.brier))?Number(v.brier).toFixed(3):'—';$('#mlEce').textContent=Number.isFinite(Number(v.ece))?(Number(v.ece)*100).toFixed(1)+' pts':'—';$('#mlDrift').textContent=Number.isFinite(Number(h.driftPts))?Number(h.driftPts).toFixed(1)+' pts':'—';$('#mlUncertainty').textContent=Number.isFinite(Number(h.uncertaintyPts))?'±'+(Number(h.uncertaintyPts)/2).toFixed(1)+' pts':'—';
   $('#mlPrimary').textContent=p?`${qualified?'QUALIFIED':'REFERENCE'} · ${prettyOrderV35(p.type)} · ${Math.round(Number(p.score)||0)}/100`:'NO QUALITY PLAN';$('#mlPrimaryFill').textContent=p&&Number.isFinite(Number(p.pFill))?Number(p.pFill).toFixed(1)+'%':'—';$('#mlPrimaryTp1').textContent=p&&Number.isFinite(Number(p.pTp1))?Number(p.pTp1).toFixed(1)+'%':'—';$('#mlPrimarySl').textContent=p&&Number.isFinite(Number(p.pSl))?Number(p.pSl).toFixed(1)+'%':'—';$('#mlPrimaryEv').textContent=p&&Number.isFinite(Number(p.evR))?(Number(p.evR)>=0?'+':'')+Number(p.evR).toFixed(2)+'R':'—';$('#mlTopFeature').textContent=top?String(top.feature).replace(/_/g,' '):'—';
   const weights=tpAuto?.selection?.weights||{},stack=Object.entries(weights).sort((a,b)=>b[1]-a[1]).map(([k,w])=>`${k} ${Math.round(Number(w)*100)}%`).join(' · ');if($('#mlModelStack'))$('#mlModelStack').textContent=stack||'—';if($('#mlCalibration'))$('#mlCalibration').textContent=tpAuto?.calibration?.selected||'—';
-  const q=Number(mlBrain?.current?.qualifiedCount||0),fs=feedHealthStateV361();$('#mlBrainNote').innerHTML=`<strong>${st.status}</strong> · FEED ${fs.label} · AUTO SELECT ${stack||'MODEL'} · ${tpAuto?.calibration?.selected||'CAL'} · QUALIFIED ${q}/4 · ${st.note}`;
+  const q=Number(mlBrain?.current?.qualifiedCount||0);$('#mlBrainNote').innerHTML=`<strong>${st.status}</strong> · AUTO SELECT ${stack||'MODEL'} · ${tpAuto?.calibration?.selected||'CAL'} · QUALIFIED ${q}/4 · ${st.note}`;
 }
 
 function renderAiDetailMode(){document.body.classList.toggle('ai-details-open',aiDetailsOpen);const b=$('#aiDetailToggle');if(b){b.textContent=aiDetailsOpen?'HIDE MODEL DETAILS':'SHOW MODEL DETAILS';b.classList.toggle('open',aiDetailsOpen)}}
 
-function mergeRowsByTsV361(a=[],b=[]){
-  const m=new Map();for(const raw of [...a,...b]){const c=normalizeCandle(raw);if(c)m.set(c.ts,c)}return[...m.values()].sort((x,y)=>x.ts-y.ts)
-}
-function feedHealthStateV361(){
-  const f=packMeta.feed||{},m=marketStatus(),fresh=marketFreshnessV361Raw();
-  const active=String(f.runtimeActive||f.active||'UNKNOWN').toUpperCase(),mode=String(f.runtimeMode||f.mode||'UNKNOWN').toUpperCase(),status=String(f.runtimeStatus||f.status||'UNKNOWN').toUpperCase();
-  const legacy=!f.active&&!f.primary&&!f.fallback;
-  const primaryOk=f.primary?.ok===true||String(f.primary?.status||'').toUpperCase()==='ONLINE';
-  const fallbackOk=f.fallback?.ok===true||String(f.fallback?.status||'').toUpperCase()==='ONLINE'||Boolean(packMeta.directFallback);
-  const staleOpen=m.open&&fresh.candleAge>FRESH_OPEN_MS;
-  const holdOpen=m.open&&['HOLD','LAST_VALID','STALE','DEGRADED'].includes(mode);
-  const blocked=legacy?staleOpen:(staleOpen||holdOpen||(!primaryOk&&!fallbackOk&&m.open));
-  let label=legacy?'GITHUB PACK':'LAST VALID',tone=legacy?'warn':'warn';
-  if(active.includes('MT5')){label=packMeta.directFallback?'MT5 LIVE FALLBACK':'MT5 FALLBACK';tone='good'}
-  else if(active.includes('TWELVE')){label='TWELVE DATA';tone=primaryOk?'good':'warn'}
-  if(blocked)tone='bad';
-  return{active,mode,status,primaryOk,fallbackOk,blocked,label,tone,fresh,recovery:Number(f.switching?.primaryRecoveryStreak||0),recoveryRequired:Number(f.switching?.primaryRecoveryRequired||2)};
-}
-function marketFreshnessV361Raw(){
+function marketFreshness(){
   const generatedAge=packMeta.generatedAt?Date.now()-packMeta.generatedAt:Infinity;
-  const lastTs=Math.max(0,...Object.values(marketData||{}).map(a=>Array.isArray(a)&&a.length?Number(a.at(-1)?.ts)||0:0));
+  const lastTs=Math.max(...Object.values(marketData||{}).map(a=>Array.isArray(a)&&a.length?Number(a.at(-1)?.ts)||0:0));
   const candleAge=lastTs?Date.now()-lastTs:Infinity,m=marketStatus();
-  if(!m.open){const age=candleAge;return{age,generatedAge,candleAge,lastTs,maxAge:FRESH_CLOSED_MS,stale:age>FRESH_CLOSED_MS,marketOpen:false,lastSession:age<=FRESH_CLOSED_MS}}
-  const age=Math.max(Math.min(generatedAge,FRESH_OPEN_MS),candleAge);return{age,generatedAge,candleAge,lastTs,maxAge:FRESH_OPEN_MS,stale:candleAge>FRESH_OPEN_MS,marketOpen:true,lastSession:false};
+  if(!m.open){
+    const age=Math.min(generatedAge,candleAge);
+    return{age,generatedAge,candleAge,lastTs,maxAge:FRESH_CLOSED_MS,stale:age>FRESH_CLOSED_MS,marketOpen:false,lastSession:age<=FRESH_CLOSED_MS};
+  }
+  const age=Math.max(generatedAge,candleAge);
+  return{age,generatedAge,candleAge,lastTs,maxAge:FRESH_OPEN_MS,stale:age>FRESH_OPEN_MS,marketOpen:true,lastSession:false};
 }
-async function augmentWithMt5FallbackV362(pack){
-  try{
-    if(!marketStatus().open)return{pack,used:false};
-    const f=pack?.feed||{},active=String(f.active||'').toUpperCase(),mode=String(f.mode||'').toUpperCase();
-    const fallbackActive=active.includes('MT5')||mode==='FALLBACK'||mode==='PRIMARY_RECOVERY';
-    if(!fallbackActive)return{pack,used:false};
-    const publicUrl=f?.fallback?.publicFeedUrl;if(!publicUrl)return{pack,used:false};
-    const url=new URL(publicUrl,location.href);url.searchParams.set('limit','900');url.searchParams.set('_',Date.now());
-    const r=await fetchFast(url.toString(),{cache:'no-store'},3200);if(!r.ok)throw new Error('MT5 fallback feed '+r.status);
-    const j=await r.json(),rows=(j?.timeframes?.M1||j?.bars||[]).map(normalizeCandle).filter(Boolean);if(!rows.length)return{pack,used:false};
-    const baseM1=pack?.timeframes?.M1||[],baseLast=Number(baseM1.at(-1)?.ts)||0,mt5Last=Number(rows.at(-1)?.ts)||0;
-    if(mt5Last<=baseLast+30000)return{pack,used:false};
-    const mergedM1=mergeRowsByTsV361(baseM1,rows),tf={...(pack.timeframes||{}),M1:mergedM1};
-    const feed={...f,runtimeActive:'MT5_DIRECT',runtimeMode:'FALLBACK_LIVE',runtimeStatus:'LIVE',directLatestTs:mt5Last,fallback:{...(f.fallback||{}),ok:true,status:'ONLINE',latestTs:mt5Last,ageMs:Date.now()-mt5Last}};
-    return{pack:{...pack,generatedAt:j.generatedAt||new Date().toISOString(),source:'MT5 direct fallback + GitHub long-history pack',feed,timeframes:tf},used:true};
-  }catch(e){console.warn('MT5 direct fallback skipped',e);return{pack,used:false}}
-}
-function renderFeedHealthV361(){
-  if(!$('#feedActive'))return;const f=packMeta.feed||{},st=feedHealthStateV361(),p=f.primary||{},b=f.fallback||{};
-  const pAge=Number(p.ageMs),bAge=Number(b.ageMs);const set=(cell,id,text,tone='')=>{const c=$('#'+cell),e=$('#'+id);if(e)e.textContent=text;if(c)c.className='feed-health-cell '+tone};
-  set('feedActiveCell','feedActive',st.label,st.blocked?'bad':st.tone);
-  set('feedModeCell','feedMode',String(f.runtimeMode||f.mode||'—').replace(/_/g,' '),st.blocked?'bad':(String(f.runtimeMode||f.mode||'').includes('FALLBACK')||String(f.mode||'').includes('RECOVERY')?'warn':'good'));
-  set('feedPrimaryCell','feedPrimary',p.configured===false?'NOT SET':`${p.ok?'ONLINE':String(p.status||'OFFLINE')}${Number.isFinite(pAge)?' · '+fmtAge(pAge):''}`,p.ok?'good':'bad');
-  const fbText=b.configured===false&&!packMeta.directFallback?'NOT SET':(!b.checked&&!packMeta.directFallback?'STANDBY':`${(b.ok||packMeta.directFallback)?'ONLINE':String(b.status||'OFFLINE')}${Number.isFinite(bAge)?' · '+fmtAge(bAge):''}`);
-  set('feedFallbackCell','feedFallback',fbText,(b.ok||packMeta.directFallback)?'good':(!b.checked?'warn':'bad'));
-  set('feedDivergenceCell','feedDivergence',`${st.recovery}/${st.recoveryRequired} · SWITCH BACK`,st.mode==='PRIMARY_RECOVERY'?'warn':'good');
-  set('feedStrategyCell','feedStrategy','PRIMARY ONLY → FAILOVER','good');
-  const note=$('#feedHealthNote');if(note)note.innerHTML=`<strong>${st.blocked?'FEED HOLD':'PRIMARY/FAILOVER READY'}</strong> · ${f.reason||packMeta.source||'Market pack'}${packMeta.directFallback?' · App ดึง MT5 M1 ตรงเฉพาะตอน Fallback เท่านั้น':''}`;
-}
-
-function marketFreshness(){return marketFreshnessV361Raw()}
 function renderFreshness(){
   const f=marketFreshness(),el=$('#freshnessBanner');if(!el)return;
   const mode=!f.marketOpen?(f.lastSession?'last':'old'):(f.stale?'stale':f.age>FRESH_OPEN_MS*.65?'warn':'fresh');
@@ -5781,7 +5714,7 @@ function renderFreshness(){
   $('#freshnessTitle').textContent=!f.marketOpen?(f.lastSession?'LAST SESSION DATA':'OLD SESSION DATA'):(f.stale?'STALE DATA · ENTRY DISABLED':'DATA FRESH');
   $('#freshnessText').textContent=!f.marketOpen
     ? (f.lastSession?'ตลาดปิด · ยอมรับ Session ล่าสุดได้สูงสุด 72 ชม. เพื่อสร้าง Pending Plan Reference และต้อง Revalidate ตอนเปิด':'ข้อมูล Session ล่าสุดเกิน 72 ชม. · รอ market pack ใหม่')
-    : (f.stale?'แท่งล่าสุด '+fmtAge(f.candleAge)+' · V36.2 เก็บ Plan เป็น Reference แต่ Feed Guard ห้ามวางจริง':'แท่งล่าสุด '+fmtAge(f.candleAge)+' · '+feedHealthStateV361().label+' · ผ่าน Execution Freshness Gate');
+    : (f.stale?'แท่งล่าสุด '+fmtAge(f.candleAge)+' · V36 ให้ Pending Plan เป็น Reference แต่ต้อง Refresh ก่อนวางจริงเมื่อข้อมูลเกิน 15 นาที':'แท่งล่าสุด '+fmtAge(f.candleAge)+' · ผ่าน Execution Freshness Gate');
   const off=$('#offlinePill');if(off)off.classList.toggle('show',!navigator.onLine);
 }
 
@@ -5794,7 +5727,7 @@ let activeSignal=loadJson(SIGNAL_KEY,null);
 let backtestResult=loadJson(BT_KEY,null);
 let currentTf='M15';
 let marketData={M1:[],M5:[],M15:[],H1:[]};
-let packMeta={generatedAt:null,source:'GitHub Data Pack',feed:{},directFallback:false};
+let packMeta={generatedAt:null,source:'GitHub Data Pack'};
 let newsPack={generatedAt:null,events:[]};
 let historyBrain={ready:false,generatedAt:null,global:null,timeframes:{},source:'NO PACK'};
 let backgroundLearning={ready:false,generatedAt:null,global:null,current:null,edges:[],source:null,_origin:'NO PACK',reason:'NO PACK'};
@@ -6141,12 +6074,11 @@ async function loadPack(){
   try{
     const res=await fetchFast('./xauusd.json?ts='+Date.now(),{cache:'no-store'},6500);
     if(!res.ok)throw new Error('xauusd.json not found');
-    let j=await res.json();
-    const aug=await augmentWithMt5FallbackV362(j);j=aug.pack;
-    packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):Date.now();packMeta.source=j.source||'GitHub Data Pack';packMeta.feed=j.feed||{};packMeta.directFallback=!!aug.used;
+    const j=await res.json();
+    packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):Date.now();packMeta.source=j.source||'GitHub Data Pack';
     rebuildMarketData(j);
     saveCache(MARKET_CACHE_KEY,j);
-    renderFreshness();renderDataQuality();renderFeedHealthV361();renderConfirmation();renderVersionManager();renderIntelligence();renderPipeline();renderLearningEngine();if(analysis){buildIntelligence(analysis);runFinalDecisionEngine(analysis)}renderV25();
+    renderFreshness();renderDataQuality();renderConfirmation();renderVersionManager();renderIntelligence();renderPipeline();renderLearningEngine();if(analysis){buildIntelligence(analysis);runFinalDecisionEngine(analysis)}renderV25();
     return Object.values(marketData).some(a=>a.length>20);
   }catch(e){
     console.warn('market pack network',e);
@@ -6154,13 +6086,13 @@ async function loadPack(){
     if(cached?.value){
       try{
         const j=cached.value;
-        packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):cached.savedAt;packMeta.source='Offline Cache';packMeta.feed=j.feed||{};packMeta.directFallback=false;
+        packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):cached.savedAt;packMeta.source='Offline Cache';
         rebuildMarketData(j);
-        renderFreshness();renderDataQuality();renderFeedHealthV361();
+        renderFreshness();
         return Object.values(marketData).some(a=>a.length>20);
       }catch(_){}
     }
-    renderFreshness();renderFeedHealthV361();
+    renderFreshness();
     return false
   }
 }
@@ -7003,18 +6935,18 @@ function renderMarketStatus(){
   $('#marketPill').classList.toggle('live',m.open&&loaded);
   $('#marketText').textContent=m.open?(loaded?'DATA READY':'MARKET OPEN'):'MARKET CLOSED';
   $('#homeMarket').textContent=m.open?m.session:'CLOSED';
-  const fs=feedHealthStateV361();$('#marketMode').textContent=m.open?(fs.blocked?'FEED HOLD':fs.label):'LAST SESSION';const ds=$('#dataSource');if(ds)ds.textContent=packMeta.source||'Historical Pack';
+  $('#marketMode').textContent=m.open?'HISTORICAL':'LAST SESSION';
 }
 function renderDataHealth(){
   const count=Object.values(marketData).filter(a=>a.length>20).length,last=marketData.M1.at(-1)||marketData.M5.at(-1)||marketData.M15.at(-1),m=marketStatus();
-  const freshness=marketFreshness(),age=Number.isFinite(freshness.candleAge)?freshness.candleAge:(packMeta.generatedAt?Date.now()-packMeta.generatedAt:NaN);
+  const age=packMeta.generatedAt?Date.now()-packMeta.generatedAt:NaN;
   $('#dataTfCount').textContent=count+' / 4';$('#dataLastPrice').textContent=last?price(last.close):'—';
-  const fs=feedHealthStateV361();$('#dataUpdated').textContent=packMeta.generatedAt?dtBangkok(packMeta.generatedAt,true):'—';$('#dataAge').textContent=fmtAge(age);$('#homeDataAge').textContent=`${fs.label} · ${fmtAge(age)}`;
+  $('#dataUpdated').textContent=packMeta.generatedAt?dtBangkok(packMeta.generatedAt,true):'—';$('#dataAge').textContent=fmtAge(age);$('#homeDataAge').textContent=fmtAge(age);
   let score=count/4*65;if(Number.isFinite(age)){if(age<3600000)score+=35;else if(age<6*3600000)score+=25;else if(age<24*3600000)score+=12}
   if(!m.open&&count)score=Math.max(score,82);
   score=Math.round(clamp(score,0,100));$('#dataHealthBar').style.width=score+'%';
   const chip=$('#dataHealthChip');chip.className='status-chip '+(score>=80?'good':score>=50?'warn':'bad');chip.textContent=!m.open&&count?'LAST SESSION':score>=80?'HEALTHY':score>=50?'CACHED':'STALE';
-  $('#dataHealthTitle').textContent=count===4?`XAUUSD · ${fs.label}${fs.blocked?' · FEED HOLD':''}`:'ข้อมูล Timeframe ยังไม่ครบ';renderFeedHealthV361();
+  $('#dataHealthTitle').textContent=count===4?'XAUUSD Data Pack พร้อมใช้งาน':'ข้อมูล Timeframe ยังไม่ครบ';
 }
 function renderNews(){
   const ctx=newsContext(),list=ctx.relevant.filter(e=>e.ts>Date.now()-2*3600000).slice(0,6),chip=$('#newsChip');
@@ -7064,7 +6996,6 @@ function renderFusion(){
   const modelSafe=guard.hardDisable||guard.trustScore>=35; // trusted OR safely quarantined: never blindly used
   const gates=[
     ['Market Open',m.open,m.open?'PASS':'CLOSED'],
-    ['Data Feed',!feedHealthStateV361().blocked,feedHealthStateV361().blocked?'HOLD':feedHealthStateV361().label],
     ['News Window',!n.lock,n.lock?'LOCK':'PASS'],
     ['H1 / M15',!!a?.core,a?.core?'PASS':'BLOCK'],
     ['MTF Align',!!a&&a.align>=3,a?a.align+'/4':'—'],
@@ -7091,7 +7022,6 @@ function renderCommand(){
     ticket.className='command-ticket '+(p.qualifiedPlan?'qualified':'rejected');
     if(!p.qualifiedPlan)action=`LOW QUALITY · DO NOT PLACE · ${(p.rejectionReasons||[]).join(' / ')||'รอ Setup ใหม่'}`;
     else if(!m.open)action='PLAN PREPARED · จด Pending/SL/TP ไว้ได้ แต่ตอนเปิดต้อง Revalidate Gap / ข่าว / ราคาใหม่';
-    else if(feedHealthStateV361().blocked)action='FEED HOLD · แผนยังเก็บไว้ได้ แต่ห้ามวาง Pending จน Twelve Data หรือ MT5 fallback กลับมาสด';
     else if(n.lock)action='แผนผ่านคุณภาพ แต่ News Lock ห้ามวาง Pending ใหม่จนพ้น shock window';
     else if(g.locked)action='แผนผ่านคุณภาพ แต่ Risk Guardian ยังไม่อนุญาตเพิ่มความเสี่ยง';
     else if(marketFreshness().stale)action='แผนผ่านคุณภาพ แต่ต้อง Refresh market pack ก่อนวางจริง';
@@ -7308,10 +7238,9 @@ function planningLotForDay(d){
 
 
 function renderHomeAiHealth(){
-  const box=$('#homeAiHealth');if(!box)return;const bs=backgroundBrainState(),g=modelGovernance||{},guard=modelGuardV34(analysis?backgroundEvidenceFor(analysis):null),f=marketFreshness(),feed=feedHealthStateV361();
+  const box=$('#homeAiHealth');if(!box)return;const bs=backgroundBrainState(),g=modelGovernance||{},guard=modelGuardV34(analysis?backgroundEvidenceFor(analysis):null),f=marketFreshness();
   let state=bs.status,note=bs.note,tone=bs.tone;
-  if(f.marketOpen&&feed.blocked){state='DATA FEED HOLD';tone='bad';note=`${feed.label} · Live Pending ถูกบล็อกจนกว่า Primary/Fallback จะสด`}
-  else if(['queued','in_progress','waiting','pending'].includes(githubLearningRun.status)){state='AI LEARNING';tone='good';note='GitHub กำลังสร้าง Challenger และตรวจ Champion'}
+  if(['queued','in_progress','waiting','pending'].includes(githubLearningRun.status)){state='AI LEARNING';tone='good';note='GitHub กำลังสร้าง Challenger และตรวจ Champion'}
   else if(String(g.action||'').includes('ROLLBACK')){state='AI ROLLED BACK';tone='bad';note='โมเดลล่าสุด performance แย่ลง · ระบบย้อนกลับ Champion ก่อนหน้าอัตโนมัติ'}
   else if(bs.status==='TRUSTED'){state='AI TRUSTED';tone='good';note=`Champion ${Number(g.champion?.score||guard.trustScore).toFixed(0)}/100 · พร้อมช่วย Live Decision`}
   else if(bs.status==='QUARANTINED'){state='AI QUARANTINED';tone='bad';note='Background ไม่มีสิทธิ์ดัน READY · ใช้ Live + History เป็นหลัก'}
@@ -7342,7 +7271,7 @@ function renderHome(){
   $('#homeBestWindow').textContent=windowGuide.label;
   $('#homeBestWindowSub').textContent=(windowGuide.score?('★ '+windowGuide.score+'/100 · '):'')+windowGuide.sub;
   const bgState=backgroundBrainState();$('#homeAiDesk').textContent=bgState.status==='LEARNING'?'BG LEARNING…':(aiOn?(analysis?(analysis.side==='WAIT'?'WAIT':analysis.side+' '+analysis.tf):`BG ${bgState.status}`):`BG ${bgState.status}`);
-  const chip=$('#homeSystemChip'),fg=feedHealthStateV361();chip.textContent=!m.open?'MARKET CLOSED':fg.blocked?'FEED HOLD':newsContext().lock?'NEWS LOCK':analysis?.side!=='WAIT'&&analysis?'SETUP READY':'SYSTEM READY';chip.className='status-chip '+(!m.open?'warn':fg.blocked?'bad':newsContext().lock?'bad':analysis?.side!=='WAIT'&&analysis?'good':'');
+  const chip=$('#homeSystemChip');chip.textContent=!m.open?'MARKET CLOSED':newsContext().lock?'NEWS LOCK':analysis?.side!=='WAIT'&&analysis?'SETUP READY':'SYSTEM READY';chip.className='status-chip '+(!m.open?'warn':newsContext().lock?'bad':analysis?.side!=='WAIT'&&analysis?'good':'');
 }
 function renderPlan(){
   if(!validPlan(plan))return;

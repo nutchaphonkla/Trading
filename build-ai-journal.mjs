@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
 const PACK='xauusd.json',LEARNING='ai-learning.json',ML='ai-ml-brain.json',OUTPUT='ai-outcome-journal.json';
-const VERSION='1.4',ENGINE='ONEMONTH-PENDING-ENTRY-JOURNAL-V36-AUTOML';
+const VERSION='1.5',ENGINE='ONEMONTH-PENDING-ENTRY-JOURNAL-V36.1-MULTIFEED-AUTOML';
 const num=v=>{const n=Number(v);return Number.isFinite(n)?n:NaN};
 const n=v=>Number.isFinite(Number(v))?Number(v):0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -40,7 +40,7 @@ function resolvePlanEntries(rows,candles){for(const p of rows){if(p.status==='EX
     if(['M15','M30','M60'].every(k=>p.horizons[k]?.resolved))p.status='COMPLETE';}}
 
 if(!fs.existsSync(PACK)||!fs.existsSync(LEARNING)){console.log('Journal skipped: missing pack/model');process.exit(0)}
-const pack=JSON.parse(fs.readFileSync(PACK,'utf8')),learning=JSON.parse(fs.readFileSync(LEARNING,'utf8')),raw=pack.timeframes||pack.data||pack||{},tf=learning?.source?.timeframe||'M15',candles=clean(raw[tf]||raw.M15||raw.M5||raw.M1||[]);
+const pack=JSON.parse(fs.readFileSync(PACK,'utf8')),learning=JSON.parse(fs.readFileSync(LEARNING,'utf8')),raw=pack.timeframes||pack.data||pack||{},tf=learning?.source?.timeframe||'M15',candles=clean(raw[tf]||raw.M15||raw.M5||raw.M1||[]),feedSource=String(pack?.feed?.active||pack?.source||'UNKNOWN');
 if(!candles.length||!learning?.ready){console.log('Journal waiting for ready model/data');process.exit(0)}
 let journal=empty();try{if(fs.existsSync(OUTPUT))journal={...empty(),...JSON.parse(fs.readFileSync(OUTPUT,'utf8'))}}catch(_){}
 journal.entries=Array.isArray(journal.entries)?journal.entries:[];journal.planEntries=Array.isArray(journal.planEntries)?journal.planEntries:[];
@@ -49,17 +49,17 @@ const atrArr=wild(tr(candles),14),latest=candles.at(-1),latestAtr=atrArr.at(-1)|
 for(const e of journal.entries){if(!e.horizons)e.horizons={};const start=findIndexAtOrAfter(candles,e.ts);if(start<0)continue;for(const [key,min] of [['M15',15],['M30',30],['M60',60]]){if(e.horizons[key]?.resolved)continue;const end=findIndexAtOrAfter(candles,e.ts+min*60000);if(end<0)continue;const atr=Math.max(.000001,n(e.atr)||1);let mfe=0,mae=0;for(let i=start;i<=end;i++){const x=candles[i];if(e.direction==='SELL'){mfe=Math.max(mfe,(e.entry-x.low)/atr);mae=Math.max(mae,(x.high-e.entry)/atr)}else{mfe=Math.max(mfe,(x.high-e.entry)/atr);mae=Math.max(mae,(e.entry-x.low)/atr)}}const bar=candles[end],signed=(e.direction==='SELL'?e.entry-bar.close:bar.close-e.entry)/atr,neutral=Math.abs(signed)<.05,correct=neutral?null:signed>0,quality=classifyEntry(correct,signed,mfe,mae);e.horizons[key]={resolved:true,resolvedAt:new Date(bar.ts).toISOString(),close:bar.close,returnR:Number(signed.toFixed(4)),correct,mfeR:Number(mfe.toFixed(4)),maeR:Number(mae.toFixed(4)),entryQuality:quality}}if(['M15','M30','M60'].every(k=>e.horizons[k]?.resolved))e.status='COMPLETE'}
 
 const current=learning.current||{},id=`${deployedModelId}:${tf}:${latest.ts}:${current.key||current.direction||'WAIT'}`;
-if(['BUY','SELL'].includes(String(current.direction||'').toUpperCase())&&!journal.entries.some(e=>e.id===id)){journal.entries.push({id,modelId:deployedModelId,modelEngine:learning.engine||null,modelFingerprint:learning.sourceFingerprint||null,modelRole:'CHAMPION',createdAt:new Date().toISOString(),ts:latest.ts,sourceFingerprint:fp,sourceTf:tf,direction:current.direction||'WAIT',regime:current.regime||'UNKNOWN',session:current.session||'UNKNOWN',structure:current.structure||'UNKNOWN',entry:latest.close,atr:latestAtr,probability:n(current.learnedWinProbability)||50,lowerBound:n(current.lowerBound)||5,upperBound:n(current.upperBound)||95,trustState:learning?.qualityGuards?.backgroundUse||learning?.governance?.deploymentState||'UNKNOWN',modelHealth:n(learning?.modelHealth?.score),status:'PENDING',horizons:{}})}
+if(['BUY','SELL'].includes(String(current.direction||'').toUpperCase())&&!journal.entries.some(e=>e.id===id)){journal.entries.push({id,modelId:deployedModelId,modelEngine:learning.engine||null,modelFingerprint:learning.sourceFingerprint||null,modelRole:'CHAMPION',createdAt:new Date().toISOString(),ts:latest.ts,sourceFingerprint:fp,sourceTf:tf,direction:current.direction||'WAIT',regime:current.regime||'UNKNOWN',session:current.session||'UNKNOWN',structure:current.structure||'UNKNOWN',entry:latest.close,atr:latestAtr,probability:n(current.learnedWinProbability)||50,lowerBound:n(current.lowerBound)||5,upperBound:n(current.upperBound)||95,trustState:learning?.qualityGuards?.backgroundUse||learning?.governance?.deploymentState||'UNKNOWN',modelHealth:n(learning?.modelHealth?.score),feedSource,status:'PENDING',horizons:{}})}
 
 resolvePlanEntries(journal.planEntries,candles);
 const freshPlans=buildPendingPlans(candles,latestAtr,learning,tf,deployedModelId);
-for(const p of freshPlans)if(!journal.planEntries.some(x=>x.id===p.id))journal.planEntries.push(p);
+for(const p of freshPlans){p.feedSource=feedSource;if(!journal.planEntries.some(x=>x.id===p.id))journal.planEntries.push(p)}
 let mlBrain={};try{if(fs.existsSync(ML))mlBrain=JSON.parse(fs.readFileSync(ML,'utf8'))}catch(_){}
 const mlPlans=buildMlPendingPlans(mlBrain,candles,latestAtr,tf);
-for(const p of mlPlans)if(!journal.planEntries.some(x=>x.id===p.id))journal.planEntries.push(p);
+for(const p of mlPlans){p.feedSource=feedSource;if(!journal.planEntries.some(x=>x.id===p.id))journal.planEntries.push(p)}
 resolvePlanEntries(journal.planEntries,candles);
 
-journal.entries=journal.entries.slice(-5000);journal.planEntries=journal.planEntries.slice(-5000);journal.version=VERSION;journal.engine=ENGINE;journal.updatedAt=new Date().toISOString();journal.sourceFingerprint=fp;journal.summary=summarize(journal.entries);journal.planSummary=planSummary(journal.planEntries);journal.mlPlanSummary=planSummary(journal.planEntries.filter(e=>e.modelRole==='ML_QUALIFIED'));journal.deployedSummary=summarize(journal.entries.filter(e=>e.modelId===deployedModelId));journal.deployedPlanSummary=planSummary(journal.planEntries.filter(e=>e.modelId===deployedModelId));
+journal.entries=journal.entries.slice(-5000);journal.planEntries=journal.planEntries.slice(-5000);journal.version=VERSION;journal.engine=ENGINE;journal.updatedAt=new Date().toISOString();journal.sourceFingerprint=fp;journal.currentFeed=feedSource;journal.summary=summarize(journal.entries);journal.planSummary=planSummary(journal.planEntries);journal.feedPlanStats=groupStats(journal.planEntries,e=>e.feedSource);journal.mlPlanSummary=planSummary(journal.planEntries.filter(e=>e.modelRole==='ML_QUALIFIED'));journal.deployedSummary=summarize(journal.entries.filter(e=>e.modelId===deployedModelId));journal.deployedPlanSummary=planSummary(journal.planEntries.filter(e=>e.modelId===deployedModelId));
 fs.writeFileSync(OUTPUT,JSON.stringify(journal,null,2));
 learning.backgroundJournal={...journal.deployedSummary,globalJournal:{total:journal.summary.total,verified30m:journal.summary.verified30m},source:'ai-outcome-journal.json',deployedModelId};
 learning.pendingPlanJournal={...journal.deployedPlanSummary,globalJournal:{total:journal.planSummary.total,filled:journal.planSummary.filled},source:'ai-outcome-journal.json',deployedModelId};

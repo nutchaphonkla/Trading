@@ -1,0 +1,86 @@
+ONEMONTH OS V36.1 MULTI-FEED AUTONOMOUS ML
+
+WHAT CHANGED
+- Twelve Data remains PRIMARY.
+- update-data.mjs now makes ONE Twelve Data M1 request per run.
+- M5/M15/H1 are aggregated locally and merged into rolling history.
+- TradingView M1 Pine webhook can act as FALLBACK when Twelve Data is down/429/stale.
+- The app can directly read the public TradingView fallback feed while market is open, so fallback can be near-real-time at M1 bar close instead of waiting for the next GitHub Action.
+- Feed divergence / stale / both-feeds-down states trigger FEED HOLD for live pending placement.
+- Last valid pack and historical/ML brains remain usable as references when both live feeds are unavailable.
+- V36 AutoML tournament remains enabled.
+
+OVERWRITE IN GITHUB ROOT
+index.html
+update-data.mjs
+ml-train.py
+build-ai-history.mjs
+build-ai-learning.mjs
+build-ai-journal.mjs
+build-ai-governance.mjs
+reset.html
+app-v290.html
+sw.js
+version.json
+requirements-ml.txt
+manifest.webmanifest
+
+WORKFLOWS
+build-ai-history.yml -> .github/workflows/build-ai-history.yml
+update-data.yml -> .github/workflows/update-data.yml
+
+DO NOT DELETE / OVERWRITE LIVE LEARNING DATA
+xauusd.json
+news.json
+ai-history.json
+ai-learning.json
+ai-learning-candidate.json
+ai-learning-previous.json
+ai-model-governance.json
+ai-outcome-journal.json
+ai-ml-brain.json
+ai-ml-candidate.json
+ai-ml-governance.json
+
+NEW FILE CREATED BY DATA ACTION
+feed-health.json
+
+GITHUB SECRETS
+TWELVE_DATA_API_KEY = existing Twelve Data key
+TV_FALLBACK_URL = base Worker URL, example https://onemonth-tv-feed.<account>.workers.dev
+TV_FALLBACK_TOKEN = same long random token configured as WEBHOOK_TOKEN in Cloudflare Worker
+
+CLOUDFLARE/TRADINGVIEW FALLBACK
+Files included:
+cloudflare-worker.js
+cloudflare-d1-schema.sql
+tradingview-xauusd-m1.pine
+tradingview-fallback/wrangler.toml.example
+
+SETUP ORDER
+1. Create a Cloudflare D1 database.
+2. Run cloudflare-d1-schema.sql in D1 Console.
+3. Create a Worker and paste cloudflare-worker.js.
+4. Bind D1 as variable DB.
+5. Add encrypted Worker variable WEBHOOK_TOKEN = a long random token.
+6. Deploy Worker.
+7. In TradingView, open XAUUSD on 1-minute chart and add tradingview-xauusd-m1.pine.
+8. Create alert: Condition = OneMonth XAUUSD M1 Feed Bridge -> Any alert() function call.
+9. Set webhook URL to: https://YOUR-WORKER.workers.dev/tv-webhook?token=YOUR_RANDOM_TOKEN
+10. Enable the alert.
+11. Add GitHub secrets TV_FALLBACK_URL and TV_FALLBACK_TOKEN.
+12. Run Actions -> Update XAUUSD data pack once.
+13. Check feed-health.json. Fallback should show ONLINE/READY after TradingView has sent bars.
+14. Run AI Background Learning once.
+15. Open /Trading/reset.html once.
+
+EXPECTED APP STATES
+TWELVE DATA / PRIMARY = normal live feed
+TRADINGVIEW LIVE / LIVE_AUGMENT = app merged newer M1 bars directly from fallback
+TRADINGVIEW FALLBACK = GitHub updater switched to TradingView because Twelve Data failed/staled
+FEED HOLD = live data is stale/divergent/both sources down; plans can remain references but must not be placed
+LAST SESSION = market closed; planning from last session is allowed, revalidate on open
+
+IMPORTANT
+TradingView fallback is designed around confirmed 1-minute bars, not tick-by-tick streaming.
+The webhook write endpoint is secret-token protected. The public read endpoint contains only XAUUSD OHLC market data.

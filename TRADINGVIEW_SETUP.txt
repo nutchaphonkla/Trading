@@ -1,0 +1,18 @@
+TRADINGVIEW FALLBACK SETUP
+
+1. Open the XAUUSD symbol/feed you normally trade.
+2. Set chart timeframe = 1 minute.
+3. Pine Editor -> paste tradingview-xauusd-m1.pine -> Add to chart.
+4. Create Alert.
+5. Condition: OneMonth XAUUSD M1 Feed Bridge v36.1
+6. Select: Any alert() function call
+7. Webhook URL:
+   https://YOUR-WORKER.workers.dev/tv-webhook?token=YOUR_RANDOM_TOKEN
+8. Enable/save the alert.
+
+The Pine script sends a JSON OHLC bar when each M1 bar closes.
+TradingView runs the alert on its servers; the phone/browser does not need to stay open.
+
+After the first alert, test:
+https://YOUR-WORKER.workers.dev/public-feed?limit=10
+You should see XAUUSD M1 rows.

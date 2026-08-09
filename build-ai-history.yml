@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-learning-v36
+  group: onemonth-ai-learning-v361
   cancel-in-progress: true
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
       - name: Journal deployed and ML pending plans
         run: node build-ai-journal.mjs
 
-      - name: Verify V36 autonomous brain packs
+      - name: Verify V36.1 autonomous brain packs
         run: |
           python - <<'PY'
           import json
@@ -95,6 +95,8 @@ jobs:
               json.loads(p.read_text())
 
           ml = json.loads(Path("ai-ml-brain.json").read_text())
+          feed = json.loads(Path("feed-health.json").read_text()) if Path("feed-health.json").exists() else {}
+          print("FEED", {"active": feed.get("active"), "mode": feed.get("mode"), "status": feed.get("status")})
           print("PYTHON ML", {
               "ready": ml.get("ready"),
               "status": ml.get("status"),
@@ -136,6 +138,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "ai: refresh V36 autonomous ML plan brain"
+          git commit -m "ai: refresh V36.1 autonomous multi-feed ML brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

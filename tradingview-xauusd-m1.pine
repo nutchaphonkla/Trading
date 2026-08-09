@@ -1,0 +1,10 @@
+//@version=6
+indicator("OneMonth XAUUSD M1 Feed Bridge v36.1", overlay=false)
+
+isM1 = timeframe.isminutes and timeframe.multiplier == 1
+
+if barstate.isconfirmed and isM1
+    payload = '{"source":"TRADINGVIEW","symbol":"' + syminfo.tickerid + '","timeframe":"1","ts":' + str.tostring(time) + ',"open":' + str.tostring(open, format.mintick) + ',"high":' + str.tostring(high, format.mintick) + ',"low":' + str.tostring(low, format.mintick) + ',"close":' + str.tostring(close, format.mintick) + '}'
+    alert(payload, alert.freq_once_per_bar_close)
+
+plot(na, title="Feed bridge")
