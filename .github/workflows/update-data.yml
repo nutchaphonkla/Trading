@@ -50,9 +50,9 @@ jobs:
       - name: Verify strict feed isolation
         run: |
           node - <<'NODE'
-          const fs = require('fs');
+          const fs=require('fs');
 
-          const h = JSON.parse(
+          const h=JSON.parse(
             fs.readFileSync(
               'feed-health.json',
               'utf8'
@@ -110,14 +110,14 @@ jobs:
             );
           }
 
-          const pack = JSON.parse(
+          const pack=JSON.parse(
             fs.readFileSync(
               'xauusd.json',
               'utf8'
             )
           );
 
-          const watermark = Number(
+          const watermark=Number(
             pack.closedBarWatermark ||
             pack.feed?.closedBarWatermark ||
             0
@@ -130,15 +130,15 @@ jobs:
           }
 
           for (
-            const [tf, width] of
+            const [tf,width] of
             Object.entries({
-              M1: 60000,
-              M5: 300000,
-              M15: 900000,
-              H1: 3600000
+              M1:60000,
+              M5:300000,
+              M15:900000,
+              H1:3600000
             })
           ) {
-            const open = (
+            const open=(
               pack.timeframes?.[tf] ||
               []
             ).find(
@@ -160,7 +160,7 @@ jobs:
               'ai-shadow-journal.json'
             )
           ) {
-            const s = JSON.parse(
+            const s=JSON.parse(
               fs.readFileSync(
                 'ai-shadow-journal.json',
                 'utf8'
