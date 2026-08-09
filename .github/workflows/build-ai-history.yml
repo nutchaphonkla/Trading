@@ -2,10 +2,8 @@ name: AI Background Learning
 
 on:
   workflow_dispatch:
-
   schedule:
     - cron: "23 * * * *"
-
   workflow_run:
     workflows:
       - "Update XAUUSD data pack"
@@ -16,15 +14,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-learning-v362
+  group: onemonth-ai-v37
   cancel-in-progress: true
 
 jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
-
     runs-on: ubuntu-latest
-    timeout-minutes: 24
+    timeout-minutes: 35
 
     steps:
       - name: Checkout latest repository
@@ -37,7 +34,7 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Setup Python ML runtime
+      - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -49,7 +46,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-ml.txt
 
-      - name: Validate all V36.2 AI builders
+      - name: Validate V37 brain source
         run: |
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
@@ -57,333 +54,92 @@ jobs:
           node --check build-ai-governance.mjs
           python -m py_compile ml-train.py
 
-      - name: Verify active market feed
+      - name: Verify PRIMARY training isolation
         run: |
           node - <<'NODE'
-          const fs = require("fs");
+          const fs=require('fs');
 
-          if (!fs.existsSync("feed-health.json")) {
-            console.log(
-              "feed-health.json not found - historical brain can still rebuild"
-            );
-
-            process.exit(0);
+          if(!fs.existsSync('xauusd-primary.json')){
+            console.log('xauusd-primary.json not ready yet; Python brain may enter WAIT_DATA safely.');
+          }else{
+            const p=JSON.parse(fs.readFileSync('xauusd-primary.json','utf8'));
+            console.log('PRIMARY TRAIN PACK:',p.feed?.active||p.source);
           }
 
-          const h = JSON.parse(
-            fs.readFileSync(
-              "feed-health.json",
-              "utf8"
-            )
-          );
+          if(fs.existsSync('feed-health.json')){
+            const h=JSON.parse(fs.readFileSync('feed-health.json','utf8'));
 
-          console.log(
-            "ACTIVE FEED:",
-            h.active
-          );
+            if(h.switching?.mergeFeeds===true)
+              throw new Error('Feed merge forbidden');
 
-          console.log(
-            "MODE:",
-            h.mode
-          );
-
-          console.log(
-            "STATUS:",
-            h.status
-          );
-
-          console.log(
-            "REASON:",
-            h.reason
-          );
-
-          if (
-            h.switching?.mergeFeeds === true
-          ) {
-            throw new Error(
-              "Feed policy error: Twelve + MT5 must not be merged"
-            );
+            console.log('LIVE ACTIVE:',h.active,h.mode,h.status);
           }
           NODE
 
-      # ==================================================
-      # HISTORICAL BRAIN
-      # ==================================================
-
-      - name: Rebuild rolling historical brain
+      - name: Rebuild PRIMARY historical brain
         run: node build-ai-history.mjs
 
-      # ==================================================
-      # STATISTICAL CHALLENGER
-      # ==================================================
-
-      - name: Train statistical challenger
+      - name: Train PRIMARY statistical challenger
         run: node build-ai-learning.mjs
 
-      # ==================================================
-      # OUTCOME JOURNAL
-      # ==================================================
-
-      - name: Resolve old signal and pending outcomes
+      - name: Resolve active-feed outcomes
         run: node build-ai-journal.mjs
 
-      # ==================================================
-      # CHAMPION / CHALLENGER
-      # ==================================================
-
-      - name: Champion challenger governance
+      - name: Statistical champion challenger governance
         run: node build-ai-governance.mjs
 
-      # ==================================================
-      # PYTHON AUTOML
-      # ==================================================
-
-      - name: Train autonomous Python ML tournament
+      - name: Train V37 Python autonomous precision brain
         env:
           ML_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: python ml-train.py
 
-      # ==================================================
-      # JOURNAL NEW QUALIFIED PLANS
-      # ==================================================
-
-      - name: Journal deployed and ML pending plans
+      - name: Journal V37 qualified pending plans
         run: node build-ai-journal.mjs
 
-      # ==================================================
-      # VERIFY EVERYTHING
-      # ==================================================
-
-      - name: Verify V36.2 autonomous brain packs
+      - name: Verify V37 packs
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          required = [
-              "ai-history.json",
-              "ai-learning.json",
-              "ai-learning-candidate.json",
-              "ai-model-governance.json",
-              "ai-outcome-journal.json",
-              "ai-ml-brain.json",
-              "ai-ml-candidate.json",
-              "ai-ml-governance.json",
-          ]
+          for name in [
+              'ai-history.json',
+              'ai-learning.json',
+              'ai-learning-candidate.json',
+              'ai-model-governance.json',
+              'ai-outcome-journal.json',
+              'ai-ml-brain.json',
+              'ai-ml-candidate.json',
+              'ai-ml-governance.json'
+          ]:
+              p=Path(name)
 
-          for name in required:
-              p = Path(name)
+              if p.exists():
+                  json.loads(p.read_text())
 
-              if not p.exists():
-                  raise SystemExit(
-                      f"missing {name}"
-                  )
+          ml=json.loads(
+              Path('ai-ml-brain.json').read_text()
+          ) if Path('ai-ml-brain.json').exists() else {}
 
-              json.loads(
-                  p.read_text()
-              )
+          print('V37',{
+              'version':ml.get('version'),
+              'ready':ml.get('ready'),
+              'status':ml.get('status'),
+              'health':(ml.get('modelHealth') or {}).get('score'),
+              'trainingSource':(ml.get('dataIsolation') or {}).get('trainingSource'),
+              'liveSource':(ml.get('dataIsolation') or {}).get('liveSource'),
+              'mergeFeeds':(ml.get('dataIsolation') or {}).get('mergeFeeds'),
+              'candidateCount':(ml.get('current') or {}).get('candidateCount'),
+              'qualified':(ml.get('current') or {}).get('qualifiedCount'),
+              'regime':(ml.get('current') or {}).get('regime'),
+              'session':(ml.get('current') or {}).get('session'),
+          })
 
-          ml = json.loads(
-              Path(
-                  "ai-ml-brain.json"
-              ).read_text()
-          )
-
-          if Path(
-              "feed-health.json"
-          ).exists():
-
-              feed = json.loads(
-                  Path(
-                      "feed-health.json"
-                  ).read_text()
-              )
-
-          else:
-              feed = {}
-
-          print(
-              "FEED",
-              {
-                  "active":
-                      feed.get("active"),
-
-                  "mode":
-                      feed.get("mode"),
-
-                  "status":
-                      feed.get("status"),
-
-                  "reason":
-                      feed.get("reason"),
-              },
-          )
-
-          print(
-              "PYTHON ML",
-              {
-                  "ready":
-                      ml.get("ready"),
-
-                  "status":
-                      ml.get("status"),
-
-                  "health":
-                      (
-                          ml.get(
-                              "modelHealth"
-                          )
-                          or {}
-                      ).get("score"),
-
-                  "samples":
-                      (
-                          ml.get(
-                              "training"
-                          )
-                          or {}
-                      ).get(
-                          "candidateSamples"
-                      ),
-
-                  "filled":
-                      (
-                          ml.get(
-                              "training"
-                          )
-                          or {}
-                      ).get(
-                          "filledSamples"
-                      ),
-
-                  "primary":
-                      (
-                          (
-                              ml.get(
-                                  "current"
-                              )
-                              or {}
-                          ).get(
-                              "primary"
-                          )
-                          or {}
-                      ).get("type"),
-
-                  "reference":
-                      (
-                          (
-                              ml.get(
-                                  "current"
-                              )
-                              or {}
-                          ).get(
-                              "reference"
-                          )
-                          or {}
-                      ).get("type"),
-
-                  "qualified":
-                      (
-                          ml.get(
-                              "current"
-                          )
-                          or {}
-                      ).get(
-                          "qualifiedCount"
-                      ),
-
-                  "models":
-                      (
-                          (
-                              (
-                                  (
-                                      ml.get(
-                                          "autoML"
-                                      )
-                                      or {}
-                                  ).get(
-                                      "heads"
-                                  )
-                                  or {}
-                              ).get(
-                                  "tp1"
-                              )
-                              or {}
-                          ).get(
-                              "selection"
-                          )
-                          or {}
-                      ).get(
-                          "selectedModels"
-                      ),
-
-                  "calibration":
-                      (
-                          (
-                              (
-                                  (
-                                      ml.get(
-                                          "autoML"
-                                      )
-                                      or {}
-                                  ).get(
-                                      "heads"
-                                  )
-                                  or {}
-                              ).get(
-                                  "tp1"
-                              )
-                              or {}
-                          ).get(
-                              "calibration"
-                          )
-                          or {}
-                      ).get(
-                          "selected"
-                      ),
-
-                  "tp1Auc":
-                      (
-                          (
-                              (
-                                  ml.get(
-                                      "validation"
-                                  )
-                                  or {}
-                              ).get(
-                                  "tp1"
-                              )
-                              or {}
-                          ).get(
-                              "auc"
-                          )
-                      ),
-
-                  "tp1Brier":
-                      (
-                          (
-                              (
-                                  ml.get(
-                                      "validation"
-                                  )
-                                  or {}
-                              ).get(
-                                  "tp1"
-                              )
-                              or {}
-                          ).get(
-                              "brier"
-                          )
-                      ),
-              },
-          )
+          if (ml.get('dataIsolation') or {}).get('mergeFeeds') is True:
+              raise SystemExit('V37 policy violation: mergeFeeds true')
           PY
 
-      # ==================================================
-      # COMMIT AI BRAIN
-      # ==================================================
-
-      - name: Commit governed brains and ML packs
+      - name: Commit V37 brain packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -410,8 +166,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "ai: refresh V36.2 primary failover AutoML brain"
-
+          git commit -m "ai: refresh V37 autonomous precision brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
-
           git push origin "HEAD:${GITHUB_REF_NAME}"
