@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
-const PACK='xauusd.json',LEARNING='ai-learning.json',OUTPUT='ai-outcome-journal.json';
-const VERSION='1.2',ENGINE='ONEMONTH-PENDING-ENTRY-JOURNAL-V1.2';
+const PACK='xauusd.json',LEARNING='ai-learning.json',ML='ai-ml-brain.json',OUTPUT='ai-outcome-journal.json';
+const VERSION='1.3',ENGINE='ONEMONTH-PENDING-ENTRY-JOURNAL-V35-ML';
 const num=v=>{const n=Number(v);return Number.isFinite(n)?n:NaN};
 const n=v=>Number.isFinite(Number(v))?Number(v):0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -22,6 +22,14 @@ function buildPendingPlans(candles,atr,learning,tf,model){const last=candles.at(
   if(dir==='BUY'){let entry=Math.min(last.close-R*.10,ema21-R*.04);if(!Number.isFinite(entry)||entry>=last.close)entry=last.close-R*.28;let sl=entry-R*.88,risk=entry-sl;out.push({type:'BUY LIMIT',direction:'BUY',kind:'LIMIT',entry,entryLow:entry-R*.07,entryHigh:entry+R*.07,sl,tp1:entry+risk*1.65,tp2:entry+risk*2.35,rr:1.65,score:baseScore+4,anchor:'EMA21 RETEST'});entry=Math.max(last.close+R*.12,hi+R*.08);sl=entry-R*.82;risk=entry-sl;out.push({type:'BUY STOP',direction:'BUY',kind:'STOP',entry,entryLow:entry-R*.02,entryHigh:entry+R*.02,sl,tp1:entry+risk*1.50,tp2:entry+risk*2.20,rr:1.50,score:baseScore,anchor:'30-BAR BREAKOUT'})}
   else{let entry=Math.max(last.close+R*.10,ema21+R*.04);if(!Number.isFinite(entry)||entry<=last.close)entry=last.close+R*.28;let sl=entry+R*.88,risk=sl-entry;out.push({type:'SELL LIMIT',direction:'SELL',kind:'LIMIT',entry,entryLow:entry-R*.07,entryHigh:entry+R*.07,sl,tp1:entry-risk*1.65,tp2:entry-risk*2.35,rr:1.65,score:baseScore+4,anchor:'EMA21 RETEST'});entry=Math.min(last.close-R*.12,lo-R*.08);sl=entry+R*.82;risk=sl-entry;out.push({type:'SELL STOP',direction:'SELL',kind:'STOP',entry,entryLow:entry-R*.02,entryHigh:entry+R*.02,sl,tp1:entry-risk*1.50,tp2:entry-risk*2.20,rr:1.50,score:baseScore,anchor:'30-BAR BREAKDOWN'})}
   return out.map(x=>({...x,id:`PLAN:${model}:${tf}:${last.ts}:${x.type.replace(' ','_')}`,modelId:model,modelRole:'CHAMPION',sourceTf:tf,createdAt:new Date().toISOString(),ts:last.ts,atr:R,status:'WAIT_FILL',filledAt:null,filledTs:null,horizons:{},maxWaitBars:64}));}
+function buildMlPendingPlans(ml,candles,atr,tf){
+  if(!ml?.ready||!Array.isArray(ml?.current?.candidates)||!candles.length)return[];
+  const last=candles.at(-1),fp=ml.sourceFingerprint||'NOFP',health=n(ml?.modelHealth?.score),status=String(ml?.status||'LIMITED');
+  return ml.current.candidates.slice(0,2).filter(x=>Number.isFinite(num(x.entry))&&Number.isFinite(num(x.sl))).map(x=>{
+    const type=String(x.type||'ML PLAN').replaceAll('_',' '),dir=String(x.side||'').toUpperCase(),kind=type.includes('STOP')?'STOP':'LIMIT';
+    return{id:`MLPLAN:${fp}:${ml.current.marketTs||last.ts}:${type.replaceAll(' ','_')}`,modelId:`ML:${fp}`,modelEngine:ml.engine||'PYTHON ML',modelFingerprint:fp,modelRole:status==='TRUSTED'?'ML_TRUSTED':'ML_REFERENCE',sourceTf:tf,createdAt:new Date().toISOString(),ts:Number(ml.current.marketTs||last.ts),atr:Math.max(.000001,n(atr)||1),status:'WAIT_FILL',filledAt:null,filledTs:null,horizons:{},maxWaitBars:64,type,direction:dir,kind,entry:n(x.entry),entryLow:n(x.entryLow)||n(x.entry),entryHigh:n(x.entryHigh)||n(x.entry),sl:n(x.sl),tp1:n(x.tp1),tp2:n(x.tp2),rr:n(x.rr),score:n(x.score),anchor:'PYTHON ML RANK '+n(x.rank),mlHealth:health,pFill:n(x.pFill),pTp1:n(x.pTp1),pTp2:n(x.pTp2),pSl:n(x.pSl),evR:n(x.evR)};
+  }).filter(p=>['BUY','SELL'].includes(p.direction));
+}
 function touchesPlan(bar,p){if(p.kind==='STOP')return p.direction==='BUY'?bar.high>=p.entry:bar.low<=p.entry;return bar.low<=p.entryHigh&&bar.high>=p.entryLow}
 function resolvePlanEntries(rows,candles){for(const p of rows){if(p.status==='EXPIRED'||p.status==='COMPLETE')continue;let start=findIndexAtOrAfter(candles,p.ts+1);if(start<0)continue;if(!p.filledAt){let fill=-1;for(let i=start;i<Math.min(candles.length,start+(p.maxWaitBars||64));i++){if(touchesPlan(candles[i],p)){fill=i;break}}if(fill<0){if(candles.length-start>=(p.maxWaitBars||64))p.status='EXPIRED';continue}p.filledTs=candles[fill].ts;p.filledAt=new Date(candles[fill].ts).toISOString();p.fillIndex=fill;p.status='FILLED'}
     const fill=findIndexAtOrAfter(candles,p.filledTs);if(fill<0)continue;const atr=Math.max(.000001,n(p.atr)||1);
@@ -44,6 +52,10 @@ if(['BUY','SELL'].includes(String(current.direction||'').toUpperCase())&&!journa
 resolvePlanEntries(journal.planEntries,candles);
 const freshPlans=buildPendingPlans(candles,latestAtr,learning,tf,deployedModelId);
 for(const p of freshPlans)if(!journal.planEntries.some(x=>x.id===p.id))journal.planEntries.push(p);
+let mlBrain={};try{if(fs.existsSync(ML))mlBrain=JSON.parse(fs.readFileSync(ML,'utf8'))}catch(_){}
+const mlPlans=buildMlPendingPlans(mlBrain,candles,latestAtr,tf);
+for(const p of mlPlans)if(!journal.planEntries.some(x=>x.id===p.id))journal.planEntries.push(p);
+resolvePlanEntries(journal.planEntries,candles);
 
 journal.entries=journal.entries.slice(-5000);journal.planEntries=journal.planEntries.slice(-5000);journal.version=VERSION;journal.engine=ENGINE;journal.updatedAt=new Date().toISOString();journal.sourceFingerprint=fp;journal.summary=summarize(journal.entries);journal.planSummary=planSummary(journal.planEntries);journal.deployedSummary=summarize(journal.entries.filter(e=>e.modelId===deployedModelId));journal.deployedPlanSummary=planSummary(journal.planEntries.filter(e=>e.modelId===deployedModelId));
 fs.writeFileSync(OUTPUT,JSON.stringify(journal,null,2));

@@ -12,14 +12,15 @@ permissions:
   contents: write
 
 concurrency:
-  group: onemonth-ai-learning
+  group: onemonth-ai-learning-v35
   cancel-in-progress: true
 
 jobs:
   learn:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 18
+
     steps:
       - name: Checkout latest repository
         uses: actions/checkout@v4
@@ -31,64 +32,104 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validate AI builders
+      - name: Setup Python ML runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-ml.txt
+
+      - name: Install ML dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-ml.txt
+
+      - name: Validate all AI builders
         run: |
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
           node --check build-ai-journal.mjs
           node --check build-ai-governance.mjs
+          python -m py_compile ml-train.py
 
-      - name: Rebuild rolling history brain
+      - name: Rebuild rolling historical brain
         run: node build-ai-history.mjs
 
-      - name: Train challenger model
+      - name: Train statistical challenger
         run: node build-ai-learning.mjs
 
-      - name: Resolve deployed model outcomes
+      - name: Resolve old signal and pending outcomes
         run: node build-ai-journal.mjs
 
       - name: Champion challenger governance
         run: node build-ai-governance.mjs
 
-      - name: Journal newly deployed champion
+      - name: Train Python ML ensemble
+        run: python ml-train.py
+
+      - name: Journal deployed and ML pending plans
         run: node build-ai-journal.mjs
 
-      - name: Verify governed brain packs
+      - name: Verify V35 brain packs
         run: |
-          node - <<'NODE'
-          const fs=require('fs');
-          const h=JSON.parse(fs.readFileSync('ai-history.json','utf8'));
-          const l=JSON.parse(fs.readFileSync('ai-learning.json','utf8'));
-          const c=JSON.parse(fs.readFileSync('ai-learning-candidate.json','utf8'));
-          const g=JSON.parse(fs.readFileSync('ai-model-governance.json','utf8'));
-          const j=fs.existsSync('ai-outcome-journal.json')?JSON.parse(fs.readFileSync('ai-outcome-journal.json','utf8')):null;
-          if(!h.generatedAt)throw new Error('history missing generatedAt');
-          if(!l.generatedAt)throw new Error('champion missing generatedAt');
-          if(!c.generatedAt)throw new Error('challenger missing generatedAt');
-          if(!g.updatedAt)throw new Error('governance missing updatedAt');
-          console.log('History',{ready:h.ready,candles:h.totalCandles,coverageDays:h.coverageDays});
-          console.log('Champion',{id:l.modelId,engine:l.engine,samples:l.global?.samples,health:l.modelHealth?.score});
-          console.log('Challenger',{id:c.modelId||c.sourceFingerprint,samples:c.global?.samples,health:c.modelHealth?.score});
-          console.log('Governance',{action:g.action,champion:g.champion?.score,challenger:g.challenger?.score,reason:g.reason});
-          console.log('Journal',j?.summary||'journal pending');
-          console.log('Pending plan journal',j?.planSummary||'pending-plan journal learning');
-          NODE
+          python - <<'PY'
+          import json
+          from pathlib import Path
 
-      - name: Commit governed brain and journal
+          required = [
+              "ai-history.json",
+              "ai-learning.json",
+              "ai-learning-candidate.json",
+              "ai-model-governance.json",
+              "ai-outcome-journal.json",
+              "ai-ml-brain.json",
+              "ai-ml-candidate.json",
+              "ai-ml-governance.json",
+          ]
+          for name in required:
+              p = Path(name)
+              if not p.exists():
+                  raise SystemExit(f"missing {name}")
+              json.loads(p.read_text())
+
+          ml = json.loads(Path("ai-ml-brain.json").read_text())
+          print("PYTHON ML", {
+              "ready": ml.get("ready"),
+              "status": ml.get("status"),
+              "health": (ml.get("modelHealth") or {}).get("score"),
+              "samples": (ml.get("training") or {}).get("candidateSamples"),
+              "filled": (ml.get("training") or {}).get("filledSamples"),
+              "primary": ((ml.get("current") or {}).get("primary") or {}).get("type"),
+              "tp1Auc": (((ml.get("validation") or {}).get("tp1") or {}).get("auc")),
+              "tp1Brier": (((ml.get("validation") or {}).get("tp1") or {}).get("brier")),
+          })
+          PY
+
+      - name: Commit governed brains and ML packs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          for f in ai-history.json ai-learning.json ai-learning-candidate.json ai-learning-previous.json ai-model-governance.json ai-outcome-journal.json; do
+          for f in \
+            ai-history.json \
+            ai-learning.json \
+            ai-learning-candidate.json \
+            ai-learning-previous.json \
+            ai-model-governance.json \
+            ai-outcome-journal.json \
+            ai-ml-brain.json \
+            ai-ml-candidate.json \
+            ai-ml-governance.json
+          do
             if [ -e "$f" ]; then git add "$f"; fi
           done
 
           if git diff --cached --quiet; then
-            echo "No governed-model changes"
+            echo "No brain changes"
             exit 0
           fi
 
-          git commit -m "ai: refresh V34.3 pending-plan brain"
+          git commit -m "ai: refresh V35 Python ML brain"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
