@@ -5924,10 +5924,10 @@ const BT_KEY='onemonth_os_backtest_v15';
 
 const MARKET_CACHE_KEY='onemonth_os_market_cache_v21';
 const NEWS_CACHE_KEY='onemonth_os_news_cache_v21';
-const HISTORY_CACHE_KEY='onemonth_os_history_cache_v32';
-const LEARNING_PACK_CACHE_KEY='onemonth_os_learning_pack_cache_v32';
-const MODEL_GOV_CACHE_KEY='onemonth_os_model_governance_cache_v342';
-const ML_BRAIN_CACHE_KEY='onemonth_os_ml_brain_cache_v361';
+const HISTORY_CACHE_KEY='onemonth_os_history_cache_v44final';
+const LEARNING_PACK_CACHE_KEY='onemonth_os_learning_pack_cache_v44final';
+const MODEL_GOV_CACHE_KEY='onemonth_os_model_governance_cache_v44final';
+const ML_BRAIN_CACHE_KEY='onemonth_os_ml_brain_cache_v44final';
 const HISTORY_PACK_URL='./ai-history.json';
 const LEARNING_PACK_URL='./ai-learning.json';
 const MODEL_GOV_URL='./ai-model-governance.json';
@@ -6378,7 +6378,7 @@ async function augmentWithMt5FallbackV362(pack){
     // This is same-source extension, never a Twelve+MT5 merge.
     if(!active.includes('MT5'))return{pack,used:false};
     const publicUrl=f?.fallback?.publicFeedUrl;if(!publicUrl)return{pack,used:false};
-    const url=new URL(publicUrl,location.href);url.searchParams.set('limit','6000');url.searchParams.set('_',Date.now());
+    const url=new URL(publicUrl,location.href);url.searchParams.set('limit','10000');url.searchParams.set('_',Date.now());
     const r=await fetchFast(url.toString(),{cache:'no-store'},3200);if(!r.ok)throw new Error('MT5 direct feed '+r.status);
     const j=await r.json(),rows=(j?.timeframes?.M1||j?.bars||[]).map(normalizeCandle).filter(Boolean);if(rows.length<180)return{pack,used:false};
     const mt5Last=Number(rows.at(-1)?.ts)||0;if(!mt5Last)return{pack,used:false};
@@ -6703,8 +6703,9 @@ function cleanSingleTf(raw,tf){
   const dupes=before-deduped.length;
   const q=quarantineOutliers(deduped,tf);
   const fillers=removeRepeatedFillers(q.clean);
-  const continuous=latestContinuousSegment(fillers.clean,tf);
-  return{raw:before,clean:continuous,duplicates:dupes+fillers.removed,outliers:q.outliers,segment:continuous.length};
+  const clean=fillers.clean;
+  const latestSegment=latestContinuousSegment(clean,tf);
+  return{raw:before,clean,duplicates:dupes+fillers.removed,outliers:q.outliers,segment:latestSegment.length};
 }
 function rebuildMarketData(pack){
   const tf=pack.timeframes||pack.data||pack||{};
@@ -8884,7 +8885,7 @@ async function clearAllCachesAndReload(){
       setActionUI('กำลังล้าง Cache…','ลบ '+keys.length+' cache store',55);
       await Promise.all(keys.map(k=>caches.delete(k)));
     }
-    storeRemove(MARKET_CACHE_KEY);storeRemove(NEWS_CACHE_KEY);storeRemove(HISTORY_CACHE_KEY);storeRemove(LEARNING_PACK_CACHE_KEY);storeRemove(MODEL_GOV_CACHE_KEY);
+    storeRemove(MARKET_CACHE_KEY);storeRemove(NEWS_CACHE_KEY);storeRemove(HISTORY_CACHE_KEY);storeRemove(LEARNING_PACK_CACHE_KEY);storeRemove(MODEL_GOV_CACHE_KEY);storeRemove(ML_BRAIN_CACHE_KEY);
     if('serviceWorker' in navigator){
       const regs=await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map(r=>r.update().catch(()=>{})));
@@ -8914,7 +8915,7 @@ window.addEventListener('offline',()=>{renderFreshness();toast('ออฟไล�
 // V42: network-first Service Worker with a versioned offline app shell and last-valid data cache.
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=431',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=4402',{updateViaCache:'none'})
       .catch(err=>console.warn('SW',err));
   });
 }
