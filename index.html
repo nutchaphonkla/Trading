@@ -7869,13 +7869,15 @@ function renderCommand(){
   chip.textContent=status;chip.className='status-chip '+(pp.canPlace?'good':pp.tone==='bad'?'bad':status==='CLOSED'?'warn':'');
   $('#commandTitle').textContent=title;$('#commandCopy').textContent=copy;act.className='command-action '+cls;act.innerHTML='<i></i><span>'+action+'</span>';
   try{
-    window.KageTelegramBridge?.syncFromCommand?.(p,pp,{
+    const sharedDecision=window.KageSignalEngine?.fromAppDecision?.(p,pp,{
       currentPrice:pendingMarketPriceV45(),
       confidence:Number(intelligence?.calibrated ?? p?.ml?.pCleanWin ?? p?.score ?? 0),
       quality:Number(p?.score ?? 0),
-      marketOpen:!!m.open
+      marketOpen:!!m.open,
+      newsLock:!!m.newsLock
     });
-  }catch(e){console.warn('KAGE TELEGRAM PLAN SYNC',e)}
+    window.KageTelegramBridge?.publishDecision?.(sharedDecision);
+  }catch(e){console.warn('KAGE CLOUD SIGNAL SYNC',e)}
 }
 function renderGuardian(){
   const g=guardian(),pct=Math.round(g.mult*100),score=$('#guardianScore');
@@ -9238,7 +9240,8 @@ if(appLaunch.isStandalone()){
 })();
 </script>
 
-<script src="./telegram-config.js?v=4702"></script>
-<script src="./kage-telegram-client.js?v=4702"></script>
+<script src="./kage-signal-engine.js?v=4801"></script>
+<script src="./telegram-config.js?v=4801"></script>
+<script src="./kage-telegram-client.js?v=4801"></script>
 </body>
 </html>
