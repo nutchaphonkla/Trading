@@ -47,9 +47,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-08-10T17:15:58.306Z",
-  "action": "PROMOTE_CHALLENGER",
-  "reason": "Switch champion to current isolated training source xauusd-training.json|TWELVE_DATA_PRIMARY",
+  "updatedAt": "2026-08-10T18:11:04.725Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:431f6793793756692765f4eb",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -72,23 +72,23 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:431f6793793756692765f4eb",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:3d7c3026d8e5fee2be34c96e",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "431f6793793756692765f4eb",
-    "dataWatermark": 1786382100000,
-    "generatedAt": "2026-08-10T17:15:58.172Z",
-    "trainedThrough": "2026-08-10T17:00:00.000Z",
+    "sourceFingerprint": "3d7c3026d8e5fee2be34c96e",
+    "dataWatermark": 1786385400000,
+    "generatedAt": "2026-08-10T18:11:04.644Z",
+    "trainedThrough": "2026-08-10T17:45:00.000Z",
     "ready": true,
     "status": "READY",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 75.07,
-    "health": 75.8,
-    "samples": 196,
-    "brier": 0.2452,
-    "calibration": 0.49,
-    "coverage": 86.73,
-    "drift": 1.7,
+    "score": 72.98,
+    "health": 74.2,
+    "samples": 199,
+    "brier": 0.2472,
+    "calibration": 3.22,
+    "coverage": 85,
+    "drift": 0.1,
     "uncertainty": 23.65,
     "guard": "TRUSTED"
   },
@@ -128,7 +128,7 @@
     "fillCount": 0
   },
   "decision": {
-    "promoted": true,
+    "promoted": false,
     "rolledBack": false,
     "candidateQualified": true,
     "candidateCompatibility": {
@@ -137,9 +137,9 @@
     },
     "championDeployable": true,
     "materiallyBetter": false,
-    "freshNonInferior": true,
+    "freshNonInferior": false,
     "schemaMigration": false,
-    "sourceMigration": true,
+    "sourceMigration": false,
     "identicalEvidence": false
   }
 }
