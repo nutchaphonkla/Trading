@@ -7868,6 +7868,14 @@ function renderCommand(){
   }
   chip.textContent=status;chip.className='status-chip '+(pp.canPlace?'good':pp.tone==='bad'?'bad':status==='CLOSED'?'warn':'');
   $('#commandTitle').textContent=title;$('#commandCopy').textContent=copy;act.className='command-action '+cls;act.innerHTML='<i></i><span>'+action+'</span>';
+  try{
+    window.KageTelegramBridge?.syncFromCommand?.(p,pp,{
+      currentPrice:pendingMarketPriceV45(),
+      confidence:Number(intelligence?.calibrated ?? p?.ml?.pCleanWin ?? p?.score ?? 0),
+      quality:Number(p?.score ?? 0),
+      marketOpen:!!m.open
+    });
+  }catch(e){console.warn('KAGE TELEGRAM PLAN SYNC',e)}
 }
 function renderGuardian(){
   const g=guardian(),pct=Math.round(g.mult*100),score=$('#guardianScore');
@@ -9229,5 +9237,8 @@ if(appLaunch.isStandalone()){
   setTimeout(scheduleHero,250);
 })();
 </script>
+
+<script src="./telegram-config.js?v=4702"></script>
+<script src="./kage-telegram-client.js?v=4702"></script>
 </body>
 </html>
