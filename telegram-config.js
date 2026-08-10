@@ -1,3 +1,3 @@
 window.KAGE_TELEGRAM_CONFIG = {
-  workerUrl: "https://YOUR-KAGE-TELEGRAM-WORKER.workers.dev"
+  workerUrl: "https://kage-core-telegram.nutchaphonsit.workers.dev"
 };
