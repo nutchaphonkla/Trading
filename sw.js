@@ -1,4 +1,4 @@
-const CACHE = 'kage-core-v48-telegram-signal-4802';
+const CACHE = 'kage-core-v49-persistent-brain-4901';
 
 const SHELL = [
   './',
@@ -12,7 +12,8 @@ const SHELL = [
   './kage-v45-overrides.css',
   './kage-v46-realtime-lite.css',
 
-  // V48 TELEGRAM / SIGNAL
+  // V49 PERSISTENT BRAIN + V48 TELEGRAM / SIGNAL
+  './kage-persistence-v49.js',
   './kage-signal-engine.js',
   './kage-telegram-client.js',
   './telegram-config.js'
@@ -158,6 +159,9 @@ self.addEventListener('fetch', event => {
   // ==========================================
 
   if (
+    url.pathname.endsWith(
+      '/kage-persistence-v49.js'
+    ) ||
     url.pathname.endsWith(
       '/kage-signal-engine.js'
     ) ||

@@ -1,0 +1,41 @@
+KAGE V49 PERSISTENT BRAIN - TEST REPORT
+Date: 2026-08-10
+Source: uploaded Trading-main 2.zip
+
+PASS:
+- node --check kage-persistence-v49.js
+- node --check sw.js
+- index.html inline JavaScript parse
+- persistence-v49.test.mjs
+- pipeline-closed-bars-v42.test.mjs
+- shadow-feed-isolation-v42.test.mjs
+- learning-closed-bars-v42.test.mjs
+- history-provenance-v42.test.mjs
+- governance-provenance-v42.test.mjs
+- journal-forward-only-v43.test.mjs
+- market-hours-dst-v43.test.mjs
+- auto-hybrid-v44.test.mjs
+- adaptive-ai-v42.test.cjs
+- early-signal-v45.test.mjs / V46 markers
+- test_selfplay_promotion_v42.py (5/5)
+- test_ml_provenance_v42.py (3/3)
+- test_auto_hybrid_v44.py (6/6)
+
+Persistence design:
+- IndexedDB checkpoint vault, up to 6 versions
+- max 180 local outcomes (same runtime cap as current app)
+- max 40 scan-memory rows
+- 2 MB checkpoint guard
+- merges richer evidence instead of overwriting with empty state
+- reset app data clears both localStorage state and IndexedDB vault
+- clear cache/reload does NOT clear learned checkpoint
+- pagehide/hidden auto-checkpoint
+- boot restores richer checkpoint before learning loop starts
+
+No changes to:
+- ml-train.py
+- selfplay-lab.py
+- GitHub AI artifacts
+- Telegram Worker/config/client
+- MT5 bridge/EA
+- AI training workflow YAML

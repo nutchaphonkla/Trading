@@ -5765,6 +5765,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 
 <div class="toast" id="toast"></div>
 
+<script src="./kage-persistence-v49.js?v=4901"></script>
 <script src="./adaptive-ai-v42.js?v=440"></script>
 <script>
 (()=>{
@@ -6502,6 +6503,100 @@ let aiOn=storeGet(AI_KEY)==='1';
 let scanMemory=loadJson(SCAN_KEY,[]);
 let activeSignal=loadJson(SIGNAL_KEY,null);
 let backtestResult=loadJson(BT_KEY,null);
+
+let persistenceV49Status={supported:!!window.KagePersistenceV49?.supported,restored:false,savedAt:0,bytes:0,note:'ARMED'};
+let persistenceV49Timer=null;
+let persistenceV49Busy=false;
+let persistenceV49Restoring=false;
+const PERSISTENCE_V49_KEYS=new Set([OUTCOME_KEY,LEARN_STATE_KEY,ADAPTIVE_MODEL_KEY,SCAN_KEY]);
+
+function learningSnapshotV49(source='AUTO'){
+  const ls={...(learningState||{})};delete ls.timer;delete ls._tick;ls.active=false;ls.nextRun=0;
+  return{
+    version:'KAGE_LEARNING_SNAPSHOT_V49',createdAt:Date.now(),source,
+    outcomeMemory:Array.isArray(outcomeMemory)?outcomeMemory.slice(-180):[],
+    adaptiveModel:adaptiveModel||null,
+    learningState:ls,
+    localReplayCount:Number(localReplayCount)||0,
+    shadowMode:!!shadowMode,
+    scanMemory:Array.isArray(scanMemory)?scanMemory.slice(-40):[]
+  };
+}
+
+async function persistLearningCheckpointV49(source='AUTO',force=false){
+  const vault=window.KagePersistenceV49;
+  if(!vault?.supported||persistenceV49Busy||persistenceV49Restoring)return false;
+  if(!force&&document.hidden)return false;
+  persistenceV49Busy=true;
+  try{
+    const result=await vault.save(learningSnapshotV49(source));
+    persistenceV49Status={supported:true,restored:persistenceV49Status.restored,savedAt:Number(result?.createdAt)||Date.now(),bytes:Number(result?.bytes)||0,note:'SAFE'};
+    return true;
+  }catch(e){
+    console.warn('V49 checkpoint save',e);
+    persistenceV49Status={...persistenceV49Status,note:'CHECK'};
+    return false;
+  }finally{persistenceV49Busy=false}
+}
+
+function scheduleLearningCheckpointV49(source='CHANGE',delay=1200){
+  if(persistenceV49Restoring)return;
+  clearTimeout(persistenceV49Timer);
+  persistenceV49Timer=setTimeout(()=>{persistLearningCheckpointV49(source,false)},Math.max(250,Number(delay)||1200));
+}
+
+async function restoreLearningCheckpointV49(){
+  const vault=window.KagePersistenceV49;
+  if(!vault?.supported){persistenceV49Status={supported:false,restored:false,savedAt:0,bytes:0,note:'LOCAL ONLY'};return false}
+  persistenceV49Restoring=true;
+  try{
+    const row=await vault.latest();
+    if(!row?.snapshot){persistenceV49Status={supported:true,restored:false,savedAt:0,bytes:0,note:'ARMED'};return false}
+    const local=learningSnapshotV49('LOCAL');
+    const merged=vault.mergeSnapshots(local,row.snapshot);
+    const localScore=vault.score(local),mergedScore=vault.score(merged);
+    if(mergedScore>localScore){
+      outcomeMemory=Array.isArray(merged.outcomeMemory)?merged.outcomeMemory.slice(-180):outcomeMemory;
+      adaptiveModel=safeAdaptiveStateV42(merged.adaptiveModel);
+      learningState={...learningState,...(merged.learningState||{}),active:false,nextRun:0};
+      localReplayCount=Math.max(Number(localReplayCount)||0,Number(merged.localReplayCount)||0,Number(learningState.replayed)||0);
+      shadowMode=!!merged.shadowMode;
+      scanMemory=Array.isArray(merged.scanMemory)?merged.scanMemory.slice(-40):scanMemory;
+
+      storeSet(OUTCOME_KEY,JSON.stringify(outcomeMemory));
+      storeSet(ADAPTIVE_MODEL_KEY,JSON.stringify(adaptiveModel));
+      const ls={...learningState};delete ls.timer;delete ls._tick;storeSet(LEARN_STATE_KEY,JSON.stringify(ls));
+      storeSet(SCAN_KEY,JSON.stringify(scanMemory));
+      storeSet(SHADOW_KEY,shadowMode?'1':'0');
+      __storageCache.set(OUTCOME_KEY,JSON.stringify(outcomeMemory));
+      __storageCache.set(ADAPTIVE_MODEL_KEY,JSON.stringify(adaptiveModel));
+      __storageCache.set(LEARN_STATE_KEY,JSON.stringify(ls));
+      __storageCache.set(SCAN_KEY,JSON.stringify(scanMemory));
+      persistenceV49Status={supported:true,restored:true,savedAt:Number(row.createdAt)||0,bytes:Number(row.bytes)||0,note:'RESTORED'};
+      console.info('V49 learning checkpoint restored',{localScore,mergedScore,outcomes:outcomeMemory.length,generation:adaptiveModel?.generation||0});
+      return true;
+    }
+    persistenceV49Status={supported:true,restored:false,savedAt:Number(row.createdAt)||0,bytes:Number(row.bytes)||0,note:'SAFE'};
+    return false;
+  }catch(e){
+    console.warn('V49 checkpoint restore',e);
+    persistenceV49Status={supported:true,restored:false,savedAt:0,bytes:0,note:'CHECK'};
+    return false;
+  }finally{
+    persistenceV49Restoring=false;
+    scheduleLearningCheckpointV49('BOOT',1800);
+  }
+}
+
+async function clearLearningCheckpointV49(){
+  clearTimeout(persistenceV49Timer);
+  try{await window.KagePersistenceV49?.clear?.()}catch(e){console.warn('V49 checkpoint clear',e)}
+  persistenceV49Status={supported:!!window.KagePersistenceV49?.supported,restored:false,savedAt:0,bytes:0,note:'CLEARED'};
+}
+
+window.addEventListener('pagehide',()=>{void persistLearningCheckpointV49('PAGEHIDE',true)});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)void persistLearningCheckpointV49('HIDDEN',true)});
+
 let currentTf='M15';
 let marketData={M1:[],M5:[],M15:[],H1:[]};
 let packMeta={generatedAt:null,source:'GitHub Data Pack',feed:{},directFallback:false};
@@ -6599,7 +6694,8 @@ function saveJson(k,v){
   try{
     const raw=JSON.stringify(v);
     if(__storageCache.get(k)===raw)return;
-    storeSet(k,raw);__storageCache.set(k,raw)
+    storeSet(k,raw);__storageCache.set(k,raw);
+    if(PERSISTENCE_V49_KEYS.has(k))scheduleLearningCheckpointV49('SAVE:'+k,900);
   }catch(e){console.warn('storage write',e)}
 }
 function money(v){return '$'+Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
@@ -7536,7 +7632,7 @@ function renderLearningEngine(){
   $('#learningNextRun').textContent=learningState.auto?learningNextText(learningState.nextRun):'PAUSED';
   const bar=$('#learningLoopBar');if(bar)bar.style.width=(learningState.active?Math.max(24,learningState.progress||24):(learningState.auto?100:14))+'%';
   const btn=$('#learningAutoToggle');if(btn){btn.textContent=learningState.auto?'AUTO LOCAL ON':'AUTO LOCAL OFF';btn.classList.toggle('active',!!learningState.auto)}
-  const note=$('#learningNote');if(note){const local=learningEligibleCount();note.innerHTML=local?`<strong>LOCAL ${status}</strong> · ${learningState.note||'กำลังเรียนรู้จาก outcome ในเครื่อง'}`:`<strong>LOCAL MEMORY 0</strong> · ยังไม่มี Signal เก่าก็ไม่เป็นไร Background Brain บน GitHub ยังทำงานแยกกัน`}
+  const note=$('#learningNote');if(note){const local=learningEligibleCount(),cp=persistenceV49Status.note||'ARMED';note.innerHTML=local?`<strong>LOCAL ${status}</strong> · ${learningState.note||'กำลังเรียนรู้จาก outcome ในเครื่อง'} · CHECKPOINT ${cp}`:`<strong>LOCAL MEMORY 0</strong> · Background Brain บน GitHub ยังอยู่ครบ · CHECKPOINT ${cp}`}
   renderAdaptiveModelV42();
   renderBackgroundBrain();
 }
@@ -8794,6 +8890,7 @@ $('#saveSettingsBtn').addEventListener('click',async()=>{
 $('#resetAllBtn').addEventListener('click',async()=>{
   if(!confirm('ล้างข้อมูลแผนทั้งหมดและเริ่มใหม่?'))return;
   await runUiAction({title:'กำลัง Reset แอป…',detail:'ล้างข้อมูลแผนและ AI Memory',button:'#resetAllBtn'},async()=>{
+    await clearLearningCheckpointV49();
     [PLAN_KEY,AI_KEY,SCAN_KEY,SIGNAL_KEY,BT_KEY,OUTCOME_KEY,LEARN_STATE_KEY,ADAPTIVE_MODEL_KEY,SHADOW_KEY].forEach(k=>{storeRemove(k);__storageCache.delete(k)});
     plan=null;aiOn=false;analysis=null;scanMemory=[];activeSignal=null;backtestResult=null;outcomeMemory=[];shadowMode=false;adaptiveModel=adaptiveApi?.defaultState?.()||null;perfState.planKey='';perfState.statsKey='';perfState.windowCache.clear();
     closeModal('#settingsModal');await nextFrame();setActionUI('กำลัง Reset แอป…','เตรียมหน้าเริ่มต้น',70);firstRun();setActionUI('เสร็จแล้ว','พร้อมสร้างแผนใหม่',100)
@@ -8810,6 +8907,7 @@ function runDoctor(){
   add('Graph UI retired',!!$('#marketChart')&&$('#marketChart').closest('.chart-runtime')?.hidden===true,'runtime preserved');
   add('AI engine',typeof chooseAnalysis==='function'&&typeof analyzeTf==='function','local fusion');
   add('Adaptive governance',!!adaptiveApi&&adaptiveModel?.version===adaptiveApi.VERSION,'candidate / champion / rollback');
+  add('Learning checkpoint',persistenceV49Status.supported,`${persistenceV49Status.note} · ${outcomeMemory.length} outcomes · gen ${Number(adaptiveModel?.generation)||0}`);
   add('Backtest',typeof runBacktest==='function','async');
   const pass=checks.filter(x=>x.ok).length;
   $('#doctorRows').innerHTML=checks.map(x=>`<div class="doctor-row"><span>${x.name}${x.detail?' · '+x.detail:''}</span><b class="${x.ok?'doctor-pass':'doctor-warn'}">${x.ok?'PASS':'CHECK'}</b></div>`).join('');
@@ -8897,6 +8995,7 @@ async function syncMarketInBackground(opts={}){
 }
 
 async function boot(){
+  await restoreLearningCheckpointV49();
   const standalone=appLaunch.isStandalone();
   const localWatchdog=standalone
     ? setTimeout(()=>revealAppNow('LOCAL SAFE START'),INTRO_FAILSAFE_MS-250)
@@ -9131,7 +9230,7 @@ $('#clearCacheReloadBtn')?.addEventListener('click',()=>{
 
 
 $('#shadowToggle')?.addEventListener('click',()=>{
-  shadowMode=!shadowMode;storeSet(SHADOW_KEY,shadowMode?'1':'0');renderIntelligence();
+  shadowMode=!shadowMode;storeSet(SHADOW_KEY,shadowMode?'1':'0');scheduleLearningCheckpointV49('SHADOW',500);renderIntelligence();
   toast(shadowMode?'Shadow Mode ON · เก็บผลแต่ไม่ปล่อย READY':'Shadow Mode OFF')
 });
 
