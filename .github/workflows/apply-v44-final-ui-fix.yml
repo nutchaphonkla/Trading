@@ -1,0 +1,90 @@
+name: Apply V44 Final UI Repair
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kage-v44-repo-writer
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Apply deterministic V44 UI patch
+        run: node apply-v44-final-fix.mjs
+
+      - name: Validate patched HTML JavaScript
+        run: |
+          node - <<'NODE'
+          const fs=require('fs'),vm=require('vm');
+          const html=fs.readFileSync('index.html','utf8');
+          const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
+            .map(m=>m[1])
+            .filter(Boolean);
+
+          let checked=0;
+
+          for(const src of scripts){
+            try{
+              new vm.Script(src);
+              checked++;
+            }catch(e){
+              console.error('Inline script syntax error:',e.message);
+              process.exit(1);
+            }
+          }
+
+          console.log('Inline scripts parsed:',checked);
+          NODE
+
+          node --check sw.js
+
+      - name: Verify repair markers
+        run: |
+          grep -q "onemonth_os_ml_brain_cache_v44final" index.html
+          grep -q "url.searchParams.set('limit','10000')" index.html
+          grep -q "const clean=fillers.clean" index.html
+          grep -q "storeRemove(ML_BRAIN_CACHE_KEY)" index.html
+          grep -q "sw.js?v=4402" index.html
+          grep -q "kage-core-v44-final-4402-shell" sw.js
+
+          echo "V44 UI repair markers: PASS"
+
+      - name: Commit UI repair
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            index.html \
+            sw.js \
+            .github/workflows/build-ai-history.yml \
+            apply-v44-final-fix.mjs
+
+          if git diff --cached --quiet; then
+            echo "Repair already applied"
+            exit 0
+          fi
+
+          git commit -m "fix: V44 final MTF cache and atomic ML learning"
+          git push origin HEAD:main
