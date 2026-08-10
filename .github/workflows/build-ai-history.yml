@@ -28,10 +28,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           git fetch origin main
           git reset --hard origin/main
-
           echo "HEAD=$(git rev-parse HEAD)"
 
       - name: Setup Node
@@ -54,6 +52,7 @@ jobs:
 
       - name: Validate source code
         run: |
+          node --check sw.js
           node --check update-data.mjs
           node --check build-ai-history.mjs
           node --check build-ai-learning.mjs
@@ -61,7 +60,6 @@ jobs:
           node --check build-ai-governance.mjs
           node --check build-ai-shadow.mjs
           node --check adaptive-ai-v42.js
-
           python -m py_compile ai_provenance_v42.py
           python -m py_compile selfplay-lab.py
           python -m py_compile ml-train.py
@@ -71,8 +69,7 @@ jobs:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
           TV_FALLBACK_URL: ${{ secrets.TV_FALLBACK_URL }}
           TV_FALLBACK_TOKEN: ${{ secrets.TV_FALLBACK_TOKEN }}
-        run: |
-          node update-data.mjs
+        run: node update-data.mjs
 
       - name: Verify routed training archive before learning
         run: |
@@ -80,98 +77,30 @@ jobs:
           import json
           from pathlib import Path
 
-          health = json.loads(
-              Path('feed-health.json').read_text()
-          )
+          health=json.loads(Path('feed-health.json').read_text())
+          pack=json.loads(Path('xauusd-training.json').read_text())
+          feed=pack.get('feed') or {}
+          expected=str((health.get('training') or {}).get('feed') or '').upper()
+          actual=str(feed.get('trainingFeed') or '').upper()
+          counts={tf:len((pack.get('timeframes') or {}).get(tf) or []) for tf in ('M1','M5','M15','H1')}
 
-          pack = json.loads(
-              Path('xauusd-training.json').read_text()
-          )
+          print('TRAINING ROUTER', expected)
+          print('TRAINING PACK', actual, counts)
 
-          feed = pack.get('feed') or {}
-
-          expected = str(
-              (health.get('training') or {}).get('feed')
-              or ''
-          ).upper()
-
-          actual = str(
-              feed.get('trainingFeed')
-              or ''
-          ).upper()
-
-          counts = {
-              tf: len(
-                  (pack.get('timeframes') or {}).get(tf)
-                  or []
-              )
-              for tf in (
-                  'M1',
-                  'M5',
-                  'M15',
-                  'H1'
-              )
-          }
-
-          print(
-              'TRAINING ROUTER',
-              expected
-          )
-
-          print(
-              'TRAINING PACK',
-              actual,
-              counts
-          )
-
-          if expected not in {
-              'MT5_ACADEMY',
-              'TWELVE_DATA_PRIMARY'
-          }:
-              raise SystemExit(
-                  f'Invalid training route: {expected!r}'
-              )
-
+          if expected not in {'MT5_ACADEMY','TWELVE_DATA_PRIMARY'}:
+              raise SystemExit(f'Invalid training route: {expected!r}')
           if actual != expected:
-              raise SystemExit(
-                  f'Router/pack mismatch: '
-                  f'{expected} != {actual}'
-              )
-
-          if (
-              feed.get('switching')
-              or {}
-          ).get('mergeFeeds') is not False:
-              raise SystemExit(
-                  'Feed merge forbidden'
-              )
-
-          if str(
-              feed.get('trainingSource')
-              or ''
-          ) != 'xauusd-training.json':
-              raise SystemExit(
-                  'trainingSource must be '
-                  'xauusd-training.json'
-              )
+              raise SystemExit(f'Router/pack mismatch: {expected} != {actual}')
+          if (feed.get('switching') or {}).get('mergeFeeds') is not False:
+              raise SystemExit('Feed merge forbidden')
+          if str(feed.get('trainingSource') or '') != 'xauusd-training.json':
+              raise SystemExit('trainingSource must be xauusd-training.json')
 
           if actual == 'MT5_ACADEMY':
-
               if counts['M1'] < 6300:
-                  raise SystemExit(
-                      'MT5 archive too short for '
-                      f'heavy learning: {counts}'
-                  )
-
-              if (
-                  counts['M15'] < 420
-                  or counts['M5'] < 180
-                  or counts['H1'] < 80
-              ):
-                  raise SystemExit(
-                      'MT5 MTF archive below '
-                      f'ML gate: {counts}'
-                  )
+                  raise SystemExit(f'MT5 archive too short for heavy learning: {counts}')
+              if counts['M15'] < 420 or counts['M5'] < 180 or counts['H1'] < 80:
+                  raise SystemExit(f'MT5 MTF archive below ML gate: {counts}')
           PY
 
       - name: Run V44 safety tests
@@ -185,225 +114,97 @@ jobs:
           node tests/market-hours-dst-v43.test.mjs
           node tests/auto-hybrid-v44.test.mjs
           node tests/adaptive-ai-v42.test.cjs
-
+          node tests/early-signal-v45.test.mjs
           python tests/test_selfplay_promotion_v42.py
           python tests/test_ml_provenance_v42.py
           python tests/test_auto_hybrid_v44.py
 
       - name: Resolve previous shadow outcomes
-        run: |
-          node build-ai-shadow.mjs
+        run: node build-ai-shadow.mjs
 
       - name: Build historical brain from routed source
-        run: |
-          node build-ai-history.mjs
+        run: node build-ai-history.mjs
 
       - name: Build statistical challenger from routed source
-        run: |
-          node build-ai-learning.mjs
+        run: node build-ai-learning.mjs
 
       - name: Resolve journal outcomes
-        run: |
-          node build-ai-journal.mjs
+        run: node build-ai-journal.mjs
 
       - name: Run statistical governance
-        run: |
-          node build-ai-governance.mjs
+        run: node build-ai-governance.mjs
 
       - name: Run source-aware self-play
-        run: |
-          python selfplay-lab.py
+        run: python selfplay-lab.py
 
       - name: Train Python ML on the exact routed snapshot
         env:
           ML_FORCE: "1"
-        run: |
-          python ml-train.py
+        run: python ml-train.py
 
       - name: Capture new shadow candidates
-        run: |
-          node build-ai-shadow.mjs
+        run: node build-ai-shadow.mjs
 
       - name: Journal new qualified plans
-        run: |
-          node build-ai-journal.mjs
+        run: node build-ai-journal.mjs
 
       - name: Final source and artifact gate
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
+          from datetime import datetime, timezone
 
           def load(name):
-              p = Path(name)
-
+              p=Path(name)
               if not p.exists():
-                  raise SystemExit(
-                      f'Missing artifact: {name}'
-                  )
-
-              text = p.read_text()
-
+                  raise SystemExit(f'Missing artifact: {name}')
+              text=p.read_text()
               if not text.strip():
-                  raise SystemExit(
-                      f'Empty artifact: {name}'
-                  )
-
+                  raise SystemExit(f'Empty artifact: {name}')
               return json.loads(text)
 
-          health = load(
-              'feed-health.json'
-          )
+          health=load('feed-health.json')
+          train=load('xauusd-training.json')
+          history=load('ai-history.json')
+          learning=load('ai-learning.json')
+          ml=load('ai-ml-brain.json')
 
-          train = load(
-              'xauusd-training.json'
-          )
+          expected=str((health.get('training') or {}).get('feed') or '').upper()
+          pack_feed=str((train.get('feed') or {}).get('trainingFeed') or '').upper()
+          counts={tf:len((train.get('timeframes') or {}).get(tf) or []) for tf in ('M1','M5','M15','H1')}
 
-          history = load(
-              'ai-history.json'
-          )
-
-          learning = load(
-              'ai-learning.json'
-          )
-
-          ml = load(
-              'ai-ml-brain.json'
-          )
-
-          expected = str(
-              (health.get('training') or {}).get('feed')
-              or ''
-          ).upper()
-
-          pack_feed = str(
-              (train.get('feed') or {}).get('trainingFeed')
-              or ''
-          ).upper()
-
-          counts = {
-              tf: len(
-                  (train.get('timeframes') or {}).get(tf)
-                  or []
-              )
-              for tf in (
-                  'M1',
-                  'M5',
-                  'M15',
-                  'H1'
-              )
-          }
-
-          print(
-              'FINAL ROUTE',
-              expected
-          )
-
-          print(
-              'FINAL COUNTS',
-              counts
-          )
-
-          print(
-              'HISTORY',
-              history.get('status'),
-              (
-                  history.get('artifactProvenance')
-                  or {}
-              ).get('trainingFeed')
-          )
-
-          print(
-              'LEARNING',
-              learning.get('status'),
-              (
-                  learning.get('artifactProvenance')
-                  or {}
-              ).get('trainingFeed')
-          )
-
-          print(
-              'PYTHON ML',
-              ml.get('status'),
-              ml.get('reason'),
-              (
-                  ml.get('artifactProvenance')
-                  or {}
-              ).get('trainingFeed')
-          )
+          print('FINAL ROUTE', expected)
+          print('FINAL COUNTS', counts)
+          print('HISTORY', history.get('status'), (history.get('artifactProvenance') or {}).get('trainingFeed'))
+          print('LEARNING', learning.get('status'), (learning.get('artifactProvenance') or {}).get('trainingFeed'))
+          print('PYTHON ML', ml.get('status'), ml.get('reason'), (ml.get('artifactProvenance') or {}).get('trainingFeed'))
 
           if expected != pack_feed:
-              raise SystemExit(
-                  'Training pack changed during run'
-              )
+              raise SystemExit('Training pack changed during run')
 
-          for name, obj in [
-              ('history', history),
-              ('learning', learning),
-              ('ml', ml)
-          ]:
+          for name,obj in [('history',history),('learning',learning),('ml',ml)]:
+              prov=obj.get('artifactProvenance') or {}
+              if str(prov.get('trainingSource') or '') != 'xauusd-training.json':
+                  raise SystemExit(f'{name}: wrong trainingSource {prov.get("trainingSource")}')
+              if str(prov.get('trainingFeed') or '').upper() != expected:
+                  raise SystemExit(f'{name}: stale source {prov.get("trainingFeed")} expected {expected}')
+              if prov.get('mergeFeeds') is not False:
+                  raise SystemExit(f'{name}: mergeFeeds must be false')
 
-              prov = (
-                  obj.get('artifactProvenance')
-                  or {}
-              )
-
-              if str(
-                  prov.get('trainingSource')
-                  or ''
-              ) != 'xauusd-training.json':
-                  raise SystemExit(
-                      f'{name}: wrong trainingSource '
-                      f'{prov.get("trainingSource")}'
-                  )
-
-              if str(
-                  prov.get('trainingFeed')
-                  or ''
-              ).upper() != expected:
-                  raise SystemExit(
-                      f'{name}: stale source '
-                      f'{prov.get("trainingFeed")} '
-                      f'expected {expected}'
-                  )
-
-              if (
-                  prov.get('mergeFeeds')
-                  is not False
-              ):
-                  raise SystemExit(
-                      f'{name}: mergeFeeds must be false'
-                  )
-
-          if (
-              ml.get('status') == 'WAIT_DATA'
-              or ml.get('reason') in {
-                  'TRAINING_PACK_NOT_READY',
-                  'TRAINING_HISTORY_TOO_SHORT',
-                  'TRAINING_M5_H1_HISTORY_TOO_SHORT'
-              }
-          ):
-              raise SystemExit(
-                  'Python ML still waiting despite '
-                  f'routed archive: {ml.get("reason")}'
-              )
-
-          # QUARANTINED ถือว่า Train สำเร็จแล้ว
-          # แต่ Governance ยังไม่ให้สิทธิ์ Live
-
-          if ml.get('status') not in {
-              'TRUSTED',
-              'QUARANTINED',
-              'READY'
+          if ml.get('status') == 'WAIT_DATA' or ml.get('reason') in {
+              'TRAINING_PACK_NOT_READY',
+              'TRAINING_HISTORY_TOO_SHORT',
+              'TRAINING_M5_H1_HISTORY_TOO_SHORT'
           }:
-              raise SystemExit(
-                  f'Unexpected ML status: '
-                  f'{ml.get("status")}'
-              )
+              raise SystemExit(f'Python ML still waiting despite routed archive: {ml.get("reason")}')
 
-          print(
-              'V44 FINAL ARTIFACT GATE: PASS'
-          )
+          # QUARANTINED is valid:
+          # training สำเร็จ แต่ Governance ยังไม่ให้สิทธิ์ Live
+          if ml.get('status') not in {'TRUSTED','QUARANTINED','READY'}:
+              raise SystemExit(f'Unexpected ML status: {ml.get("status")}')
+
+          print('V44 FINAL ARTIFACT GATE: PASS')
           PY
 
       - name: Commit market and AI artifacts atomically
@@ -438,89 +239,46 @@ jobs:
           )
 
           SNAPSHOT="$(mktemp -d)"
-
-          trap \
-            'rm -rf "$SNAPSHOT"' \
-            EXIT
+          trap 'rm -rf "$SNAPSHOT"' EXIT
 
           for f in "${FILES[@]}"; do
             if [ -e "$f" ]; then
-              cp -p \
-                "$f" \
-                "$SNAPSHOT/$f"
+              cp -p "$f" "$SNAPSHOT/$f"
             fi
           done
 
           BRANCH="main"
 
           for attempt in 1 2 3 4 5; do
-
-            echo \
-              "Publish attempt ${attempt}/5"
-
-            git fetch \
-              origin \
-              "$BRANCH"
-
-            git reset \
-              --hard \
-              "origin/$BRANCH"
-
+            echo "Publish attempt ${attempt}/5"
+            git fetch origin "$BRANCH"
+            git reset --hard "origin/$BRANCH"
             git clean -fd
 
             STAGE=()
-
             for f in "${FILES[@]}"; do
-
               if [ -e "$SNAPSHOT/$f" ]; then
-
-                cp -p \
-                  "$SNAPSHOT/$f" \
-                  "$f"
-
+                cp -p "$SNAPSHOT/$f" "$f"
                 STAGE+=("$f")
-
               fi
-
             done
 
-            git add -- \
-              "${STAGE[@]}"
+            git add -- "${STAGE[@]}"
 
-            if git diff \
-              --cached \
-              --quiet
-            then
-
-              echo \
-                "Artifacts already published"
-
+            if git diff --cached --quiet; then
+              echo "Artifacts already published"
               exit 0
-
             fi
 
-            git commit \
-              -m \
-              "ai: V44 final atomic heavy-learning snapshot"
+            git commit -m "ai: V45 early-signal heavy-learning snapshot"
 
-            if git push \
-              origin \
-              "HEAD:$BRANCH"
-            then
-
-              echo \
-                "V44 final artifacts published"
-
+            if git push origin "HEAD:$BRANCH"; then
+              echo "V45 artifacts published"
               exit 0
-
             fi
 
-            sleep \
-              $((attempt * 2))
-
+            sleep $((attempt * 2))
           done
 
-          echo \
-            "ERROR: publish failed after 5 attempts"
-
+          echo "ERROR: publish failed after 5 attempts"
           exit 1
