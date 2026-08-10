@@ -1,4 +1,4 @@
-const CACHE='kage-core-v44-final-4402-shell';
+const CACHE='kage-core-v45-early-signal-4501-shell';
 
 // Only immutable/static app-shell files are pre-cached.
 // Dynamic market/model JSON is deliberately NOT pre-cached at install time.

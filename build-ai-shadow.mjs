@@ -98,6 +98,32 @@ export function compatibleBrain(brain = {}) {
     && Number(p.dataWatermark) > 0
     && Number(p.candidateSchemaCount) === 12;
 }
+export function captureCompatibleBrain(brain = {}) {
+  const p = brain.artifactProvenance || {};
+  const schema = brain.artifactSchema || {};
+  const trainingSource = String(p.trainingSource || '');
+  const trainingFeed = String(p.trainingFeed || '').toUpperCase();
+  const pairOk = (trainingSource === 'xauusd-primary.json' && trainingFeed === 'TWELVE_DATA_PRIMARY')
+    || (trainingSource === 'xauusd-training.json' && ['TWELVE_DATA_PRIMARY','MT5_ACADEMY'].includes(trainingFeed));
+  const status = String(brain.status || '').toUpperCase();
+  return !!brain.ready
+    && String(brain.version || '').startsWith('V42')
+    && ['TRUSTED','QUARANTINED'].includes(status)
+    && p.schemaVersion === ARTIFACT_SCHEMA
+    && pairOk
+    && p.mergeFeeds === false
+    && p.labelSchema === LABEL_SCHEMA
+    && p.labelSchemaHash === LABEL_SCHEMA_HASH
+    && !!p.featureSchemaHash
+    && schema.version === ARTIFACT_SCHEMA
+    && schema.featureSchemaHash === p.featureSchemaHash
+    && schema.labelSchemaHash === p.labelSchemaHash
+    && !!brain.sourceFingerprint
+    && p.sourceFingerprint === brain.sourceFingerprint
+    && Number(p.dataWatermark) > 0
+    && Number(p.candidateSchemaCount) === 12;
+}
+
 function findAtOrAfter(rows, ts) {
   let lo = 0, hi = rows.length - 1, ans = -1;
   while (lo <= hi) {
@@ -355,11 +381,12 @@ export function main() {
   const modelFp = String(brain.sourceFingerprint || brain.modelId || 'NOFP');
   const rows = Array.isArray(current.candidates) ? current.candidates : [];
   const modelCompatible = compatibleBrain(brain);
+  const shadowCompatible = captureCompatibleBrain(brain);
   const modelTrainingFeed = String(brain?.artifactProvenance?.trainingFeed || '').toUpperCase();
   const modelFeedKind = modelTrainingFeed === 'MT5_ACADEMY' ? 'FALLBACK' : modelTrainingFeed === 'TWELVE_DATA_PRIMARY' ? 'PRIMARY' : 'UNKNOWN';
   const sourceCompatible = modelFeedKind === creationFeedKind;
   const candidateSchemaComplete = rows.length === 12;
-  const canCapture = modelCompatible && sourceCompatible && candidateSchemaComplete && creationSource && finite(marketTs);
+  const canCapture = shadowCompatible && sourceCompatible && candidateSchemaComplete && creationSource && finite(marketTs);
   const known = new Set(journal.entries.map(x => x.id));
   let created = 0;
 
@@ -380,6 +407,7 @@ export function main() {
       modelFingerprint: modelFp,
       modelArtifactSchema: brain.artifactProvenance.schemaVersion,
       modelStatus: String(brain.status || 'UNKNOWN'),
+      captureAuthority: modelCompatible ? 'TRUSTED_SHADOW' : 'QUARANTINED_REFERENCE_SHADOW',
       feedSource: feed,
       creationFeed: feed,
       creationFeedKind,
@@ -437,7 +465,7 @@ export function main() {
   journal.updatedAt = new Date().toISOString();
   journal.currentFeed = feed;
   journal.currentModel = modelFp;
-  journal.captureState = canCapture ? 'READY' : !modelCompatible ? 'MODEL_PROVENANCE_BLOCK' : !sourceCompatible ? 'MODEL_SOURCE_MISMATCH' : !candidateSchemaComplete ? 'CANDIDATE_SCHEMA_BLOCK' : 'SOURCE_PROVENANCE_BLOCK';
+  journal.captureState = canCapture ? (modelCompatible ? 'READY' : 'QUARANTINED_REFERENCE_SHADOW') : !shadowCompatible ? 'MODEL_PROVENANCE_BLOCK' : !sourceCompatible ? 'MODEL_SOURCE_MISMATCH' : !candidateSchemaComplete ? 'CANDIDATE_SCHEMA_BLOCK' : 'SOURCE_PROVENANCE_BLOCK';
   journal.summary = summarize(journal.entries);
   journal.summary.provenanceVerified = journal.entries.filter(x => x.provenanceStatus === 'VERIFIED').length;
   journal.summary.provenanceBlocked = journal.entries.filter(x => ['SOURCE_MISMATCH', 'WAIT_SOURCE'].includes(x.provenanceStatus)).length;
