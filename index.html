@@ -4785,6 +4785,30 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;back
 <link rel="stylesheet" href="./kage-v41-monochrome.css?v=410">
 <link rel="stylesheet" href="./kage-v42-adaptive.css?v=420">
 <link rel="stylesheet" href="./kage-v43-clarity.css?v=430">
+
+<style id="kage-v46-performance">
+/* V46 mobile power budget: preserve the visual identity without permanent GPU blur layers. */
+#dataLastPrice,#chartPrice{font-variant-numeric:tabular-nums lining-nums;contain:content}
+@media(max-width:700px){
+  body.app-ready .topbar,
+  body.app-ready .bottom-nav{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  body.app-ready .bottom-nav{background:rgba(3,8,13,.985)!important}
+  body.app-ready .topbar{background:linear-gradient(180deg,rgba(2,6,10,.995),rgba(2,6,10,.96),rgba(2,6,10,.88))!important}
+  body.app-ready .brandmark-premium:after{animation:none!important;opacity:.16!important}
+  body.app-ready .neon-progress-ring::before{filter:none!important;opacity:.22!important}
+  body.app-ready .ring-progress{filter:none!important}
+  .view.active .learning-card,.view.active .guardian-card,.view.active .data-health,
+  .view.active .final-ai-card,.view.active .fusion-card,.view.active .news-card,
+  .view.active .market-intel,.view.active .session-card-clean{
+    content-visibility:auto;
+    contain-intrinsic-size:auto 520px;
+  }
+}
+@media(prefers-reduced-motion:reduce){#dataLastPrice,#chartPrice{transition:none!important}}
+</style>
 </head>
 <body class="v40-full v41-mono v42-adaptive">
 
@@ -5902,9 +5926,6 @@ const bootUI = {
 ['gesturestart','gesturechange','gestureend'].forEach(type=>{
   document.addEventListener(type,e=>e.preventDefault(),{passive:false});
 });
-document.addEventListener('touchmove',e=>{
-  if(e.touches&&e.touches.length>1)e.preventDefault();
-},{passive:false});
 let __lastTouchEnd=0;
 document.addEventListener('touchend',e=>{
   const now=Date.now();
@@ -5939,13 +5960,13 @@ const BG_FRESH_OPEN_MS=60*60*1000;   // model may support live decisions for max
 const BG_LAST_SESSION_MS=72*60*60*1000;
 const V341_DATA_RETENTION_LABEL='AUTO HYBRID · MT5 HEAVY / API ECO';
 
-const APP_VERSION='V45 EARLY SIGNAL · KAGE CORE';
+const APP_VERSION='V46 REALTIME LITE · KAGE CORE';
 const DATA_QUALITY_READY_MIN=78;
 
 const OUTCOME_KEY='onemonth_os_outcome_memory_v23';
 const LEARN_STATE_KEY='onemonth_os_learning_state_v31';
 const ADAPTIVE_MODEL_KEY='onemonth_os_adaptive_model_v42';
-const PENDING_LEAD_KEY='onemonth_os_pending_lead_v45';
+const PENDING_LEAD_KEY='onemonth_os_pending_lead_v46';
 const PENDING_MIN_LEAD_MS=60*1000;
 
 const V25_EDGE_MIN_SAMPLES=4;
@@ -6288,7 +6309,11 @@ function technicalPendingCandidatesV35(a){
   };
   return['BUY_LIMIT','SELL_LIMIT','BUY_STOP','SELL_STOP'].map(mk).filter(Boolean);
 }
+const realtimeQuoteV46={price:NaN,ts:0,receivedAt:0};
+let pendingLeadMemoryV46=null;
 function pendingMarketPriceV45(){
+  const quoteFresh=Number.isFinite(realtimeQuoteV46.price)&&Date.now()-realtimeQuoteV46.receivedAt<12000;
+  if(quoteFresh)return realtimeQuoteV46.price;
   const m1=(marketData.M1||[]).at(-1),raw=Number(m1?.close??analysis?.last);
   return Number.isFinite(raw)?raw:NaN;
 }
@@ -6308,7 +6333,8 @@ function pendingLeadSignatureV45(p){
 }
 function pendingLeadStateV45(p){
   if(!p)return{phase:'WAIT',distance:NaN,distanceAtr:NaN,approachDistance:NaN,minLeadDistance:NaN,inZone:false,leadQualified:false,leadAgeMs:0,late:false};
-  const now=Date.now(),last=pendingMarketPriceV45(),distance=pendingDistanceToZoneV45(p,last),atr=Math.max(.01,Number(tfResults.M15?.atr||analysis?.atr||1)),risk=Math.max(.01,Math.abs(Number(p.entry)-Number(p.sl))),minLeadDistance=Math.max(atr*.20,risk*.08),approachDistance=Math.max(atr*.38,risk*.14),sig=pendingLeadSignatureV45(p),memory=loadJson(PENDING_LEAD_KEY,{}),rec=memory[sig]||{firstSeenAt:now,firstSeenDistance:Number.isFinite(distance)?distance:0,maxDistance:Number.isFinite(distance)?distance:0,seenOutside:false,lastSeenAt:now};
+  const now=Date.now(),last=pendingMarketPriceV45(),distance=pendingDistanceToZoneV45(p,last),atr=Math.max(.01,Number(tfResults.M15?.atr||analysis?.atr||1)),risk=Math.max(.01,Math.abs(Number(p.entry)-Number(p.sl))),minLeadDistance=Math.max(atr*.20,risk*.08),approachDistance=Math.max(atr*.38,risk*.14),sig=pendingLeadSignatureV45(p),memory=(pendingLeadMemoryV46||(pendingLeadMemoryV46=loadJson(PENDING_LEAD_KEY,{}))),rec=memory[sig]||{firstSeenAt:now,firstSeenDistance:Number.isFinite(distance)?distance:0,maxDistance:Number.isFinite(distance)?distance:0,seenOutside:false,lastSeenAt:now,lastPersistAt:0};
+  const wasOutside=!!rec.seenOutside,wasInZone=Number(rec.lastDistance)===0;
   if(Number.isFinite(distance)){
     rec.maxDistance=Math.max(Number(rec.maxDistance)||0,distance);
     rec.lastDistance=distance;
@@ -6317,7 +6343,8 @@ function pendingLeadStateV45(p){
   rec.lastSeenAt=now;memory[sig]=rec;
   const keys=Object.keys(memory).sort((a,b)=>(memory[b]?.lastSeenAt||0)-(memory[a]?.lastSeenAt||0));
   for(const k of keys.slice(20))delete memory[k];
-  saveJson(PENDING_LEAD_KEY,memory);
+  const phaseChanged=wasOutside!==!!rec.seenOutside||wasInZone!==(distance===0);
+  if(phaseChanged||now-(Number(rec.lastPersistAt)||0)>=30000){rec.lastPersistAt=now;saveJson(PENDING_LEAD_KEY,memory);}
   const leadAgeMs=Math.max(0,now-(Number(rec.firstSeenAt)||now)),inZone=distance===0,leadQualified=!!rec.seenOutside&&(leadAgeMs>=PENDING_MIN_LEAD_MS||Number(rec.maxDistance)>=minLeadDistance*1.75),late=inZone&&!leadQualified;
   const phase=inZone?(late?'LATE DETECTED':'IN ZONE'):Number.isFinite(distance)&&distance<=approachDistance?'APPROACHING':'EARLY WATCH';
   return{phase,distance,distanceAtr:Number.isFinite(distance)?distance/atr:NaN,approachDistance,minLeadDistance,inZone,leadQualified,leadAgeMs,late,last,firstSeenDistance:Number(rec.firstSeenDistance)||0,maxDistance:Number(rec.maxDistance)||0};
@@ -6494,6 +6521,7 @@ let chartView={bars:tfDefaultBars.M15,offset:0,cross:null,drag:false,startX:0,st
 let aiWaitStreak=0;
 const perfState={
   renderQueued:false,chartRaf:0,equityRaf:0,windowCache:new Map(),planKey:'',statsKey:'',lastDoctor:null,busy:false,
+  syncBusy:false,lastNewsSync:0,lastBrainSync:0,scrolling:false,scrollTimer:0,
   storageCache:__storageCache,actionStartedAt:0
 };
 function nextFrame(){return new Promise(r=>requestAnimationFrame(()=>r()))}
@@ -6834,7 +6862,8 @@ async function loadPack(){
     packMeta.generatedAt=j.generatedAt?Date.parse(j.generatedAt):Date.now();packMeta.source=j.source||'GitHub Data Pack';packMeta.feed=j.feed||{};packMeta.directFallback=!!aug.used;
     rebuildMarketData(j);
     saveCache(MARKET_CACHE_KEY,j);
-    renderFreshness();renderDataQuality();renderFeedHealthV361();renderConfirmation();renderVersionManager();renderIntelligence();renderPipeline();renderLearningEngine();if(analysis){buildIntelligence(analysis);runFinalDecisionEngine(analysis)}renderV25();
+    // V46: data loader mutates data only; expensive UI/decision render is scheduled by the sync lane.
+    renderFreshness();renderFeedHealthV361();renderPipeline();
     return Object.values(marketData).some(a=>a.length>20);
   }catch(e){
     console.warn('market pack network',e);
@@ -7454,7 +7483,7 @@ async function runLearningCycle(source='AUTO'){
 }
 function bootLearningLoop(){
   clearInterval(learningPulseTimer);
-  learningPulseTimer=setInterval(()=>{if(document.getElementById('learningNextRun'))renderLearningEngine()},1000);
+  learningPulseTimer=setInterval(()=>{if(!document.hidden&&document.getElementById('learningNextRun'))renderLearningEngine()},5000);
   scheduleLearningLoop(document.hidden?15000:8000);
 }
 
@@ -8801,11 +8830,33 @@ function firstRun(){
     },140);
   }
 }
-async function syncMarketInBackground(){
+function renderActiveViewV46(){
+  safeUi(()=>{
+    renderFreshness();renderVersionManager();
+    if(activeView('homeView'))renderHome();
+    else if(activeView('aiView'))renderAiUi();
+    else if(activeView('marketView')){
+      renderDataHealth();renderBackgroundBrain();renderMlBrainV35();renderLearningEngine();renderAiCoreV37();
+      scheduleChartDraw();
+    }
+    else if(activeView('newsView')){renderNews();renderBestWindows()}
+    else if(activeView('planView'))renderPlan();
+    else if(activeView('statsView')){renderStats();drawEquity()}
+  });
+}
+async function syncMarketInBackground(opts={}){
+  if(perfState.syncBusy)return false;
+  perfState.syncBusy=true;
   try{
-    const results=await Promise.allSettled([loadPack(),loadNews(),loadRemoteBrains()]);
+    const now=Date.now(),force=opts.force===true;
+    const needNews=force||!perfState.lastNewsSync||now-perfState.lastNewsSync>=5*60*1000;
+    const needBrains=force||!perfState.lastBrainSync||now-perfState.lastBrainSync>=10*60*1000;
+    const tasks=[loadPack(),needNews?loadNews():Promise.resolve(true),needBrains?loadRemoteBrains():Promise.resolve(true)];
+    const results=await Promise.allSettled(tasks);
     const marketOk=results[0].status==='fulfilled'&&results[0].value;
     const newsOk=results[1].status==='fulfilled'&&results[1].value;
+    if(needNews&&newsOk)perfState.lastNewsSync=Date.now();
+    if(needBrains&&results[2].status==='fulfilled'&&results[2].value!==false)perfState.lastBrainSync=Date.now();
 
     safeUi(()=>{runLocalLearning();renderPipeline();renderFreshness();renderDataQuality()});
 
@@ -8822,16 +8873,17 @@ async function syncMarketInBackground(){
     }
 
     perfState.planKey='';perfState.statsKey='';
-    await renderAllProgressive();
-    if(activeView('marketView'))scheduleChartDraw();
-    safeUi(()=>renderVersionManager());
+    if(!perfState.scrolling)renderActiveViewV46();
+    else setTimeout(()=>{if(!perfState.scrolling)renderActiveViewV46()},220);
 
     if(!marketOk&&!newsOk)toast('ใช้ Offline Cache · Sync ออนไลน์ไม่สำเร็จ');
     if(learningState.auto&&!learningState.active)scheduleLearningLoop(8000);
+    return marketOk;
   }catch(err){
     console.error('BACKGROUND SYNC',err);
     safeUi(()=>{renderFreshness();renderVersionManager()});
-  }
+    return false;
+  }finally{perfState.syncBusy=false}
 }
 
 async function boot(){
@@ -8924,32 +8976,91 @@ async function boot(){
   }
 }
 
-const earlySignalWatcherV45={timer:null,busy:false,ticks:0};
-async function earlySignalWatchTickV45(){
-  if(earlySignalWatcherV45.busy||document.hidden||perfState.busy||!navigator.onLine||!aiOn)return;
-  if(!marketStatus().open)return;
+const earlySignalWatcherV45={timer:null,busy:false,ticks:0,lastHeavyAt:0,lastBarTs:0};
+const realtimeLoopV46={timer:null,busy:false,lastUiAt:0,rafById:new Map(),started:false};
+function animatePriceTextV46(id,target){
+  const el=document.getElementById(id);if(!el||!Number.isFinite(target))return;
+  const prev=Number(String(el.textContent||'').replace(/,/g,''));
+  if(!Number.isFinite(prev)||document.hidden||Math.abs(target-prev)<0.001){el.textContent=price(target);return}
+  const old=realtimeLoopV46.rafById.get(id);if(old)cancelAnimationFrame(old);
+  const start=performance.now(),duration=220,from=prev,to=target;
+  const tick=now=>{
+    const t=Math.min(1,(now-start)/duration),e=1-Math.pow(1-t,3);
+    el.textContent=price(from+(to-from)*e);
+    if(t<1)realtimeLoopV46.rafById.set(id,requestAnimationFrame(tick));
+    else realtimeLoopV46.rafById.delete(id);
+  };
+  realtimeLoopV46.rafById.set(id,requestAnimationFrame(tick));
+}
+function applyRealtimeQuoteV46(c){
+  if(!c||!Number.isFinite(Number(c.close)))return;
+  const value=Number(c.close),ts=Number(c.ts)||Date.now();
+  realtimeQuoteV46.price=value;realtimeQuoteV46.ts=ts;realtimeQuoteV46.receivedAt=Date.now();
+  animatePriceTextV46('dataLastPrice',value);
+  if(chartView.cross==null)animatePriceTextV46('chartPrice',value);
+
+  // Revalidate only visible execution cards. Do not redraw the whole app on every quote.
+  const now=Date.now();
+  if(activeView('aiView')&&!perfState.scrolling&&now-realtimeLoopV46.lastUiAt>=4000){
+    realtimeLoopV46.lastUiAt=now;
+    safeUi(()=>{renderPendingPlansV35();renderPrecisionEntryV33();renderFusion();renderCommand()});
+  }
+}
+async function fetchRealtimeQuoteV46(){
+  if(document.hidden||!navigator.onLine||!marketStatus().open)return null;
+  const f=packMeta.feed||{},active=String(f.runtimeActive||f.active||'').toUpperCase();
+  if(!active.includes('MT5'))return null;
+  const publicUrl=f?.fallback?.publicFeedUrl;if(!publicUrl)return null;
+  const url=new URL(publicUrl,location.href);url.searchParams.set('limit','3');url.searchParams.set('_',Date.now());
+  try{
+    const r=await fetchFast(url.toString(),{cache:'no-store'},2400);if(!r.ok)return null;
+    const j=await r.json();
+    const raw=j?.latest||(j?.timeframes?.M1||j?.bars||[]).at(-1);const c=normalizeCandle(raw);
+    if(c)applyRealtimeQuoteV46(c);
+    return c;
+  }catch(_){return null}
+}
+async function earlySignalWatchTickV45(force=false){
+  if(earlySignalWatcherV45.busy||document.hidden||perfState.busy||!navigator.onLine)return false;
+  if(!marketStatus().open)return false;
+  const now=Date.now();
+  if(!force&&now-earlySignalWatcherV45.lastHeavyAt<55000)return false;
   earlySignalWatcherV45.busy=true;
   try{
-    const marketOk=await loadPack();
-    earlySignalWatcherV45.ticks++;
-    if(earlySignalWatcherV45.ticks%5===0)await loadNews().catch(()=>false);
-    if(earlySignalWatcherV45.ticks%10===0)await loadRemoteBrains().catch(()=>false);
-    if(marketOk||hasMarketData()){
-      perfState.windowCache.clear();
-      analysis=chooseAnalysis();
-      runLocalLearning();
-      if(analysis)maybeRememberSignal(analysis);
-      processActiveSignal();
-      perfState.planKey='';perfState.statsKey='';
-      renderAll();
-      if(activeView('marketView'))scheduleChartDraw();
-    }
-  }catch(e){console.warn('V45 early-signal watcher',e)}
+    const ok=await syncMarketInBackground({force:false});
+    earlySignalWatcherV45.lastHeavyAt=Date.now();earlySignalWatcherV45.ticks++;
+    earlySignalWatcherV45.lastBarTs=Number((marketData.M1||[]).at(-1)?.ts)||earlySignalWatcherV45.lastBarTs;
+    return ok;
+  }catch(e){console.warn('V46 heavy watcher',e);return false}
   finally{earlySignalWatcherV45.busy=false}
 }
+function realtimeDelayV46(){
+  if(document.hidden)return 30000;
+  if(!navigator.onLine||!marketStatus().open)return 30000;
+  const active=String(packMeta.feed?.runtimeActive||packMeta.feed?.active||'').toUpperCase();
+  return active.includes('MT5')?4000:15000;
+}
+async function realtimeLoopTickV46(){
+  clearTimeout(realtimeLoopV46.timer);
+  if(realtimeLoopV46.busy){realtimeLoopV46.timer=setTimeout(realtimeLoopTickV46,realtimeDelayV46());return}
+  realtimeLoopV46.busy=true;
+  try{
+    const quote=await fetchRealtimeQuoteV46();
+    const qts=Number(quote?.ts)||0,known=Number(earlySignalWatcherV45.lastBarTs)||Number((marketData.M1||[]).at(-1)?.ts)||0;
+    const newBar=qts>known;
+    const due=Date.now()-earlySignalWatcherV45.lastHeavyAt>=55000;
+    if((newBar||due)&&!perfState.scrolling)await earlySignalWatchTickV45(newBar);
+    else if((newBar||due)&&perfState.scrolling)setTimeout(()=>earlySignalWatchTickV45(newBar),350);
+  }finally{
+    realtimeLoopV46.busy=false;
+    realtimeLoopV46.timer=setTimeout(realtimeLoopTickV46,realtimeDelayV46());
+  }
+}
 function startEarlySignalWatcherV45(){
-  clearInterval(earlySignalWatcherV45.timer);
-  earlySignalWatcherV45.timer=setInterval(earlySignalWatchTickV45,60*1000);
+  clearInterval(earlySignalWatcherV45.timer);earlySignalWatcherV45.timer=null;
+  clearTimeout(realtimeLoopV46.timer);
+  realtimeLoopV46.started=true;
+  realtimeLoopV46.timer=setTimeout(realtimeLoopTickV46,2200);
 }
 
 function renderVersionManager(){
@@ -8972,29 +9083,16 @@ async function clearAllCachesAndReload(){
       setActionUI('กำลังล้าง Cache…','ลบ '+keys.length+' cache store',55);
       await Promise.all(keys.map(k=>caches.delete(k)));
     }
-    storeRemove(MARKET_CACHE_KEY);storeRemove(NEWS_CACHE_KEY);storeRemove(HISTORY_CACHE_KEY);storeRemove(LEARNING_PACK_CACHE_KEY);storeRemove(MODEL_GOV_CACHE_KEY);storeRemove(ML_BRAIN_CACHE_KEY);storeRemove(PENDING_LEAD_KEY);
+    storeRemove(MARKET_CACHE_KEY);storeRemove(NEWS_CACHE_KEY);storeRemove(HISTORY_CACHE_KEY);storeRemove(LEARNING_PACK_CACHE_KEY);storeRemove(MODEL_GOV_CACHE_KEY);storeRemove(ML_BRAIN_CACHE_KEY);storeRemove(PENDING_LEAD_KEY);pendingLeadMemoryV46={};
     if('serviceWorker' in navigator){
       const regs=await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map(r=>r.update().catch(()=>{})));
     }
-    setActionUI('กำลัง Reload…','โหลด V43 ใหม่ทั้งหมด',100);
+    setActionUI('กำลัง Reload…','โหลด V46 ใหม่ทั้งหมด',100);
     setTimeout(()=>location.reload(),250);
   }catch(e){console.error(e);setBusy(false);toast('Clear cache ไม่สำเร็จ')}
 }
 
-
-let lastTouchEndV22=0;
-document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
-document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
-document.addEventListener('gestureend',e=>e.preventDefault(),{passive:false});
-document.addEventListener('touchend',e=>{
-  const now=Date.now();
-  if(now-lastTouchEndV22<=300)e.preventDefault();
-  lastTouchEndV22=now;
-},{passive:false});
-document.addEventListener('touchmove',e=>{
-  if(e.touches&&e.touches.length>1)e.preventDefault();
-},{passive:false});
 
 window.addEventListener('online',()=>{renderFreshness();loadRemoteBrains().catch(()=>{});toast('กลับมาออนไลน์แล้ว')});
 window.addEventListener('offline',()=>{renderFreshness();toast('ออฟไลน์ · ใช้ข้อมูล Cache ล่าสุด')});
@@ -9002,7 +9100,7 @@ window.addEventListener('offline',()=>{renderFreshness();toast('ออฟไล�
 // V42: network-first Service Worker with a versioned offline app shell and last-valid data cache.
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=4501',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=4601',{updateViaCache:'none'})
       .catch(err=>console.warn('SW',err));
   });
 }
@@ -9036,8 +9134,18 @@ $('#learningAutoToggle')?.addEventListener('click',()=>{
   renderHome();
   toast(learningState.auto?'Auto Learn ON':'Auto Learn OFF');
 });
-document.addEventListener('visibilitychange',()=>{if(learningState.auto&&!learningState.active&&!document.hidden)scheduleLearningLoop(6000);if(!document.hidden)setTimeout(earlySignalWatchTickV45,1200)});
-window.addEventListener('focus',()=>{if(learningState.auto&&!learningState.active)scheduleLearningLoop(6000);setTimeout(earlySignalWatchTickV45,900)});
+document.addEventListener('visibilitychange',()=>{
+  if(learningState.auto&&!learningState.active&&!document.hidden)scheduleLearningLoop(6000);
+  if(!document.hidden){clearTimeout(realtimeLoopV46.timer);realtimeLoopV46.timer=setTimeout(realtimeLoopTickV46,650)}
+});
+window.addEventListener('focus',()=>{
+  if(learningState.auto&&!learningState.active)scheduleLearningLoop(6000);
+  clearTimeout(realtimeLoopV46.timer);realtimeLoopV46.timer=setTimeout(realtimeLoopTickV46,450);
+});
+window.addEventListener('scroll',()=>{
+  perfState.scrolling=true;clearTimeout(perfState.scrollTimer);
+  perfState.scrollTimer=setTimeout(()=>{perfState.scrolling=false},180);
+},{passive:true});
 
 
 $('#nativeInstallBtn')?.addEventListener('click',async()=>{
@@ -9113,9 +9221,12 @@ if(appLaunch.isStandalone()){
   }
   const open=$('#kageOpenBrain');
   if(open)open.addEventListener('click',()=>{const btn=document.querySelector('.bottom-nav [data-nav="aiView"]');if(btn)btn.click();});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncKageHero()});
-  setInterval(syncKageHero,1200);
-  setTimeout(syncKageHero,250);
+  let heroRaf=0;
+  const scheduleHero=()=>{if(heroRaf||document.hidden)return;heroRaf=requestAnimationFrame(()=>{heroRaf=0;syncKageHero()})};
+  const heroObserver=new MutationObserver(scheduleHero);
+  ['brainDecisionText','direction','feedActive','marketText','brainCoreScore'].forEach(id=>{const el=document.getElementById(id);if(el)heroObserver.observe(el,{childList:true,subtree:true,characterData:true})});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleHero()});
+  setTimeout(scheduleHero,250);
 })();
 </script>
 </body>
