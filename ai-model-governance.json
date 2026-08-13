@@ -47,7 +47,7 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-08-13T00:04:49.165Z",
+  "updatedAt": "2026-08-13T03:06:20.146Z",
   "action": "KEEP_CHAMPION",
   "reason": "Champion remains stronger or challenger not proven",
   "champion": {
@@ -72,25 +72,25 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:03b2e7a047d14d7a6f63d014",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:1593e061817e4cac91e9409e",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "03b2e7a047d14d7a6f63d014",
-    "dataWatermark": 1786579440000,
-    "generatedAt": "2026-08-13T00:04:49.050Z",
-    "trainedThrough": "2026-08-12T23:45:00.000Z",
-    "ready": true,
-    "status": "READY",
+    "sourceFingerprint": "1593e061817e4cac91e9409e",
+    "dataWatermark": 1786590300000,
+    "generatedAt": "2026-08-13T03:06:20.008Z",
+    "trainedThrough": "2026-08-13T02:45:00.000Z",
+    "ready": false,
+    "status": "QUARANTINED",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 70.12,
-    "health": 70.2,
-    "samples": 415,
-    "brier": 0.2455,
-    "calibration": 6.46,
+    "score": 0,
+    "health": 64.4,
+    "samples": 427,
+    "brier": 0.2433,
+    "calibration": 6.44,
     "coverage": 100,
-    "drift": 5.6,
-    "uncertainty": 29.02,
-    "guard": "TRUSTED"
+    "drift": 4.3,
+    "uncertainty": 55.75,
+    "guard": "QUARANTINED"
   },
   "previous": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:23075abf00cc5dac5ee858ef",
@@ -114,23 +114,23 @@
     "guard": "TRUSTED"
   },
   "deployedJournal": {
-    "samples": 33,
-    "hitRate": 60.60606060606061,
-    "avgR": 0.20873030303030307,
-    "goodEntryRate": 33.333333333333336,
+    "samples": 34,
+    "hitRate": 61.76470588235294,
+    "avgR": 0.29169117647058823,
+    "goodEntryRate": 35.294117647058826,
     "falseSignals": 13
   },
   "deployedPlanJournal": {
     "samples": 40,
-    "hitRate": 67.5,
-    "avgR": 0.44069000000000014,
+    "hitRate": 62.5,
+    "avgR": 0.36620500000000017,
     "goodEntryRate": 7.5,
     "fillCount": 40
   },
   "decision": {
     "promoted": false,
     "rolledBack": false,
-    "candidateQualified": true,
+    "candidateQualified": false,
     "candidateCompatibility": {
       "ok": true,
       "reasons": []
