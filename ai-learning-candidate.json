@@ -4,16 +4,16 @@
   "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
   "role": "CHALLENGER",
   "status": "READY",
-  "generatedAt": "2026-08-14T20:53:23.624Z",
-  "sourceFingerprint": "d3a46833da7282c1ac8c74fe",
+  "generatedAt": "2026-08-14T21:47:03.237Z",
+  "sourceFingerprint": "6dd203536c12fdcf6913d479",
   "trainedThrough": "2026-08-14T20:30:00.000Z",
-  "sourceGeneratedAt": "2026-08-14T20:53:17.506Z",
+  "sourceGeneratedAt": "2026-08-14T21:46:57.973Z",
   "dataFeed": {
     "version": "V44",
     "active": "MT5_FALLBACK",
     "mode": "MT5_HEAVY_TRAINING",
     "status": "LIVE",
-    "marketLikelyOpen": true,
+    "marketLikelyOpen": false,
     "fallback": {
       "provider": "MT5 -> Cloudflare Worker/D1",
       "configured": true,
@@ -24,20 +24,20 @@
       "publicFeedUrl": "https://onemonth-tv-feed.nutchaphonsit.workers.dev/public-feed",
       "status": "ONLINE",
       "httpStatus": 200,
-      "latestTs": 1786740720000,
-      "ageMs": 75872,
+      "latestTs": 1786740960000,
+      "ageMs": 3056408,
       "count": 10000,
-      "closedBarWatermark": 1786740790850,
+      "closedBarWatermark": 1786744011384,
       "droppedOpenBars": 0,
-      "fetchedAt": "2026-08-14T20:53:15.872Z",
+      "fetchedAt": "2026-08-14T21:46:56.408Z",
       "heartbeat": {
         "connected": true,
         "status": "ok",
-        "bars": 66884,
-        "receiveAgeMs": 12582,
-        "candleAgeMs": 74432,
-        "latestTs": 1786740720000,
-        "checkedAt": "2026-08-14T20:53:14.474Z"
+        "bars": 66888,
+        "receiveAgeMs": 21561,
+        "candleAgeMs": 3054998,
+        "latestTs": 1786740960000,
+        "checkedAt": "2026-08-14T21:46:55.030Z"
       },
       "error": null
     },
@@ -47,7 +47,7 @@
       "mergeFeeds": false,
       "note": "One training source at a time. Source-specific histories are never merged."
     },
-    "closedBarWatermark": 1786740780000,
+    "closedBarWatermark": 1786741020000,
     "trainingSource": "xauusd-training.json"
   },
   "ready": true,
@@ -64,8 +64,8 @@
     "featureSchemaHash": "c3372751b985cd6c32d06e0f",
     "labelSchema": "NODE_M30_FIRST_TOUCH_ATR_TP0.8_SL0.6_TIE_SL_TIMEOUT_SIGNED_GT_0.12_V42",
     "labelSchemaHash": "dd88c080f7855fdab25a56f0",
-    "sourceFingerprint": "d3a46833da7282c1ac8c74fe",
-    "dataWatermark": 1786740780000
+    "sourceFingerprint": "6dd203536c12fdcf6913d479",
+    "dataWatermark": 1786741020000
   },
   "featureSchema": [
     "direction",
@@ -169,25 +169,25 @@
     "barMinutes": 15,
     "candles": 4466,
     "counts": {
-      "M1": 66884,
-      "M5": 13397,
+      "M1": 66888,
+      "M5": 13398,
       "M15": 4466
     }
   },
   "dataIntegrity": {
     "chronological": true,
     "closedBarsOnly": true,
-    "dataWatermark": 1786740780000,
+    "dataWatermark": 1786741020000,
     "leakageGuard": "FEATURES_AT_T__OUTCOMES_AFTER_T",
     "duplicateGuard": "TIMESTAMP_DEDUPE",
     "rawCounts": {
-      "M1": 66884,
-      "M5": 13340,
+      "M1": 66888,
+      "M5": 13341,
       "M15": 4409
     },
     "cleanCounts": {
-      "M1": 66884,
-      "M5": 13397,
+      "M1": 66888,
+      "M5": 13398,
       "M15": 4466
     }
   },
