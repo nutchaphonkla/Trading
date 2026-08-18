@@ -1,8 +1,8 @@
 {
   "version": "V43.0",
   "engine": "KAGE-PENDING-ENTRY-JOURNAL-V43-FORWARD-ONLY-AUTOML",
-  "updatedAt": "2026-08-18T07:15:55.472Z",
-  "sourceFingerprint": "2eeb05ba",
+  "updatedAt": "2026-08-18T08:03:19.233Z",
+  "sourceFingerprint": "be894420",
   "entries": [
     {
       "id": "ONEMONTH-GOVERNED-CHALLENGER-V42:5c7413d5be195f5bb2f7e20f:M15:1786308300000:BUY|TREND|NEW_YORK|MID|RANGE",
@@ -6221,7 +6221,7 @@
       "trustState": "TRUSTED",
       "modelHealth": 72.9,
       "feedSource": "TWELVE_DATA",
-      "status": "PENDING",
+      "status": "COMPLETE",
       "horizons": {
         "M15": {
           "resolved": true,
@@ -6241,6 +6241,17 @@
           "returnR": 1.4317,
           "correct": true,
           "mfeR": 1.7912,
+          "maeR": 0.2732,
+          "entryQuality": "GOOD_ENTRY",
+          "decisionObservedAt": "2026-08-18T05:52:29.391Z"
+        },
+        "M60": {
+          "resolved": true,
+          "resolvedAt": "2026-08-18T07:00:00.000Z",
+          "close": 4397.69627,
+          "returnR": 1.3602,
+          "correct": true,
+          "mfeR": 1.8626,
           "maeR": 0.2732,
           "entryQuality": "GOOD_ENTRY",
           "decisionObservedAt": "2026-08-18T05:52:29.391Z"
@@ -18898,7 +18909,7 @@
       "createdAt": "2026-08-18T05:52:29.392Z",
       "ts": 1787031000000,
       "atr": 5.650297359309343,
-      "status": "FILLED",
+      "status": "COMPLETE",
       "filledAt": "2026-08-18T06:00:00.000Z",
       "filledTs": 1787032800000,
       "horizons": {
@@ -18922,6 +18933,19 @@
           "returnR": 1.5317,
           "correct": true,
           "mfeR": 1.8912,
+          "maeR": 0.1732,
+          "entryQuality": "GOOD_ENTRY",
+          "slHit": false,
+          "tp1Hit": true,
+          "tp2Hit": false
+        },
+        "M60": {
+          "resolved": true,
+          "resolvedAt": "2026-08-18T07:00:00.000Z",
+          "close": 4397.69627,
+          "returnR": 1.4602,
+          "correct": true,
+          "mfeR": 1.9626,
           "maeR": 0.1732,
           "entryQuality": "GOOD_ENTRY",
           "slHit": false,
@@ -19021,17 +19045,17 @@
   ],
   "summary": {
     "total": 107,
-    "completed": 105,
-    "pending": 2,
+    "completed": 106,
+    "pending": 1,
     "verified30m": 102,
     "trustedSignals": 59,
     "falseSignals": 43,
     "hitRate15": 53.535353535353536,
     "hitRate30": 57.84313725490196,
-    "hitRate60": 54.54545454545455,
+    "hitRate60": 55,
     "avgR30": 0.25870294117647064,
     "lastDecisionAt": "2026-08-18T07:12:36.749Z",
-    "updatedAt": "2026-08-18T07:15:55.473Z",
+    "updatedAt": "2026-08-18T08:03:19.233Z",
     "entryQuality": {
       "good": 31,
       "late": 18,
@@ -19150,7 +19174,7 @@
     "waiting": 8,
     "filled": 165,
     "expired": 41,
-    "completed": 164,
+    "completed": 165,
     "fillRate": 77.10280373831776,
     "hitRate30": 59.86842105263158,
     "avgR30": 0.20521776315789478,
@@ -19198,10 +19222,10 @@
     "enabled": true,
     "marketOpenRequired": true,
     "maxObservationAgeMin": 45,
-    "recordingAllowed": true,
-    "observationAgeMs": 955468
+    "recordingAllowed": false,
+    "observationAgeMs": 2899230
   },
-  "currentFeed": "TWELVE_DATA",
+  "currentFeed": "LAST_VALID",
   "feedPlanStats": {
     "TWELVE_DATA": {
       "samples": 136,
@@ -19245,17 +19269,17 @@
   },
   "deployedSummary": {
     "total": 22,
-    "completed": 20,
-    "pending": 2,
+    "completed": 21,
+    "pending": 1,
     "verified30m": 21,
     "trustedSignals": 12,
     "falseSignals": 9,
     "hitRate15": 55,
     "hitRate30": 57.142857142857146,
-    "hitRate60": 57.89473684210526,
+    "hitRate60": 60,
     "avgR30": 0.2575047619047619,
     "lastDecisionAt": "2026-08-18T07:12:36.749Z",
-    "updatedAt": "2026-08-18T07:15:55.473Z",
+    "updatedAt": "2026-08-18T08:03:19.234Z",
     "entryQuality": {
       "good": 5,
       "late": 2,
@@ -19293,7 +19317,7 @@
     "waiting": 8,
     "filled": 36,
     "expired": 0,
-    "completed": 35,
+    "completed": 36,
     "fillRate": 81.81818181818181,
     "hitRate30": 76.47058823529412,
     "avgR30": 0.573685294117647,
