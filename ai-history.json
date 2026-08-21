@@ -3,8 +3,8 @@
   "schemaVersion": "KAGE_AI_V42",
   "engine": "ONEMONTH-HISTORY-V42",
   "symbol": "XAUUSD",
-  "generatedAt": "2026-08-21T05:01:19.176Z",
-  "sourceGeneratedAt": "2026-08-21T05:01:15.109Z",
+  "generatedAt": "2026-08-21T05:54:44.230Z",
+  "sourceGeneratedAt": "2026-08-21T05:54:40.163Z",
   "dataFeed": {
     "version": "V44",
     "active": "TWELVE_DATA",
@@ -19,15 +19,15 @@
       "fresh": true,
       "status": "ONLINE",
       "httpStatus": 200,
-      "latestTs": 1787288340000,
-      "ageMs": 134639,
-      "closedBarWatermark": 1787288469619,
+      "latestTs": 1787291580000,
+      "ageMs": 99708,
+      "closedBarWatermark": 1787291674690,
       "droppedOpenBars": 0,
       "credits": {
         "api-credits-used": "1",
         "api-credits-left": "7"
       },
-      "fetchedAt": "2026-08-21T05:01:14.639Z",
+      "fetchedAt": "2026-08-21T05:54:39.708Z",
       "error": null
     },
     "trainingFeed": "TWELVE_DATA_PRIMARY",
@@ -36,10 +36,10 @@
       "mergeFeeds": false,
       "note": "One training source at a time. Source-specific histories are never merged."
     },
-    "closedBarWatermark": 1787288400000,
+    "closedBarWatermark": 1787291640000,
     "trainingSource": "xauusd-training.json"
   },
-  "sourceFingerprint": "6a1f204571e75a5c2cb26491",
+  "sourceFingerprint": "7ae12bb49c6486c2cfbb91e1",
   "ready": true,
   "status": "READY",
   "reason": null,
@@ -56,8 +56,8 @@
     "featureSchemaHash": "17e82bd347b6f345ad289df1",
     "labelSchema": "FUTURE_CLOSE_DIRECTION_BY_TF_V42",
     "labelSchemaHash": "fffe7703ec24c8cac8851daa",
-    "sourceFingerprint": "6a1f204571e75a5c2cb26491",
-    "dataWatermark": 1787288400000
+    "sourceFingerprint": "7ae12bb49c6486c2cfbb91e1",
+    "dataWatermark": 1787291640000
   },
   "featureSchema": [
     "direction",
@@ -68,12 +68,12 @@
   ],
   "dataIntegrity": {
     "closedBarsOnly": true,
-    "dataWatermark": 1787288400000,
+    "dataWatermark": 1787291640000,
     "mergeFeeds": false,
     "counts": {
-      "M1": 21414,
-      "M5": 4283,
-      "M15": 1428,
+      "M1": 21468,
+      "M5": 4293,
+      "M15": 1431,
       "H1": 357
     }
   },
@@ -81,35 +81,35 @@
   "recency": {
     "halfLifeDays": 45
   },
-  "totalCandles": 27482,
+  "totalCandles": 27549,
   "timeframes": {
     "M1": {
-      "candles": 21414,
+      "candles": 21468,
       "from": "2026-08-06T08:06:00.000Z",
-      "to": "2026-08-21T04:59:00.000Z",
-      "sampleCount": 1777,
+      "to": "2026-08-21T05:53:00.000Z",
+      "sampleCount": 1782,
       "forwardBars": 15,
       "recencyHalfLifeDays": 45,
       "latest": {
-        "bias": "NEUTRAL",
-        "strength": 56,
-        "upProbability": 50,
-        "rsi": 45.47,
-        "adx": 15.84,
-        "structure": "RANGE",
-        "key": "BUY|RANGE|MID|RANGE",
+        "bias": "BUY",
+        "strength": 96,
+        "upProbability": 42,
+        "rsi": 72.2,
+        "adx": 41.21,
+        "structure": "BULL",
+        "key": "BUY|TREND|HIGH|BULL",
         "matchLevel": "EXACT",
-        "effectiveSamples": 29.92,
-        "lowerBound": 35.25,
-        "upperBound": 64.05,
-        "uncertaintyPts": 28.8
+        "effectiveSamples": 124.66,
+        "lowerBound": 35.36,
+        "upperBound": 49.77,
+        "uncertaintyPts": 14.41
       },
       "regimes": {
-        "TREND_BUY": 600,
-        "TREND_SELL": 534,
-        "RANGE": 131,
+        "TREND_BUY": 601,
+        "TREND_SELL": 536,
+        "RANGE": 132,
         "VOLATILE": 93,
-        "TRANSITION": 419
+        "TRANSITION": 420
       },
       "patterns": [
         {
@@ -121,7 +121,7 @@
           "posteriorUpRate": 0.3703,
           "lowerBound": 0.3175,
           "upperBound": 0.4263,
-          "uncertaintyPts": 10.883152204762114,
+          "uncertaintyPts": 10.883167702333274,
           "avgReturnR": -0.2007,
           "avgMfeR": 1.5245,
           "avgMaeR": 1.4165
@@ -135,7 +135,7 @@
           "posteriorUpRate": 0.6002,
           "lowerBound": 0.5383,
           "upperBound": 0.659,
-          "uncertaintyPts": 12.0714224091099,
+          "uncertaintyPts": 12.071434178513796,
           "avgReturnR": 0.3509,
           "avgMfeR": 1.5774,
           "avgMaeR": 0.6925
@@ -143,16 +143,16 @@
         {
           "key": "SELL|TREND|MID|BEAR",
           "matchLevel": "EXACT",
-          "n": 171,
-          "effectiveSamples": 170.56,
-          "upRate": 0.4935,
-          "posteriorUpRate": 0.4935,
-          "lowerBound": 0.4311,
-          "upperBound": 0.556,
-          "uncertaintyPts": 12.49588761643945,
-          "avgReturnR": -0.1787,
-          "avgMfeR": 1.7445,
-          "avgMaeR": 2.0836
+          "n": 172,
+          "effectiveSamples": 171.56,
+          "upRate": 0.4964,
+          "posteriorUpRate": 0.4964,
+          "lowerBound": 0.4342,
+          "upperBound": 0.5588,
+          "uncertaintyPts": 12.461002814410804,
+          "avgReturnR": -0.166,
+          "avgMfeR": 1.7648,
+          "avgMaeR": 2.0841
         },
         {
           "key": "BUY|TREND|MID|BULL",
@@ -163,7 +163,7 @@
           "posteriorUpRate": 0.4372,
           "lowerBound": 0.3742,
           "upperBound": 0.5023,
-          "uncertaintyPts": 12.81176555056865,
+          "uncertaintyPts": 12.811767498257637,
           "avgReturnR": -0.0176,
           "avgMfeR": 1.9384,
           "avgMaeR": 1.7296
@@ -177,7 +177,7 @@
           "posteriorUpRate": 0.424,
           "lowerBound": 0.3536,
           "upperBound": 0.4977,
-          "uncertaintyPts": 14.410024670743871,
+          "uncertaintyPts": 14.410033239161258,
           "avgReturnR": -0.0924,
           "avgMfeR": 2.0347,
           "avgMaeR": 2.0651
@@ -185,16 +185,16 @@
         {
           "key": "SELL|TREND|LOW|BEAR",
           "matchLevel": "EXACT",
-          "n": 113,
-          "effectiveSamples": 112.71,
-          "upRate": 0.5604,
-          "posteriorUpRate": 0.5604,
-          "lowerBound": 0.483,
-          "upperBound": 0.635,
-          "uncertaintyPts": 15.202253918496671,
-          "avgReturnR": 0.6406,
-          "avgMfeR": 2.543,
-          "avgMaeR": 1.9525
+          "n": 114,
+          "effectiveSamples": 113.71,
+          "upRate": 0.5556,
+          "posteriorUpRate": 0.5556,
+          "lowerBound": 0.4785,
+          "upperBound": 0.6301,
+          "uncertaintyPts": 15.153914420698822,
+          "avgReturnR": 0.5983,
+          "avgMfeR": 2.5333,
+          "avgMaeR": 1.9707
         },
         {
           "key": "BUY|TRANSITION|MID|BULL",
@@ -205,7 +205,7 @@
           "posteriorUpRate": 0.463,
           "lowerBound": 0.3723,
           "upperBound": 0.5563,
-          "uncertaintyPts": 18.403003768684922,
+          "uncertaintyPts": 18.403002072352663,
           "avgReturnR": 0.0423,
           "avgMfeR": 2.0979,
           "avgMaeR": 2.2544
@@ -219,7 +219,7 @@
           "posteriorUpRate": 0.5058,
           "lowerBound": 0.4007,
           "upperBound": 0.6104,
-          "uncertaintyPts": 20.971991611019703,
+          "uncertaintyPts": 20.971982891288587,
           "avgReturnR": 0.1721,
           "avgMfeR": 2.8178,
           "avgMaeR": 2.8884
@@ -227,16 +227,16 @@
         {
           "key": "BUY|TREND|MID|BEAR",
           "matchLevel": "EXACT",
-          "n": 56,
-          "effectiveSamples": 55.89,
-          "upRate": 0.4106,
-          "posteriorUpRate": 0.4106,
-          "lowerBound": 0.3089,
-          "upperBound": 0.5205,
-          "uncertaintyPts": 21.159071966647282,
-          "avgReturnR": -0.2015,
-          "avgMfeR": 1.0378,
-          "avgMaeR": 1.3823
+          "n": 57,
+          "effectiveSamples": 56.88,
+          "upRate": 0.4198,
+          "posteriorUpRate": 0.4198,
+          "lowerBound": 0.3182,
+          "upperBound": 0.5287,
+          "uncertaintyPts": 21.047007964566216,
+          "avgReturnR": -0.1081,
+          "avgMfeR": 1.1104,
+          "avgMaeR": 1.3871
         },
         {
           "key": "BUY|TRANSITION|MID|RANGE",
@@ -247,7 +247,7 @@
           "posteriorUpRate": 0.4981,
           "lowerBound": 0.3868,
           "upperBound": 0.6095,
-          "uncertaintyPts": 22.26922621981911,
+          "uncertaintyPts": 22.269218435915445,
           "avgReturnR": 0.0272,
           "avgMfeR": 1.8979,
           "avgMaeR": 2.1225
@@ -261,7 +261,7 @@
           "posteriorUpRate": 0.5463,
           "lowerBound": 0.4237,
           "upperBound": 0.6636,
-          "uncertaintyPts": 23.998678391174007,
+          "uncertaintyPts": 23.998687157671128,
           "avgReturnR": 0.4203,
           "avgMfeR": 2.5897,
           "avgMaeR": 2.122
@@ -274,8 +274,8 @@
           "upRate": 0.537,
           "posteriorUpRate": 0.537,
           "lowerBound": 0.4119,
-          "upperBound": 0.6577,
-          "uncertaintyPts": 24.573645576404335,
+          "upperBound": 0.6576,
+          "uncertaintyPts": 24.573649653721997,
           "avgReturnR": 0.8977,
           "avgMfeR": 2.6038,
           "avgMaeR": 1.6766
@@ -285,11 +285,11 @@
           "matchLevel": "EXACT",
           "n": 35,
           "effectiveSamples": 34.93,
-          "upRate": 0.6345,
-          "posteriorUpRate": 0.6345,
+          "upRate": 0.6344,
+          "posteriorUpRate": 0.6344,
           "lowerBound": 0.4953,
           "upperBound": 0.7543,
-          "uncertaintyPts": 25.899011983614372,
+          "uncertaintyPts": 25.899227746787073,
           "avgReturnR": -0.0307,
           "avgMfeR": 1.4995,
           "avgMaeR": 1.1778
@@ -303,7 +303,7 @@
           "posteriorUpRate": 0.5691,
           "lowerBound": 0.4312,
           "upperBound": 0.697,
-          "uncertaintyPts": 26.582540328041443,
+          "uncertaintyPts": 26.582585094528376,
           "avgReturnR": 0.4816,
           "avgMfeR": 2.4024,
           "avgMaeR": 2.3967
@@ -311,16 +311,16 @@
         {
           "key": "SELL|TRANSITION|MID|BULL",
           "matchLevel": "EXACT",
-          "n": 33,
-          "effectiveSamples": 32.92,
-          "upRate": 0.4897,
-          "posteriorUpRate": 0.4897,
-          "lowerBound": 0.3527,
-          "upperBound": 0.6283,
-          "uncertaintyPts": 27.55415378431397,
-          "avgReturnR": 0.0566,
-          "avgMfeR": 1.921,
-          "avgMaeR": 1.7792
+          "n": 34,
+          "effectiveSamples": 33.92,
+          "upRate": 0.4785,
+          "posteriorUpRate": 0.4785,
+          "lowerBound": 0.3443,
+          "upperBound": 0.6159,
+          "uncertaintyPts": 27.159547819834373,
+          "avgReturnR": -0.0359,
+          "avgMfeR": 1.8819,
+          "avgMaeR": 1.8599
         },
         {
           "key": "BUY|TRANSITION|MID|BEAR",
@@ -331,7 +331,7 @@
           "posteriorUpRate": 0.4279,
           "lowerBound": 0.2913,
           "upperBound": 0.5765,
-          "uncertaintyPts": 28.524996103963367,
+          "uncertaintyPts": 28.525062717030103,
           "avgReturnR": -0.8583,
           "avgMfeR": 2.094,
           "avgMaeR": 2.8052
@@ -345,7 +345,7 @@
           "posteriorUpRate": 0.4962,
           "lowerBound": 0.3525,
           "upperBound": 0.6405,
-          "uncertaintyPts": 28.797335008318225,
+          "uncertaintyPts": 28.79732605111367,
           "avgReturnR": 0.0272,
           "avgMfeR": 1.5807,
           "avgMaeR": 1.7302
@@ -359,7 +359,7 @@
           "posteriorUpRate": 0.4805,
           "lowerBound": 0.3337,
           "upperBound": 0.6308,
-          "uncertaintyPts": 29.70505863780678,
+          "uncertaintyPts": 29.70505208707013,
           "avgReturnR": 0.4951,
           "avgMfeR": 2.0049,
           "avgMaeR": 1.8781
@@ -373,7 +373,7 @@
           "posteriorUpRate": 0.4884,
           "lowerBound": 0.3385,
           "upperBound": 0.6405,
-          "uncertaintyPts": 30.20403793355956,
+          "uncertaintyPts": 30.204031720602188,
           "avgReturnR": 0.1219,
           "avgMfeR": 2.4607,
           "avgMaeR": 2.3557
@@ -387,7 +387,7 @@
           "posteriorUpRate": 0.4529,
           "lowerBound": 0.3043,
           "upperBound": 0.6104,
-          "uncertaintyPts": 30.610461585532654,
+          "uncertaintyPts": 30.6104862812271,
           "avgReturnR": -0.3603,
           "avgMfeR": 1.9246,
           "avgMaeR": 2.5624
@@ -401,7 +401,7 @@
           "posteriorUpRate": 0.4312,
           "lowerBound": 0.2775,
           "upperBound": 0.5995,
-          "uncertaintyPts": 32.194978172374,
+          "uncertaintyPts": 32.195057741331304,
           "avgReturnR": -0.2457,
           "avgMfeR": 1.8465,
           "avgMaeR": 1.9615
@@ -415,7 +415,7 @@
           "posteriorUpRate": 0.5281,
           "lowerBound": 0.3596,
           "upperBound": 0.6904,
-          "uncertaintyPts": 33.07827300979667,
+          "uncertaintyPts": 33.078279823608355,
           "avgReturnR": 0.2254,
           "avgMfeR": 2.5598,
           "avgMaeR": 2.3518
@@ -429,7 +429,7 @@
           "posteriorUpRate": 0.4316,
           "lowerBound": 0.2717,
           "upperBound": 0.6071,
-          "uncertaintyPts": 33.54337289810321,
+          "uncertaintyPts": 33.543451452931414,
           "avgReturnR": -0.277,
           "avgMfeR": 2.1527,
           "avgMaeR": 2.5388
@@ -443,7 +443,7 @@
           "posteriorUpRate": 0.5328,
           "lowerBound": 0.3381,
           "upperBound": 0.718,
-          "uncertaintyPts": 37.98760213790078,
+          "uncertaintyPts": 37.98762222216288,
           "avgReturnR": -0.0378,
           "avgMfeR": 2.598,
           "avgMaeR": 1.9909
@@ -457,7 +457,7 @@
           "posteriorUpRate": 0.5531,
           "lowerBound": 0.3502,
           "upperBound": 0.7397,
-          "uncertaintyPts": 38.94292645347876,
+          "uncertaintyPts": 38.94299259532068,
           "avgReturnR": 0.8583,
           "avgMfeR": 2.0127,
           "avgMaeR": 1.7429
@@ -471,7 +471,7 @@
           "posteriorUpRate": 0.6129,
           "lowerBound": 0.3976,
           "upperBound": 0.7916,
-          "uncertaintyPts": 39.40317892290051,
+          "uncertaintyPts": 39.40354935276817,
           "avgReturnR": 1.0889,
           "avgMfeR": 1.873,
           "avgMaeR": 1.0227
@@ -485,7 +485,7 @@
           "posteriorUpRate": 0.5012,
           "lowerBound": 0.2863,
           "upperBound": 0.7155,
-          "uncertaintyPts": 42.92099866539499,
+          "uncertaintyPts": 42.92099175496376,
           "avgReturnR": 0.0729,
           "avgMfeR": 1.1425,
           "avgMaeR": 2.0682
@@ -499,7 +499,7 @@
           "posteriorUpRate": 0.3807,
           "lowerBound": 0.1931,
           "upperBound": 0.6123,
-          "uncertaintyPts": 41.91780824814841,
+          "uncertaintyPts": 41.91826451884759,
           "avgReturnR": -0.2093,
           "avgMfeR": 2.9539,
           "avgMaeR": 2.1438
@@ -513,7 +513,7 @@
           "posteriorUpRate": 0.5186,
           "lowerBound": 0.2927,
           "upperBound": 0.7371,
-          "uncertaintyPts": 44.44563829637811,
+          "uncertaintyPts": 44.44563922412832,
           "avgReturnR": 0.3166,
           "avgMfeR": 2.0114,
           "avgMaeR": 1.4223
@@ -526,8 +526,8 @@
           "upRate": 0.3921,
           "posteriorUpRate": 0.3921,
           "lowerBound": 0.1952,
-          "upperBound": 0.6317,
-          "uncertaintyPts": 43.656974649390236,
+          "upperBound": 0.6318,
+          "uncertaintyPts": 43.65737146521182,
           "avgReturnR": -0.8628,
           "avgMfeR": 1.6946,
           "avgMaeR": 2.5176
@@ -541,7 +541,7 @@
           "posteriorUpRate": 0.4977,
           "lowerBound": 0.2673,
           "upperBound": 0.7291,
-          "uncertaintyPts": 46.17533198615463,
+          "uncertaintyPts": 46.17532473302751,
           "avgReturnR": 0.3458,
           "avgMfeR": 1.6722,
           "avgMaeR": 1.4656
@@ -555,7 +555,7 @@
           "posteriorUpRate": 0.5411,
           "lowerBound": 0.302,
           "upperBound": 0.7627,
-          "uncertaintyPts": 46.07049495067545,
+          "uncertaintyPts": 46.07054176900562,
           "avgReturnR": 0.3905,
           "avgMfeR": 1.8788,
           "avgMaeR": 1.5759
@@ -569,8 +569,8 @@
           "posteriorUpRate": 0.4978,
           "lowerBound": 0.2672,
           "upperBound": 0.7293,
-          "uncertaintyPts": 46.20595970193116,
-          "avgReturnR": 0.6313,
+          "uncertaintyPts": 46.20594409460609,
+          "avgReturnR": 0.6312,
           "avgMfeR": 2.4327,
           "avgMaeR": 1.9189
         },
@@ -582,8 +582,8 @@
           "upRate": 0.4744,
           "posteriorUpRate": 0.4744,
           "lowerBound": 0.2399,
-          "upperBound": 0.7207,
-          "uncertaintyPts": 48.082509178593945,
+          "upperBound": 0.7208,
+          "uncertaintyPts": 48.08252177043437,
           "avgReturnR": -0.9598,
           "avgMfeR": 1.0288,
           "avgMaeR": 2.6658
@@ -597,8 +597,8 @@
           "posteriorUpRate": 0.5018,
           "lowerBound": 0.2497,
           "upperBound": 0.7529,
-          "uncertaintyPts": 50.32257584036832,
-          "avgReturnR": 0.1935,
+          "uncertaintyPts": 50.322562619645964,
+          "avgReturnR": 0.1934,
           "avgMfeR": 1.7522,
           "avgMaeR": 1.7843
         },
@@ -607,11 +607,11 @@
           "matchLevel": "EXACT",
           "n": 7,
           "effectiveSamples": 6.98,
-          "upRate": 0.6246,
-          "posteriorUpRate": 0.6246,
+          "upRate": 0.6245,
+          "posteriorUpRate": 0.6245,
           "lowerBound": 0.3315,
           "upperBound": 0.848,
-          "uncertaintyPts": 51.65119448234545,
+          "uncertaintyPts": 51.65187298826146,
           "avgReturnR": 2.0544,
           "avgMfeR": 3.8457,
           "avgMaeR": 0.9278
@@ -625,10 +625,24 @@
           "posteriorUpRate": 0.5486,
           "lowerBound": 0.2554,
           "upperBound": 0.8115,
-          "uncertaintyPts": 55.611563546234024,
+          "uncertaintyPts": 55.61165785583058,
           "avgReturnR": -0.7138,
           "avgMfeR": 1.3293,
-          "avgMaeR": 2.4427
+          "avgMaeR": 2.4426
+        },
+        {
+          "key": "SELL|RANGE|LOW|BEAR",
+          "matchLevel": "EXACT",
+          "n": 5,
+          "effectiveSamples": 4.99,
+          "upRate": 0.4172,
+          "posteriorUpRate": 0.4172,
+          "lowerBound": 0.1525,
+          "upperBound": 0.7402,
+          "uncertaintyPts": 58.77091493852995,
+          "avgReturnR": -1.0297,
+          "avgMfeR": 2.2057,
+          "avgMaeR": 2.4017
         },
         {
           "key": "SELL|VOLATILE|MID|BULL",
@@ -639,7 +653,7 @@
           "posteriorUpRate": 0.4717,
           "lowerBound": 0.1856,
           "upperBound": 0.7778,
-          "uncertaintyPts": 59.22066681727587,
+          "uncertaintyPts": 59.22069970220578,
           "avgReturnR": -1.1072,
           "avgMfeR": 0.9327,
           "avgMaeR": 2.1049
@@ -653,24 +667,10 @@
           "posteriorUpRate": 0.4992,
           "lowerBound": 0.1818,
           "upperBound": 0.8172,
-          "uncertaintyPts": 63.5462734499187,
+          "uncertaintyPts": 63.54626724420942,
           "avgReturnR": -0.865,
           "avgMfeR": 0.4928,
           "avgMaeR": 2.8473
-        },
-        {
-          "key": "SELL|RANGE|LOW|BEAR",
-          "matchLevel": "EXACT",
-          "n": 4,
-          "effectiveSamples": 3.99,
-          "upRate": 0.4437,
-          "posteriorUpRate": 0.4437,
-          "lowerBound": 0.1498,
-          "upperBound": 0.783,
-          "uncertaintyPts": 63.31682135297434,
-          "avgReturnR": -0.5127,
-          "avgMfeR": 2.254,
-          "avgMaeR": 2.0787
         },
         {
           "key": "BUY|RANGE|HIGH|BULL",
@@ -681,7 +681,7 @@
           "posteriorUpRate": 0.4976,
           "lowerBound": 0.1808,
           "upperBound": 0.8164,
-          "uncertaintyPts": 63.55453472513304,
+          "uncertaintyPts": 63.55452641902624,
           "avgReturnR": -0.3074,
           "avgMfeR": 2.9217,
           "avgMaeR": 2.6914
@@ -695,7 +695,7 @@
           "posteriorUpRate": 0.5309,
           "lowerBound": 0.1722,
           "upperBound": 0.8602,
-          "uncertaintyPts": 68.79963332114147,
+          "uncertaintyPts": 68.79968170308281,
           "avgReturnR": 0.988,
           "avgMfeR": 2.0187,
           "avgMaeR": 0.3237
@@ -709,7 +709,7 @@
           "posteriorUpRate": 0.4706,
           "lowerBound": 0.1402,
           "upperBound": 0.829,
-          "uncertaintyPts": 68.88410739215097,
+          "uncertaintyPts": 68.88412861956283,
           "avgReturnR": -0.5745,
           "avgMfeR": 1.5714,
           "avgMaeR": 2.6706
@@ -723,36 +723,36 @@
           "posteriorUpRate": 0.5255,
           "lowerBound": 0.1689,
           "upperBound": 0.8578,
-          "uncertaintyPts": 68.89630399698814,
-          "avgReturnR": -1.0325,
+          "uncertaintyPts": 68.89631295348437,
+          "avgReturnR": -1.0324,
           "avgMfeR": 1.5255,
           "avgMaeR": 2.7336
         }
       ]
     },
     "M5": {
-      "candles": 4283,
+      "candles": 4293,
       "from": "2026-08-06T08:05:00.000Z",
-      "to": "2026-08-21T04:55:00.000Z",
-      "sampleCount": 839,
+      "to": "2026-08-21T05:45:00.000Z",
+      "sampleCount": 841,
       "forwardBars": 8,
       "recencyHalfLifeDays": 45,
       "latest": {
         "bias": "BUY",
-        "strength": 97,
-        "upProbability": 50,
-        "rsi": 56.67,
-        "adx": 34.46,
+        "strength": 95,
+        "upProbability": 46,
+        "rsi": 61.52,
+        "adx": 22.83,
         "structure": "BULL",
-        "key": "BUY|TREND|MID|BULL",
+        "key": "BUY|TRANSITION|HIGH|BULL",
         "matchLevel": "EXACT",
-        "effectiveSamples": 36.9,
-        "lowerBound": 37.37,
-        "upperBound": 63.51,
-        "uncertaintyPts": 26.14
+        "effectiveSamples": 28.9,
+        "lowerBound": 31.37,
+        "upperBound": 60.52,
+        "uncertaintyPts": 29.15
       },
       "regimes": {
-        "TREND_BUY": 135,
+        "TREND_BUY": 137,
         "TREND_SELL": 115,
         "RANGE": 237,
         "VOLATILE": 76,
@@ -768,7 +768,7 @@
           "posteriorUpRate": 0.5029,
           "lowerBound": 0.4133,
           "upperBound": 0.5923,
-          "uncertaintyPts": 17.893788217109453,
+          "uncertaintyPts": 17.89378295697521,
           "avgReturnR": -0.0542,
           "avgMfeR": 0.7067,
           "avgMaeR": 0.8624
@@ -782,7 +782,7 @@
           "posteriorUpRate": 0.5477,
           "lowerBound": 0.4498,
           "upperBound": 0.642,
-          "uncertaintyPts": 19.225741555442966,
+          "uncertaintyPts": 19.225747625672945,
           "avgReturnR": 0.1585,
           "avgMfeR": 1.2315,
           "avgMaeR": 0.7736
@@ -790,16 +790,16 @@
         {
           "key": "BUY|TREND|HIGH|BULL",
           "matchLevel": "EXACT",
-          "n": 66,
-          "effectiveSamples": 65.87,
-          "upRate": 0.535,
-          "posteriorUpRate": 0.535,
-          "lowerBound": 0.4345,
-          "upperBound": 0.6327,
-          "uncertaintyPts": 19.817544626495366,
-          "avgReturnR": 0.6283,
-          "avgMfeR": 1.9353,
-          "avgMaeR": 1.4002
+          "n": 67,
+          "effectiveSamples": 66.86,
+          "upRate": 0.5277,
+          "posteriorUpRate": 0.5277,
+          "lowerBound": 0.4281,
+          "upperBound": 0.6251,
+          "uncertaintyPts": 19.6931250174184,
+          "avgReturnR": 0.5961,
+          "avgMfeR": 1.9206,
+          "avgMaeR": 1.4028
         },
         {
           "key": "SELL|TRANSITION|MID|RANGE",
@@ -810,7 +810,7 @@
           "posteriorUpRate": 0.5843,
           "lowerBound": 0.4692,
           "upperBound": 0.6908,
-          "uncertaintyPts": 22.162193796131024,
+          "uncertaintyPts": 22.162238267215944,
           "avgReturnR": 0.3671,
           "avgMfeR": 2.0859,
           "avgMaeR": 0.9247
@@ -820,11 +820,11 @@
           "matchLevel": "EXACT",
           "n": 45,
           "effectiveSamples": 44.92,
-          "upRate": 0.5794,
-          "posteriorUpRate": 0.5794,
+          "upRate": 0.5793,
+          "posteriorUpRate": 0.5793,
           "lowerBound": 0.4571,
           "upperBound": 0.6926,
-          "uncertaintyPts": 23.551342215852642,
+          "uncertaintyPts": 23.5513912743057,
           "avgReturnR": 0.7663,
           "avgMfeR": 1.9364,
           "avgMaeR": 1
@@ -838,7 +838,7 @@
           "posteriorUpRate": 0.5217,
           "lowerBound": 0.3973,
           "upperBound": 0.6434,
-          "uncertaintyPts": 24.608593957363816,
+          "uncertaintyPts": 24.608591972229416,
           "avgReturnR": 0.1127,
           "avgMfeR": 1.4531,
           "avgMaeR": 0.8275
@@ -852,10 +852,24 @@
           "posteriorUpRate": 0.6105,
           "lowerBound": 0.4803,
           "upperBound": 0.7266,
-          "uncertaintyPts": 24.627644824135615,
+          "uncertaintyPts": 24.627750068911137,
           "avgReturnR": 0.6239,
           "avgMfeR": 2.1216,
           "avgMaeR": 1.6427
+        },
+        {
+          "key": "BUY|TREND|MID|BULL",
+          "matchLevel": "EXACT",
+          "n": 38,
+          "effectiveSamples": 37.89,
+          "upRate": 0.494,
+          "posteriorUpRate": 0.494,
+          "lowerBound": 0.3653,
+          "upperBound": 0.6235,
+          "uncertaintyPts": 25.815343007355402,
+          "avgReturnR": 0.8324,
+          "avgMfeR": 2.2581,
+          "avgMaeR": 1.3757
         },
         {
           "key": "SELL|TRANSITION|MID|BEAR",
@@ -866,24 +880,10 @@
           "posteriorUpRate": 0.5699,
           "lowerBound": 0.4356,
           "upperBound": 0.6946,
-          "uncertaintyPts": 25.898858618645605,
+          "uncertaintyPts": 25.898901436987877,
           "avgReturnR": 0.559,
           "avgMfeR": 1.9929,
           "avgMaeR": 1.3699
-        },
-        {
-          "key": "BUY|TREND|MID|BULL",
-          "matchLevel": "EXACT",
-          "n": 37,
-          "effectiveSamples": 36.9,
-          "upRate": 0.5047,
-          "posteriorUpRate": 0.5047,
-          "lowerBound": 0.3737,
-          "upperBound": 0.6351,
-          "uncertaintyPts": 26.13750003337467,
-          "avgReturnR": 0.9331,
-          "avgMfeR": 2.3134,
-          "avgMaeR": 1.3395
         },
         {
           "key": "SELL|TREND|MID|BEAR",
@@ -892,9 +892,9 @@
           "effectiveSamples": 32.95,
           "upRate": 0.5537,
           "posteriorUpRate": 0.5537,
-          "lowerBound": 0.4127,
+          "lowerBound": 0.4126,
           "upperBound": 0.6867,
-          "uncertaintyPts": 27.400667357993356,
+          "uncertaintyPts": 27.400695900371414,
           "avgReturnR": -0.3442,
           "avgMfeR": 1.009,
           "avgMaeR": 1.7798
@@ -904,11 +904,11 @@
           "matchLevel": "EXACT",
           "n": 29,
           "effectiveSamples": 28.9,
-          "upRate": 0.4556,
-          "posteriorUpRate": 0.4556,
+          "upRate": 0.4557,
+          "posteriorUpRate": 0.4557,
           "lowerBound": 0.3137,
           "upperBound": 0.6052,
-          "uncertaintyPts": 29.154491608023736,
+          "uncertaintyPts": 29.154512042095114,
           "avgReturnR": -0.1302,
           "avgMfeR": 1.5742,
           "avgMaeR": 1.8052
@@ -922,7 +922,7 @@
           "posteriorUpRate": 0.444,
           "lowerBound": 0.2855,
           "upperBound": 0.6148,
-          "uncertaintyPts": 32.935931225838054,
+          "uncertaintyPts": 32.93598010601785,
           "avgReturnR": -0.0958,
           "avgMfeR": 0.9161,
           "avgMaeR": 0.618
@@ -936,7 +936,7 @@
           "posteriorUpRate": 0.5348,
           "lowerBound": 0.3658,
           "upperBound": 0.6963,
-          "uncertaintyPts": 33.047938611736406,
+          "uncertaintyPts": 33.04795731935437,
           "avgReturnR": 0.1131,
           "avgMfeR": 1.6409,
           "avgMaeR": 1.2439
@@ -950,7 +950,7 @@
           "posteriorUpRate": 0.5601,
           "lowerBound": 0.3813,
           "upperBound": 0.7246,
-          "uncertaintyPts": 34.33357457269624,
+          "uncertaintyPts": 34.33363623099561,
           "avgReturnR": 0.0018,
           "avgMfeR": 1.0963,
           "avgMaeR": 0.9033
@@ -964,7 +964,7 @@
           "posteriorUpRate": 0.4826,
           "lowerBound": 0.3082,
           "upperBound": 0.6614,
-          "uncertaintyPts": 35.32041489655495,
+          "uncertaintyPts": 35.32041368052188,
           "avgReturnR": 0.1517,
           "avgMfeR": 0.9462,
           "avgMaeR": 1.0148
@@ -976,9 +976,9 @@
           "effectiveSamples": 17.96,
           "upRate": 0.5941,
           "posteriorUpRate": 0.5941,
-          "lowerBound": 0.4037,
+          "lowerBound": 0.4036,
           "upperBound": 0.7599,
-          "uncertaintyPts": 35.62830992592647,
+          "uncertaintyPts": 35.62848876501219,
           "avgReturnR": 0.7998,
           "avgMfeR": 2.5801,
           "avgMaeR": 1.8209
@@ -992,7 +992,7 @@
           "posteriorUpRate": 0.4831,
           "lowerBound": 0.3001,
           "upperBound": 0.6708,
-          "uncertaintyPts": 37.06869252528992,
+          "uncertaintyPts": 37.06869140122064,
           "avgReturnR": 0.3284,
           "avgMfeR": 1.252,
           "avgMaeR": 0.8278
@@ -1006,7 +1006,7 @@
           "posteriorUpRate": 0.5524,
           "lowerBound": 0.3497,
           "upperBound": 0.7391,
-          "uncertaintyPts": 38.94535282786171,
+          "uncertaintyPts": 38.9454119355271,
           "avgReturnR": -0.0336,
           "avgMfeR": 1.3069,
           "avgMaeR": 1.4366
@@ -1018,9 +1018,9 @@
           "effectiveSamples": 14.97,
           "upRate": 0.4104,
           "posteriorUpRate": 0.4104,
-          "lowerBound": 0.2311,
+          "lowerBound": 0.2312,
           "upperBound": 0.617,
-          "uncertaintyPts": 38.58722643439844,
+          "uncertaintyPts": 38.58742196013401,
           "avgReturnR": -0.8023,
           "avgMfeR": 1.2206,
           "avgMaeR": 2.1078
@@ -1034,7 +1034,7 @@
           "posteriorUpRate": 0.5361,
           "lowerBound": 0.3292,
           "upperBound": 0.7313,
-          "uncertaintyPts": 40.210800292018604,
+          "uncertaintyPts": 40.21082089909569,
           "avgReturnR": 0.112,
           "avgMfeR": 1.2432,
           "avgMaeR": 0.9474
@@ -1048,7 +1048,7 @@
           "posteriorUpRate": 0.4822,
           "lowerBound": 0.2776,
           "upperBound": 0.6928,
-          "uncertaintyPts": 41.52208494220454,
+          "uncertaintyPts": 41.52208446653087,
           "avgReturnR": 0.2293,
           "avgMfeR": 1.511,
           "avgMaeR": 1.3653
@@ -1062,7 +1062,7 @@
           "posteriorUpRate": 0.5104,
           "lowerBound": 0.3009,
           "upperBound": 0.7164,
-          "uncertaintyPts": 41.54568035689026,
+          "uncertaintyPts": 41.545670147564074,
           "avgReturnR": -0.097,
           "avgMfeR": 1.0763,
           "avgMaeR": 1.7899
@@ -1076,7 +1076,7 @@
           "posteriorUpRate": 0.4254,
           "lowerBound": 0.2264,
           "upperBound": 0.6518,
-          "uncertaintyPts": 42.53870345822662,
+          "uncertaintyPts": 42.538855129643196,
           "avgReturnR": -0.3518,
           "avgMfeR": 5.9155,
           "avgMaeR": 4.9661
@@ -1090,7 +1090,7 @@
           "posteriorUpRate": 0.5754,
           "lowerBound": 0.3488,
           "upperBound": 0.7742,
-          "uncertaintyPts": 42.53823998917996,
+          "uncertaintyPts": 42.538394456196336,
           "avgReturnR": -0.0701,
           "avgMfeR": 1.9139,
           "avgMaeR": 1.431
@@ -1102,9 +1102,9 @@
           "effectiveSamples": 7.99,
           "upRate": 0.3577,
           "posteriorUpRate": 0.3577,
-          "lowerBound": 0.1499,
+          "lowerBound": 0.15,
           "upperBound": 0.6374,
-          "uncertaintyPts": 48.741949942778305,
+          "uncertaintyPts": 48.7427365138569,
           "avgReturnR": -0.7178,
           "avgMfeR": 0.6064,
           "avgMaeR": 1.4544
@@ -1118,7 +1118,7 @@
           "posteriorUpRate": 0.377,
           "lowerBound": 0.1531,
           "upperBound": 0.6695,
-          "uncertaintyPts": 51.642747355620955,
+          "uncertaintyPts": 51.64337231901548,
           "avgReturnR": -1.3015,
           "avgMfeR": 0.8506,
           "avgMaeR": 1.9479
@@ -1132,7 +1132,7 @@
           "posteriorUpRate": 0.4759,
           "lowerBound": 0.2188,
           "upperBound": 0.7464,
-          "uncertaintyPts": 52.76575098855469,
+          "uncertaintyPts": 52.76577197923079,
           "avgReturnR": -0.4785,
           "avgMfeR": 1.3283,
           "avgMaeR": 1.3413
@@ -1146,7 +1146,7 @@
           "posteriorUpRate": 0.5749,
           "lowerBound": 0.2921,
           "upperBound": 0.8159,
-          "uncertaintyPts": 52.37986122076963,
+          "uncertaintyPts": 52.380084565178194,
           "avgReturnR": 2.0453,
           "avgMfeR": 3.3002,
           "avgMaeR": 1.5033
@@ -1160,7 +1160,7 @@
           "posteriorUpRate": 0.4711,
           "lowerBound": 0.2153,
           "upperBound": 0.743,
-          "uncertaintyPts": 52.76418505438995,
+          "uncertaintyPts": 52.764214531717336,
           "avgReturnR": 0.5922,
           "avgMfeR": 2.1295,
           "avgMaeR": 0.9955
@@ -1170,11 +1170,11 @@
           "matchLevel": "EXACT",
           "n": 7,
           "effectiveSamples": 6.99,
-          "upRate": 0.6252,
-          "posteriorUpRate": 0.6252,
+          "upRate": 0.6251,
+          "posteriorUpRate": 0.6251,
           "lowerBound": 0.3321,
           "upperBound": 0.8483,
-          "uncertaintyPts": 51.618430546222996,
+          "uncertaintyPts": 51.619072805451836,
           "avgReturnR": 0.8096,
           "avgMfeR": 1.231,
           "avgMaeR": 0.7271
@@ -1188,7 +1188,7 @@
           "posteriorUpRate": 0.4712,
           "lowerBound": 0.2154,
           "upperBound": 0.7431,
-          "uncertaintyPts": 52.76622368851505,
+          "uncertaintyPts": 52.76625208802774,
           "avgReturnR": -1.3854,
           "avgMfeR": 1.4116,
           "avgMaeR": 2.7782
@@ -1200,23 +1200,23 @@
           "effectiveSamples": 6.98,
           "upRate": 0.4306,
           "posteriorUpRate": 0.4306,
-          "lowerBound": 0.1875,
+          "lowerBound": 0.1876,
           "upperBound": 0.7124,
-          "uncertaintyPts": 52.485097481086086,
+          "uncertaintyPts": 52.4852717245915,
           "avgReturnR": -1.0634,
           "avgMfeR": 1.2218,
-          "avgMaeR": 2.658
+          "avgMaeR": 2.6581
         },
         {
           "key": "BUY|TREND|HIGH|RANGE",
           "matchLevel": "EXACT",
           "n": 7,
           "effectiveSamples": 6.98,
-          "upRate": 0.5759,
-          "posteriorUpRate": 0.5759,
+          "upRate": 0.5758,
+          "posteriorUpRate": 0.5758,
           "lowerBound": 0.2926,
           "upperBound": 0.8167,
-          "uncertaintyPts": 52.412872969014934,
+          "uncertaintyPts": 52.413095380334404,
           "avgReturnR": 3.5769,
           "avgMfeR": 4.6952,
           "avgMaeR": 1.5031
@@ -1230,7 +1230,7 @@
           "posteriorUpRate": 0.5253,
           "lowerBound": 0.2541,
           "upperBound": 0.7824,
-          "uncertaintyPts": 52.82568160130647,
+          "uncertaintyPts": 52.825689039425036,
           "avgReturnR": 0.7379,
           "avgMfeR": 2.0957,
           "avgMaeR": 1.0679
@@ -1244,7 +1244,7 @@
           "posteriorUpRate": 0.526,
           "lowerBound": 0.2207,
           "upperBound": 0.813,
-          "uncertaintyPts": 59.23508534128601,
+          "uncertaintyPts": 59.23510773402294,
           "avgReturnR": -0.3204,
           "avgMfeR": 0.7933,
           "avgMaeR": 1.0575
@@ -1258,7 +1258,7 @@
           "posteriorUpRate": 0.4764,
           "lowerBound": 0.1882,
           "upperBound": 0.7811,
-          "uncertaintyPts": 59.289544434625356,
+          "uncertaintyPts": 59.28954913925762,
           "avgReturnR": -0.5718,
           "avgMfeR": 1.5895,
           "avgMaeR": 2.1359
@@ -1272,7 +1272,7 @@
           "posteriorUpRate": 0.5301,
           "lowerBound": 0.1717,
           "upperBound": 0.8599,
-          "uncertaintyPts": 68.81485625659825,
+          "uncertaintyPts": 68.81489490843575,
           "avgReturnR": 1.8426,
           "avgMfeR": 3.0434,
           "avgMaeR": 1.5342
@@ -1284,9 +1284,9 @@
           "effectiveSamples": 3,
           "upRate": 0.5322,
           "posteriorUpRate": 0.5322,
-          "lowerBound": 0.173,
+          "lowerBound": 0.1729,
           "upperBound": 0.8609,
-          "uncertaintyPts": 68.79152458109961,
+          "uncertaintyPts": 68.79157379637493,
           "avgReturnR": 0.2009,
           "avgMfeR": 2.3107,
           "avgMaeR": 0.9263
@@ -1294,24 +1294,24 @@
       ]
     },
     "M15": {
-      "candles": 1428,
+      "candles": 1431,
       "from": "2026-08-06T08:00:00.000Z",
-      "to": "2026-08-21T04:45:00.000Z",
-      "sampleCount": 448,
+      "to": "2026-08-21T05:30:00.000Z",
+      "sampleCount": 449,
       "forwardBars": 4,
       "recencyHalfLifeDays": 45,
       "latest": {
         "bias": "BUY",
-        "strength": 91,
+        "strength": 93,
         "upProbability": 56,
-        "rsi": 59.96,
-        "adx": 26.81,
+        "rsi": 57.09,
+        "adx": 24.75,
         "structure": "RANGE",
         "key": "BUY|TRANSITION|MID|RANGE",
         "matchLevel": "EXACT",
         "effectiveSamples": 19.94,
-        "lowerBound": 38.32,
-        "upperBound": 72.65,
+        "lowerBound": 38.31,
+        "upperBound": 72.64,
         "uncertaintyPts": 34.33
       },
       "regimes": {
@@ -1319,7 +1319,7 @@
         "TREND_SELL": 75,
         "RANGE": 104,
         "VOLATILE": 43,
-        "TRANSITION": 135
+        "TRANSITION": 136
       },
       "patterns": [
         {
@@ -1331,7 +1331,7 @@
           "posteriorUpRate": 0.4918,
           "lowerBound": 0.3778,
           "upperBound": 0.6067,
-          "uncertaintyPts": 22.88759303480618,
+          "uncertaintyPts": 22.887590207772302,
           "avgReturnR": 0.0349,
           "avgMfeR": 0.4159,
           "avgMaeR": 0.381
@@ -1345,7 +1345,7 @@
           "posteriorUpRate": 0.5227,
           "lowerBound": 0.3968,
           "upperBound": 0.6458,
-          "uncertaintyPts": 24.893451283886662,
+          "uncertaintyPts": 24.89344622752263,
           "avgReturnR": 0.5303,
           "avgMfeR": 1.6065,
           "avgMaeR": 0.936
@@ -1359,7 +1359,7 @@
           "posteriorUpRate": 0.5268,
           "lowerBound": 0.3651,
           "upperBound": 0.6831,
-          "uncertaintyPts": 31.80013367422585,
+          "uncertaintyPts": 31.800141975281182,
           "avgReturnR": 0.0785,
           "avgMfeR": 3.0008,
           "avgMaeR": 1.931
@@ -1373,7 +1373,7 @@
           "posteriorUpRate": 0.4706,
           "lowerBound": 0.3085,
           "upperBound": 0.6392,
-          "uncertaintyPts": 33.066218384068215,
+          "uncertaintyPts": 33.066227578311405,
           "avgReturnR": -0.3131,
           "avgMfeR": 1.2985,
           "avgMaeR": 0.495
@@ -1387,7 +1387,7 @@
           "posteriorUpRate": 0.5044,
           "lowerBound": 0.3311,
           "upperBound": 0.6766,
-          "uncertaintyPts": 34.55458995153708,
+          "uncertaintyPts": 34.554582735954234,
           "avgReturnR": 0.3733,
           "avgMfeR": 1.5371,
           "avgMaeR": 1.1736
@@ -1399,9 +1399,9 @@
           "effectiveSamples": 19.94,
           "upRate": 0.5622,
           "posteriorUpRate": 0.5622,
-          "lowerBound": 0.3832,
-          "upperBound": 0.7265,
-          "uncertaintyPts": 34.32982279191719,
+          "lowerBound": 0.3831,
+          "upperBound": 0.7264,
+          "uncertaintyPts": 34.32988180833173,
           "avgReturnR": 0.0441,
           "avgMfeR": 1.1748,
           "avgMaeR": 0.9721
@@ -1415,7 +1415,7 @@
           "posteriorUpRate": 0.5774,
           "lowerBound": 0.393,
           "upperBound": 0.7425,
-          "uncertaintyPts": 34.951903115296254,
+          "uncertaintyPts": 34.95200986296272,
           "avgReturnR": 0.1533,
           "avgMfeR": 0.8364,
           "avgMaeR": 1.099
@@ -1429,7 +1429,7 @@
           "posteriorUpRate": 0.4669,
           "lowerBound": 0.2908,
           "upperBound": 0.6517,
-          "uncertaintyPts": 36.09015167580245,
+          "uncertaintyPts": 36.09017128992305,
           "avgReturnR": 0.1823,
           "avgMfeR": 1.073,
           "avgMaeR": 0.4294
@@ -1443,7 +1443,7 @@
           "posteriorUpRate": 0.5967,
           "lowerBound": 0.4061,
           "upperBound": 0.762,
-          "uncertaintyPts": 35.584154548983115,
+          "uncertaintyPts": 35.58433113737372,
           "avgReturnR": 0.7813,
           "avgMfeR": 1.4382,
           "avgMaeR": 0.6408
@@ -1457,7 +1457,7 @@
           "posteriorUpRate": 0.6142,
           "lowerBound": 0.4174,
           "upperBound": 0.7797,
-          "uncertaintyPts": 36.228169288200185,
+          "uncertaintyPts": 36.22843113574476,
           "avgReturnR": 0.3787,
           "avgMfeR": 1.0679,
           "avgMaeR": 0.6377
@@ -1471,7 +1471,7 @@
           "posteriorUpRate": 0.4635,
           "lowerBound": 0.279,
           "upperBound": 0.6586,
-          "uncertaintyPts": 37.96318280701555,
+          "uncertaintyPts": 37.96320856182333,
           "avgReturnR": -0.1326,
           "avgMfeR": 0.6656,
           "avgMaeR": 0.9644
@@ -1484,8 +1484,8 @@
           "upRate": 0.609,
           "posteriorUpRate": 0.609,
           "lowerBound": 0.4067,
-          "upperBound": 0.7797,
-          "uncertaintyPts": 37.290696312877984,
+          "upperBound": 0.7796,
+          "uncertaintyPts": 37.290954168020306,
           "avgReturnR": 0.5891,
           "avgMfeR": 1.3997,
           "avgMaeR": 1.3371
@@ -1499,7 +1499,7 @@
           "posteriorUpRate": 0.4822,
           "lowerBound": 0.2894,
           "upperBound": 0.6805,
-          "uncertaintyPts": 39.105483529906216,
+          "uncertaintyPts": 39.10548294975349,
           "avgReturnR": -0.0485,
           "avgMfeR": 0.3682,
           "avgMaeR": 0.5201
@@ -1511,9 +1511,9 @@
           "effectiveSamples": 13.98,
           "upRate": 0.4272,
           "posteriorUpRate": 0.4272,
-          "lowerBound": 0.2394,
-          "upperBound": 0.6385,
-          "uncertaintyPts": 39.909614730376695,
+          "lowerBound": 0.2395,
+          "upperBound": 0.6386,
+          "uncertaintyPts": 39.90973485147985,
           "avgReturnR": -0.495,
           "avgMfeR": 0.8793,
           "avgMaeR": 1.1525
@@ -1527,7 +1527,7 @@
           "posteriorUpRate": 0.4594,
           "lowerBound": 0.2652,
           "upperBound": 0.6668,
-          "uncertaintyPts": 40.158141506192926,
+          "uncertaintyPts": 40.158177557739386,
           "avgReturnR": -0.1287,
           "avgMfeR": 0.6007,
           "avgMaeR": 0.9044
@@ -1535,16 +1535,16 @@
         {
           "key": "BUY|TRANSITION|HIGH|BULL",
           "matchLevel": "EXACT",
-          "n": 13,
-          "effectiveSamples": 12.96,
-          "upRate": 0.5104,
-          "posteriorUpRate": 0.5104,
-          "lowerBound": 0.3009,
-          "upperBound": 0.7163,
-          "uncertaintyPts": 41.547154630236186,
-          "avgReturnR": -0.0975,
-          "avgMfeR": 1.1595,
-          "avgMaeR": 1.11
+          "n": 14,
+          "effectiveSamples": 13.96,
+          "upRate": 0.4901,
+          "posteriorUpRate": 0.4901,
+          "lowerBound": 0.2903,
+          "upperBound": 0.6932,
+          "uncertaintyPts": 40.28713792613249,
+          "avgReturnR": -0.1261,
+          "avgMfeR": 1.152,
+          "avgMaeR": 1.0701
         },
         {
           "key": "SELL|RANGE|MID|BEAR",
@@ -1555,7 +1555,7 @@
           "posteriorUpRate": 0.5184,
           "lowerBound": 0.3076,
           "upperBound": 0.7229,
-          "uncertaintyPts": 41.53655874600731,
+          "uncertaintyPts": 41.53655514420456,
           "avgReturnR": -0.0065,
           "avgMfeR": 0.7318,
           "avgMaeR": 0.369
@@ -1569,7 +1569,7 @@
           "posteriorUpRate": 0.4418,
           "lowerBound": 0.2322,
           "upperBound": 0.6744,
-          "uncertaintyPts": 44.215874472798646,
+          "uncertaintyPts": 44.21596157421702,
           "avgReturnR": 0.044,
           "avgMfeR": 0.89,
           "avgMaeR": 1.0498
@@ -1583,7 +1583,7 @@
           "posteriorUpRate": 0.5623,
           "lowerBound": 0.3289,
           "upperBound": 0.771,
-          "uncertaintyPts": 44.21201440772087,
+          "uncertaintyPts": 44.21211244930004,
           "avgReturnR": 0.6214,
           "avgMfeR": 1.7818,
           "avgMaeR": 0.9852
@@ -1597,7 +1597,7 @@
           "posteriorUpRate": 0.525,
           "lowerBound": 0.2789,
           "upperBound": 0.7595,
-          "uncertaintyPts": 48.06244035220089,
+          "uncertaintyPts": 48.06245465324213,
           "avgReturnR": 0.0347,
           "avgMfeR": 1.4754,
           "avgMaeR": 1.3821
@@ -1611,7 +1611,7 @@
           "posteriorUpRate": 0.4724,
           "lowerBound": 0.2385,
           "upperBound": 0.7191,
-          "uncertaintyPts": 48.058455056787,
+          "uncertaintyPts": 48.05847371511776,
           "avgReturnR": -0.3459,
           "avgMfeR": 0.9104,
           "avgMaeR": 1.1516
@@ -1625,7 +1625,7 @@
           "posteriorUpRate": 0.5464,
           "lowerBound": 0.284,
           "upperBound": 0.7853,
-          "uncertaintyPts": 50.13309893847244,
+          "uncertaintyPts": 50.13316657577549,
           "avgReturnR": -0.1865,
           "avgMfeR": 1.1318,
           "avgMaeR": 1.1592
@@ -1639,7 +1639,7 @@
           "posteriorUpRate": 0.4451,
           "lowerBound": 0.1845,
           "upperBound": 0.7399,
-          "uncertaintyPts": 55.53974112465636,
+          "uncertaintyPts": 55.53985508034698,
           "avgReturnR": -1.3729,
           "avgMfeR": 1.4684,
           "avgMaeR": 3.2172
@@ -1649,11 +1649,11 @@
           "matchLevel": "EXACT",
           "n": 6,
           "effectiveSamples": 5.98,
-          "upRate": 0.5555,
-          "posteriorUpRate": 0.5555,
+          "upRate": 0.5554,
+          "posteriorUpRate": 0.5554,
           "lowerBound": 0.2604,
           "upperBound": 0.816,
-          "uncertaintyPts": 55.56343645864934,
+          "uncertaintyPts": 55.56354637014931,
           "avgReturnR": 0.4339,
           "avgMfeR": 1.0601,
           "avgMaeR": 0.766
@@ -1667,7 +1667,7 @@
           "posteriorUpRate": 0.5849,
           "lowerBound": 0.2615,
           "upperBound": 0.8487,
-          "uncertaintyPts": 58.71676830031638,
+          "uncertaintyPts": 58.717061364951185,
           "avgReturnR": 0.6367,
           "avgMfeR": 1.1556,
           "avgMaeR": 0.2781
@@ -1681,7 +1681,7 @@
           "posteriorUpRate": 0.4725,
           "lowerBound": 0.186,
           "upperBound": 0.7784,
-          "uncertaintyPts": 59.24122077776983,
+          "uncertaintyPts": 59.24124203649562,
           "avgReturnR": -0.0532,
           "avgMfeR": 0.7322,
           "avgMaeR": 0.7332
@@ -1695,7 +1695,7 @@
           "posteriorUpRate": 0.5301,
           "lowerBound": 0.2235,
           "upperBound": 0.8156,
-          "uncertaintyPts": 59.21409788957072,
+          "uncertaintyPts": 59.21413032550513,
           "avgReturnR": 3.1362,
           "avgMfeR": 4.8959,
           "avgMaeR": 0.7358
@@ -1709,7 +1709,7 @@
           "posteriorUpRate": 0.3798,
           "lowerBound": 0.1162,
           "upperBound": 0.7404,
-          "uncertaintyPts": 62.42358098195804,
+          "uncertaintyPts": 62.42420589973887,
           "avgReturnR": -0.7919,
           "avgMfeR": 0.1884,
           "avgMaeR": 1.1797
@@ -1723,7 +1723,7 @@
           "posteriorUpRate": 0.59,
           "lowerBound": 0.2059,
           "upperBound": 0.8887,
-          "uncertaintyPts": 68.27594748726717,
+          "uncertaintyPts": 68.2762974277003,
           "avgReturnR": 1.0722,
           "avgMfeR": 1.5425,
           "avgMaeR": 0.4353
@@ -1737,7 +1737,7 @@
           "posteriorUpRate": 0.5917,
           "lowerBound": 0.2066,
           "upperBound": 0.8897,
-          "uncertaintyPts": 68.30475235295717,
+          "uncertaintyPts": 68.30510455309773,
           "avgReturnR": 1.6757,
           "avgMfeR": 2.1931,
           "avgMaeR": 0.7436
@@ -2128,12 +2128,12 @@
   },
   "global": {
     "bias": "NEUTRAL",
-    "upProbability": 52,
-    "agreement": 25,
+    "upProbability": 50,
+    "agreement": 0,
     "totalPatterns": 137,
-    "totalSamples": 3339,
+    "totalSamples": 3347,
     "coverageDays": 14.9,
-    "uncertaintyPts": 33.5,
-    "confidence": 44
+    "uncertaintyPts": 32.6,
+    "confidence": 30
   }
 }
