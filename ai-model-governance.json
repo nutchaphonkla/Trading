@@ -148,9 +148,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-08-20T23:47:11.471Z",
-  "action": "AUTO_ROLLBACK",
-  "reason": "Pending-plan quality degraded: 11 fills",
+  "updatedAt": "2026-08-21T02:04:12.078Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:b5b597c10056214d6a51b524",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -173,24 +173,24 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:3decd83361b0c62427ee8a8f",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:dda63856f1f1ed3a773e53c0",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "3decd83361b0c62427ee8a8f",
-    "dataWatermark": 1787269560000,
-    "generatedAt": "2026-08-20T23:47:11.330Z",
-    "trainedThrough": "2026-08-20T23:30:00.000Z",
+    "sourceFingerprint": "dda63856f1f1ed3a773e53c0",
+    "dataWatermark": 1787277780000,
+    "generatedAt": "2026-08-21T02:04:11.901Z",
+    "trainedThrough": "2026-08-21T01:45:00.000Z",
     "ready": false,
     "status": "QUARANTINED",
     "schemaCompatible": true,
     "compatibilityReasons": [],
     "score": 0,
-    "health": 70.1,
-    "samples": 1182,
-    "brier": 0.2491,
-    "calibration": 8.14,
+    "health": 67.5,
+    "samples": 1191,
+    "brier": 0.2486,
+    "calibration": 9.55,
     "coverage": 100,
-    "drift": 2.8,
-    "uncertainty": 34.14,
+    "drift": 1.7,
+    "uncertainty": 39.9,
     "guard": "LIMITED"
   },
   "previous": {
@@ -217,20 +217,20 @@
   "deployedJournal": {
     "samples": 40,
     "hitRate": 50,
-    "avgR": -0.08342249999999998,
+    "avgR": -0.0695875,
     "goodEntryRate": 22.5,
     "falseSignals": 20
   },
   "deployedPlanJournal": {
     "samples": 40,
-    "hitRate": 65,
-    "avgR": 0.1803200000000001,
+    "hitRate": 67.5,
+    "avgR": 0.25795500000000005,
     "goodEntryRate": 15,
     "fillCount": 40
   },
   "decision": {
     "promoted": false,
-    "rolledBack": true,
+    "rolledBack": false,
     "candidateQualified": false,
     "candidateCompatibility": {
       "ok": true,
