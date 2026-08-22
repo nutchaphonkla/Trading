@@ -125,26 +125,6 @@
   ],
   "rollbacks": [
     {
-      "at": "2026-08-21T13:24:15.620Z",
-      "from": "ONEMONTH-GOVERNED-CHALLENGER-V42:964b57d2a350a5488cc045c4",
-      "to": "ONEMONTH-GOVERNED-CHALLENGER-V42:b5b597c10056214d6a51b524",
-      "reason": "Pending-plan quality degraded: 20 fills",
-      "live": {
-        "samples": 21,
-        "hitRate": 33.333333333333336,
-        "avgR": -0.3732333333333333,
-        "goodEntryRate": 9.523809523809524,
-        "falseSignals": 14
-      },
-      "planLive": {
-        "samples": 20,
-        "hitRate": 40,
-        "avgR": -0.19209499999999996,
-        "goodEntryRate": 10,
-        "fillCount": 20
-      }
-    },
-    {
       "at": "2026-08-21T15:00:44.733Z",
       "from": "ONEMONTH-GOVERNED-CHALLENGER-V42:b5b597c10056214d6a51b524",
       "to": "ONEMONTH-GOVERNED-CHALLENGER-V42:964b57d2a350a5488cc045c4",
@@ -723,57 +703,35 @@
         "goodEntryRate": 12.5,
         "fillCount": 40
       }
+    },
+    {
+      "at": "2026-08-22T20:45:42.488Z",
+      "from": "ONEMONTH-GOVERNED-CHALLENGER-V42:964b57d2a350a5488cc045c4",
+      "to": "ONEMONTH-GOVERNED-CHALLENGER-V42:b5b597c10056214d6a51b524",
+      "reason": "Pending-plan quality degraded: 25 fills",
+      "live": {
+        "samples": 27,
+        "hitRate": 37.03703703703704,
+        "avgR": -0.3514148148148148,
+        "goodEntryRate": 11.11111111111111,
+        "falseSignals": 17
+      },
+      "planLive": {
+        "samples": 25,
+        "hitRate": 44,
+        "avgR": -0.14083600000000002,
+        "goodEntryRate": 12,
+        "fillCount": 25
+      }
     }
   ],
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-08-22T19:43:09.714Z",
+  "updatedAt": "2026-08-22T20:45:42.488Z",
   "action": "AUTO_ROLLBACK",
-  "reason": "Champion live journal degraded: 40 samples",
+  "reason": "Pending-plan quality degraded: 25 fills",
   "champion": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:964b57d2a350a5488cc045c4",
-    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "964b57d2a350a5488cc045c4",
-    "dataWatermark": 1787226540000,
-    "generatedAt": "2026-08-20T11:50:06.297Z",
-    "trainedThrough": "2026-08-20T11:30:00.000Z",
-    "ready": true,
-    "status": "READY",
-    "schemaCompatible": true,
-    "compatibilityReasons": [],
-    "score": 76.84,
-    "health": 79.9,
-    "samples": 1134,
-    "brier": 0.2489,
-    "calibration": 7.03,
-    "coverage": 100,
-    "drift": 2.7,
-    "uncertainty": 9.29,
-    "guard": "TRUSTED"
-  },
-  "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:5462dd2df981ab55df790d64",
-    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "5462dd2df981ab55df790d64",
-    "dataWatermark": 1787427720000,
-    "generatedAt": "2026-08-22T19:43:09.548Z",
-    "trainedThrough": "2026-08-22T19:15:00.000Z",
-    "ready": true,
-    "status": "READY",
-    "schemaCompatible": true,
-    "compatibilityReasons": [],
-    "score": 76.58,
-    "health": 78.7,
-    "samples": 1357,
-    "brier": 0.2462,
-    "calibration": 4.73,
-    "coverage": 100,
-    "drift": 3.1,
-    "uncertainty": 17.58,
-    "guard": "TRUSTED"
-  },
-  "previous": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:b5b597c10056214d6a51b524",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
     "sourceFingerprint": "b5b597c10056214d6a51b524",
@@ -794,19 +752,61 @@
     "uncertainty": 10.55,
     "guard": "TRUSTED"
   },
+  "challenger": {
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:789b5b632a03d7a511924cde",
+    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
+    "sourceFingerprint": "789b5b632a03d7a511924cde",
+    "dataWatermark": 1787431500000,
+    "generatedAt": "2026-08-22T20:45:42.303Z",
+    "trainedThrough": "2026-08-22T20:30:00.000Z",
+    "ready": true,
+    "status": "READY",
+    "schemaCompatible": true,
+    "compatibilityReasons": [],
+    "score": 77.21,
+    "health": 79.3,
+    "samples": 1362,
+    "brier": 0.2455,
+    "calibration": 4,
+    "coverage": 100,
+    "drift": 3.7,
+    "uncertainty": 17.09,
+    "guard": "TRUSTED"
+  },
+  "previous": {
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:964b57d2a350a5488cc045c4",
+    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
+    "sourceFingerprint": "964b57d2a350a5488cc045c4",
+    "dataWatermark": 1787226540000,
+    "generatedAt": "2026-08-20T11:50:06.297Z",
+    "trainedThrough": "2026-08-20T11:30:00.000Z",
+    "ready": true,
+    "status": "READY",
+    "schemaCompatible": true,
+    "compatibilityReasons": [],
+    "score": 76.84,
+    "health": 79.9,
+    "samples": 1134,
+    "brier": 0.2489,
+    "calibration": 7.03,
+    "coverage": 100,
+    "drift": 2.7,
+    "uncertainty": 9.29,
+    "guard": "TRUSTED"
+  },
   "deployedJournal": {
-    "samples": 27,
-    "hitRate": 37.03703703703704,
-    "avgR": -0.3514148148148148,
-    "goodEntryRate": 11.11111111111111,
-    "falseSignals": 17
+    "samples": 40,
+    "hitRate": 50,
+    "avgR": -0.12935,
+    "goodEntryRate": 22.5,
+    "falseSignals": 20
   },
   "deployedPlanJournal": {
-    "samples": 25,
-    "hitRate": 44,
-    "avgR": -0.14083600000000002,
-    "goodEntryRate": 12,
-    "fillCount": 25
+    "samples": 40,
+    "hitRate": 65,
+    "avgR": 0.3189575000000001,
+    "goodEntryRate": 12.5,
+    "fillCount": 40
   },
   "decision": {
     "promoted": false,
@@ -817,7 +817,7 @@
       "reasons": []
     },
     "championDeployable": true,
-    "materiallyBetter": false,
+    "materiallyBetter": true,
     "freshNonInferior": true,
     "schemaMigration": false,
     "sourceMigration": false,
