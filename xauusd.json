@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-24T16:10:38.221Z",
-  "source": "Twelve Data PRIMARY isolated feed",
+  "generatedAt": "2026-08-24T16:54:14.658Z",
+  "source": "Last valid isolated feed pack",
   "symbol": "XAU/USD",
   "retentionDays": {
     "M1": 7,
@@ -140517,54 +140517,53 @@
   },
   "feed": {
     "version": "V44",
-    "generatedAt": "2026-08-24T16:10:38.221Z",
+    "generatedAt": "2026-08-24T16:54:14.657Z",
     "symbol": "XAU/USD",
     "marketLikelyOpen": true,
-    "active": "TWELVE_DATA",
-    "mode": "API_ECO",
-    "status": "LIVE",
-    "reason": "MT5 offline: switched automatically to Twelve Data API ECO mode",
+    "active": "LAST_VALID",
+    "mode": "HOLD",
+    "status": "HOLD",
+    "reason": "No fresh source; preserving last valid isolated pack",
     "latestM1Ts": 1787587740000,
-    "latestM1AgeMs": 98182,
+    "latestM1AgeMs": 2714621,
     "closedBarWatermark": 1787587800000,
     "primary": {
       "provider": "Twelve Data",
       "configured": true,
       "checked": true,
-      "ok": true,
-      "fresh": true,
-      "status": "ONLINE",
-      "httpStatus": 200,
-      "latestTs": 1787587740000,
-      "ageMs": 97647,
-      "closedBarWatermark": 1787587832628,
-      "droppedOpenBars": 0,
-      "credits": {
-        "api-credits-used": "1",
-        "api-credits-left": "7"
-      },
-      "fetchedAt": "2026-08-24T16:10:37.647Z",
-      "error": null
+      "ok": false,
+      "fresh": false,
+      "status": "OFFLINE",
+      "httpStatus": null,
+      "credits": {},
+      "fetchedAt": "2026-08-24T16:54:11.711Z",
+      "error": "This operation was aborted"
     },
     "fallback": {
       "provider": "MT5 -> Cloudflare Worker/D1",
       "configured": true,
       "checked": true,
       "connected": false,
-      "ok": false,
+      "ok": true,
       "fresh": false,
       "publicFeedUrl": "https://onemonth-tv-feed.nutchaphonsit.workers.dev/public-feed",
-      "status": "OFFLINE",
+      "status": "STALE",
+      "httpStatus": 200,
+      "latestTs": 1786740960000,
+      "ageMs": 849493556,
+      "count": 10000,
+      "closedBarWatermark": 1787590448533,
+      "droppedOpenBars": 0,
+      "fetchedAt": "2026-08-24T16:54:13.556Z",
       "heartbeat": {
         "connected": false,
         "status": "ok",
         "bars": 66889,
-        "receiveAgeMs": 782359064,
-        "candleAgeMs": 846876094,
+        "receiveAgeMs": 784962542,
+        "candleAgeMs": 849479572,
         "latestTs": 1786740960000,
-        "checkedAt": "2026-08-24T16:10:36.112Z"
+        "checkedAt": "2026-08-24T16:53:59.710Z"
       },
-      "fetchedAt": "2026-08-24T16:10:36.112Z",
       "error": null
     },
     "training": {
@@ -140593,7 +140592,7 @@
     },
     "efficiency": {
       "twelveRequestsThisRun": 1,
-      "mt5RequestsThisRun": 1,
+      "mt5RequestsThisRun": 2,
       "mt5HistoryPagesThisRun": 0,
       "strategy": "Decoupled router: Twelve Data is ECO live fallback; connected MT5 archive remains HEAVY training source.",
       "primaryRetentionDays": {
