@@ -155,26 +155,6 @@
   ],
   "rollbacks": [
     {
-      "at": "2026-08-24T20:56:08.451Z",
-      "from": "ONEMONTH-GOVERNED-CHALLENGER-V42:964b57d2a350a5488cc045c4",
-      "to": "ONEMONTH-GOVERNED-CHALLENGER-V42:b5b597c10056214d6a51b524",
-      "reason": "Pending-plan quality degraded: 40 fills",
-      "live": {
-        "samples": 40,
-        "hitRate": 40,
-        "avgR": -0.5845574999999997,
-        "goodEntryRate": 12.5,
-        "falseSignals": 24
-      },
-      "planLive": {
-        "samples": 40,
-        "hitRate": 35,
-        "avgR": -1.4141574999999995,
-        "goodEntryRate": 15,
-        "fillCount": 40
-      }
-    },
-    {
       "at": "2026-08-24T21:51:02.479Z",
       "from": "ONEMONTH-GOVERNED-CHALLENGER-V42:b5b597c10056214d6a51b524",
       "to": "ONEMONTH-GOVERNED-CHALLENGER-V42:964b57d2a350a5488cc045c4",
@@ -753,57 +733,35 @@
         "goodEntryRate": 10,
         "fillCount": 40
       }
+    },
+    {
+      "at": "2026-09-10T21:43:55.000Z",
+      "from": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff",
+      "to": "ONEMONTH-GOVERNED-CHALLENGER-V42:cc0c60c1054e748eab7720b8",
+      "reason": "Pending-plan quality degraded: 14 fills",
+      "live": {
+        "samples": 9,
+        "hitRate": 44.44444444444444,
+        "avgR": -0.9075333333333333,
+        "goodEntryRate": 22.22222222222222,
+        "falseSignals": 5
+      },
+      "planLive": {
+        "samples": 14,
+        "hitRate": 57.142857142857146,
+        "avgR": -0.4979214285714284,
+        "goodEntryRate": 0,
+        "fillCount": 14
+      }
     }
   ],
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-09-10T18:36:10.747Z",
+  "updatedAt": "2026-09-10T21:43:55.000Z",
   "action": "AUTO_ROLLBACK",
-  "reason": "Champion live journal degraded: 40 samples",
+  "reason": "Pending-plan quality degraded: 14 fills",
   "champion": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff",
-    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "98f5c1dcbca998350ebda5ff",
-    "dataWatermark": 1788014100000,
-    "generatedAt": "2026-08-29T14:36:11.313Z",
-    "trainedThrough": "2026-08-29T14:15:00.000Z",
-    "ready": true,
-    "status": "READY",
-    "schemaCompatible": true,
-    "compatibilityReasons": [],
-    "score": 79.18,
-    "health": 82.1,
-    "samples": 2009,
-    "brier": 0.2404,
-    "calibration": 4.94,
-    "coverage": 100,
-    "drift": 2.7,
-    "uncertainty": 8.95,
-    "guard": "TRUSTED"
-  },
-  "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:c32a986d12e39004ee7fbfbc",
-    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "c32a986d12e39004ee7fbfbc",
-    "dataWatermark": 1789064520000,
-    "generatedAt": "2026-09-10T18:36:10.524Z",
-    "trainedThrough": "2026-09-10T18:00:00.000Z",
-    "ready": true,
-    "status": "READY",
-    "schemaCompatible": true,
-    "compatibilityReasons": [],
-    "score": 72.4,
-    "health": 73.8,
-    "samples": 3167,
-    "brier": 0.2397,
-    "calibration": 7.24,
-    "coverage": 100,
-    "drift": 1.3,
-    "uncertainty": 28.88,
-    "guard": "TRUSTED"
-  },
-  "previous": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:cc0c60c1054e748eab7720b8",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
     "sourceFingerprint": "cc0c60c1054e748eab7720b8",
@@ -824,19 +782,61 @@
     "uncertainty": 8.55,
     "guard": "TRUSTED"
   },
+  "challenger": {
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:f4ec834ccfcff3b2bb41b82c",
+    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
+    "sourceFingerprint": "f4ec834ccfcff3b2bb41b82c",
+    "dataWatermark": 1789076580000,
+    "generatedAt": "2026-09-10T21:43:54.788Z",
+    "trainedThrough": "2026-09-10T21:15:00.000Z",
+    "ready": true,
+    "status": "READY",
+    "schemaCompatible": true,
+    "compatibilityReasons": [],
+    "score": 73.95,
+    "health": 75.9,
+    "samples": 3180,
+    "brier": 0.2408,
+    "calibration": 7.25,
+    "coverage": 100,
+    "drift": 2,
+    "uncertainty": 22.05,
+    "guard": "TRUSTED"
+  },
+  "previous": {
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff",
+    "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
+    "sourceFingerprint": "98f5c1dcbca998350ebda5ff",
+    "dataWatermark": 1788014100000,
+    "generatedAt": "2026-08-29T14:36:11.313Z",
+    "trainedThrough": "2026-08-29T14:15:00.000Z",
+    "ready": true,
+    "status": "READY",
+    "schemaCompatible": true,
+    "compatibilityReasons": [],
+    "score": 79.18,
+    "health": 82.1,
+    "samples": 2009,
+    "brier": 0.2404,
+    "calibration": 4.94,
+    "coverage": 100,
+    "drift": 2.7,
+    "uncertainty": 8.95,
+    "guard": "TRUSTED"
+  },
   "deployedJournal": {
-    "samples": 8,
-    "hitRate": 37.5,
-    "avgR": -1.18125,
-    "goodEntryRate": 12.5,
-    "falseSignals": 5
+    "samples": 40,
+    "hitRate": 60,
+    "avgR": -0.10292500000000002,
+    "goodEntryRate": 25,
+    "falseSignals": 16
   },
   "deployedPlanJournal": {
-    "samples": 13,
-    "hitRate": 61.53846153846154,
-    "avgR": -0.5316692307692306,
-    "goodEntryRate": 0,
-    "fillCount": 13
+    "samples": 40,
+    "hitRate": 42.5,
+    "avgR": 0.42418500000000003,
+    "goodEntryRate": 10,
+    "fillCount": 40
   },
   "decision": {
     "promoted": false,
