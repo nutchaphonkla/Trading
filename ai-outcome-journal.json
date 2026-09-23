@@ -1,8 +1,8 @@
 {
   "version": "V43.0",
   "engine": "KAGE-PENDING-ENTRY-JOURNAL-V43-FORWARD-ONLY-AUTOML",
-  "updatedAt": "2026-09-23T17:24:41.176Z",
-  "sourceFingerprint": "bfc1b065",
+  "updatedAt": "2026-09-23T20:38:23.460Z",
+  "sourceFingerprint": "c6e208d3",
   "entries": [
     {
       "id": "ONEMONTH-GOVERNED-CHALLENGER-V42:5c7413d5be195f5bb2f7e20f:M15:1786308300000:BUY|TREND|NEW_YORK|MID|RANGE",
@@ -25744,6 +25744,65 @@
       "structure": "BULL",
       "entry": 4279.08353,
       "atr": 8.52798965397061,
+      "probability": 30.17,
+      "lowerBound": 25.88,
+      "upperBound": 34.83,
+      "trustState": "TRUSTED",
+      "modelHealth": 82.1,
+      "feedSource": "TWELVE_DATA",
+      "status": "COMPLETE",
+      "horizons": {
+        "M15": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T17:45:00.000Z",
+          "close": 4293.17941,
+          "returnR": -1.6529,
+          "correct": false,
+          "mfeR": 0.9799,
+          "maeR": 1.6909,
+          "entryQuality": "POOR_ENTRY",
+          "decisionObservedAt": "2026-09-23T17:20:31.283Z"
+        },
+        "M30": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T18:00:00.000Z",
+          "close": 4289.50118,
+          "returnR": -1.2216,
+          "correct": false,
+          "mfeR": 0.9799,
+          "maeR": 1.8207,
+          "entryQuality": "POOR_ENTRY",
+          "decisionObservedAt": "2026-09-23T17:20:31.283Z"
+        },
+        "M60": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T18:30:00.000Z",
+          "close": 4285.33842,
+          "returnR": -0.7335,
+          "correct": false,
+          "mfeR": 0.9799,
+          "maeR": 1.8207,
+          "entryQuality": "POOR_ENTRY",
+          "decisionObservedAt": "2026-09-23T17:20:31.283Z"
+        }
+      }
+    },
+    {
+      "id": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff:M15:1790194500000:SELL|TREND|NEW_YORK|MID|BULL",
+      "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff",
+      "modelEngine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
+      "modelFingerprint": "98f5c1dcbca998350ebda5ff",
+      "modelRole": "CHAMPION",
+      "createdAt": "2026-09-23T20:34:07.523Z",
+      "ts": 1790194500000,
+      "sourceFingerprint": "c6e208d3",
+      "sourceTf": "M15",
+      "direction": "SELL",
+      "regime": "TREND",
+      "session": "NEW_YORK",
+      "structure": "BULL",
+      "entry": 4284.61357,
+      "atr": 6.981399916300525,
       "probability": 30.17,
       "lowerBound": 25.88,
       "upperBound": 34.83,
@@ -76800,13 +76859,54 @@
       "createdAt": "2026-09-23T17:20:31.286Z",
       "ts": 1790182800000,
       "atr": 8.52798965397061,
-      "status": "WAIT_FILL",
-      "filledAt": null,
-      "filledTs": null,
-      "horizons": {},
+      "status": "COMPLETE",
+      "filledAt": "2026-09-23T17:45:00.000Z",
+      "filledTs": 1790185500000,
+      "horizons": {
+        "M15": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T18:00:00.000Z",
+          "close": 4289.50118,
+          "returnR": 0.3273,
+          "correct": true,
+          "mfeR": 0.6797,
+          "maeR": 0.2718,
+          "entryQuality": "GOOD_ENTRY",
+          "slHit": false,
+          "tp1Hit": false,
+          "tp2Hit": false
+        },
+        "M30": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T18:15:00.000Z",
+          "close": 4284.93919,
+          "returnR": 0.8622,
+          "correct": true,
+          "mfeR": 0.8933,
+          "maeR": 0.2718,
+          "entryQuality": "GOOD_ENTRY",
+          "slHit": false,
+          "tp1Hit": false,
+          "tp2Hit": false
+        },
+        "M60": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T18:45:00.000Z",
+          "close": 4290.05064,
+          "returnR": 0.2628,
+          "correct": true,
+          "mfeR": 1.0655,
+          "maeR": 0.2718,
+          "entryQuality": "GOOD_ENTRY",
+          "slHit": false,
+          "tp1Hit": false,
+          "tp2Hit": false
+        }
+      },
       "maxWaitBars": 64,
       "feedSource": "TWELVE_DATA",
-      "observedAt": "2026-09-23T17:20:31.286Z"
+      "observedAt": "2026-09-23T17:20:31.286Z",
+      "fillIndex": 4638
     },
     {
       "type": "SELL STOP",
@@ -76828,46 +76928,143 @@
       "createdAt": "2026-09-23T17:20:31.286Z",
       "ts": 1790182800000,
       "atr": 8.52798965397061,
+      "status": "COMPLETE",
+      "filledAt": "2026-09-23T17:30:00.000Z",
+      "filledTs": 1790184600000,
+      "horizons": {
+        "M15": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T17:45:00.000Z",
+          "close": 4293.17941,
+          "returnR": -1.9155,
+          "correct": false,
+          "mfeR": 0.7173,
+          "maeR": 1.9536,
+          "entryQuality": "POOR_ENTRY",
+          "slHit": true,
+          "tp1Hit": false,
+          "tp2Hit": false
+        },
+        "M30": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T18:00:00.000Z",
+          "close": 4289.50118,
+          "returnR": -1.4842,
+          "correct": false,
+          "mfeR": 0.7173,
+          "maeR": 2.0833,
+          "entryQuality": "POOR_ENTRY",
+          "slHit": true,
+          "tp1Hit": false,
+          "tp2Hit": false
+        },
+        "M60": {
+          "resolved": true,
+          "resolvedAt": "2026-09-23T18:30:00.000Z",
+          "close": 4285.33842,
+          "returnR": -0.9961,
+          "correct": false,
+          "mfeR": 0.7173,
+          "maeR": 2.0833,
+          "entryQuality": "POOR_ENTRY",
+          "slHit": true,
+          "tp1Hit": false,
+          "tp2Hit": false
+        }
+      },
+      "maxWaitBars": 64,
+      "feedSource": "TWELVE_DATA",
+      "observedAt": "2026-09-23T17:20:31.286Z",
+      "fillIndex": 4637
+    },
+    {
+      "type": "SELL LIMIT",
+      "direction": "SELL",
+      "kind": "LIMIT",
+      "entry": 4287.984995336949,
+      "entryLow": 4287.496297342808,
+      "entryHigh": 4288.4736933310905,
+      "sl": 4294.128627263294,
+      "tp1": 4277.84800265848,
+      "tp2": 4273.547460310039,
+      "rr": 1.65,
+      "score": 76,
+      "anchor": "EMA21 RETEST",
+      "id": "PLAN:ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff:M15:1790194500000:SELL_LIMIT",
+      "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff",
+      "modelRole": "CHAMPION",
+      "sourceTf": "M15",
+      "createdAt": "2026-09-23T20:34:07.527Z",
+      "ts": 1790194500000,
+      "atr": 6.981399916300525,
       "status": "WAIT_FILL",
       "filledAt": null,
       "filledTs": null,
       "horizons": {},
       "maxWaitBars": 64,
       "feedSource": "TWELVE_DATA",
-      "observedAt": "2026-09-23T17:20:31.286Z"
+      "observedAt": "2026-09-23T20:34:07.527Z"
+    },
+    {
+      "type": "SELL STOP",
+      "direction": "SELL",
+      "kind": "STOP",
+      "entry": 4270.1681780066965,
+      "entryLow": 4270.02855000837,
+      "entryHigh": 4270.307806005023,
+      "sl": 4275.892925938063,
+      "tp1": 4261.581056109647,
+      "tp2": 4257.57373255769,
+      "rr": 1.5,
+      "score": 72,
+      "anchor": "30-BAR BREAKDOWN",
+      "id": "PLAN:ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff:M15:1790194500000:SELL_STOP",
+      "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff",
+      "modelRole": "CHAMPION",
+      "sourceTf": "M15",
+      "createdAt": "2026-09-23T20:34:07.527Z",
+      "ts": 1790194500000,
+      "atr": 6.981399916300525,
+      "status": "WAIT_FILL",
+      "filledAt": null,
+      "filledTs": null,
+      "horizons": {},
+      "maxWaitBars": 64,
+      "feedSource": "TWELVE_DATA",
+      "observedAt": "2026-09-23T20:34:07.527Z"
     }
   ],
   "summary": {
-    "total": 437,
-    "completed": 436,
+    "total": 438,
+    "completed": 437,
     "pending": 1,
-    "verified30m": 423,
+    "verified30m": 424,
     "trustedSignals": 216,
-    "falseSignals": 207,
-    "hitRate15": 49.004975124378106,
-    "hitRate30": 51.06382978723404,
-    "hitRate60": 50.3562945368171,
-    "avgR30": -0.05508345153664295,
-    "lastDecisionAt": "2026-09-23T17:20:31.283Z",
-    "updatedAt": "2026-09-23T17:24:41.177Z",
+    "falseSignals": 208,
+    "hitRate15": 48.883374689826304,
+    "hitRate30": 50.943396226415096,
+    "hitRate60": 50.23696682464455,
+    "avgR30": -0.057834669811320676,
+    "lastDecisionAt": "2026-09-23T20:34:07.523Z",
+    "updatedAt": "2026-09-23T20:38:23.461Z",
     "entryQuality": {
       "good": 104,
       "late": 75,
-      "poor": 208,
+      "poor": 209,
       "neutral": 49,
-      "goodRate": 23.853211009174313,
-      "avgMfeR30": 1.3651791284403663,
-      "avgMaeR30": 1.3583887614678904
+      "goodRate": 23.79862700228833,
+      "avgMfeR30": 1.364297482837528,
+      "avgMaeR30": 1.3594466819221973
     },
     "sessionStats": {
       "NEW_YORK": {
-        "samples": 221,
-        "hitRate": 52.036199095022624,
-        "falseSignals": 106,
-        "avgR": -0.018750678733031698,
-        "goodEntryRate": 25.339366515837103,
+        "samples": 222,
+        "hitRate": 51.8018018018018,
+        "falseSignals": 107,
+        "avgR": -0.02416891891891894,
+        "goodEntryRate": 25.225225225225227,
         "lateEntries": 44,
-        "poorEntries": 106
+        "poorEntries": 107
       },
       "ASIA": {
         "samples": 100,
@@ -77007,26 +77204,26 @@
         "poorEntries": 39
       },
       "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff": {
-        "samples": 53,
-        "hitRate": 45.283018867924525,
-        "falseSignals": 29,
-        "avgR": -0.04225283018867919,
-        "goodEntryRate": 22.641509433962263,
+        "samples": 54,
+        "hitRate": 44.44444444444444,
+        "falseSignals": 30,
+        "avgR": -0.06409259259259253,
+        "goodEntryRate": 22.22222222222222,
         "lateEntries": 7,
-        "poorEntries": 29
+        "poorEntries": 30
       }
     }
   },
   "planSummary": {
-    "total": 874,
+    "total": 876,
     "waiting": 4,
-    "filled": 649,
+    "filled": 651,
     "expired": 221,
-    "completed": 649,
-    "fillRate": 74.25629290617849,
-    "hitRate30": 52.25806451612903,
-    "avgR30": -0.11594241935483875,
-    "goodEntryRate": 15.161290322580646,
+    "completed": 651,
+    "fillRate": 74.31506849315069,
+    "hitRate30": 52.250803858520904,
+    "avgR30": -0.11656961414791,
+    "goodEntryRate": 15.27331189710611,
     "byType": {
       "BUY LIMIT": {
         "samples": 88,
@@ -77047,22 +77244,22 @@
         "poorEntries": 19
       },
       "SELL LIMIT": {
-        "samples": 286,
-        "hitRate": 52.44755244755245,
+        "samples": 287,
+        "hitRate": 52.613240418118465,
         "falseSignals": 136,
-        "avgR": -0.045507692307692436,
-        "goodEntryRate": 21.32867132867133,
+        "avgR": -0.04234494773519177,
+        "goodEntryRate": 21.60278745644599,
         "lateEntries": 62,
         "poorEntries": 136
       },
       "SELL STOP": {
-        "samples": 187,
-        "hitRate": 44.38502673796791,
-        "falseSignals": 104,
-        "avgR": -0.5071721925133692,
-        "goodEntryRate": 3.2085561497326203,
+        "samples": 188,
+        "hitRate": 44.148936170212764,
+        "falseSignals": 105,
+        "avgR": -0.5123691489361705,
+        "goodEntryRate": 3.1914893617021276,
         "lateEntries": 71,
-        "poorEntries": 104
+        "poorEntries": 105
       }
     }
   },
@@ -77071,18 +77268,18 @@
     "marketOpenRequired": true,
     "maxObservationAgeMin": 45,
     "recordingAllowed": true,
-    "observationAgeMs": 581168
+    "observationAgeMs": 503452
   },
   "currentFeed": "TWELVE_DATA",
   "feedPlanStats": {
     "TWELVE_DATA": {
-      "samples": 593,
-      "hitRate": 53.45699831365936,
-      "falseSignals": 276,
-      "avgR": -0.11530590219224282,
-      "goodEntryRate": 15.51433389544688,
+      "samples": 595,
+      "hitRate": 53.445378151260506,
+      "falseSignals": 277,
+      "avgR": -0.11596369747899157,
+      "goodEntryRate": 15.630252100840336,
       "lateEntries": 180,
-      "poorEntries": 276
+      "poorEntries": 277
     },
     "MT5_FALLBACK": {
       "samples": 14,
@@ -77116,78 +77313,78 @@
     "byType": {}
   },
   "deployedSummary": {
-    "total": 56,
-    "completed": 55,
+    "total": 57,
+    "completed": 56,
     "pending": 1,
-    "verified30m": 53,
+    "verified30m": 54,
     "trustedSignals": 24,
-    "falseSignals": 29,
-    "hitRate15": 49.056603773584904,
-    "hitRate30": 45.283018867924525,
-    "hitRate60": 60,
-    "avgR30": -0.04225283018867919,
-    "lastDecisionAt": "2026-09-23T17:20:31.283Z",
-    "updatedAt": "2026-09-23T17:24:41.180Z",
+    "falseSignals": 30,
+    "hitRate15": 48.148148148148145,
+    "hitRate30": 44.44444444444444,
+    "hitRate60": 58.92857142857143,
+    "avgR30": -0.06409259259259253,
+    "lastDecisionAt": "2026-09-23T20:34:07.523Z",
+    "updatedAt": "2026-09-23T20:38:23.463Z",
     "entryQuality": {
       "good": 12,
       "late": 7,
-      "poor": 29,
+      "poor": 30,
       "neutral": 7,
-      "goodRate": 21.818181818181817,
-      "avgMfeR30": 1.973794545454546,
-      "avgMaeR30": 1.1951509090909092
+      "goodRate": 21.428571428571427,
+      "avgMfeR30": 1.9560464285714292,
+      "avgMaeR30": 1.2063214285714285
     },
     "sessionStats": {
       "NEW_YORK": {
-        "samples": 53,
-        "hitRate": 45.283018867924525,
-        "falseSignals": 29,
-        "avgR": -0.04225283018867919,
-        "goodEntryRate": 22.641509433962263,
+        "samples": 54,
+        "hitRate": 44.44444444444444,
+        "falseSignals": 30,
+        "avgR": -0.06409259259259253,
+        "goodEntryRate": 22.22222222222222,
         "lateEntries": 7,
-        "poorEntries": 29
+        "poorEntries": 30
       }
     },
     "modelStats": {
       "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff": {
-        "samples": 53,
-        "hitRate": 45.283018867924525,
-        "falseSignals": 29,
-        "avgR": -0.04225283018867919,
-        "goodEntryRate": 22.641509433962263,
+        "samples": 54,
+        "hitRate": 44.44444444444444,
+        "falseSignals": 30,
+        "avgR": -0.06409259259259253,
+        "goodEntryRate": 22.22222222222222,
         "lateEntries": 7,
-        "poorEntries": 29
+        "poorEntries": 30
       }
     }
   },
   "deployedPlanSummary": {
-    "total": 112,
+    "total": 114,
     "waiting": 4,
-    "filled": 84,
+    "filled": 86,
     "expired": 24,
-    "completed": 84,
-    "fillRate": 75,
-    "hitRate30": 54.32098765432099,
-    "avgR30": -0.16584197530864184,
-    "goodEntryRate": 14.814814814814815,
+    "completed": 86,
+    "fillRate": 75.43859649122807,
+    "hitRate30": 54.21686746987952,
+    "avgR30": -0.16933975903614443,
+    "goodEntryRate": 15.662650602409638,
     "byType": {
       "SELL LIMIT": {
-        "samples": 44,
-        "hitRate": 56.81818181818182,
+        "samples": 45,
+        "hitRate": 57.77777777777778,
         "falseSignals": 19,
-        "avgR": 0.23043863636363637,
-        "goodEntryRate": 25,
+        "avgR": 0.24447777777777777,
+        "goodEntryRate": 26.666666666666668,
         "lateEntries": 12,
         "poorEntries": 19
       },
       "SELL STOP": {
-        "samples": 37,
-        "hitRate": 51.351351351351354,
-        "falseSignals": 18,
-        "avgR": -0.6370945945945945,
-        "goodEntryRate": 2.7027027027027026,
+        "samples": 38,
+        "hitRate": 50,
+        "falseSignals": 19,
+        "avgR": -0.659386842105263,
+        "goodEntryRate": 2.6315789473684212,
         "lateEntries": 17,
-        "poorEntries": 18
+        "poorEntries": 19
       }
     }
   }
