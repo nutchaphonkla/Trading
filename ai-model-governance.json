@@ -758,9 +758,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-09-29T18:46:27.883Z",
-  "action": "AUTO_ROLLBACK",
-  "reason": "Pending-plan quality degraded: 40 fills",
+  "updatedAt": "2026-09-29T23:03:54.011Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:cc0c60c1054e748eab7720b8",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -783,25 +783,25 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:5759a3c581f64771e832685d",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:839c392f4954262e9736af17",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "5759a3c581f64771e832685d",
-    "dataWatermark": 1790707500000,
-    "generatedAt": "2026-09-29T18:46:27.666Z",
-    "trainedThrough": "2026-09-29T18:30:00.000Z",
-    "ready": true,
-    "status": "READY",
+    "sourceFingerprint": "839c392f4954262e9736af17",
+    "dataWatermark": 1790722980000,
+    "generatedAt": "2026-09-29T23:03:53.836Z",
+    "trainedThrough": "2026-09-29T22:45:00.000Z",
+    "ready": false,
+    "status": "QUARANTINED",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 73.26,
-    "health": 75,
-    "samples": 4993,
-    "brier": 0.2374,
-    "calibration": 7.65,
+    "score": 0,
+    "health": 69,
+    "samples": 5010,
+    "brier": 0.2377,
+    "calibration": 7.88,
     "coverage": 100,
-    "drift": 0.8,
-    "uncertainty": 25.41,
-    "guard": "TRUSTED"
+    "drift": 0.7,
+    "uncertainty": 41.81,
+    "guard": "LIMITED"
   },
   "previous": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff",
@@ -826,22 +826,22 @@
   },
   "deployedJournal": {
     "samples": 40,
-    "hitRate": 45,
-    "avgR": -0.08762250000000002,
+    "hitRate": 42.5,
+    "avgR": -0.098695,
     "goodEntryRate": 22.5,
-    "falseSignals": 22
+    "falseSignals": 23
   },
   "deployedPlanJournal": {
     "samples": 40,
     "hitRate": 62.5,
-    "avgR": 0.509345,
+    "avgR": 0.5259750000000001,
     "goodEntryRate": 20,
     "fillCount": 40
   },
   "decision": {
     "promoted": false,
-    "rolledBack": true,
-    "candidateQualified": true,
+    "rolledBack": false,
+    "candidateQualified": false,
     "candidateCompatibility": {
       "ok": true,
       "reasons": []
