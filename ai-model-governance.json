@@ -758,9 +758,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-10-06T07:43:15.518Z",
-  "action": "AUTO_ROLLBACK",
-  "reason": "Pending-plan quality degraded: 40 fills",
+  "updatedAt": "2026-10-06T15:21:25.853Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:98f5c1dcbca998350ebda5ff",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -783,24 +783,24 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:d5ac82d2894e22d478044f34",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:184807edbd11946c74380850",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "d5ac82d2894e22d478044f34",
-    "dataWatermark": 1791272520000,
-    "generatedAt": "2026-10-06T07:43:15.276Z",
-    "trainedThrough": "2026-10-06T07:15:00.000Z",
+    "sourceFingerprint": "184807edbd11946c74380850",
+    "dataWatermark": 1791300060000,
+    "generatedAt": "2026-10-06T15:21:25.598Z",
+    "trainedThrough": "2026-10-06T15:00:00.000Z",
     "ready": true,
     "status": "READY",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 75.26,
-    "health": 77.4,
-    "samples": 5620,
-    "brier": 0.2372,
-    "calibration": 6.97,
+    "score": 76.47,
+    "health": 79,
+    "samples": 5651,
+    "brier": 0.2367,
+    "calibration": 6.81,
     "coverage": 100,
     "drift": 1.6,
-    "uncertainty": 19.13,
+    "uncertainty": 15.31,
     "guard": "TRUSTED"
   },
   "previous": {
@@ -826,10 +826,10 @@
   },
   "deployedJournal": {
     "samples": 40,
-    "hitRate": 42.5,
-    "avgR": 0.09632249999999999,
-    "goodEntryRate": 25,
-    "falseSignals": 23
+    "hitRate": 40,
+    "avgR": 0.01020500000000001,
+    "goodEntryRate": 22.5,
+    "falseSignals": 24
   },
   "deployedPlanJournal": {
     "samples": 40,
@@ -840,7 +840,7 @@
   },
   "decision": {
     "promoted": false,
-    "rolledBack": true,
+    "rolledBack": false,
     "candidateQualified": true,
     "candidateCompatibility": {
       "ok": true,
