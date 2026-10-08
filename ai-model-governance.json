@@ -758,7 +758,7 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-10-07T20:42:09.052Z",
+  "updatedAt": "2026-10-08T01:07:47.733Z",
   "action": "KEEP_CHAMPION",
   "reason": "Champion remains stronger or challenger not proven",
   "champion": {
@@ -783,25 +783,25 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:994412bc9f1319b7f6afb346",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:fddda7e90988eb66038ec69b",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "994412bc9f1319b7f6afb346",
-    "dataWatermark": 1791405660000,
-    "generatedAt": "2026-10-07T20:42:08.822Z",
-    "trainedThrough": "2026-10-07T20:15:00.000Z",
-    "ready": true,
-    "status": "READY",
+    "sourceFingerprint": "fddda7e90988eb66038ec69b",
+    "dataWatermark": 1791421620000,
+    "generatedAt": "2026-10-08T01:07:47.492Z",
+    "trainedThrough": "2026-10-08T00:45:00.000Z",
+    "ready": false,
+    "status": "QUARANTINED",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 77.35,
-    "health": 80.2,
-    "samples": 5768,
-    "brier": 0.2373,
-    "calibration": 6.61,
+    "score": 0,
+    "health": 68.2,
+    "samples": 5786,
+    "brier": 0.2371,
+    "calibration": 6.66,
     "coverage": 100,
-    "drift": 0,
-    "uncertainty": 14.39,
-    "guard": "TRUSTED"
+    "drift": 0.1,
+    "uncertainty": 49.91,
+    "guard": "QUARANTINED"
   },
   "previous": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:cc0c60c1054e748eab7720b8",
@@ -833,15 +833,15 @@
   },
   "deployedPlanJournal": {
     "samples": 40,
-    "hitRate": 55,
-    "avgR": 0.2125375,
+    "hitRate": 57.5,
+    "avgR": 0.2271475,
     "goodEntryRate": 22.5,
     "fillCount": 40
   },
   "decision": {
     "promoted": false,
     "rolledBack": false,
-    "candidateQualified": true,
+    "candidateQualified": false,
     "candidateCompatibility": {
       "ok": true,
       "reasons": []
