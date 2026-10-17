@@ -888,9 +888,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-10-17T00:38:15.459Z",
-  "action": "PROMOTE_CHALLENGER",
-  "reason": "Challenger score 78.3 > champion 76.7",
+  "updatedAt": "2026-10-17T05:45:57.071Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:735a11148b2c17b0a1422728",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -913,24 +913,24 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:735a11148b2c17b0a1422728",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:b514171f9ac761ac70b51859",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "735a11148b2c17b0a1422728",
-    "dataWatermark": 1792197420000,
-    "generatedAt": "2026-10-17T00:38:15.180Z",
-    "trainedThrough": "2026-10-17T00:15:00.000Z",
+    "sourceFingerprint": "b514171f9ac761ac70b51859",
+    "dataWatermark": 1792215900000,
+    "generatedAt": "2026-10-17T05:45:56.901Z",
+    "trainedThrough": "2026-10-17T05:30:00.000Z",
     "ready": true,
     "status": "READY",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 78.26,
-    "health": 81.2,
-    "samples": 6647,
-    "brier": 0.2374,
-    "calibration": 6.16,
+    "score": 78.68,
+    "health": 81.7,
+    "samples": 6668,
+    "brier": 0.2368,
+    "calibration": 5.99,
     "coverage": 100,
-    "drift": 1.2,
-    "uncertainty": 10.93,
+    "drift": 0.9,
+    "uncertainty": 10.34,
     "guard": "TRUSTED"
   },
   "previous": {
@@ -969,7 +969,7 @@
     "fillCount": 0
   },
   "decision": {
-    "promoted": true,
+    "promoted": false,
     "rolledBack": false,
     "candidateQualified": true,
     "candidateCompatibility": {
@@ -977,7 +977,7 @@
       "reasons": []
     },
     "championDeployable": true,
-    "materiallyBetter": true,
+    "materiallyBetter": false,
     "freshNonInferior": false,
     "schemaMigration": false,
     "sourceMigration": false,
