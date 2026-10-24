@@ -968,9 +968,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-10-24T16:45:55.580Z",
-  "action": "PROMOTE_CHALLENGER",
-  "reason": "Champion age >12h and challenger is non-inferior (76.8 vs 77.6)",
+  "updatedAt": "2026-10-24T19:36:53.067Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:a0481490bf340035d4165f3d",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -993,24 +993,24 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:a0481490bf340035d4165f3d",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:715f0e59c0763d427e63f65c",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "a0481490bf340035d4165f3d",
-    "dataWatermark": 1792860300000,
-    "generatedAt": "2026-10-24T16:45:55.318Z",
-    "trainedThrough": "2026-10-24T16:30:00.000Z",
+    "sourceFingerprint": "715f0e59c0763d427e63f65c",
+    "dataWatermark": 1792870560000,
+    "generatedAt": "2026-10-24T19:36:52.788Z",
+    "trainedThrough": "2026-10-24T19:15:00.000Z",
     "ready": true,
     "status": "READY",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 76.78,
-    "health": 79,
-    "samples": 7384,
-    "brier": 0.2356,
+    "score": 76.94,
+    "health": 79.2,
+    "samples": 7395,
+    "brier": 0.2357,
     "calibration": 5.9,
     "coverage": 100,
-    "drift": 2.8,
-    "uncertainty": 15.78,
+    "drift": 2.9,
+    "uncertainty": 15.01,
     "guard": "TRUSTED"
   },
   "previous": {
@@ -1049,7 +1049,7 @@
     "fillCount": 0
   },
   "decision": {
-    "promoted": true,
+    "promoted": false,
     "rolledBack": false,
     "candidateQualified": true,
     "candidateCompatibility": {
@@ -1058,7 +1058,7 @@
     },
     "championDeployable": true,
     "materiallyBetter": false,
-    "freshNonInferior": true,
+    "freshNonInferior": false,
     "schemaMigration": false,
     "sourceMigration": false,
     "identicalEvidence": false
