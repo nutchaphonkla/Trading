@@ -1098,7 +1098,7 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-11-03T17:58:24.565Z",
+  "updatedAt": "2026-11-03T23:32:51.866Z",
   "action": "KEEP_CHAMPION",
   "reason": "Champion remains stronger or challenger not proven",
   "champion": {
@@ -1123,25 +1123,25 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:18eeb3eea45d94b933140fd9",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:4d3157a21cb284c2a026737d",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "18eeb3eea45d94b933140fd9",
-    "dataWatermark": 1793728620000,
-    "generatedAt": "2026-11-03T17:58:24.285Z",
-    "trainedThrough": "2026-11-03T17:30:00.000Z",
-    "ready": true,
-    "status": "READY",
+    "sourceFingerprint": "4d3157a21cb284c2a026737d",
+    "dataWatermark": 1793748720000,
+    "generatedAt": "2026-11-03T23:32:51.601Z",
+    "trainedThrough": "2026-11-03T23:15:00.000Z",
+    "ready": false,
+    "status": "QUARANTINED",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 79.19,
-    "health": 81.7,
-    "samples": 8348,
-    "brier": 0.2343,
-    "calibration": 4.39,
+    "score": 0,
+    "health": 73.5,
+    "samples": 8371,
+    "brier": 0.2342,
+    "calibration": 4.45,
     "coverage": 100,
     "drift": 2.2,
-    "uncertainty": 12.44,
-    "guard": "TRUSTED"
+    "uncertainty": 35.5,
+    "guard": "LIMITED"
   },
   "previous": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:b136d1b8146238e507ae3c5b",
@@ -1172,16 +1172,16 @@
     "falseSignals": 0
   },
   "deployedPlanJournal": {
-    "samples": 1,
-    "hitRate": 0,
-    "avgR": -2.8234,
+    "samples": 2,
+    "hitRate": 50,
+    "avgR": -1.20715,
     "goodEntryRate": 0,
-    "fillCount": 1
+    "fillCount": 2
   },
   "decision": {
     "promoted": false,
     "rolledBack": false,
-    "candidateQualified": true,
+    "candidateQualified": false,
     "candidateCompatibility": {
       "ok": true,
       "reasons": []
