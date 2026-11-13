@@ -1108,9 +1108,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-11-13T17:56:18.675Z",
-  "action": "PROMOTE_CHALLENGER",
-  "reason": "Champion age >12h and challenger is non-inferior (80.0 vs 79.4)",
+  "updatedAt": "2026-11-13T23:45:27.574Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:0c8ad7a6bfbecf349e127377",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -1133,24 +1133,24 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:0c8ad7a6bfbecf349e127377",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:e5d6262801071181e5589962",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "0c8ad7a6bfbecf349e127377",
-    "dataWatermark": 1794592500000,
-    "generatedAt": "2026-11-13T17:56:18.450Z",
-    "trainedThrough": "2026-11-13T17:30:00.000Z",
+    "sourceFingerprint": "e5d6262801071181e5589962",
+    "dataWatermark": 1794613500000,
+    "generatedAt": "2026-11-13T23:45:27.091Z",
+    "trainedThrough": "2026-11-13T23:30:00.000Z",
     "ready": true,
     "status": "READY",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 79.97,
-    "health": 82.7,
-    "samples": 9308,
-    "brier": 0.2355,
-    "calibration": 4.07,
+    "score": 79.07,
+    "health": 81.5,
+    "samples": 9332,
+    "brier": 0.2357,
+    "calibration": 4,
     "coverage": 100,
     "drift": 2,
-    "uncertainty": 10.55,
+    "uncertainty": 14.13,
     "guard": "TRUSTED"
   },
   "previous": {
@@ -1175,10 +1175,10 @@
     "guard": "TRUSTED"
   },
   "deployedJournal": {
-    "samples": 0,
-    "hitRate": null,
-    "avgR": null,
-    "goodEntryRate": null,
+    "samples": 1,
+    "hitRate": 100,
+    "avgR": 0.7755,
+    "goodEntryRate": 100,
     "falseSignals": 0
   },
   "deployedPlanJournal": {
@@ -1189,7 +1189,7 @@
     "fillCount": 0
   },
   "decision": {
-    "promoted": true,
+    "promoted": false,
     "rolledBack": false,
     "candidateQualified": true,
     "candidateCompatibility": {
@@ -1198,7 +1198,7 @@
     },
     "championDeployable": true,
     "materiallyBetter": false,
-    "freshNonInferior": true,
+    "freshNonInferior": false,
     "schemaMigration": false,
     "sourceMigration": false,
     "identicalEvidence": false
