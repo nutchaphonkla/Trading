@@ -1108,9 +1108,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-11-15T11:18:46.819Z",
-  "action": "PROMOTE_CHALLENGER",
-  "reason": "Champion age >12h and challenger is non-inferior (80.2 vs 80.1)",
+  "updatedAt": "2026-11-15T17:54:10.695Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:03b2c7eb9999d32376edf02f",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -1133,25 +1133,25 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:03b2c7eb9999d32376edf02f",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:53e4c0ea9726d82f80cfb559",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "03b2c7eb9999d32376edf02f",
-    "dataWatermark": 1794741480000,
-    "generatedAt": "2026-11-15T11:18:46.549Z",
-    "trainedThrough": "2026-11-15T11:00:00.000Z",
-    "ready": true,
-    "status": "READY",
+    "sourceFingerprint": "53e4c0ea9726d82f80cfb559",
+    "dataWatermark": 1794765180000,
+    "generatedAt": "2026-11-15T17:54:10.457Z",
+    "trainedThrough": "2026-11-15T17:30:00.000Z",
+    "ready": false,
+    "status": "QUARANTINED",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 80.2,
-    "health": 82.7,
-    "samples": 9474,
-    "brier": 0.2333,
-    "calibration": 3.54,
+    "score": 0,
+    "health": 74.1,
+    "samples": 9500,
+    "brier": 0.2332,
+    "calibration": 3.59,
     "coverage": 100,
     "drift": 2.8,
-    "uncertainty": 10.82,
-    "guard": "TRUSTED"
+    "uncertainty": 34.91,
+    "guard": "LIMITED"
   },
   "previous": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:3a764956971693da848c0f7c",
@@ -1189,16 +1189,16 @@
     "fillCount": 0
   },
   "decision": {
-    "promoted": true,
+    "promoted": false,
     "rolledBack": false,
-    "candidateQualified": true,
+    "candidateQualified": false,
     "candidateCompatibility": {
       "ok": true,
       "reasons": []
     },
     "championDeployable": true,
     "materiallyBetter": false,
-    "freshNonInferior": true,
+    "freshNonInferior": false,
     "schemaMigration": false,
     "sourceMigration": false,
     "identicalEvidence": false
