@@ -1,15 +1,15 @@
 {
   "version": "V44",
-  "generatedAt": "2026-11-20T21:23:22.282Z",
+  "generatedAt": "2026-11-20T23:11:02.342Z",
   "symbol": "XAU/USD",
-  "marketLikelyOpen": true,
+  "marketLikelyOpen": false,
   "active": "TWELVE_DATA",
-  "mode": "API_ECO",
-  "status": "LIVE",
-  "reason": "MT5 offline: switched automatically to Twelve Data API ECO mode",
-  "latestM1Ts": 1795209720000,
-  "latestM1AgeMs": 82199,
-  "closedBarWatermark": 1795209780000,
+  "mode": "API_LAST_SESSION",
+  "status": "LAST_SESSION",
+  "reason": "MT5 offline: Twelve Data API ECO last-session mode",
+  "latestM1Ts": 1795216140000,
+  "latestM1AgeMs": 122262,
+  "closedBarWatermark": 1795216200000,
   "primary": {
     "provider": "Twelve Data",
     "configured": true,
@@ -18,15 +18,15 @@
     "fresh": true,
     "status": "ONLINE",
     "httpStatus": 200,
-    "latestTs": 1795209720000,
-    "ageMs": 81254,
-    "closedBarWatermark": 1795209796228,
+    "latestTs": 1795216140000,
+    "ageMs": 121483,
+    "closedBarWatermark": 1795216256472,
     "droppedOpenBars": 0,
     "credits": {
       "api-credits-used": "1",
       "api-credits-left": "7"
     },
-    "fetchedAt": "2026-11-20T21:23:21.254Z",
+    "fetchedAt": "2026-11-20T23:11:01.483Z",
     "error": null
   },
   "fallback": {
@@ -38,9 +38,17 @@
     "fresh": false,
     "publicFeedUrl": "https://onemonth-tv-feed.nutchaphonsit.workers.dev/public-feed",
     "status": "OFFLINE",
-    "heartbeat": null,
-    "fetchedAt": "2026-11-20T21:23:20.790Z",
-    "error": "This operation was aborted"
+    "heartbeat": {
+      "connected": false,
+      "status": "ok",
+      "bars": 66889,
+      "receiveAgeMs": 8410783959,
+      "candleAgeMs": 8475300989,
+      "latestTs": 1786740960000,
+      "checkedAt": "2026-11-20T23:11:01.015Z"
+    },
+    "fetchedAt": "2026-11-20T23:11:01.015Z",
+    "error": null
   },
   "training": {
     "file": "xauusd-training.json",
@@ -50,8 +58,8 @@
     "counts": {
       "M1": 43201,
       "M5": 25909,
-      "M15": 10219,
-      "H1": 2552
+      "M15": 10226,
+      "H1": 2554
     }
   },
   "switching": {
