@@ -1108,9 +1108,9 @@
   "schemaVersion": "KAGE_AI_V42",
   "expectedFeatureSchemaHash": "c3372751b985cd6c32d06e0f",
   "expectedLabelSchemaHash": "dd88c080f7855fdab25a56f0",
-  "updatedAt": "2026-11-23T15:04:53.882Z",
-  "action": "PROMOTE_CHALLENGER",
-  "reason": "Challenger score 79.8 > champion 78.3",
+  "updatedAt": "2026-11-24T02:27:03.205Z",
+  "action": "KEEP_CHAMPION",
+  "reason": "Champion remains stronger or challenger not proven",
   "champion": {
     "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:159f866065c6660040a87e4c",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
@@ -1133,24 +1133,24 @@
     "guard": "TRUSTED"
   },
   "challenger": {
-    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:159f866065c6660040a87e4c",
+    "modelId": "ONEMONTH-GOVERNED-CHALLENGER-V42:9a930b1b94b59a1b09203e9b",
     "engine": "ONEMONTH-GOVERNED-CHALLENGER-V42",
-    "sourceFingerprint": "159f866065c6660040a87e4c",
-    "dataWatermark": 1795446180000,
-    "generatedAt": "2026-11-23T15:04:53.589Z",
-    "trainedThrough": "2026-11-23T14:45:00.000Z",
+    "sourceFingerprint": "9a930b1b94b59a1b09203e9b",
+    "dataWatermark": 1795487160000,
+    "generatedAt": "2026-11-24T02:27:03.019Z",
+    "trainedThrough": "2026-11-24T02:00:00.000Z",
     "ready": true,
     "status": "READY",
     "schemaCompatible": true,
     "compatibilityReasons": [],
-    "score": 79.84,
-    "health": 82.6,
-    "samples": 10257,
-    "brier": 0.2328,
-    "calibration": 4.25,
+    "score": 79.44,
+    "health": 82,
+    "samples": 10302,
+    "brier": 0.2323,
+    "calibration": 4.09,
     "coverage": 100,
-    "drift": 0.4,
-    "uncertainty": 12.98,
+    "drift": 0.2,
+    "uncertainty": 15.29,
     "guard": "TRUSTED"
   },
   "previous": {
@@ -1175,21 +1175,21 @@
     "guard": "TRUSTED"
   },
   "deployedJournal": {
-    "samples": 0,
-    "hitRate": null,
-    "avgR": null,
-    "goodEntryRate": null,
+    "samples": 1,
+    "hitRate": 100,
+    "avgR": 0.2019,
+    "goodEntryRate": 0,
     "falseSignals": 0
   },
   "deployedPlanJournal": {
-    "samples": 0,
-    "hitRate": null,
-    "avgR": null,
-    "goodEntryRate": null,
-    "fillCount": 0
+    "samples": 1,
+    "hitRate": 0,
+    "avgR": -0.0814,
+    "goodEntryRate": 0,
+    "fillCount": 1
   },
   "decision": {
-    "promoted": true,
+    "promoted": false,
     "rolledBack": false,
     "candidateQualified": true,
     "candidateCompatibility": {
@@ -1197,8 +1197,8 @@
       "reasons": []
     },
     "championDeployable": true,
-    "materiallyBetter": true,
-    "freshNonInferior": true,
+    "materiallyBetter": false,
+    "freshNonInferior": false,
     "schemaMigration": false,
     "sourceMigration": false,
     "identicalEvidence": false
